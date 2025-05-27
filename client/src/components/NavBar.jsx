@@ -22,7 +22,7 @@ function NavBar() {
 
                     {/* About dropdown */}
                     <li
-                        className="relative hover:text-blue-600 cursor-pointer"
+                        className="relative hover:text-blue-600 cursor-pointer "
                         onMouseEnter={() => setAboutOpen(true)}
                         onMouseLeave={() => setAboutOpen(false)}
                     >
@@ -130,11 +130,11 @@ function NavBar() {
 
                     {/* Auth Buttons */}
                     <div className="flex space-x-4 pt-3">
-                        <button className="flex items-center space-x-1 hover:text-blue-600">
+                        <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
                             <FaUser />
                             <span>Login</span>
                         </button>
-                        <button className="flex items-center space-x-1 hover:text-blue-600">
+                        <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
                             <FaSignInAlt />
                             <span>Join Us</span>
                         </button>
