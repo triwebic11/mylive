@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaUser, FaSignInAlt, FaBars } from "react-icons/fa";
 import logo from "../assets/logo.png"
+import { Link } from "react-router-dom";
 
 function NavBar() {
     const [isAbout, setAboutOpen] = useState(false);
@@ -12,7 +13,7 @@ function NavBar() {
             <div className="max-w-[1500px] mx-auto px-4 py-3 flex items-center justify-between">
                 {/* Logo */}
                 <div className="flex items-center space-x-2">
-                    <img src={logo} alt="Liveon" className="h-8" />
+                    <Link to={"/"}><img src={logo} alt="Liveon" className="h-8" /></Link>
 
                 </div>
 
@@ -71,11 +72,11 @@ function NavBar() {
                     <li className="hover:text-blue-600 cursor-pointer">DSP Branches</li>
 
                     <div className="hidden md:flex space-x-4 items-center">
-                        <button className="flex items-center space-x-1 hover:text-blue-600">
+                        <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
                             <FaUser />
                             <span>Login</span>
                         </button>
-                        <button className="flex items-center space-x-1 hover:text-blue-600">
+                        <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
                             <FaSignInAlt />
                             <span>Join Us</span>
                         </button>
