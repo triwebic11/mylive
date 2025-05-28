@@ -5,12 +5,14 @@ import './index.css'
 import App from './App.jsx'
 import PageNotFound from './pages/PageNotFound.jsx';
 import Header from './components/Header.jsx';
+import Footer from './pages/Footer.jsx';
 
 const Layout = () => {
   return (
     <div>
 
       <Header />
+      <Footer />
 
     </div>
   );
