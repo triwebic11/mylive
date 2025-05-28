@@ -1,12 +1,14 @@
-import React from 'react';
-import NavBar from '../components/navbar';
+import React from "react";
+import HomeSlider from "../components/Slider";
+import ListOfDistributors from "../components/ListOfDistributors";
 
 const Home = () => {
-    return (
-        <div>
-            <NavBar />
-        </div>
-    );
+  return (
+    <div>
+      <HomeSlider />
+      <ListOfDistributors />
+    </div>
+  );
 };
 
 export default Home;
