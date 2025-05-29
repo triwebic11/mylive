@@ -3,7 +3,13 @@ import { onion, toxin, halwa, helth, neem, sampoo, protein, vigoproduct } from "
 
 const OurProducts = () => {
     return (
-        <>
+        <div className='py-20'>
+
+        <div className='bg-gray-800 text-white py-20 flex flex-col items-center justify-center space-y-4'>
+            <p className='text-4xl font-semibold'>Our Products</p>
+            <p className='text-lg'>100% natural raw materials</p>
+
+        </div>
             <div className='grid grid-cols-1 md:grid-cols-2'>
                 <div className="relative  h-[330px] group overflow-hidden">
                     {/* Image */}
@@ -139,7 +145,7 @@ const OurProducts = () => {
                 </div>
             </div>
 
-        </>
+        </div>
 
 
 
