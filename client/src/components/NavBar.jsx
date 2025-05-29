@@ -12,9 +12,9 @@ function NavBar() {
         <nav className="bg-white shadow-md">
             <div className="max-w-[1500px] mx-auto px-4 py-3 flex items-center justify-between">
                 {/* Logo */}
-                <div className="flex items-center space-x-2">
-                    <Link to={"/"}><img src={logo} alt="Liveon" className="h-8" /></Link>
-
+                <div className="flex items-center">
+                    <Link to={"/"}><img src={logo} alt="Liveon" className="h-14"></img></Link>
+                    <p className="font-semibold pl-2 md:text-2xl">SHS Lira Enterprise Ltd</p>
                 </div>
 
                 {/* Desktop Menu */}
@@ -39,7 +39,7 @@ function NavBar() {
                         )}
                     </li>
 
-                    <li className="hover:text-blue-600 cursor-pointer">Why Liveon</li>
+                    <li className="hover:text-blue-600 cursor-pointer">Why SHS</li>
 
                     {/* Products dropdown */}
                     <li

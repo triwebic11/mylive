@@ -20,10 +20,13 @@ function Footer() {
                     <img
                         src={logo}
                         alt="Liveon Logo"
-                        className="w-32 mb-2"
+                        className="w-28 mb-2"
                     />
-                    <p className="font-bold text-gray-800 text-sm text-center md:text-left">
-                        Liveon Manufacturing & Marketing LTD.
+                    <p className="font-bold text-gray-800 text-base text-center md:text-left">
+                        SHS Lira Enterprise Ltd
+                    </p>
+                    <p>
+                        SHS Lira Enterprise Ltd is a leading manufacturer and marketer of high-quality consumer products, dedicated to enhancing the lives of our customers through innovation and excellence.
                     </p>
                 </div>
 
