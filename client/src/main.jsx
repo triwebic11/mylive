@@ -1,19 +1,29 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider, useLocation } from "react-router-dom";
 import './index.css'
 import App from './App.jsx'
 import PageNotFound from './pages/PageNotFound.jsx';
 import Header from './components/Header.jsx';
 import Footer from './pages/Footer.jsx';
+import Register from './pages/Register.jsx';
+import AuthProvider from './AuthProvider/AuthProvider.jsx';
 
 const Layout = () => {
+  const location = useLocation()
+  const path = location.pathname === "/register" || location.pathname === "/login"
   return (
-    <div>
+    <div className='bg-gray-100'>
 
-      <Header />
+      {
+        path || <Header />
+      }
+
+
       <Outlet />
-      <Footer />
+      {
+        path || <Footer />
+      }
     </div>
   );
 };
@@ -24,6 +34,7 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "/", element: <App /> },
+      { path: "/register", element: <Register /> },
       { path: "*", element: <PageNotFound /> },
     ],
   },
@@ -31,6 +42,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 );

@@ -1,4 +1,4 @@
-import React from "react";
+
 import logo from "../assets/logo.png"
 import { googlePlay, appStore, paymentMethod } from "../assets";
 import {
@@ -25,7 +25,7 @@ function Footer() {
                     <p className="font-bold text-gray-800 text-base text-center md:text-left">
                         SHS Lira Enterprise Ltd
                     </p>
-                    <p>
+                    <p>    
                         SHS Lira Enterprise Ltd is a leading manufacturer and marketer of high-quality consumer products, dedicated to enhancing the lives of our customers through innovation and excellence.
                     </p>
                 </div>

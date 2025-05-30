@@ -1,12 +1,29 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaUser, FaSignInAlt, FaBars } from "react-icons/fa";
 import logo from "../assets/logo.png"
 import { Link } from "react-router-dom";
+import { AuthContext } from "../AuthProvider/AuthProvider";
+import Swal from "sweetalert2";
 
 function NavBar() {
     const [isAbout, setAboutOpen] = useState(false);
     const [isProductsOpen, setProductsOpen] = useState(false);
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { user, setUser } = useContext(AuthContext)
+
+    const handlelogout = () => {
+
+        localStorage.removeItem("user");
+        setUser(null);
+        Swal.fire({
+            icon: "success",
+            title: "Logged out",
+            text: "You have been successfully logged out!",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
+        });
+
+    }
 
     return (
         <nav className="bg-white shadow-md">
@@ -72,14 +89,22 @@ function NavBar() {
                     <li className="hover:text-blue-600 cursor-pointer">DSP Branches</li>
 
                     <div className="hidden md:flex space-x-4 items-center">
-                        <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
-                            <FaUser />
-                            <span>Login</span>
-                        </button>
-                        <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
-                            <FaSignInAlt />
-                            <span>Join Us</span>
-                        </button>
+                        {
+                            user ? <>
+                                <Link> Dashboard</Link>
+                                <Link onClick={handlelogout}> Logout</Link>
+
+                            </> : <>
+                                <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
+                                    <FaUser />
+                                    <span>Login</span>
+                                </button>
+                                <Link to="/register" className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
+                                    <FaSignInAlt />
+                                    <span>Join Us</span>
+                                </Link>
+                            </>
+                        }
                     </div>
                 </ul>
 
