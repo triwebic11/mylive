@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaUser, FaSignInAlt, FaBars } from "react-icons/fa";
 import logo from "../assets/logo.png"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthProvider/AuthProvider";
+import Swal from "sweetalert2";
 
 const menuItems = [
     { label: "Home", path: "/" },
@@ -35,15 +37,38 @@ function NavBar() {
     const [isAboutOpen, setAboutOpen] = useState(false);
     const [isProductsOpen, setProductsOpen] = useState(false);
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+<<<<<<< HEAD
     const [openSubmenu, setOpenSubmenu] = useState(null); // for mobile submenu toggle
 
     const toggleSubmenu = (label) => {
         setOpenSubmenu(prev => (prev === label ? null : label));
     };
+=======
+    const { user, setUser } = useContext(AuthContext)
+    const navigate = useNavigate()
+
+    const handlelogout = () => {
+
+        localStorage.removeItem("user");
+        setUser(null);
+        Swal.fire({
+            icon: "success",
+            title: "Logged out",
+            text: "You have been successfully logged out!",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
+        });
+        navigate("/")
+
+
+    }
+    // console.log(user.length)
+>>>>>>> 8340af2e97f3a451d75824472252ce53494944b7
 
     return (
-        <nav className="bg-white shadow-md">
+        <nav className="bg-white  shadow-md">
             <div className="max-w-[1500px] mx-auto px-4 py-3 flex items-center justify-between">
+<<<<<<< HEAD
                 <Link to={"/"}>
                     <img src={logo} alt="Liveon" className="h-8" />
                 </Link>
@@ -82,9 +107,71 @@ function NavBar() {
                             )}
                         </li>
                     ))}
+=======
+                {/* Logo */}
+                <div className="flex items-center">
+                    <Link to={"/"}><img src={logo} alt="Liveon" className="h-14"></img></Link>
+                    <p className="font-semibold pl-2 md:text-2xl">SHS Lira Enterprise Ltd</p>
+                </div>
+
+                {/* Desktop Menu */}
+                <ul className="hidden md:flex space-x-6 text-sm font-medium items-center">
+                    <li className="hover:text-blue-600 cursor-pointer">Home</li>
+
+                    {/* About dropdown */}
+                    <li
+                        className="relative hover:text-blue-600 cursor-pointer "
+                        onMouseEnter={() => setAboutOpen(true)}
+                        onMouseLeave={() => setAboutOpen(false)}
+                    >
+                        About
+                        {isAbout && (
+                            <ul className="absolute top-8 left-0 w-56 bg-white border rounded shadow-md z-10">
+                                {["About Us", "Management", "Core Value"].map((item, index) => (
+                                    <li key={index} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </li>
+
+                    <li className="hover:text-blue-600 cursor-pointer">Why SHS</li>
+
+                    {/* Products dropdown */}
+                    <li
+                        className="relative hover:text-blue-600 cursor-pointer"
+                        onMouseEnter={() => setProductsOpen(true)}
+                        onMouseLeave={() => setProductsOpen(false)}
+                    >
+                        Products
+                        {isProductsOpen && (
+                            <ul className="absolute top-8 left-0 w-64 bg-white border rounded shadow-md z-10">
+                                {[
+                                    "Health Care Products",
+                                    "Personal Care Products",
+                                    "Oral Care Products",
+                                    "Home Care Products",
+                                    "Agriculture Care Products",
+                                ].map((item, index) => (
+                                    <li key={index} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </li>
+
+                    <li className="hover:text-blue-600 cursor-pointer">Business</li>
+                    <li className="hover:text-blue-600 cursor-pointer">Gallery</li>
+                    <li className="hover:text-blue-600 cursor-pointer">Career</li>
+                    <li className="hover:text-blue-600 cursor-pointer">DSP Login</li>
+                    <li className="hover:text-blue-600 cursor-pointer">DSP Branches</li>
+>>>>>>> 8340af2e97f3a451d75824472252ce53494944b7
 
                     {/* Desktop Auth Buttons */}
                     <div className="hidden md:flex space-x-4 items-center">
+<<<<<<< HEAD
                         <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
                             <FaUser />
                             <Link to="/login">Login</Link>
@@ -93,6 +180,24 @@ function NavBar() {
                             <FaSignInAlt />
                             <Link to="/register">Join Us</Link>
                         </button>
+=======
+                        {
+                            user ? <>
+                                <Link to="/dashboard">Dashboard</Link>
+                                <Link onClick={handlelogout}> Logout</Link>
+
+                            </> : <>
+                                <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
+                                    <FaUser />
+                                    <Link to="/login">Login</Link>
+                                </button>
+                                <Link to="/register" className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
+                                    <FaSignInAlt />
+                                    <p>Join Us</p>
+                                </Link>
+                            </>
+                        }
+>>>>>>> 8340af2e97f3a451d75824472252ce53494944b7
                     </div>
                 </ul>
 
@@ -141,6 +246,7 @@ function NavBar() {
 
                     {/* Mobile Auth Buttons */}
                     <div className="flex space-x-4 pt-3">
+<<<<<<< HEAD
                         <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
                             <FaUser />
                             <Link to="/login">Login</Link>
@@ -149,6 +255,25 @@ function NavBar() {
                             <FaSignInAlt />
                             <Link to="/register">Join Us</Link>
                         </button>
+=======
+                       {
+                            user ? <>
+                                <Link to="/dashboard">Dashboard</Link>
+                                <Link onClick={handlelogout}> Logout</Link>
+
+                            </> : <>
+                                <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
+                                    <FaUser />
+                                    <Link to="/login">Login</Link>
+                                </button>
+                                <Link to="/register" className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
+                                    <FaSignInAlt />
+                                    <Link to="/register">Join Us</Link>
+                                </Link>
+                            </>
+                        }
+                        
+>>>>>>> 8340af2e97f3a451d75824472252ce53494944b7
                     </div>
                 </div>
             )}
