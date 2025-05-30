@@ -30,7 +30,7 @@ function NavBar() {
     // console.log(user.length)
 
     return (
-        <nav className="bg-white shadow-md">
+        <nav className="bg-white  shadow-md">
             <div className="max-w-[1500px] mx-auto px-4 py-3 flex items-center justify-between">
                 {/* Logo */}
                 <div className="flex items-center">
