@@ -6,6 +6,10 @@ import odoc from "./odoc.jpg";
 import appStore from "./app-store.jpg";
 import googlePlay from "./google-play.jpg";
 import paymentMethod from "./payment-methods.png";
+import chairman from "./chaiman.png";
+import managingDir from "./managingDir.jpg";
+import dirMar from "./dirMar.jpg";
+import dirOpe from "./dirOpe.jpg";
 
 export {
   onion,
@@ -16,4 +20,8 @@ export {
   appStore,
   googlePlay,
   paymentMethod,
+  chairman,
+  managingDir,
+  dirMar,
+  dirOpe,
 };
