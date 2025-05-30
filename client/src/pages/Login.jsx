@@ -1,20 +1,28 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { AuthContext } from "../AuthProvider/AuthProvider";
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
+  const {user, setUser} = useContext(AuthContext)
 
   const onSubmit = async (data) => {
     try {
       const res = await axios.post("http://localhost:5000/api/users/login", data);
-      const loggedInUser = res.data.user;
+      const loggedInUser = res?.data;
+
+      console.log(loggedInUser)
 
       // Save user to localStorage
-      localStorage.setItem("user", JSON.stringify(loggedInUser));
+    //   localStorage.setItem("user", JSON.stringify(loggedInUser));
+      // Save user to localStorage and update context
+localStorage.setItem("user", JSON.stringify(loggedInUser));
+setUser(loggedInUser);
+
 
       Swal.fire({
         icon: "success",

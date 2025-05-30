@@ -105,7 +105,7 @@ function NavBar() {
                                 </button>
                                 <Link to="/register" className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
                                     <FaSignInAlt />
-                                    <Link to="/register">Join Us</Link>
+                                    <p>Join Us</p>
                                 </Link>
                             </>
                         }

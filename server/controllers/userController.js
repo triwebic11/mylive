@@ -63,17 +63,23 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
+   // Create JWT token
     const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      process.env.JWT_SECRET,
+      { id: newUser._id, phone: newUser.phone, role: newUser.role },
+      process.env.JWT_SECRET || "your_jwt_secret_key",
       { expiresIn: "7d" }
     );
 
-    res.status(200).json({
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        _id: newUser._id,
+        name: newUser.name,
+        phone: newUser.phone,
+        email: newUser.email,
+        role: newUser.role,
+      },
       token,
-      userId: user._id,
-      phone: user.phone,
-      role: user.role,
     });
   } catch (err) {
     console.error(err);
