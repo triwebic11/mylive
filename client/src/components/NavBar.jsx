@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { FaUser, FaSignInAlt, FaBars } from "react-icons/fa";
 import logo from "../assets/logo.png"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import Swal from "sweetalert2";
 
@@ -10,6 +10,7 @@ function NavBar() {
     const [isProductsOpen, setProductsOpen] = useState(false);
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { user, setUser } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     const handlelogout = () => {
 
@@ -22,8 +23,11 @@ function NavBar() {
             confirmButtonColor: "#3085d6",
             confirmButtonText: "OK",
         });
+        navigate("/")
+
 
     }
+    // console.log(user.length)
 
     return (
         <nav className="bg-white shadow-md">
@@ -91,17 +95,17 @@ function NavBar() {
                     <div className="hidden md:flex space-x-4 items-center">
                         {
                             user ? <>
-                                <Link> Dashboard</Link>
+                                <Link to="/dashboard">Dashboard</Link>
                                 <Link onClick={handlelogout}> Logout</Link>
 
                             </> : <>
                                 <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
                                     <FaUser />
-                                    <span>Login</span>
+                                    <Link to="/login">Login</Link>
                                 </button>
                                 <Link to="/register" className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
                                     <FaSignInAlt />
-                                    <span>Join Us</span>
+                                    <Link to="/register">Join Us</Link>
                                 </Link>
                             </>
                         }
@@ -156,14 +160,23 @@ function NavBar() {
 
                     {/* Auth Buttons */}
                     <div className="flex space-x-4 pt-3">
-                        <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
-                            <FaUser />
-                            <span>Login</span>
-                        </button>
-                        <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
-                            <FaSignInAlt />
-                            <span>Join Us</span>
-                        </button>
+                       {
+                            user ? <>
+                                <Link to="/dashboard">Dashboard</Link>
+                                <Link onClick={handlelogout}> Logout</Link>
+
+                            </> : <>
+                                <button className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
+                                    <FaUser />
+                                    <Link to="/login">Login</Link>
+                                </button>
+                                <Link to="/register" className="flex items-center cursor-pointer space-x-1 hover:text-blue-600">
+                                    <FaSignInAlt />
+                                    <Link to="/register">Join Us</Link>
+                                </Link>
+                            </>
+                        }
+                        
                     </div>
                 </div>
             )}

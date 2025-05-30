@@ -8,6 +8,7 @@ import Header from './components/Header.jsx';
 import Footer from './pages/Footer.jsx';
 import Register from './pages/Register.jsx';
 import AuthProvider from './AuthProvider/AuthProvider.jsx';
+import Login from './pages/Login.jsx';
 
 const Layout = () => {
   const location = useLocation()
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <App /> },
       { path: "/register", element: <Register /> },
+      { path: "/login", element: <Login /> },
       { path: "*", element: <PageNotFound /> },
     ],
   },

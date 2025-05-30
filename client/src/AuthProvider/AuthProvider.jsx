@@ -7,13 +7,18 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   // Load user from localStorage on app load
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser && storedUser !== "undefined") {
+    try {
       setUser(JSON.parse(storedUser));
+    } catch (err) {
+      console.error("Failed to parse user from localStorage", err);
+      localStorage.removeItem("user"); // cleanup if bad value
     }
-    setLoading(false);
-  }, []);
+  }
+  setLoading(false);
+}, []);
 
   console.log('usersssssssss',user)
 
