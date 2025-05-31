@@ -1,11 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { logo } from "../../assets";
 
 const dashboardArry = [
-  { title: "Market Place", icon: "", link: "/" },
-  { title: "Dashboard", icon: "", link: "/" },
-  { title: "Profile", icon: "", link: "/" },
+  { title: "Market Place", icon: "", link: "/dashboard" },
+  { title: "Dashboard", icon: "", link: "/dashboard" },
+   {
+    title: "Cash On Delivery", icon: "", link: "/dashboard/CashonDelivery"
+  },
+  { title: "Profile", icon: "", link: "/dashboard" },
+
   {
     title: "Referrals",
     icon: "",
@@ -21,18 +25,20 @@ const dashboardArry = [
     icon: "",
     submenu: [{ title: "Transactions", link: "/transactions" }],
   },
-  { title: "Today Statement", icon: "", link: "/" },
-  { title: "C-Statemetn", icon: "", link: "/" },
-  { title: "My Consistency", icon: "", link: "/" },
+  { title: "Today Statement", icon: "", link: "/dashboard" },
+  { title: "C-Statemetn", icon: "", link: "/dashboard" },
+  { title: "My Consistency", icon: "", link: "/dashboard" },
 
-  { title: "Voucher", icon: "", link: "/" },
-  { title: "Withdorw", icon: "", link: "/" },
-  { title: "My Order", icon: "", link: "/" },
-  { title: "Package Update", icon: "", link: "/" },
-  { title: "Support", icon: "", link: "/" },
-  { title: "Kyc", icon: "", link: "/" },
-  { title: "Securiy", icon: "", link: "/" },
-  { title: "Logout", icon: "", link: "/" },
+  { title: "Voucher", icon: "", link: "/dashboard" },
+  { title: "Withdorw", icon: "", link: "/dashboard" },
+  { title: "My Order", icon: "", link: "/dashboard" },
+  { title: "Package Update", icon: "", link: "/dashboard" },
+  { title: "Support", icon: "", link: "/dashboard" },
+  { title: "Kyc", icon: "", link: "/dashboard" },
+  { title: "Securiy", icon: "", link: "/dashboard" },
+  { title: "Logout", icon: "", link: "/dashboard" },
+  // Super Admin
+ 
 ];
 
 const Dashboard = () => {
@@ -43,6 +49,7 @@ const Dashboard = () => {
           <img src={logo} alt="Logo" className="w-32" />
         </Link>
       </div>
+      
       <div className="flex gap-4 ">
         <div>
           {dashboardArry?.map((item, index) => {
@@ -58,7 +65,7 @@ const Dashboard = () => {
             );
           })}
         </div>
-        <div>Right</div>
+        <Outlet></Outlet>
       </div>
     </div>
   );

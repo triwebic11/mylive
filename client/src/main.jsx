@@ -19,6 +19,7 @@ import AboutUs from "./pages/AboutUs.jsx";
 import Management from "./pages/Management.jsx";
 import CoreValue from "./pages/CoreValue.jsx";
 import AuthProvider from "./AuthProvider/AuthProvider.jsx";
+import CashOnDelivery from "./pages/dashboard/SuperAdmin/CashOnDelivery.jsx";
 
 const Layout = () => {
   const location = useLocation();
@@ -51,6 +52,9 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard />,
+    children: [
+      {path: "/dashboard/CashonDelivery", element: <CashOnDelivery></CashOnDelivery>}
+    ]
   },
 ]);
 
