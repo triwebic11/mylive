@@ -5,7 +5,7 @@ import { logo } from "../../assets";
 const dashboardArry = [
   { title: "Market Place", icon: "", link: "/dashboard" },
   { title: "Dashboard", icon: "", link: "/dashboard" },
-   {
+  {
     title: "Cash On Delivery", icon: "", link: "/dashboard/CashonDelivery"
   },
   { title: "Profile", icon: "", link: "/dashboard" },
@@ -38,7 +38,7 @@ const dashboardArry = [
   { title: "Securiy", icon: "", link: "/dashboard" },
   { title: "Logout", icon: "", link: "/dashboard" },
   // Super Admin
- 
+
 ];
 
 const Dashboard = () => {
@@ -49,12 +49,12 @@ const Dashboard = () => {
           <img src={logo} alt="Logo" className="w-32" />
         </Link>
       </div>
-      
-      <div className="flex gap-4 ">
+
+      <div className=" flex gap-2 ">
         <div>
           {dashboardArry?.map((item, index) => {
             return (
-              <ul key={index} className="flex flex-col gap-6">
+              <ul key={index} className="flex flex-col gap-6 bg-blue-100">
                 <li className="flex  items-center gap-6 rounded-lg font-bold text-lg hover:bg-gray-200 duration-300 ">
                   <span>{item.icon}</span>
                   <Link to={item.link} className="py-3 px-2 ">
