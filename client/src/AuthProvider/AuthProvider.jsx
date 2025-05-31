@@ -20,7 +20,7 @@ useEffect(() => {
   setLoading(false);
 }, []);
 
-  console.log('usersssssssss',user)
+  console.log('user',user)
 
   const authInfo = {
     loading,

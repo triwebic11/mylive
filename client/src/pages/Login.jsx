@@ -8,20 +8,17 @@ import { AuthContext } from "../AuthProvider/AuthProvider";
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
-  const {user, setUser} = useContext(AuthContext)
+  const { user, setUser } = useContext(AuthContext)
 
   const onSubmit = async (data) => {
     try {
       const res = await axios.post("http://localhost:5000/api/users/login", data);
       const loggedInUser = res?.data;
 
-      console.log(loggedInUser)
 
-      // Save user to localStorage
-    //   localStorage.setItem("user", JSON.stringify(loggedInUser));
-      // Save user to localStorage and update context
-localStorage.setItem("user", JSON.stringify(loggedInUser));
-setUser(loggedInUser);
+      console.log('logeed',loggedInUser)
+      localStorage.setItem("user", JSON.stringify(loggedInUser));
+      setUser(loggedInUser);
 
 
       Swal.fire({
