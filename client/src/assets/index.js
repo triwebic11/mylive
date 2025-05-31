@@ -10,6 +10,20 @@ import sampoo from "./productsampoo.jpg";
 import protein from "./protein.jpg";
 import vigoproduct from "./vigoproduct.jpg";
 import odoc from "./odoc.jpg";
+import logo from "./logo.png";
 
-
-export { onion, toxin, halwa, helth ,googlePlay, appStore, paymentMethod, neem, sampoo, protein, vigoproduct,odoc};
+export {
+  logo,
+  onion,
+  toxin,
+  halwa,
+  helth,
+  googlePlay,
+  appStore,
+  paymentMethod,
+  neem,
+  sampoo,
+  protein,
+  vigoproduct,
+  odoc,
+};
