@@ -22,21 +22,26 @@ function Footer() {
                         alt="Liveon Logo"
                         className="w-28 mb-2"
                     />
+<<<<<<< HEAD
+                    <p className="font-bold text-gray-800 text-sm text-center md:text-left">
+                        SHS Lira Manufacturing & Marketing LTD.
+=======
                     <p className="font-bold text-gray-800 text-base text-center md:text-left">
                         SHS Lira Enterprise Ltd
                     </p>
                     <p>    
                         SHS Lira Enterprise Ltd is a leading manufacturer and marketer of high-quality consumer products, dedicated to enhancing the lives of our customers through innovation and excellence.
+>>>>>>> 8340af2e97f3a451d75824472252ce53494944b7
                     </p>
                 </div>
 
                 {/* Quick Links */}
-                <div className="flex flex-col items-center md:items-start">
+                <div className="  items-center md:items-start">
                     <p className="font-semibold text-blue-700 mb-4">QUICK LINKS</p>
-                    <ul className="space-y-1">
-                        <Link to="/">Home</Link>
-                        <Link to="/">Products</Link>
-                        <Link to="/">Services</Link>
+                    <ul className="flex-none ">
+                        <Link to="/">Home</Link> <br />
+                        <Link to="/">Products</Link><br />
+                        <Link to="/">Services</Link><br />
                         <Link to="/">Contact Us</Link>
                     </ul>
                 </div>
@@ -44,13 +49,13 @@ function Footer() {
                 {/* Contact */}
                 <div className="flex flex-col items-center md:items-start">
                     <p className="font-semibold text-blue-700 mb-4">CONTACT</p>
-                    <p>Website: www.liveonproducts.com</p>
-                    <p>Email: info@liveonproducts.com</p>
-                    <p>Customer Service: 01988304840</p>
+                    <p>Website: www.shslira.com</p>
+                    <p>Email: aeakub059@gmail.com</p>
+                    <p>Customer Service:01750873763</p>
                     <p>
-                        Address: SF Tower (5th Floor), Block-L,<br />
-                        Road-10, House-40, South Banasree,<br />
-                        Khilgaon, Dhaka-1219, Dhaka
+                        Madrashas Road, Shubidhat, Hazipara<br />
+                        Showroom/Sub Office: Vororamor, Setabganj, Dinajpur<br />
+
                     </p>
                 </div>
 
@@ -72,11 +77,7 @@ function Footer() {
                     <p className="font-semibold text-blue-700 mb-2">PAYMENT METHODS</p>
                     <div className="flex flex-wrap gap-2 justify-center md:justify-start mb-4">
                         <img src={paymentMethod} alt="visa" className="h-6" />
-                        {/* <img src="/mastercard.png" alt="mastercard" className="h-6" />
-                        <img src="/discover.png" alt="discover" className="h-6" />
-                        <img src="/amex.png" alt="amex" className="h-6" />
-                        <img src="/rocket.png" alt="rocket" className="h-6" />
-                        <img src="/nagad.png" alt="nagad" className="h-6" /> */}
+
                     </div>
 
                     <p className="font-semibold text-blue-700 mb-2">INSTALL APP</p>
@@ -86,9 +87,9 @@ function Footer() {
                     </div>
                 </div>
             </div>
-            <div className="bg-blue-800 text-white text-center py-3 text-sm">
-                Copyright © 2025, Liveon Manufacturing & Marketing LTD
-            </div>
+            <p className="bg-blue-800 text-white text-center py-3 text-sm">
+                Copyright <span>©</span> 2025, SHS Lira Manufacturing & Marketing LTD
+            </p>
         </footer>
     );
 }
