@@ -22,16 +22,8 @@ function Footer() {
                         alt="Liveon Logo"
                         className="w-28 mb-2"
                     />
-<<<<<<< HEAD
                     <p className="font-bold text-gray-800 text-sm text-center md:text-left">
                         SHS Lira Manufacturing & Marketing LTD.
-=======
-                    <p className="font-bold text-gray-800 text-base text-center md:text-left">
-                        SHS Lira Enterprise Ltd
-                    </p>
-                    <p>    
-                        SHS Lira Enterprise Ltd is a leading manufacturer and marketer of high-quality consumer products, dedicated to enhancing the lives of our customers through innovation and excellence.
->>>>>>> 8340af2e97f3a451d75824472252ce53494944b7
                     </p>
                 </div>
 

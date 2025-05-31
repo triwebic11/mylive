@@ -5,11 +5,18 @@ import helth from "./helth-care.png";
 import googlePlay from "./google-play.jpg";
 import appStore from "./app-store.jpg";
 import paymentMethod from "./payment-methods.png";
-<<<<<<< HEAD
+
 import chairman from "./chaiman.png";
 import managingDir from "./managingDir.jpg";
 import dirMar from "./dirMar.jpg";
 import dirOpe from "./dirOpe.jpg";
+import neem from "./NeemProduct.jpg";
+import sampoo from "./productsampoo.jpg";
+import protein from "./protein.jpg";
+import vigoproduct from "./vigoproduct.jpg";
+import odoc from "./odoc.jpg";
+import logo from "./logo.png"
+
 
 export {
   onion,
@@ -24,33 +31,12 @@ export {
   managingDir,
   dirMar,
   dirOpe,
+  neem, sampoo, protein, vigoproduct,logo
 };
-=======
-import neem from "./NeemProduct.jpg";
-import sampoo from "./productsampoo.jpg";
-import protein from "./protein.jpg";
-import vigoproduct from "./vigoproduct.jpg";
-import odoc from "./odoc.jpg";
-import logo from "./logo.png";
 
-<<<<<<< HEAD
-export {
-  logo,
-  onion,
-  toxin,
-  halwa,
-  helth,
-  googlePlay,
-  appStore,
-  paymentMethod,
-  neem,
-  sampoo,
-  protein,
-  vigoproduct,
-  odoc,
-};
-=======
 
-export { onion, toxin, halwa, helth ,googlePlay, appStore, paymentMethod, neem, sampoo, protein, vigoproduct,odoc};
->>>>>>> 8340af2e97f3a451d75824472252ce53494944b7
->>>>>>> d85da6f1c99e7e4fdb87626e73959b5e1e66f407
+
+
+
+
+
