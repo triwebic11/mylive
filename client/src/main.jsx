@@ -20,6 +20,7 @@ import Management from "./pages/Management.jsx";
 import CoreValue from "./pages/CoreValue.jsx";
 import AuthProvider from "./AuthProvider/AuthProvider.jsx";
 import CashOnDelivery from "./pages/dashboard/SuperAdmin/CashOnDelivery.jsx";
+import ProductDetails from "./components/ProductDetails.jsx";
 
 const Layout = () => {
   const location = useLocation();
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: "/core-value", element: <CoreValue /> },
       { path: "/register", element: <Register /> },
       { path: "/login", element: <Login /> },
+      { path: "/productdetails/:id", element: <ProductDetails /> },
       { path: "*", element: <PageNotFound /> },
     ],
   },
