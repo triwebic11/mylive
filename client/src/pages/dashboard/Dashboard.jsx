@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Link, Outlet } from "react-router-dom";
 import { logo } from "../../assets";
 import { MdOutlineShoppingBag } from "react-icons/md";
@@ -6,7 +6,7 @@ import { CiHome } from "react-icons/ci";
 
 const dashboardArry = [
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
-  { title: "Dashboard", icon: <CiHome />, link: "/dashboard" },
+  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/fontDashboard" },
   {
     title: "Cash On Delivery",
     icon: "",
@@ -59,14 +59,15 @@ const Dashboard = () => {
 
   return (
     <div className="mx-6 max-w-[1900px] max-h-screen ">
-      <div>
-        <Link to="/">
-          <img src={logo} alt="Logo" className="w-32" />
-        </Link>
-      </div>
+
 
       <div className=" flex gap-2 ">
         <div className="flex flex-col gap-2">
+          <div>
+            <Link to="/">
+              <img src={logo} alt="Logo" className="w-32" />
+            </Link>
+          </div>
           {dashboardArry?.map((item, index) => {
             return (
               <ul key={index} className="flex flex-col gap-6 bg-blue-100">
