@@ -1,14 +1,18 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { logo } from "../../assets";
+import { MdOutlineShoppingBag } from "react-icons/md";
+import { CiHome } from "react-icons/ci";
 
 const dashboardArry = [
-  { title: "Market Place", icon: "", link: "/dashboard" },
-  { title: "Dashboard", icon: "", link: "/dashboard" },
+  { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
+  { title: "Dashboard", icon: <CiHome />, link: "/dashboard" },
   {
-    title: "Cash On Delivery", icon: "", link: "/dashboard/CashonDelivery"
+    title: "Cash On Delivery",
+    icon: "",
+    link: "/dashboard/CashonDelivery",
   },
-  { title: "Profile", icon: "", link: "/dashboard" },
+  { title: "Profile", icon: "", link: "/dashboard/profile" },
 
   {
     title: "Referrals",
@@ -25,7 +29,7 @@ const dashboardArry = [
     icon: "",
     submenu: [{ title: "Transactions", link: "/transactions" }],
   },
-  { title: "Today Statement", icon: "", link: "/dashboard" },
+  { title: "Today Statement", icon: "", link: "/dashboard/todaystatement" },
   { title: "C-Statemetn", icon: "", link: "/dashboard" },
   { title: "My Consistency", icon: "", link: "/dashboard" },
 
@@ -36,12 +40,23 @@ const dashboardArry = [
   { title: "Support", icon: "", link: "/dashboard" },
   { title: "Kyc", icon: "", link: "/dashboard" },
   { title: "Securiy", icon: "", link: "/dashboard" },
-  { title: "Logout", icon: "", link: "/dashboard" },
-  // Super Admin
 
+  // Super Admin
 ];
 
 const Dashboard = () => {
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    Swal.fire({
+      icon: "success",
+      title: "Logged out",
+      text: "You have been successfully logged out!",
+      confirmButtonColor: "#3085d6",
+    });
+    navigate("/");
+  };
+
   return (
     <div className="mx-6 max-w-[1900px] max-h-screen ">
       <div>
@@ -51,19 +66,25 @@ const Dashboard = () => {
       </div>
 
       <div className=" flex gap-2 ">
-        <div>
+        <div className="flex flex-col gap-2">
           {dashboardArry?.map((item, index) => {
             return (
               <ul key={index} className="flex flex-col gap-6 bg-blue-100">
-                <li className="flex  items-center gap-6 rounded-lg font-bold text-lg hover:bg-gray-200 duration-300 ">
+                <li className="flex  items-center gap-y-6 px-1 rounded-lg font-bold text-lg hover:bg-gray-200 duration-300 ">
                   <span>{item.icon}</span>
-                  <Link to={item.link} className="py-3 px-2 ">
+                  <Link to={item.link} className="py-3 px-1">
                     {item.title}
                   </Link>
                 </li>
               </ul>
             );
           })}
+          <div
+            onClick={handleLogout}
+            className="bg-blue-100 px-2 font-bold cursor-pointer py-1"
+          >
+            Logout
+          </div>
         </div>
         <Outlet></Outlet>
       </div>
