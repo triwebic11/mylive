@@ -23,11 +23,17 @@ import CashOnDelivery from "./pages/dashboard/SuperAdmin/CashOnDelivery.jsx";
 import ProductDetails from "./components/ProductDetails.jsx";
 import Profile from "./pages/dashboard/user/Profile.jsx";
 import FontDashboard from "./pages/dashboard/SuperAdmin/FontDashboard.jsx";
+import Orders from "./pages/dashboard/SuperAdmin/Orders.jsx";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+ const queryClients = new QueryClient();
 
 const Layout = () => {
   const location = useLocation();
   const noHeaderFooter =
     location.pathname === "/register" || location.pathname === "/login";
+
+ 
 
   return (
     <div className="bg-gray-100">
@@ -57,7 +63,7 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: <Dashboard />,
     children: [
-      { path: "/dashboard/CashonDelivery", element: <CashOnDelivery /> },
+      { path: "/dashboard/CashonDelivery", element: <Orders /> },
       { path: "/dashboard/profile", element: <Profile /> },
       { path: "/dashboard/fontDashboard", element: <FontDashboard /> },
     ],
@@ -66,8 +72,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <QueryClientProvider client={queryClients}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </QueryClientProvider>
   </StrictMode>
 );

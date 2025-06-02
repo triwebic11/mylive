@@ -1,8 +1,11 @@
 
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logo } from "../../assets";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { CiHome } from "react-icons/ci";
+import Swal from "sweetalert2";
+import { useContext } from "react";
+import { AuthContext } from "../../AuthProvider/AuthProvider";
 
 const dashboardArry = [
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
@@ -45,6 +48,8 @@ const dashboardArry = [
 ];
 
 const Dashboard = () => {
+  const navigate = useNavigate()
+  const {setUser} = useContext(AuthContext)
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
@@ -58,12 +63,12 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="mx-6 max-w-[1900px] max-h-screen ">
+    <div className="mx-6  max-h-screen ">
 
 
-      <div className=" flex gap-2 ">
-        <div className="flex flex-col gap-2">
-          <div>
+      <div className=" flex  gap-2 ">
+        <div className="md:w-[20%] flex flex-col gap-2">
+          <div >
             <Link to="/">
               <img src={logo} alt="Logo" className="w-32" />
             </Link>
@@ -87,7 +92,9 @@ const Dashboard = () => {
             Logout
           </div>
         </div>
-        <Outlet></Outlet>
+        <div className="md:w-[80%]">
+          <Outlet></Outlet>
+        </div>
       </div>
     </div>
   );
