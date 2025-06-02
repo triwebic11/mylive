@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { toxin, helth, neem, sampoo, protein, vigoproduct } from "../assets";
 import axios from 'axios';
+import moment from "moment";
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -67,6 +68,8 @@ const ProductDetails = () => {
             ...formData,
             product,
             paymentMethod: "Cash on Delivery",
+            orderTime: moment().format("MMMM Do YYYY, h:mm:ss a"),
+            status: "pending"
         }
 
         const res = await axios.post("http://localhost:5000/api/cashonDelivery/cashonDelivery", datas);

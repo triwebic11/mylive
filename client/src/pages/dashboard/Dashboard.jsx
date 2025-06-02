@@ -1,14 +1,22 @@
+<<<<<<< HEAD
 import { useContext } from "react";
+=======
+
+>>>>>>> e68b856c4d4ee26bb332091f89d7a20b9d031646
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logo } from "../../assets";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { CiHome } from "react-icons/ci";
 import Swal from "sweetalert2";
+<<<<<<< HEAD
+=======
+import { useContext } from "react";
+>>>>>>> e68b856c4d4ee26bb332091f89d7a20b9d031646
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 
 const dashboardArry = [
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
-  { title: "Dashboard", icon: <CiHome />, link: "/dashboard" },
+  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/fontDashboard" },
   {
     title: "Cash On Delivery",
     icon: "",
@@ -47,8 +55,13 @@ const dashboardArry = [
 ];
 
 const Dashboard = () => {
+<<<<<<< HEAD
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
+=======
+  const navigate = useNavigate()
+  const {setUser} = useContext(AuthContext)
+>>>>>>> e68b856c4d4ee26bb332091f89d7a20b9d031646
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
@@ -62,15 +75,21 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="mx-6 max-w-[1900px] max-h-screen ">
-      <div>
-        <Link to="/">
-          <img src={logo} alt="Logo" className="w-32" />
-        </Link>
-      </div>
+    <div className="mx-6  max-h-screen ">
 
+<<<<<<< HEAD
       <div className=" flex gap-2 py-4">
         <div className="flex flex-col gap-2">
+=======
+
+      <div className=" flex  gap-2 ">
+        <div className="md:w-[20%] flex flex-col gap-2">
+          <div >
+            <Link to="/">
+              <img src={logo} alt="Logo" className="w-32" />
+            </Link>
+          </div>
+>>>>>>> e68b856c4d4ee26bb332091f89d7a20b9d031646
           {dashboardArry?.map((item, index) => {
             return (
               <ul key={index} className="flex flex-col gap-6 bg-blue-100">
@@ -90,7 +109,9 @@ const Dashboard = () => {
             Logout
           </div>
         </div>
-        <Outlet></Outlet>
+        <div className="md:w-[80%]">
+          <Outlet></Outlet>
+        </div>
       </div>
     </div>
   );
