@@ -1,8 +1,10 @@
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { useContext } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logo } from "../../assets";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { CiHome } from "react-icons/ci";
+import Swal from "sweetalert2";
+import { AuthContext } from "../../AuthProvider/AuthProvider";
 
 const dashboardArry = [
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
@@ -45,6 +47,8 @@ const dashboardArry = [
 ];
 
 const Dashboard = () => {
+  const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
@@ -65,7 +69,7 @@ const Dashboard = () => {
         </Link>
       </div>
 
-      <div className=" flex gap-2 ">
+      <div className=" flex gap-2 py-4">
         <div className="flex flex-col gap-2">
           {dashboardArry?.map((item, index) => {
             return (

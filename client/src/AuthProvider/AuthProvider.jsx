@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+ 
 
   // Load user from localStorage on app load
 useEffect(() => {
@@ -29,7 +30,7 @@ useEffect(() => {
   };
 
   return (
-    <AuthContext.Provider value={authInfo}>
+    <AuthContext.Provider value={{authInfo }}>
       {children}
     </AuthContext.Provider>
   );
