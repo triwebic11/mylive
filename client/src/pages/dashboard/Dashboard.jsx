@@ -1,17 +1,9 @@
-<<<<<<< HEAD
-import { useContext } from "react";
-=======
-
->>>>>>> e68b856c4d4ee26bb332091f89d7a20b9d031646
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logo } from "../../assets";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { CiHome } from "react-icons/ci";
 import Swal from "sweetalert2";
-<<<<<<< HEAD
-=======
 import { useContext } from "react";
->>>>>>> e68b856c4d4ee26bb332091f89d7a20b9d031646
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 
 const dashboardArry = [
@@ -46,22 +38,17 @@ const dashboardArry = [
   { title: "Voucher", icon: "", link: "/dashboard" },
   { title: "Withdorw", icon: "", link: "/dashboard" },
   { title: "My Order", icon: "", link: "/dashboard" },
-  { title: "Package Update", icon: "", link: "/dashboard" },
+  { title: "Package Update", icon: "", link: "/dashboard/fontDashboard" },
   { title: "Support", icon: "", link: "/dashboard" },
   { title: "Kyc", icon: "", link: "/dashboard" },
-  { title: "Securiy", icon: "", link: "/dashboard" },
+  { title: "Update Password", icon: "", link: "/dashboard/profile" },
 
   // Super Admin
 ];
 
 const Dashboard = () => {
-<<<<<<< HEAD
-  const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-=======
-  const navigate = useNavigate()
-  const {setUser} = useContext(AuthContext)
->>>>>>> e68b856c4d4ee26bb332091f89d7a20b9d031646
+  const { setUser } = useContext(AuthContext);
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
@@ -76,20 +63,13 @@ const Dashboard = () => {
 
   return (
     <div className="mx-6  max-h-screen ">
-
-<<<<<<< HEAD
-      <div className=" flex gap-2 py-4">
-        <div className="flex flex-col gap-2">
-=======
-
       <div className=" flex  gap-2 ">
         <div className="md:w-[20%] flex flex-col gap-2">
-          <div >
+          <div>
             <Link to="/">
               <img src={logo} alt="Logo" className="w-32" />
             </Link>
           </div>
->>>>>>> e68b856c4d4ee26bb332091f89d7a20b9d031646
           {dashboardArry?.map((item, index) => {
             return (
               <ul key={index} className="flex flex-col gap-6 bg-blue-100">
