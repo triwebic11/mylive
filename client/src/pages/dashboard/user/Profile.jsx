@@ -1,12 +1,19 @@
 import React from "react";
 import axios from "axios";
-import { useContext } from "react";
-import { AuthContext } from "../../../AuthProvider/AuthProvider";
 
+import { useEffect, useState } from "react";
 const Profile = () => {
-  const { user } = useContext(AuthContext);
-  const userdata = user || JSON.parse(localStorage.getItem("user"));
-  console.log("User Data from Context:", userdata?.user);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/users/all")
+      .then((res) => {
+        console.log("Fetched Users:", res.data);
+        setUsers(res.data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <div className="w-full">
@@ -22,19 +29,19 @@ const Profile = () => {
           <div>
             <span>Name</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg ">
-              {userdata?.user?.name || "Your Name"}
+              { "Your Name"}
             </div>
           </div>
           <div>
             <span>Phone</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {userdata?.user?.phone || "Your Phone"}
+              {"Your Phone"}
             </div>
           </div>
           <div>
             <span>Email</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {userdata?.user?.email || "Your Email"}
+              { "Your Email"}
             </div>
           </div>
           <div>

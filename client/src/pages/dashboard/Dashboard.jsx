@@ -17,7 +17,7 @@ const dashboardArry = [
   { title: "Profile", icon: "", link: "/dashboard/profile" },
 
   {
-    title: "Referrals",
+    title: "Referrals >",
     icon: "",
     submenu: [
       { title: "Refer Link", icon: "", link: "/referlink" },

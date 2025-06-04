@@ -1,4 +1,5 @@
 const express = require("express");
+
 const cors = require("cors");
 const connectDB = require("./config/db");
 require("dotenv").config();
@@ -26,6 +27,10 @@ app.get("/", (req, res)=>{
     console.log("server is running")
     res.send("API is running...")
 })
+app.get("/api/user/register", async (req, res) => {
+  const users = await users.find(); // MongoDB থেকে সব user আনছে
+  res.json(users); // client কে পাঠাচ্ছে
+});
 
 // Start Server
 const PORT = process.env.PORT || 5000;
