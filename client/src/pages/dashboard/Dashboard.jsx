@@ -22,7 +22,7 @@ const dashboardArry = [
     submenu: [
       { title: "Refer Link", icon: "", link: "/dashboard/refer-link" },
       { title: "My Team", icon: "", link: "/myteam" },
-      { title: "My Refer", icon: "", link: "/myrefer" },
+      { title: "My Refer", icon: "", link: "/dashboard/my-refer" },
       { title: "Register", icon: "", link: "/register" },
     ],
   },
