@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// Tailwind import করা আছে ধরে নিচ্ছি
+
 
 const MyRefer = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -43,24 +43,10 @@ const MyRefer = () => {
             status: "Free",
         },
         {
-            id: 6,
-            date: "23-09-2024 00:09:32am",
-            name: "MD.ABDUS SALAM CHOWDWRI",
-            placement: "PROSHANTO CHANDRA DEBSHARMA",
-            status: "Free",
-        },
-        {
-            id: 6,
-            date: "23-09-2024 00:09:32am",
-            name: "MD.ABDUS SALAM CHOWDWRI",
-            placement: "PROSHANTO CHANDRA DEBSHARMA",
-            status: "Free",
-        },
-        {
-            id: 6,
-            date: "23-09-2024 00:09:32am",
-            name: "MD.ABDUS SALAM CHOWDWRI",
-            placement: "PROSHANTO CHANDRA DEBSHARMA",
+            id: 9,
+            date: "30-09-2024 17:09:21pm",
+            name: "MD RUHUL AMIN",
+            placement: "SAKHAWAT HOSSEN",
             status: "Free",
         },
         {
@@ -92,9 +78,30 @@ const MyRefer = () => {
             status: "Free",
         },
         {
+            id: 9,
+            date: "30-09-2024 17:09:21pm",
+            name: "MD RUHUL AMIN",
+            placement: "SAKHAWAT HOSSEN",
+            status: "Free",
+        },
+        {
             id: 10,
             date: "01-10-2024 22:10:37pm",
             name: "ANUKUL KUMAR SINGH",
+            placement: "SAKHAWAT HOSSEN",
+            status: "Free",
+        },
+        {
+            id: 9,
+            date: "30-09-2024 17:09:21pm",
+            name: "MD RUHUL AMIN",
+            placement: "SAKHAWAT HOSSEN",
+            status: "Free",
+        },
+        {
+            id: 9,
+            date: "30-09-2024 17:09:21pm",
+            name: "MD RUHUL AMIN",
             placement: "SAKHAWAT HOSSEN",
             status: "Free",
         },
@@ -129,7 +136,7 @@ const MyRefer = () => {
                 <input
                     type="text"
                     placeholder="Search..."
-                    className="w-full border border-gray-300 rounded px-3 py-2"
+                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     value={searchTerm}
                     onChange={(e) => {
                         setSearchTerm(e.target.value);
@@ -139,9 +146,9 @@ const MyRefer = () => {
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto w-full max-w-4xl">
+            <div className="overflow-x-auto w-full max-w-6xl">
                 <table className="min-w-full bg-white border border-gray-300 rounded-lg">
-                    <thead>
+                    <thead className="hidden md:table-header-group">
                         <tr className="bg-gray-200 text-left">
                             <th className="py-2 px-4 border-b">ID</th>
                             <th className="py-2 px-4 border-b">Date</th>
@@ -155,13 +162,23 @@ const MyRefer = () => {
                             currentData.map((item) => (
                                 <tr
                                     key={item.id}
-                                    className="hover:bg-gray-100 border-b border-gray-200"
+                                    className="hover:bg-gray-100 border-b border-gray-200 block md:table-row"
                                 >
-                                    <td className="py-2 px-4">{item.id}</td>
-                                    <td className="py-2 px-4">{item.date}</td>
-                                    <td className="py-2 px-4">{item.name}</td>
-                                    <td className="py-2 px-4">{item.placement}</td>
-                                    <td className="py-2 px-4">
+                                    <td className="py-2 px-4 flex justify-between md:table-cell">
+                                        <span className="md:hidden font-semibold">ID:</span> {item.id}
+                                    </td>
+                                    <td className="py-2 px-4 flex justify-between md:table-cell">
+                                        <span className="md:hidden font-semibold">Date:</span> {item.date}
+                                    </td>
+                                    <td className="py-2 px-4 flex justify-between md:table-cell">
+                                        <span className="md:hidden font-semibold">Name:</span> {item.name}
+                                    </td>
+                                    <td className="py-2 px-4 flex justify-between md:table-cell">
+                                        <span className="md:hidden font-semibold">Placement:</span>{" "}
+                                        {item.placement}
+                                    </td>
+                                    <td className="py-2 px-4 flex justify-between md:table-cell">
+                                        <span className="md:hidden font-semibold">Status:</span>{" "}
                                         <span
                                             className={`px-2 py-1 rounded-full text-xs font-semibold ${item.status.toLowerCase() === "active"
                                                 ? "bg-green-100 text-green-800"
@@ -177,7 +194,10 @@ const MyRefer = () => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="5" className="py-4 px-4 text-center">
+                                <td
+                                    colSpan="5"
+                                    className="py-4 px-4 text-center block md:table-cell"
+                                >
                                     No data found.
                                 </td>
                             </tr>
@@ -187,24 +207,24 @@ const MyRefer = () => {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-between items-center mt-4 w-full max-w-4xl">
+            <div className="flex flex-col sm:flex-row justify-between items-center mt-4 w-full max-w-4xl gap-2">
                 <button
                     onClick={handlePrevPage}
                     disabled={currentPage === 1}
-                    className={`px-3 py-1 rounded ${currentPage === 1
+                    className={`px-3 py-1 rounded w-full sm:w-auto ${currentPage === 1
                         ? "bg-gray-300 cursor-not-allowed"
                         : "bg-blue-500 text-white hover:bg-blue-600"
                         }`}
                 >
                     Previous
                 </button>
-                <span>
+                <span className="text-center">
                     Page {currentPage} of {totalPages}
                 </span>
                 <button
                     onClick={handleNextPage}
                     disabled={currentPage === totalPages}
-                    className={`px-3 py-1 rounded ${currentPage === totalPages
+                    className={`px-3 py-1 rounded w-full sm:w-auto ${currentPage === totalPages
                         ? "bg-gray-300 cursor-not-allowed"
                         : "bg-blue-500 text-white hover:bg-blue-600"
                         }`}
