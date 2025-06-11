@@ -55,7 +55,7 @@ const Orders = () => {
 
 
 
-    const { data: Orders, isLoading, isError, error, refetch } = useQuery({
+    const { data: orders, isLoading, isError, error, refetch } = useQuery({
         queryKey: ['orders'],
         queryFn: async () => {
             try {
@@ -68,7 +68,7 @@ const Orders = () => {
         },
     });
 
-    console.log("orderssssssss-----", Orders)
+    console.log("orderssssssss-----", orders)
 
 
     const handleUpdateStatus = async (id) => {
@@ -104,10 +104,17 @@ const Orders = () => {
         
     }
 
-const handleFilter = () => {
-    let filtered = Orders;
+const parseCustomDate = (dateStr) => {
+  if (!dateStr || typeof dateStr !== "string") return null; // avoid errors
+  const cleaned = dateStr.replace(/(\d+)(st|nd|rd|th)/, "$1");
+  return new Date(cleaned);
+};
 
-    // Filter by _id (case-insensitive partial match)
+
+const handleFilter = () => {
+    let filtered = orders || [];
+
+    // Filter by order ID
     if (searchId) {
         filtered = filtered.filter(order =>
             order._id.toLowerCase().includes(searchId.toLowerCase())
@@ -122,7 +129,7 @@ const handleFilter = () => {
     // Filter by date range
     if (fromDate || toDate) {
         filtered = filtered.filter(order => {
-            const orderDate = new Date(order.orderTime);
+            const orderDate = parseCustomDate(order.orderTime);
             const from = fromDate ? new Date(fromDate) : null;
             const to = toDate ? new Date(toDate) : null;
 
@@ -132,6 +139,7 @@ const handleFilter = () => {
 
     setFilteredOrders(filtered);
 };
+
 
 
     return (
@@ -177,24 +185,29 @@ const handleFilter = () => {
                     <thead>
                         <tr className="bg-gray-200 text-gray-700 text-sm text-left">
                             <th className="px-4 py-2">Product Image </th>
+                            <th className="px-4 py-2">Price</th>
                             <th className="px-4 py-2">Purchased On</th>
-                            <th className="px-4 py-2">Buyer Name</th>
-                            <th className="px-4 py-2">Buyer Number</th>
+                            <th className="px-4 py-2">Buyer Details</th>
                             <th className="px-4 py-2">Status</th>
                             <th className="px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {Orders?.map((order) => (
+                        {(filteredOrders.length > 0 ? filteredOrders : orders)?.map((order) => (
                             <tr
                                 key={order.id}
                                 className="border-t border-gray-200 hover:bg-gray-50 text-sm"
                             >
                                 <td className="px-4 py-2">{order?.product.image}</td>
+                                <td className="px-4 py-2">{order?.product.Price}</td>
+
                                 <td className="px-4 py-2">{order?.orderTime}</td>
-                                <td className="px-4 py-2">{order?.name}</td>
-                                <td className="px-4 py-2">{order?.phone}</td>
-                                <td className="px-4 py-2">{order?.status}</td>
+                               
+                                <td className="px-4 py-2">
+                                    <p>{order?.name}</p>
+                                    <p>{order?.phone}</p>
+                                    </td>
+                                <td className={`px-4 py-2 font-bold text-center ${order?.status==='pending' && "text-red-500 bg-red-200 rounded-md"} ${order?.status==='shipped' && "text-green-500"}`}>{order?.status}</td>
 
                                 <td className="px-4 py-2 flex gap-2">
                                     <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
