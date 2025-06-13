@@ -1,11 +1,11 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logo } from "../../assets";
-import { MdOutlineShoppingBag } from "react-icons/md";
+import { MdOutlineShoppingBag, MdMenu } from "react-icons/md";
 import { CiHome } from "react-icons/ci";
 import Swal from "sweetalert2";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
-import { IoChevronDown, IoChevronUp } from "react-icons/io5"; // icons for dropdown toggle
+import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
 
 const dashboardArry = [
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
@@ -21,15 +21,15 @@ const dashboardArry = [
     icon: "",
     submenu: [
       { title: "Refer Link", icon: "", link: "/dashboard/refer-link" },
-      { title: "My Team", icon: "", link: "/myteam" },
+      { title: "My Team", icon: "", link: "/dashboard/my-team" },
       { title: "My Refer", icon: "", link: "/dashboard/my-refer" },
-      { title: "Register", icon: "", link: "/register" },
+      { title: "Register", icon: "", link: "/dashboard/register" },
     ],
   },
   {
     title: "Wallet Statement",
     icon: "",
-    submenu: [{ title: "Transactions", link: "/transactions" }],
+    submenu: [{ title: "Transactions", link: "/dashboard/transactions" }],
   },
   { title: "Today Statement", icon: "", link: "/dashboard/todaystatement" },
   { title: "C-Statement", icon: "", link: "/dashboard" },
@@ -47,6 +47,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -64,27 +65,63 @@ const Dashboard = () => {
     setOpenDropdown(openDropdown === index ? null : index);
   };
 
+  const handleSidebarToggle = () => {
+    setSidebarOpen((prev) => !prev);
+  };
+
+  const closeSidebar = () => setSidebarOpen(false);
+
   return (
-    <div className="mx-6 max-h-screen">
-      <div className="flex gap-2">
-        <div className="md:w-[20%] flex flex-col gap-2">
-          <div>
-            <Link to="/">
-              <img src={logo} alt="Logo" className="w-32" />
-            </Link>
-          </div>
-          {dashboardArry?.map((item, index) => (
+    <div className="flex min-h-screen">
+      {/* Mobile menu button */}
+      <button
+        className="md:hidden p-4 focus:outline-none"
+        onClick={handleSidebarToggle}
+        aria-label="Open sidebar"
+      >
+        <MdMenu size={24} />
+      </button>
+
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-30 md:hidden cursor-pointers"
+          onClick={closeSidebar}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-white px-4 py-6 overflow-y-auto transform transition-transform duration-300 flex-shrink-0
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+      >
+        <div className="flex items-center justify-between mb-6">
+          <Link to="/" onClick={closeSidebar}>
+            <img src={logo} alt="Logo" className="w-32 " />
+          </Link>
+          {/* Close button for mobile */}
+          <button
+            className="md:hidden focus:outline-none"
+            onClick={closeSidebar}
+            aria-label="Close sidebar"
+          >
+            <IoClose size={22} />
+          </button>
+        </div>
+
+        <nav className="flex flex-col gap-2">
+          {dashboardArry.map((item, index) => (
             <div key={index} className="bg-blue-100 rounded-lg">
               <div
-                className={`flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer`}
+                className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
                 onClick={() =>
-                  item.submenu ? toggleDropdown(index) : navigate(item.link)
+                  item.submenu ? toggleDropdown(index) : (navigate(item.link), closeSidebar())
                 }
               >
                 <div className="flex items-center gap-2">
-                  <span>{item.icon}</span>
+                  {item.icon && <span>{item.icon}</span>}
                   {item.link ? (
-                    <Link to={item.link}>{item.title}</Link>
+                    <span>{item.title}</span>
                   ) : (
                     <span>{item.title}</span>
                   )}
@@ -105,6 +142,7 @@ const Dashboard = () => {
                     <li
                       key={subIndex}
                       className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
+                      onClick={closeSidebar}
                     >
                       <Link to={subItem.link}>{subItem.title}</Link>
                     </li>
@@ -113,17 +151,20 @@ const Dashboard = () => {
               )}
             </div>
           ))}
-          <div
+
+          <button
             onClick={handleLogout}
-            className="bg-blue-100 px-2 font-bold cursor-pointer py-2 rounded-lg hover:bg-gray-200 duration-300"
+            className="bg-blue-100 px-2 font-bold py-2 rounded-lg hover:bg-gray-200 duration-300 mt-4"
           >
             Logout
-          </div>
-        </div>
-        <div className="md:w-[80%]">
-          <Outlet />
-        </div>
-      </div>
+          </button>
+        </nav>
+      </aside>
+
+      {/* Main content */}
+      <main className="flex-1 p-4">
+        <Outlet />
+      </main>
     </div>
   );
 };
