@@ -160,6 +160,7 @@ const Register = () => {
           placeholder="City"
           name="city"
           register={register}
+          defaultValue="Dhaka"
         />
         <FormInput
           label={"Post Code *"}
@@ -172,6 +173,7 @@ const Register = () => {
           placeholder="Address"
           name="address"
           register={register}
+          defaultValue="...Dhaka"
         />
         <FormInput
           label={"Password *"}
