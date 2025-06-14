@@ -1,5 +1,8 @@
 import React from "react";
+import ReferLinkPage from "./Referals/ReferalsLink";
 
 export const Referrals = () => {
-  return <div>Referrals</div>;
+  return <div>
+    <ReferLinkPage />
+  </div>;
 };

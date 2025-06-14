@@ -25,15 +25,17 @@ import Profile from "./pages/dashboard/user/Profile.jsx";
 import FontDashboard from "./pages/dashboard/SuperAdmin/FontDashboard.jsx";
 import Orders from "./pages/dashboard/SuperAdmin/Orders.jsx";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ReferLinkPage from "./pages/dashboard/user/Referals/ReferalsLink.jsx";
+import MyRefer from "./pages/dashboard/user/Referals/MyRefer.jsx";
 
- const queryClients = new QueryClient();
+const queryClients = new QueryClient();
 
 const Layout = () => {
   const location = useLocation();
   const noHeaderFooter =
     location.pathname === "/register" || location.pathname === "/login";
 
- 
+
 
   return (
     <div className="bg-gray-100">
@@ -66,16 +68,21 @@ const router = createBrowserRouter([
       { path: "/dashboard/CashonDelivery", element: <Orders /> },
       { path: "/dashboard/profile", element: <Profile /> },
       { path: "/dashboard/fontDashboard", element: <FontDashboard /> },
+      { path: "/dashboard/refer-link", element: <ReferLinkPage /> },
+      { path: "/dashboard/my-refer", element: <MyRefer /> },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
+    <AuthProvider>
+
     <QueryClientProvider client={queryClients}>
-      <AuthProvider>
+      
         <RouterProvider router={router} />
-      </AuthProvider>
+      
     </QueryClientProvider>
+    </AuthProvider>
   </StrictMode>
 );

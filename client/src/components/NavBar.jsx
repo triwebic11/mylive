@@ -4,6 +4,7 @@ import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import Swal from "sweetalert2";
+import useAuth from "../Hooks/useAuth";
 
 const menuItems = [
   { label: "Home", path: "/" },
@@ -39,12 +40,15 @@ function NavBar() {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(null); // for mobile submenu toggle
 
-  const { user, setUser } = useContext(AuthContext);
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
+
+  console.log("navbar user coming", user)
 
   const toggleSubmenu = (label) => {
     setOpenSubmenu((prev) => (prev === label ? null : label));
   };
+
 
   const handleLogout = () => {
     localStorage.removeItem("user");
