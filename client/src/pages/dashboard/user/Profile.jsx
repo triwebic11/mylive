@@ -1,19 +1,11 @@
 import React from "react";
-import axios from "axios";
+import useAuth from "../../../Hooks/useAuth";
 
-import { useEffect, useState } from "react";
 const Profile = () => {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/users/all")
-      .then((res) => {
-        console.log("Fetched Users:", res.data);
-        setUsers(res.data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  const { user: users } = useAuth();
+  const {user} = users || {};
+  console.log("User data: ", user);
+  // console.log("User information: ", users);
 
   return (
     <div className="w-full">
@@ -29,19 +21,19 @@ const Profile = () => {
           <div>
             <span>Name</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg ">
-              { "Your Name"}
+              {user.name}
             </div>
           </div>
           <div>
             <span>Phone</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {"Your Phone"}
+              {user.phone}
             </div>
           </div>
           <div>
             <span>Email</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              { "Your Email"}
+              {user.email}
             </div>
           </div>
           <div>
