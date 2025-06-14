@@ -27,6 +27,8 @@ import Orders from "./pages/dashboard/SuperAdmin/Orders.jsx";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ReferLinkPage from "./pages/dashboard/user/Referals/ReferalsLink.jsx";
 import MyRefer from "./pages/dashboard/user/Referals/MyRefer.jsx";
+import MyTeam from "./pages/dashboard/user/Referals/MyTeam.jsx";
+import Transactions from "./pages/dashboard/user/wallet/Transactions.jsx";
 
 const queryClients = new QueryClient();
 
@@ -69,7 +71,10 @@ const router = createBrowserRouter([
       { path: "/dashboard/profile", element: <Profile /> },
       { path: "/dashboard/fontDashboard", element: <FontDashboard /> },
       { path: "/dashboard/refer-link", element: <ReferLinkPage /> },
+      { path: "/dashboard/my-team", element: <MyTeam /> },
       { path: "/dashboard/my-refer", element: <MyRefer /> },
+      { path: "/dashboard/transactions", element: <Transactions /> },
+      { path: "/dashboard/register", element: <Register /> },
     ],
   },
 ]);
