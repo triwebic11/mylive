@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import useAuth from "../Hooks/useAuth";
 
 const Register = () => {
+  
   const { setUser,user:users } = useAuth()
 
   console.log("register pafe user: ", users)
