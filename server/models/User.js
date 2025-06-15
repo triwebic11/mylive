@@ -14,6 +14,8 @@ const userSchema = new mongoose.Schema(
     postcode: { type: String },
     address: { type: String },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+     referralCode: { type: String, unique: true },
+    referredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
   },
   { timestamps: true }
 );

@@ -17,6 +17,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.515.0",
     "moment": "^2.30.1",
+    "qrcode": "^1.5.4",
     "qrcode.react": "^4.2.0",
     "react": "^19.1.0",
     "react-countup": "^6.5.3",
