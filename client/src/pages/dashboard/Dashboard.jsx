@@ -31,12 +31,12 @@ const dashboardArry = [
     icon: "",
     submenu: [{ title: "Transactions", link: "/dashboard/transactions" }],
   },
-  { title: "Today Statement", icon: "", link: "/dashboard/todaystatement" },
-  { title: "C-Statement", icon: "", link: "/dashboard" },
-  { title: "My Consistency", icon: "", link: "/dashboard" },
-  { title: "Voucher", icon: "", link: "/dashboard" },
-  { title: "Withdraw", icon: "", link: "/dashboard" },
-  { title: "My Order", icon: "", link: "/dashboard" },
+  { title: "Today Statement", icon: "", link: "/dashboard/today-statement" },
+  { title: "C-Statement", icon: "", link: "/dashboard/commission-statement" },
+  { title: "My Consistency", icon: "", link: "/dashboard/my-consistency" },
+  { title: "Voucher", icon: "", link: "/dashboard/voucher" },
+  { title: "Withdraw", icon: "", link: "/dashboard/withdraw" },
+  { title: "My Order", icon: "", link: "/dashboard/my-order" },
   { title: "Package Update", icon: "", link: "/dashboard/fontDashboard" },
   { title: "Support", icon: "", link: "/dashboard" },
   { title: "Kyc", icon: "", link: "/dashboard" },
@@ -85,7 +85,7 @@ const Dashboard = () => {
       {/* Overlay for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-30 md:hidden cursor-pointers"
+          className="fixed inset-0 bg-black/40 z-30 md:hidden "
           onClick={closeSidebar}
         />
       )}
