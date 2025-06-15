@@ -29,6 +29,12 @@ import ReferLinkPage from "./pages/dashboard/user/Referals/ReferalsLink.jsx";
 import MyRefer from "./pages/dashboard/user/Referals/MyRefer.jsx";
 import MyTeam from "./pages/dashboard/user/Referals/MyTeam.jsx";
 import Transactions from "./pages/dashboard/user/wallet/Transactions.jsx";
+import TodayStatement from "./pages/dashboard/SuperAdmin/TodayStatement.jsx";
+import CommissionStatement from "./pages/dashboard/SuperAdmin/CommisionStatement.jsx";
+import Withdraw from "./pages/dashboard/SuperAdmin/Withdrow.jsx";
+import MyOrder from "./pages/dashboard/SuperAdmin/MyOrder.jsx";
+import Voucher from "./pages/dashboard/SuperAdmin/Voucher.jsx";
+import MyConsistency from "./pages/dashboard/SuperAdmin/MyConsistency.jsx";
 
 const queryClients = new QueryClient();
 
@@ -75,6 +81,12 @@ const router = createBrowserRouter([
       { path: "/dashboard/my-refer", element: <MyRefer /> },
       { path: "/dashboard/transactions", element: <Transactions /> },
       { path: "/dashboard/register", element: <Register /> },
+      { path: "/dashboard/today-statement", element: <TodayStatement /> },
+      { path: "/dashboard/commission-statement", element: <CommissionStatement /> },
+      { path: "/dashboard/withdraw", element: <Withdraw /> },
+      { path: "/dashboard/my-order", element: <MyOrder /> },
+      { path: "/dashboard/voucher", element: <Voucher /> },
+      { path: "/dashboard/my-consistency", element: <MyConsistency /> },
     ],
   },
 ]);
@@ -83,11 +95,11 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
 
-    <QueryClientProvider client={queryClients}>
-      
+      <QueryClientProvider client={queryClients}>
+
         <RouterProvider router={router} />
-      
-    </QueryClientProvider>
+
+      </QueryClientProvider>
     </AuthProvider>
   </StrictMode>
 );

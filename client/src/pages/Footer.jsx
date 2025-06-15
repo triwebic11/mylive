@@ -42,8 +42,8 @@ function Footer() {
                 <div className="flex flex-col items-center md:items-start">
                     <p className="font-semibold text-blue-700 mb-4">CONTACT</p>
                     <p>Website: www.shslira.com</p>
-                    <p>Email: aeakub059@gmail.com</p>
-                    <p>Customer Service:01750873763</p>
+                    <p>Email: shslira@gmail.com</p>
+                    <p>Customer Service: 01750873763</p>
                     <p>
                         Madrashas Road, Shubidhat, Hazipara<br />
                         Showroom/Sub Office: Vororamor, Setabganj, Dinajpur<br />
