@@ -35,6 +35,7 @@ import Withdraw from "./pages/dashboard/SuperAdmin/Withdrow.jsx";
 import MyOrder from "./pages/dashboard/SuperAdmin/MyOrder.jsx";
 import Voucher from "./pages/dashboard/SuperAdmin/Voucher.jsx";
 import MyConsistency from "./pages/dashboard/SuperAdmin/MyConsistency.jsx";
+import PackegForActive from "./pages/packeg/PackegForActive.jsx";
 
 const queryClients = new QueryClient();
 
@@ -66,6 +67,7 @@ const router = createBrowserRouter([
       { path: "/register", element: <Register /> },
       { path: "/login", element: <Login /> },
       { path: "/productdetails/:id", element: <ProductDetails /> },
+      {path:"/packeg", element: <PackegForActive />},
       { path: "*", element: <PageNotFound /> },
     ],
   },

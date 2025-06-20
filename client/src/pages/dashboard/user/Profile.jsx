@@ -3,9 +3,13 @@ import useAuth from "../../../Hooks/useAuth";
 
 const Profile = () => {
   const { user: users } = useAuth();
-  const {user} = users || {};
+  const { user } = users || {};
   console.log("User data: ", user);
   // console.log("User information: ", users);
+
+  if (!users) {
+    return <div className="p-4">Loading...</div>;
+  }
 
   return (
     <div className="w-full">
@@ -21,42 +25,42 @@ const Profile = () => {
           <div>
             <span>Name</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg ">
-              {user.name}
+              {user?.name}
             </div>
           </div>
           <div>
             <span>Phone</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user.phone}
+              {user?.phone}
             </div>
           </div>
           <div>
             <span>Email</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user.email}
+              {user?.email}
             </div>
           </div>
           <div>
             <span>Refer Name</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Your name
+              Your refer name
             </div>
           </div>
           <div>
             <span>Placement</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Your name
+              Placement name
             </div>
           </div>
           <div>
             <span>Address</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user.address || "You didn't add your address yet"}
+              {user?.address || "Your address "}
             </div>
           </div>
           <div>
             <span>Image</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
+            <div className="px-2 py-1 border border-gray-300 rounded-lg cursor-pointer">
               <input type="file" className="w-full" />
             </div>
           </div>
@@ -69,20 +73,26 @@ const Profile = () => {
           <div>
             <span>Nominee Relation</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Your name
+              Nominee Relation
             </div>
           </div>
           <div>
             <span>Nominee Date Of Birth</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Your name
+              Nominee Date Of Birth
             </div>
           </div>
           <div>
             <span>Nominee Phone</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Your name
+              Nominee Phone
             </div>
+          </div>
+          <br />
+          <div>
+            <button className="px-4 py-1 border rounded-xl cursor-pointer hover:bg-gray-100 duration-300">
+              Update
+            </button>
           </div>
         </div>
         <div className="mt-8">
