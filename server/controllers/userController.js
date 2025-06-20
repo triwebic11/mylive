@@ -2,10 +2,20 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User"); // Adjust if path differs
 
+
+const generateReferId = (name) => {
+  const random = Math.floor(100 + Math.random() * 900); // 3-digit random
+  return name.slice(0, 3).toUpperCase() + random;
+};
+
+const generateUserId = () => {
+  return "USR" + Math.floor(1000 + Math.random() * 9000); // Example: USR1345
+};
+
 // 🔐 Register a user
 const registerUser = async (req, res) => {
   try {
-    const { phone, password, role = "user", referrerId, ...otherFields } = req.body;
+    const { phone, name, password, role = "user", ...otherFields } = req.body;
 
     const existing = await User.findOne({ phone });
     if (existing) {
@@ -39,11 +49,23 @@ const registerUser = async (req, res) => {
 
     const newUser = new User({
       phone,
+      name,
       password: hashed,
       role,
        referralCode,  
       referredBy, 
       ...otherFields,
+
+       userId: generateUserId(),
+      referId: generateReferId(name),
+      package: "Friend",               // default package
+      packagePV: 1000,                 // based on package
+      packageAmount: 2000,
+      accountStatus: "active",
+      totalPV: 0,
+      totalAmount: 0,
+      referData: [],
+      allEntries: []
     });
 
     await newUser.save();

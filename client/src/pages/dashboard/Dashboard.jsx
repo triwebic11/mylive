@@ -10,11 +10,7 @@ import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
 const dashboardArry = [
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/fontDashboard" },
-  {
-    title: "Cash On Delivery",
-    icon: "",
-    link: "/dashboard/CashonDelivery",
-  },
+  
   { title: "Profile", icon: "", link: "/dashboard/profile" },
   {
     title: "Referrals",
@@ -42,6 +38,29 @@ const dashboardArry = [
   { title: "Kyc", icon: "", link: "/dashboard" },
   { title: "Update Password", icon: "", link: "/dashboard/profile" },
 ];
+
+const adminDashboardArry = [
+  {
+    title: "Cash On Delivery",
+    icon: "",
+    link: "/dashboard/CashonDelivery",
+  },
+  {
+    title: "All Users",
+    icon: "",
+    link: "/dashboard",
+  },
+  {
+    title: "Manage Packages",
+    icon: "",
+    link: "/dashboard",
+     submenu: [
+      { title: "All Packages", icon: "", link: "/dashboard" },
+      { title: "Add Packages", icon: "", link: "/dashboard" },
+    ],
+  },
+ 
+]
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -75,7 +94,7 @@ const Dashboard = () => {
     <div className="flex min-h-screen">
       {/* Mobile menu button */}
       <button
-        className="md:hidden p-4 focus:outline-none"
+        className="md:hidden p-4 focus:outline-none fixed bg-white shadow-2xl top-0"
         onClick={handleSidebarToggle}
         aria-label="Open sidebar"
       >
@@ -108,6 +127,63 @@ const Dashboard = () => {
             <IoClose size={22} />
           </button>
         </div>
+
+        {/* admin dashboard */}
+        <p className="text-red-600">Admin Dashboard</p>
+
+        <nav className="flex flex-col gap-2">
+          {adminDashboardArry?.map((item, index) => (
+            <div key={index} className="bg-blue-100 rounded-lg">
+              <div
+                className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
+                onClick={() =>
+                  item.submenu ? toggleDropdown(index) : (navigate(item.link), closeSidebar())
+                }
+              >
+                <div className="flex items-center gap-2">
+                  {item.icon && <span>{item.icon}</span>}
+                  {item.link ? (
+                    <span>{item.title}</span>
+                  ) : (
+                    <span>{item.title}</span>
+                  )}
+                </div>
+                {item.submenu && (
+                  <span>
+                    {openDropdown === index ? (
+                      <IoChevronUp size={20} />
+                    ) : (
+                      <IoChevronDown size={20} />
+                    )}
+                  </span>
+                )}
+              </div>
+              {item.submenu && openDropdown === index && (
+                <ul className="ml-4 flex flex-col gap-1 py-2">
+                  {item.submenu.map((subItem, subIndex) => (
+                    <li
+                      key={subIndex}
+                      className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
+                      onClick={closeSidebar}
+                    >
+                      <Link to={subItem.link}>{subItem.title}</Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+
+          {/* <button
+            onClick={handleLogout}
+            className="bg-blue-100 px-2 font-bold py-2 rounded-lg hover:bg-gray-200 duration-300 mt-4"
+          >
+            Logout
+          </button> */}
+        </nav>
+
+
+        <p className="text-red-600">User Dashboard</p>
 
         <nav className="flex flex-col gap-2">
           {dashboardArry.map((item, index) => (
@@ -159,6 +235,7 @@ const Dashboard = () => {
             Logout
           </button>
         </nav>
+        
       </aside>
 
       {/* Main content */}
