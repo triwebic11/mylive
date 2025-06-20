@@ -24,11 +24,36 @@ const registerUser = async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 10);
 
+       // Generate unique referral code
+    const generateReferralCode = async () => {
+      let code;
+      let isUnique = false;
+      while (!isUnique) {
+        code = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6-character code
+        const existingCode = await User.findOne({ referralCode: code });
+        if (!existingCode) isUnique = true;
+      }
+      return code;
+    };
+
+    const referralCode = await generateReferralCode();
+
+    // Find referring user by referralCode (if provided)
+    let referredBy = null;
+    if (referrerId) {
+      const referrer = await User.findOne({ referralCode: referrerId });
+      if (referrer) {
+        referredBy = referrer._id;
+      }
+    }
+
     const newUser = new User({
       phone,
       name,
       password: hashed,
       role,
+       referralCode,  
+      referredBy, 
       ...otherFields,
 
        userId: generateUserId(),

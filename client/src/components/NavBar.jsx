@@ -93,7 +93,7 @@ function NavBar() {
                   {item.label}
                   {(item.label === "About" && isAboutOpen) ||
                   (item.label === "Products" && isProductsOpen) ? (
-                    <ul className="absolute top-6 left-0 w-64 bg-white border rounded shadow-md z-50">
+                    <ul className="absolute top-5 left-0 w-64 bg-white border rounded shadow-md z-50">
                       {item.subItems.map((subItem, subIndex) => (
                         <li key={subIndex} className="px-4 py-2 hover:bg-gray-100">
                           <Link to={subItem.path}>{subItem.label}</Link>

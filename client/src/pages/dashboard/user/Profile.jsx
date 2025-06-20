@@ -51,7 +51,7 @@ const Profile = () => {
           <div>
             <span>Address</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user.address || "Your didn't add address yet"}
+              {user.address || "You didn't add your address yet"}
             </div>
           </div>
           <div>

@@ -94,7 +94,7 @@ const Dashboard = () => {
     <div className="flex min-h-screen">
       {/* Mobile menu button */}
       <button
-        className="md:hidden p-4 focus:outline-none"
+        className="md:hidden p-4 focus:outline-none fixed bg-white shadow-2xl top-0"
         onClick={handleSidebarToggle}
         aria-label="Open sidebar"
       >
