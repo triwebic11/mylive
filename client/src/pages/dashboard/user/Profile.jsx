@@ -1,5 +1,7 @@
 import React from "react";
 import useAuth from "../../../Hooks/useAuth";
+import UpdatePassword from "../../../components/PassWordUpdate";
+import MobAndBankInfoForm from "../../../components/UpdateBanAndMobInfo";
 
 const Profile = () => {
   const { user: users } = useAuth();
@@ -96,102 +98,9 @@ const Profile = () => {
           </div>
         </div>
         <div className="mt-8">
-          <h1 className="text-xl font-bold">Mobile Bank Details</h1>
-          <div className="grid justify-around grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-            <div>
-              <span>Bkash No</span>
-              <div className="px-2 py-1 border border-gray-300 rounded-lg">
-                Bkash No
-              </div>
-            </div>
-            <div>
-              <span>Nagad No</span>
-              <div className="px-2 py-1 border border-gray-300 rounded-lg">
-                Nagad No
-              </div>
-            </div>
-            <div>
-              <span>Rocket No</span>
-              <div className="px-2 py-1 border border-gray-300 rounded-lg">
-                Rocket No
-              </div>
-            </div>
-          </div>
+          <MobAndBankInfoForm />
         </div>
-        <div className="mt-6">
-          <h1 className="text-xl font-bold">Bank Info</h1>
-          <div className="grid justify-around grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-            <div>
-              <span>Bkash No</span>
-              <div className="px-2 py-1 border border-gray-300 rounded-lg">
-                Bkash No
-              </div>
-            </div>
-            <div>
-              <span>Nagad No</span>
-              <div className="px-2 py-1 border border-gray-300 rounded-lg">
-                Nagad No
-              </div>
-            </div>
-            <div>
-              <span>Rocket No</span>
-              <div className="px-2 py-1 border border-gray-300 rounded-lg">
-                Rocket No
-              </div>
-            </div>
-            <div>
-              <span>Branch</span>
-              <div className="px-2 py-1 border border-gray-300 rounded-lg">
-                Branch Name
-              </div>
-            </div>
-            <div>
-              <span>Route No</span>
-              <div className="px-2 py-1 border border-gray-300 rounded-lg">
-                Route No
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-6">
-          <h1 className="text-xl font-bold">Update Password</h1>
-          <p>
-            Ensure your account is using a long, random password to stay secure.
-          </p>
-          <div className="my-4">
-            <span>Current Password</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              <input
-                type="password"
-                placeholder="Current Password"
-                className="w-full px-2 py-1 outline-0"
-              />
-            </div>
-          </div>
-          <div className="mt-4">
-            <span>New Password</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              <input
-                type="password"
-                placeholder="New Password"
-                className="w-full px-2 py-1 outline-0"
-              />
-            </div>
-          </div>
-          <div className="mt-4">
-            <span>Confirm New Password</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              <input
-                type="password"
-                placeholder="Confirm New Password"
-                className="w-full px-2 py-1 outline-0"
-              />
-            </div>
-          </div>
-          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg">
-            Update Password
-          </button>
-        </div>
+        <UpdatePassword />
       </div>
     </div>
   );
