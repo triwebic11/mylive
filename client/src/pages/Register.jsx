@@ -29,6 +29,7 @@ const Register = () => {
       const datas = {
         ...data,
         role: "user",
+        
       };
 
       const res = await axios.post(

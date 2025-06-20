@@ -184,6 +184,7 @@ const handleFilter = () => {
                 <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
                     <thead>
                         <tr className="bg-gray-200 text-gray-700 text-sm text-left">
+                            <th className="px-4 py-2">Serial Number </th>
                             <th className="px-4 py-2">Product Image </th>
                             <th className="px-4 py-2">Price</th>
                             <th className="px-4 py-2">Purchased On</th>
@@ -193,11 +194,12 @@ const handleFilter = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {(filteredOrders.length > 0 ? filteredOrders : orders)?.map((order) => (
+                        {(filteredOrders.length > 0 ? filteredOrders : orders)?.map((order,idx) => (
                             <tr
                                 key={order.id}
                                 className="border-t border-gray-200 hover:bg-gray-50 text-sm"
                             >
+                                <td className="px-4 py-2">{idx+1}</td>
                                 <td className="px-4 py-2">{order?.product.image}</td>
                                 <td className="px-4 py-2">{order?.product.Price}</td>
 
