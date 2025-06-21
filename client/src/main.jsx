@@ -35,6 +35,8 @@ import Withdraw from "./pages/dashboard/SuperAdmin/Withdrow.jsx";
 import MyOrder from "./pages/dashboard/SuperAdmin/MyOrder.jsx";
 import Voucher from "./pages/dashboard/SuperAdmin/Voucher.jsx";
 import MyConsistency from "./pages/dashboard/SuperAdmin/MyConsistency.jsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import PackageUpdate from "./pages/dashboard/user/PackageUpdate.jsx";
 
 const queryClients = new QueryClient();
 
@@ -63,6 +65,7 @@ const router = createBrowserRouter([
       { path: "/about-us", element: <AboutUs /> },
       { path: "/management", element: <Management /> },
       { path: "/core-value", element: <CoreValue /> },
+      { path: "/update", element: <PackageUpdate /> },
       { path: "/register", element: <Register /> },
       { path: "/login", element: <Login /> },
       { path: "/productdetails/:id", element: <ProductDetails /> },
@@ -89,6 +92,10 @@ const router = createBrowserRouter([
       { path: "/dashboard/my-consistency", element: <MyConsistency /> },
     ],
   },
+  {
+    path: "/admin-dashboard",
+    element: <AdminDashboard />
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(
