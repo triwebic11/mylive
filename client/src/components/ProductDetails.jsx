@@ -110,6 +110,15 @@ const ProductDetails = () => {
                         />
                         {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                     </div>
+                    <div>
+                        <label className="block font-medium">Email Address</label>
+                        <input
+                            type="email"
+                            {...register("email", { required: "Email is required" })}
+                            className="w-full border px-3 py-2 rounded"
+                        />
+                        {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                    </div>
 
                     <div>
                         <label className="block font-medium">Phone Number</label>

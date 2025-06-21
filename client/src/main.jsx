@@ -36,7 +36,8 @@ import MyOrder from "./pages/dashboard/SuperAdmin/MyOrder.jsx";
 import Voucher from "./pages/dashboard/SuperAdmin/Voucher.jsx";
 import MyConsistency from "./pages/dashboard/SuperAdmin/MyConsistency.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import PackageUpdate from "./pages/dashboard/user/PackageUpdate.jsx";
+import PackegForActive from "./pages/packeg/PackegForActive.jsx";
+
 
 const queryClients = new QueryClient();
 
@@ -65,10 +66,10 @@ const router = createBrowserRouter([
       { path: "/about-us", element: <AboutUs /> },
       { path: "/management", element: <Management /> },
       { path: "/core-value", element: <CoreValue /> },
-      { path: "/update", element: <PackageUpdate /> },
       { path: "/register", element: <Register /> },
       { path: "/login", element: <Login /> },
       { path: "/productdetails/:id", element: <ProductDetails /> },
+      { path: "/packeg", element: <PackegForActive /> },
       { path: "*", element: <PageNotFound /> },
     ],
   },

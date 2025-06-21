@@ -29,6 +29,7 @@ const Register = () => {
       const datas = {
         ...data,
         role: "user",
+        
       };
 
       const res = await axios.post(
@@ -49,7 +50,9 @@ const Register = () => {
         });
         localStorage.setItem("user", JSON.stringify(res.data));
         setUser(res.data.user);
-        navigate("/dashboard");
+        navigate("/dashboard", {
+           state: { user: res.data.user },
+        });
       }
 
       return res.data;
