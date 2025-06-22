@@ -16,6 +16,7 @@ const menuItems = [
       { label: "Core Value", path: "/core-value" },
     ],
   },
+  { label: "Packeg", path: "/packeg" },
   { label: "Why Liveon", path: "/why-liveon" },
   {
     label: "Products",
@@ -43,12 +44,11 @@ function NavBar() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
-  console.log("navbar user coming", user)
+  console.log("navbar user coming", user);
 
   const toggleSubmenu = (label) => {
     setOpenSubmenu((prev) => (prev === label ? null : label));
   };
-
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -70,7 +70,9 @@ function NavBar() {
           <Link to={"/"}>
             <img src={logo} alt="Liveon" className="h-14" />
           </Link>
-          <p className="font-semibold pl-2 md:text-2xl">SHS Lira Enterprise Ltd</p>
+          <p className="font-semibold pl-2 md:text-2xl">
+            SHS Lira Enterprise Ltd
+          </p>
         </div>
 
         {/* Desktop Menu */}
@@ -95,7 +97,10 @@ function NavBar() {
                   (item.label === "Products" && isProductsOpen) ? (
                     <ul className="absolute top-5 left-0 w-64 bg-white border rounded shadow-md z-50">
                       {item.subItems.map((subItem, subIndex) => (
-                        <li key={subIndex} className="px-4 py-2 hover:bg-gray-100">
+                        <li
+                          key={subIndex}
+                          className="px-4 py-2 hover:bg-gray-100"
+                        >
                           <Link to={subItem.path}>{subItem.label}</Link>
                         </li>
                       ))}
@@ -112,15 +117,23 @@ function NavBar() {
           {user ? (
             <>
               <Link to="/dashboard">Dashboard</Link>
-              <button onClick={handleLogout} className="hover:text-blue-600">Logout</button>
+              <button onClick={handleLogout} className="hover:text-blue-600">
+                Logout
+              </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="flex items-center space-x-1 hover:text-blue-600">
+              <Link
+                to="/login"
+                className="flex items-center space-x-1 hover:text-blue-600"
+              >
                 <FaUser />
                 <span>Login</span>
               </Link>
-              <Link to="/register" className="flex items-center space-x-1 hover:text-blue-600">
+              <Link
+                to="/register"
+                className="flex items-center space-x-1 hover:text-blue-600"
+              >
                 <FaSignInAlt />
                 <span>Join Us</span>
               </Link>
@@ -176,15 +189,26 @@ function NavBar() {
             {user ? (
               <>
                 <Link to="/dashboard">Dashboard</Link>
-                <button onClick={handleLogout} className="text-left hover:text-blue-600">Logout</button>
+                <button
+                  onClick={handleLogout}
+                  className="text-left hover:text-blue-600"
+                >
+                  Logout
+                </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="flex items-center space-x-1 hover:text-blue-600">
+                <Link
+                  to="/login"
+                  className="flex items-center space-x-1 hover:text-blue-600"
+                >
                   <FaUser />
                   <span>Login</span>
                 </Link>
-                <Link to="/register" className="flex items-center space-x-1 hover:text-blue-600">
+                <Link
+                  to="/register"
+                  className="flex items-center space-x-1 hover:text-blue-600"
+                >
                   <FaSignInAlt />
                   <span>Join Us</span>
                 </Link>

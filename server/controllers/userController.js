@@ -29,7 +29,7 @@ const registerUser = async (req, res) => {
       let code;
       let isUnique = false;
       while (!isUnique) {
-        code = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6-character code
+        code = Math.random().toString(36).substring(2, 10).toUpperCase(); // 6-character code
         const existingCode = await User.findOne({ referralCode: code });
         if (!existingCode) isUnique = true;
       }
