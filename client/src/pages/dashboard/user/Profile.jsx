@@ -21,19 +21,19 @@ const Profile = () => {
           <div>
             <span>Name</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg ">
-              {user.name}
+              {user?.name}
             </div>
           </div>
           <div>
             <span>Phone</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user.phone}
+              {user?.phone}
             </div>
           </div>
           <div>
             <span>Email</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user.email}
+              {user?.email}
             </div>
           </div>
           <div>
@@ -51,7 +51,7 @@ const Profile = () => {
           <div>
             <span>Address</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user.address || "You didn't add your address yet"}
+              {user?.address || "You didn't add your address yet"}
             </div>
           </div>
           <div>

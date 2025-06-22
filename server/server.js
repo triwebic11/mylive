@@ -13,6 +13,7 @@ app.use(express.json());
 // Connect DB
 connectDB();
 
+
 // Routes
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/cashonDelivery", require("./routes/CashOnDelivery"));

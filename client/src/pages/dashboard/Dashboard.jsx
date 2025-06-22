@@ -9,7 +9,7 @@ import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
 
 const dashboardArry = [
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
-  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/fontDashboard" },
+  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboard" },
   
   { title: "Profile", icon: "", link: "/dashboard/profile" },
   {

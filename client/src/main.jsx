@@ -75,7 +75,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/dashboard/CashonDelivery", element: <Orders /> },
       { path: "/dashboard/profile", element: <Profile /> },
-      { path: "/dashboard/fontDashboard", element: <FontDashboard /> },
+      { path: "/dashboard/leaderboard", element: <FontDashboard /> },
       { path: "/dashboard/refer-link", element: <ReferLinkPage /> },
       { path: "/dashboard/my-team", element: <MyTeam /> },
       { path: "/dashboard/my-refer", element: <MyRefer /> },
