@@ -37,7 +37,14 @@ const updateReferralTree = async (userId, referrerId, generation = 1) => {
 // 🔐 Register a user
 const registerUser = async (req, res) => {
   try {
-    const { phone, name, password, referrerId ,  role = "user", ...otherFields } = req.body;
+    const {
+      phone,
+      name,
+      password,
+      referrerId,
+      role = "user",
+      ...otherFields
+    } = req.body;
 
     const existing = await User.findOne({ phone });
     if (existing) {
@@ -62,7 +69,7 @@ const registerUser = async (req, res) => {
 
     // Handle referrer logic
     let referredBy = null;
-    let referrerId = req.body.referrerId;
+    referrerId = req.body.referrerId;
     if (referrerId) {
       const referrer = await User.findOne({ referralCode: referrerId });
       if (referrer) {
@@ -169,7 +176,6 @@ const getMyReferrals = async (req, res) => {
   }
 };
 
-
 // 👥 Get all users
 const getUsers = async (req, res) => {
   try {
@@ -180,15 +186,9 @@ const getUsers = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
 // users: full user list (from DB or JSON)
 async function getReferralTree(referId, users, level = 1) {
-  const direct = users.filter(user => user.referredBy === referId);
+  const direct = users.filter((user) => user.referredBy === referId);
 
   let tree = [];
 
@@ -205,7 +205,7 @@ async function getReferralTree(referId, users, level = 1) {
   return tree;
 }
 
-// get user by refer id 
+// get user by refer id
 
 // router.get("/referrals/:referId", async (req, res) => {
 //   try {
@@ -225,7 +225,7 @@ async function getReferralTree(referId, users, level = 1) {
 //   }
 // });
 
-const getdatafromReferId = ( async (req, res) => {
+const getdatafromReferId = async (req, res) => {
   try {
     const { referId } = req.params;
     const users = await User.find();
@@ -233,12 +233,11 @@ const getdatafromReferId = ( async (req, res) => {
     const downlineTree = await getReferralTree(referId, users);
     res.status(200).json({
       message: `Found ${downlineTree.length} downlines`,
-      data: downlineTree
+      data: downlineTree,
     });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
-});
-
+};
 
 module.exports = { registerUser, loginUser, getUsers, getdatafromReferId };
