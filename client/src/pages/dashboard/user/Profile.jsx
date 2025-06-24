@@ -9,9 +9,9 @@ const Profile = () => {
   console.log("User data: ", user);
   // console.log("User information: ", users);
 
-  if (!users) {
-    return <div className="p-4">Loading...</div>;
-  }
+  // if (!users) {
+  //   return <div className="p-4">Loading...</div>;
+  // }
 
   return (
     <div className="w-full">

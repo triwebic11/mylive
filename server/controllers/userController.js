@@ -1,15 +1,37 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User"); // Adjust if path differs
+const User = require("../models/User");
 
-
+// ➤ Helper to generate a short refer ID
 const generateReferId = (name) => {
-  const random = Math.floor(100 + Math.random() * 900); // 3-digit random
+  const random = Math.floor(100 + Math.random() * 900);
   return name.slice(0, 3).toUpperCase() + random;
 };
 
+// ➤ Helper to generate a user ID
 const generateUserId = () => {
-  return "USR" + Math.floor(1000 + Math.random() * 9000); // Example: USR1345
+  return "USR" + Math.floor(1000 + Math.random() * 9000);
+};
+
+// 🔁 Recursively update referral data up to 20 generations
+const updateReferralTree = async (userId, referrerId, generation = 1) => {
+  if (!referrerId || generation > 20) return;
+
+  const referrer = await User.findById(referrerId);
+  if (!referrer) return;
+
+  // Push this referral info to the referrer's referData array
+  referrer.referData.push({
+    generation,
+    referredUser: userId,
+  });
+
+  await referrer.save();
+
+  // Recurse to next generation if the referrer also has a referrer
+  if (referrer.referredBy) {
+    await updateReferralTree(userId, referrer.referredBy, generation + 1);
+  }
 };
 
 // 🔐 Register a user
@@ -24,12 +46,12 @@ const registerUser = async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 10);
 
-       // Generate unique referral code
+    // Generate unique referral code
     const generateReferralCode = async () => {
       let code;
       let isUnique = false;
       while (!isUnique) {
-        code = Math.random().toString(36).substring(2, 10).toUpperCase(); // 6-character code
+        code = Math.random().toString(36).substring(2, 10).toUpperCase();
         const existingCode = await User.findOne({ referralCode: code });
         if (!existingCode) isUnique = true;
       }
@@ -38,8 +60,9 @@ const registerUser = async (req, res) => {
 
     const referralCode = await generateReferralCode();
 
-    // Find referring user by referralCode (if provided)
+    // Handle referrer logic
     let referredBy = null;
+    let referrerId = req.body.referrerId;
     if (referrerId) {
       const referrer = await User.findOne({ referralCode: referrerId });
       if (referrer) {
@@ -47,28 +70,34 @@ const registerUser = async (req, res) => {
       }
     }
 
+    // Create user object
     const newUser = new User({
       phone,
       name,
       password: hashed,
       role,
-       referralCode,  
-      referredBy, 
+      referralCode,
+      referredBy,
       ...otherFields,
 
-       userId: generateUserId(),
+      userId: generateUserId(),
       referId: generateReferId(name),
-      package: "Friend",               // default package
-      packagePV: 1000,                 // based on package
+      package: "Friend",
+      packagePV: 1000,
       packageAmount: 2000,
       accountStatus: "active",
       totalPV: 0,
       totalAmount: 0,
       referData: [],
-      allEntries: []
+      allEntries: [],
     });
 
     await newUser.save();
+
+    // ➤ Update 20-generation referral tree
+    if (referredBy) {
+      await updateReferralTree(newUser._id, referredBy);
+    }
 
     // Create JWT token
     const token = jwt.sign(
@@ -95,7 +124,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-
 // 🔑 Login user
 const loginUser = async (req, res) => {
   try {
@@ -111,7 +139,6 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
-   // Create JWT token
     const token = jwt.sign(
       { id: user._id, phone: user.phone, role: user.role },
       process.env.JWT_SECRET || "your_jwt_secret_key",
@@ -135,6 +162,27 @@ const loginUser = async (req, res) => {
   }
 };
 
+const getMyReferrals = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const user = await User.findById(userId).populate({
+      path: "referData.referredUser",
+      select: "name phone referralCode",
+    });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({
+      referrals: user.referData,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch referrals" });
+  }
+};
+
+
 // 👥 Get all users
 const getUsers = async (req, res) => {
   try {
@@ -145,4 +193,4 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUsers };
+module.exports = { registerUser, loginUser, getUsers,getMyReferrals };

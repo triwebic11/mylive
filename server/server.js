@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 require("dotenv").config();
+const accountInfoRoutes = require("./routes/accountInfoRoutes");
 
 const app = express();
 
@@ -16,7 +17,7 @@ connectDB();
 // Routes
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/cashonDelivery", require("./routes/CashOnDelivery"));
-
+app.use("/api/profile", accountInfoRoutes)
 
 
 

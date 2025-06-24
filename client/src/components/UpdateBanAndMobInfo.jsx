@@ -20,6 +20,16 @@ const MobAndBankInfoForm = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+const handleCreate = async (e) => {
+  e.preventDefault();
+
+  await axios.post(`http://localhost:5000/api/users/accoutsInfo`, {
+    userId: user._id, 
+    ...formData
+  });
+
+  alert("✅ Bank Information created successfully!");
+};
 
   // Fetch existing data when page loads
   useEffect(() => {

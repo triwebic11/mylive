@@ -9,11 +9,11 @@ import Swal from "sweetalert2";
 import useAuth from "../Hooks/useAuth";
 
 const Register = () => {
-  
-  const { setUser,user:users } = useAuth()
+  const { setUser, user: users } = useAuth();
+  // const [referralCode, setReferralCode] = useState("");
 
-  console.log("register pafe user: ", users)
-  
+  console.log("register pafe user: ", users);
+
   const {
     register,
     handleSubmit,
@@ -29,7 +29,6 @@ const Register = () => {
       const datas = {
         ...data,
         role: "user",
-        
       };
 
       const res = await axios.post(
@@ -51,7 +50,7 @@ const Register = () => {
         localStorage.setItem("user", JSON.stringify(res.data));
         setUser(res.data.user);
         navigate("/dashboard", {
-           state: { user: res.data.user },
+          state: { user: res.data.user },
         });
       }
 
