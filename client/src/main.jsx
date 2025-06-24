@@ -24,9 +24,9 @@ import ProductDetails from "./components/ProductDetails.jsx";
 import Profile from "./pages/dashboard/user/Profile.jsx";
 import FontDashboard from "./pages/dashboard/SuperAdmin/FontDashboard.jsx";
 import Orders from "./pages/dashboard/SuperAdmin/Orders.jsx";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ReferLinkPage from "./pages/dashboard/user/Referals/ReferalsLink.jsx";
-import MyRefer from "./pages/dashboard/user/Referals/MyRefer.jsx";
+import MyReferrals from "./pages/dashboard/user/Referals/MyReferrals.jsx";
 import MyTeam from "./pages/dashboard/user/Referals/MyTeam.jsx";
 import Transactions from "./pages/dashboard/user/wallet/Transactions.jsx";
 import TodayStatement from "./pages/dashboard/SuperAdmin/TodayStatement.jsx";
@@ -38,15 +38,12 @@ import MyConsistency from "./pages/dashboard/SuperAdmin/MyConsistency.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import PackegForActive from "./pages/packeg/PackegForActive.jsx";
 
-
 const queryClients = new QueryClient();
 
 const Layout = () => {
   const location = useLocation();
   const noHeaderFooter =
     location.pathname === "/register" || location.pathname === "/login";
-
-
 
   return (
     <div className="bg-gray-100">
@@ -82,11 +79,14 @@ const router = createBrowserRouter([
       { path: "/dashboard/leaderboard", element: <FontDashboard /> },
       { path: "/dashboard/refer-link", element: <ReferLinkPage /> },
       { path: "/dashboard/my-team", element: <MyTeam /> },
-      { path: "/dashboard/my-refer", element: <MyRefer /> },
+      { path: "/dashboard/my-refer", element: <MyReferrals /> },
       { path: "/dashboard/transactions", element: <Transactions /> },
       { path: "/dashboard/register", element: <Register /> },
       { path: "/dashboard/today-statement", element: <TodayStatement /> },
-      { path: "/dashboard/commission-statement", element: <CommissionStatement /> },
+      {
+        path: "/dashboard/commission-statement",
+        element: <CommissionStatement />,
+      },
       { path: "/dashboard/withdraw", element: <Withdraw /> },
       { path: "/dashboard/my-order", element: <MyOrder /> },
       { path: "/dashboard/voucher", element: <Voucher /> },
@@ -95,18 +95,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin-dashboard",
-    element: <AdminDashboard />
-  }
+    element: <AdminDashboard />,
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-
       <QueryClientProvider client={queryClients}>
-
         <RouterProvider router={router} />
-
       </QueryClientProvider>
     </AuthProvider>
   </StrictMode>
