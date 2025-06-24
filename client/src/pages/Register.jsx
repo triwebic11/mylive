@@ -7,12 +7,14 @@ import logo from "../assets/logo.png";
 import axios from "axios";
 import Swal from "sweetalert2";
 import useAuth from "../Hooks/useAuth";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
+
 
 const Register = () => {
-  const { setUser, user: users } = useAuth();
-  // const [referralCode, setReferralCode] = useState("");
 
-  console.log("register pafe user: ", users);
+  const { setUser,user:users } = useAuth()
+      const axiosPublic = useAxiosPublic()
+
 
   const {
     register,
@@ -31,8 +33,8 @@ const Register = () => {
         role: "user",
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/api/users/register",
+      const res = await axiosPublic.post(
+        "/users/register",
         datas
       );
 
@@ -124,7 +126,8 @@ const Register = () => {
           <FormInput
             label="Referrer ID"
             placeholder="Referrer ID"
-            name="referrerId"
+            type="text"
+            name="referredBy"
             register={register}
           />
           <p className="text-green-600 text-sm">Not Found</p>

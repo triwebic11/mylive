@@ -10,7 +10,7 @@ const ReferLinkPage = () => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referLink);
-    alert("Link copied to clipboard!");
+    alert("Link copied to clipboard!"); //add toast alert
   };
 
   const handleShare = () => {

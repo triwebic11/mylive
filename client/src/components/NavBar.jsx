@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { FaUser, FaSignInAlt, FaBars } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";

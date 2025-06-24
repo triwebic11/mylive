@@ -37,7 +37,7 @@ const updateReferralTree = async (userId, referrerId, generation = 1) => {
 // 🔐 Register a user
 const registerUser = async (req, res) => {
   try {
-    const { phone, name, password, role = "user", ...otherFields } = req.body;
+    const { phone, name, password, referrerId ,  role = "user", ...otherFields } = req.body;
 
     const existing = await User.findOne({ phone });
     if (existing) {
@@ -85,7 +85,7 @@ const registerUser = async (req, res) => {
       package: "Friend",
       packagePV: 1000,
       packageAmount: 2000,
-      accountStatus: "active",
+      accountStatus: "",
       totalPV: 0,
       totalAmount: 0,
       referData: [],
@@ -108,14 +108,7 @@ const registerUser = async (req, res) => {
 
     res.status(201).json({
       message: "User registered successfully",
-      user: {
-        _id: newUser._id,
-        name: newUser.name,
-        phone: newUser.phone,
-        email: newUser.email,
-        role: newUser.role,
-        referralCode: newUser.referralCode,
-      },
+      user: newUser,
       token,
     });
   } catch (err) {
@@ -147,13 +140,7 @@ const loginUser = async (req, res) => {
 
     res.status(201).json({
       message: "User registered successfully",
-      user: {
-        _id: user._id,
-        name: user.name,
-        phone: user.phone,
-        email: user.email,
-        role: user.role,
-      },
+      user: user,
       token,
     });
   } catch (err) {
@@ -193,4 +180,65 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUsers,getMyReferrals };
+
+
+
+
+
+
+// users: full user list (from DB or JSON)
+async function getReferralTree(referId, users, level = 1) {
+  const direct = users.filter(user => user.referredBy === referId);
+
+  let tree = [];
+
+  for (const user of direct) {
+    tree.push({
+      ...user,
+      level,
+    });
+
+    const children = await getReferralTree(user.referId, users, level + 1);
+    tree = tree.concat(children);
+  }
+
+  return tree;
+}
+
+// get user by refer id 
+
+// router.get("/referrals/:referId", async (req, res) => {
+//   try {
+//     const { referId } = req.params;
+
+//     // Find all users whose referredBy matches this referId
+//     const referrals = await User.find({ referredBy: referId });
+
+//     res.status(200).json({
+//       success: true,
+//       message: `Found ${referrals.length} referrals`,
+//       referrals,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching referrals:", error);
+//     res.status(500).json({ success: false, message: "Server error", error: error.message });
+//   }
+// });
+
+const getdatafromReferId = ( async (req, res) => {
+  try {
+    const { referId } = req.params;
+    const users = await User.find();
+
+    const downlineTree = await getReferralTree(referId, users);
+    res.status(200).json({
+      message: `Found ${downlineTree.length} downlines`,
+      data: downlineTree
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+
+module.exports = { registerUser, loginUser, getUsers, getdatafromReferId };

@@ -1,11 +1,13 @@
-import React from 'react';
-import { data } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import useAxiosPublic from './useAxiosPublic';
 
 const useUserData = () => {
+
+    const axiosPublic = useAxiosPublic()
     const {data, isLoading, isError, error, refetch} = useQuery({
         queryKey: ['userData'],
         queryFn: async () => {
-            const response = await fetch('http://localhost:5000/api/users/userData');
+            const response = await axiosPublic.get('/users/userData');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

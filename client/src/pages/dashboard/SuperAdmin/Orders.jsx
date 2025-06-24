@@ -199,7 +199,7 @@ const handleFilter = () => {
                                 key={order.id}
                                 className="border-t border-gray-200 hover:bg-gray-50 text-sm"
                             >
-                                <td className="px-4 py-2">{idx+1}</td>
+                                <td className="px-4 py-2">{idx + 1}</td>
                                 <td className="px-4 py-2">{order?.product.image}</td>
                                 <td className="px-4 py-2">{order?.product.Price}</td>
 
