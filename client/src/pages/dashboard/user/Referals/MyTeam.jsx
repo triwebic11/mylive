@@ -8,19 +8,19 @@ const Dashboard = () => {
   console.log("User data: ", user);
   const referralCode = storedUser?.user?.referralCode;
   console.log("your referral code is- ", referralCode);
-  const referralLink = `https://yourdomain.com/register?ref=${user.referralCode}`;
+  const referralLink = `https://yourdomain.com/register?ref=${user?.referralCode}`;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6 text-center">
-        👤 Welcome, {user.name}!
+        👤 Welcome, {user?.name}!
       </h2>
 
       {/* Referral Code + QR */}
       <div className="bg-white shadow rounded-2xl p-6 mb-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">
           Your Referral Code:{" "}
-          <span className="text-green-600">{user.referralCode}</span>
+          <span className="text-green-600">{user?.referralCode}</span>
         </h3>
         <div className="flex flex-col items-center gap-2">
           <QRCodeCanvas value={referralLink} />
@@ -38,11 +38,11 @@ const Dashboard = () => {
         <h3 className="text-lg font-semibold text-gray-700 mb-3">
           📚 Your 10-Level Referral Upline Tree
         </h3>
-        {user.referralTree.length === 0 ? (
+        {user?.referralTree?.length === 0 ? (
           <p className="text-gray-500">You were not referred by anyone.</p>
         ) : (
           <ol className="list-decimal ml-5 space-y-1 text-sm text-gray-700">
-            {user.referralTree.map((id, index) => (
+            {user?.referralTree?.map((id, index) => (
               <li key={id}>
                 <span className="font-medium">Level {index + 1}:</span> {id}
               </li>
@@ -60,7 +60,7 @@ const Dashboard = () => {
           <strong>Email:</strong> {user.email}
         </p>
         <p className="text-sm text-gray-600">
-          <strong>User ID:</strong> {user._id}
+          <strong>User ID:</strong> {user?._id}
         </p>
         <p className="text-sm text-gray-600">
           <strong>Referral Code:</strong> {user.referralCode}
@@ -71,12 +71,12 @@ const Dashboard = () => {
           🎁 Total Referral Points
         </h3>
         <p className="text-2xl text-green-600 font-bold">
-          {user.points || 0} Points
+          {user?.points || 0} Points
         </p>
       </div>
 
-      <MyReferrals referralCode={user.referralCode} />
-      <ReferralTree referralTree={user.referralTree} />
+      <MyReferrals referralCode={user?.referralCode} />
+      <ReferralTree referralTree={user?.referralTree} />
     </div>
   );
 };

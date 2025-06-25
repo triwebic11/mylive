@@ -16,7 +16,7 @@ const menuItems = [
       { label: "Core Value", path: "/core-value" },
     ],
   },
-  { label: "Packeg", path: "/packeg" },
+  { label: "Packages", path: "/packages" },
   { label: "Why Liveon", path: "/why-liveon" },
   {
     label: "Products",

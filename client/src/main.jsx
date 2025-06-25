@@ -69,7 +69,7 @@ const router = createBrowserRouter([
       { path: "/register", element: <Register /> },
       { path: "/login", element: <Login /> },
       { path: "/productdetails/:id", element: <ProductDetails /> },
-      { path: "/packeg", element: <PackegForActive /> },
+      { path: "/packages", element: <PackegForActive /> },
       { path: "*", element: <PageNotFound /> },
     ],
   },
@@ -79,6 +79,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/dashboard/CashonDelivery", element: <Orders /> },
       { path: "/dashboard/profile", element: <Profile /> },
+      { path: "/dashboard/packages", element: <PackegForActive /> },
       { path: "/dashboard/leaderboard", element: <FontDashboard /> },
       { path: "/dashboard/refer-link", element: <ReferLinkPage /> },
       { path: "/dashboard/my-team", element: <MyTeam /> },
