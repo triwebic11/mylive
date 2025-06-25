@@ -64,9 +64,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    dateOfBirth: {
+    dob: {
       type: Date,
-      required: true,
     },
     division: {
       type: String,
@@ -80,7 +79,15 @@ const userSchema = new mongoose.Schema(
         "Rangpur",
         "Mymensingh",
       ],
-      required: true,
+    },
+    city: {
+      type: String,
+    },
+    postcode: {
+      type: String,
+    },
+    address: {
+      type: String,
     },
 
     password: {

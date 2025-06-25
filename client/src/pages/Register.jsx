@@ -12,6 +12,9 @@ const Register = () => {
     phone: "",
     dob: "",
     division: "",
+    city: "",
+    postcode: "",
+    address: "",
     password: "",
     referralCode: "",
   });
@@ -39,6 +42,9 @@ const Register = () => {
         phone: form.phone,
         dob: form.dob,
         division: form.division,
+        city: form.city,
+        postcode: form.postcode,
+        address: form.address,
         password: form.password,
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
@@ -91,7 +97,7 @@ const Register = () => {
           className="border border-gray-300 px-2 py-1 rounded-md my-2"
         />
         <br />
-        <h1>Phone Number</h1>
+        <h1>Phone Number*</h1>
         <input
           name="phone"
           type="text"
@@ -122,6 +128,8 @@ const Register = () => {
           </label>
           <select
             name="division"
+            id="division"
+            type="text"
             onChange={handleChange}
             value={form.division}
             required
@@ -143,6 +151,35 @@ const Register = () => {
           required
           className="border border-gray-300 px-2 py-1 rounded-md my-2"
         />{" "}
+        <br />
+        <h2>City</h2>
+        <input
+          name="city"
+          type="text"
+          onChange={handleChange}
+          value={form.city}
+          placeholder="City"
+          className="border border-gray-300 px-2 py-1 rounded-md my-2"
+        />
+        <br />
+        <h2>Post Code</h2>
+        <input
+          name="postcode"
+          type="text"
+          onChange={handleChange}
+          value={form.postcode}
+          placeholder="Post Code"
+          className="border border-gray-300 px-2 py-1 rounded-md my-2"
+        />
+        <br />
+        <h2>Address</h2>
+        <input
+          name="address"
+          onChange={handleChange}
+          value={form.address}
+          placeholder="Address"
+          className="border border-gray-300 px-2 py-1 rounded-md my-2"
+        />
         <br />
         <h2>Referrer ID</h2>
         <input
