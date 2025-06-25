@@ -15,6 +15,7 @@ router.get("/my-referrals/:refCode", getMyReferrals);
 router.get("/my-referrals/", getMyAllReferrals);
 router.post("/referral-tree", getReferralTreeDetails);
 
+
 module.exports = router;
 
 

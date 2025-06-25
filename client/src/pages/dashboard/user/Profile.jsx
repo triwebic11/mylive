@@ -1,12 +1,14 @@
 import React from "react";
-import useAuth from "../../../Hooks/useAuth";
+// import useAuth from "../../../Hooks/useAuth";
 import UpdatePassword from "../../../components/PassWordUpdate";
 import MobAndBankInfoForm from "../../../components/UpdateBanAndMobInfo";
 
 const Profile = () => {
-  const { user: users } = useAuth();
-  const { user } = users || {};
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const user = storedUser?.user || {};
   console.log("User data: ", user);
+  const referralCode = storedUser?.user?.referralCode;
+  console.log("your referral code is- ", referralCode);
   // console.log("User information: ", users);
 
   // if (!users) {

@@ -50,8 +50,8 @@ const Register = () => {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "500px", margin: "auto" }}>
-      <h2 className="text-3xl text-center">User Registration</h2>
+    <div className="flex flex-col justify-center items-center min-h-screen w-full">
+      <h2 className="text-3xl text-center my-6">User Registration</h2>
       <form onSubmit={handleSubmit}>
         <h2>Enter your name</h2>
         <input
@@ -62,8 +62,8 @@ const Register = () => {
           required
           className="border border-gray-300 px-2 py-1 rounded-md "
         />
-        <h1>Enter your email</h1>
         <br />
+        <h1>Enter your email</h1>
         <input
           name="email"
           type="email"
@@ -73,8 +73,8 @@ const Register = () => {
           required
           className="border border-gray-300 px-2 py-1 rounded-md my-2"
         />
-        <h1>Enter your Phone Number</h1>
         <br />
+        <h1>Enter your Phone Number</h1>
         <input
           name="phone"
           type="text"
@@ -86,7 +86,6 @@ const Register = () => {
         />
         <br />
         <h2>Enter a new password</h2>
-        <br />
         <input
           name="password"
           type="password"

@@ -1,13 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const {
-  createAccountInfo,
-  updateAccountInfo,
-  getAccountInfo,
-} = require("../controllers/accountInfoController");
 
-router.post("/", createAccountInfo);
-router.put("/:id", updateAccountInfo);
-router.get("/:id", getAccountInfo);
+const {
+  createBankInfo,
+  getBankInfo,
+  updateBankInfo,
+} = require("../controllers/bankInfoController");
+
+// Create
+router.post("/accoutsInfo", createBankInfo);
+
+// Get by userId
+router.get("/accoutsInfo/:userId", getBankInfo);
+
+// Update by userId
+router.put("/:userId", updateBankInfo);
 
 module.exports = router;
