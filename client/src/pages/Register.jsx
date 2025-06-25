@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 // import QRCode from "react-qr-code";
 import Dashboard from "./dashboard/Dashboard.jsx";
@@ -39,6 +40,12 @@ const Register = () => {
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
         _id: res.data.userId,
+      });
+      Swal.fire({
+        icon: "success",
+        title: "Registration is Successful",
+        showConfirmButton: false,
+        timer: 1500,
       });
 
       navigate("/login", {
@@ -95,8 +102,8 @@ const Register = () => {
           required
           className="border border-gray-300 px-2 py-1 rounded-md my-2"
         />{" "}
-        <h2>Give a referralcode</h2>
         <br />
+        <h2>Give a referralcode</h2>
         <input
           name="referralCode"
           onChange={handleChange}
@@ -107,7 +114,7 @@ const Register = () => {
         <br />
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer"
+          className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:opacity-80 duration-200"
         >
           Register
         </button>

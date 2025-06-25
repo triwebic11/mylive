@@ -57,13 +57,13 @@ const Dashboard = () => {
           📝 Your Profile Info
         </h3>
         <p className="text-sm text-gray-600">
-          <strong>Email:</strong> {user.phone}
+          <strong>Email:</strong> {user.email}
         </p>
         <p className="text-sm text-gray-600">
           <strong>User ID:</strong> {user._id}
         </p>
         <p className="text-sm text-gray-600">
-          <strong>User ID:</strong> {user.referralCode}
+          <strong>Referral Code:</strong> {user.referralCode}
         </p>
       </div>
       <div className="bg-white shadow rounded-2xl p-6 mt-6">
