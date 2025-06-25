@@ -7,7 +7,7 @@ const useUserData = () => {
     const {data, isLoading, isError, error, refetch} = useQuery({
         queryKey: ['userData'],
         queryFn: async () => {
-            const response = await axiosPublic.get('/users/userData');
+            const response = await axiosPublic.get('/users/my-referrals');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
