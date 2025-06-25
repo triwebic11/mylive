@@ -19,7 +19,7 @@ const Dashboard = () => {
       {/* Referral Code + QR */}
       <div className="bg-white shadow rounded-2xl p-6 mb-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">
-          📢 Your Referral Code:{" "}
+          Your Referral Code:{" "}
           <span className="text-green-600">{user.referralCode}</span>
         </h3>
         <div className="flex flex-col items-center gap-2">
