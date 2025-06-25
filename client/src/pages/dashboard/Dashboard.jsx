@@ -12,6 +12,7 @@ const dashboardArry = [
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboard" },
   
   { title: "Profile", icon: "", link: "/dashboard/profile" },
+  { title: "Packages", icon: "", link: "/dashboard/packages" },
   {
     title: "Referrals",
     icon: "",

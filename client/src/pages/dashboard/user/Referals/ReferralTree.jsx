@@ -5,7 +5,7 @@ const ReferralTree = ({ referralTree }) => {
   const [uplines, setUplines] = useState([]);
 
   useEffect(() => {
-    if (referralTree.length > 0) {
+    if (referralTree?.length > 0) {
       axios
         .post("http://localhost:5000/api/users/referral-tree", { ids: referralTree })
         .then((res) => setUplines(res.data))
@@ -17,11 +17,11 @@ const ReferralTree = ({ referralTree }) => {
     <div className="bg-white shadow rounded-2xl p-6 mt-6">
       <h3 className="text-lg font-bold mb-4">🌳 10-Level Upline Tree</h3>
 
-      {uplines.length === 0 ? (
+      {uplines?.length === 0 ? (
         <p className="text-gray-500">No upline (you registered without a referral).</p>
       ) : (
         <ul className="space-y-3">
-          {uplines.map((upline, index) => (
+          {uplines?.map((upline, index) => (
             <li
               key={upline?._id || index}
               className="border p-3 rounded bg-gray-50 flex justify-between items-center"
