@@ -5,14 +5,17 @@ const {
   createBankInfo,
   getBankInfo,
   updateBankInfo,
+  getAllAccountInfo,
 } = require("../controllers/bankInfoController");
 
 // Create
-router.post("/accoutsInfo", createBankInfo);
+router.post("/accountsInfo", createBankInfo);
 
 // Get by userId
-router.get("/accoutsInfo/:userId", getBankInfo);
+router.get("/accountsInfo/:userId", getBankInfo);
 
+// Get all account info
+router.get("/all", getAllAccountInfo);
 // Update by userId
 router.put("/:userId", updateBankInfo);
 

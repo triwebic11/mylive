@@ -37,6 +37,9 @@ import Voucher from "./pages/dashboard/SuperAdmin/Voucher.jsx";
 import MyConsistency from "./pages/dashboard/SuperAdmin/MyConsistency.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import PackegForActive from "./pages/packeg/PackegForActive.jsx";
+import UpdatePassword from "./components/UpdatePassword.jsx";
+import UserDetails from "./components/UserDetails.jsx";
+import AllUsers from "./pages/admin/AllUsers.jsx";
 
 const queryClients = new QueryClient();
 
@@ -83,6 +86,7 @@ const router = createBrowserRouter([
       { path: "/dashboard/transactions", element: <Transactions /> },
       { path: "/dashboard/register", element: <Register /> },
       { path: "/dashboard/today-statement", element: <TodayStatement /> },
+      { path: "/dashboard/update-password", element: <UpdatePassword /> },
       {
         path: "/dashboard/commission-statement",
         element: <CommissionStatement />,
@@ -97,6 +101,11 @@ const router = createBrowserRouter([
     path: "/admin-dashboard",
     element: <AdminDashboard />,
   },
+  {
+    path: "/admin-dashboard/user/:id",
+    element: <UserDetails />,
+  },
+  { path: "/allUsers", element: <AllUsers /> },
 ]);
 
 createRoot(document.getElementById("root")).render(

@@ -5,7 +5,7 @@ const accountInfoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
-    unique: true, 
+    unique: true,
   },
   bkash: String,
   nagad: String,

@@ -1,6 +1,6 @@
 import React from "react";
 // import useAuth from "../../../Hooks/useAuth";
-import UpdatePassword from "../../../components/PassWordUpdate";
+import UpdatePassword from "../../../components/UpdatePassword";
 import MobAndBankInfoForm from "../../../components/UpdateBanAndMobInfo";
 
 const Profile = () => {
@@ -33,15 +33,15 @@ const Profile = () => {
             </div>
           </div>
           <div>
-            <span>Phone</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user?.phone}
-            </div>
-          </div>
-          <div>
             <span>Email</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
               {user?.email}
+            </div>
+          </div>
+          <div>
+            <span>Phone</span>
+            <div className="px-2 py-1 border border-gray-300 rounded-lg">
+              {user?.phone}
             </div>
           </div>
           <div>
@@ -102,7 +102,6 @@ const Profile = () => {
         <div className="mt-8">
           <MobAndBankInfoForm />
         </div>
-        <UpdatePassword />
       </div>
     </div>
   );

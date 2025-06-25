@@ -44,3 +44,14 @@ exports.updateBankInfo = async (req, res) => {
     res.status(500).json({ message: "Failed to update bank info", error: err });
   }
 };
+
+
+exports.getAllAccountInfo = async (req, res) => {
+  try {
+    const users = await BankInfo.find(); // password বাদ দিয়ে সব data
+    res.json(users);
+  } catch (err) {
+    console.error("Failed to get users:", err);
+    res.status(500).json({ message: "Failed to get users" });
+  }
+};

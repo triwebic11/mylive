@@ -105,6 +105,31 @@ const loginUser = async (req, res) => {
   }
 };
 
+
+// ✅ Get All Users Controller
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password"); // password বাদ দিয়ে সব data
+    res.json(users);
+  } catch (err) {
+    console.error("Failed to get users:", err);
+    res.status(500).json({ message: "Failed to get users" });
+  }
+};
+
+// Get single user details
+const getUserById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user" });
+  }
+};
+
+
 //getMyReferrals
 
 const getMyReferrals = async (req, res) => {
@@ -154,12 +179,44 @@ const getReferralTreeDetails = async (req, res) => {
   }
 };
 
+const updateUserPassword = async (req, res) => {
+  const { userId } = req.params;
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Current password is incorrect" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ success: true, message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Password update error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getMyReferrals,
   getReferralTreeDetails,
   getMyAllReferrals,
+  updateUserPassword,
+  getAllUsers,
+  getUserById,
 };
 
 // const bcrypt = require("bcrypt");

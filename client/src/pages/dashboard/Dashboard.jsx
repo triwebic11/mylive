@@ -8,9 +8,10 @@ import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
 
 const dashboardArry = [
+  { title: "All User", icon: <MdOutlineShoppingBag />, link: "/allUsers" },
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboard" },
-  
+
   { title: "Profile", icon: "", link: "/dashboard/profile" },
   {
     title: "Referrals",
@@ -36,7 +37,7 @@ const dashboardArry = [
   { title: "Package Update", icon: "", link: "/dashboard/fontDashboard" },
   { title: "Support", icon: "", link: "/dashboard" },
   { title: "Kyc", icon: "", link: "/dashboard" },
-  { title: "Update Password", icon: "", link: "/dashboard/profile" },
+  { title: "Update Password", icon: "", link: "/dashboard/update-password" },
 ];
 
 const adminDashboardArry = [
@@ -54,13 +55,12 @@ const adminDashboardArry = [
     title: "Manage Packages",
     icon: "",
     link: "/dashboard",
-     submenu: [
+    submenu: [
       { title: "All Packages", icon: "", link: "/dashboard" },
       { title: "Add Packages", icon: "", link: "/dashboard" },
     ],
   },
- 
-]
+];
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -112,7 +112,9 @@ const Dashboard = () => {
       {/* Sidebar */}
       <aside
         className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-white px-4 py-6 overflow-y-auto transform transition-transform duration-300 flex-shrink-0
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+        ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
       >
         <div className="flex items-center justify-between mb-6">
           <Link to="/" onClick={closeSidebar}>
@@ -137,7 +139,9 @@ const Dashboard = () => {
               <div
                 className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
                 onClick={() =>
-                  item.submenu ? toggleDropdown(index) : (navigate(item.link), closeSidebar())
+                  item.submenu
+                    ? toggleDropdown(index)
+                    : (navigate(item.link), closeSidebar())
                 }
               >
                 <div className="flex items-center gap-2">
@@ -182,7 +186,6 @@ const Dashboard = () => {
           </button> */}
         </nav>
 
-
         <p className="text-red-600">User Dashboard</p>
 
         <nav className="flex flex-col gap-2">
@@ -191,7 +194,9 @@ const Dashboard = () => {
               <div
                 className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
                 onClick={() =>
-                  item.submenu ? toggleDropdown(index) : (navigate(item.link), closeSidebar())
+                  item.submenu
+                    ? toggleDropdown(index)
+                    : (navigate(item.link), closeSidebar())
                 }
               >
                 <div className="flex items-center gap-2">
@@ -235,7 +240,6 @@ const Dashboard = () => {
             Logout
           </button>
         </nav>
-        
       </aside>
 
       {/* Main content */}

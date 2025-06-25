@@ -6,7 +6,7 @@ const {
   loginUser,
   getMyReferrals,
   getReferralTreeDetails,
-  getMyAllReferrals,
+  getMyAllReferrals,updateUserPassword,getAllUsers,getUserById,
 } = require("../controllers/userController");
 
 router.post("/register", registerUser);
@@ -14,7 +14,10 @@ router.post("/login", loginUser);
 router.get("/my-referrals/:refCode", getMyReferrals);
 router.get("/my-referrals/", getMyAllReferrals);
 router.post("/referral-tree", getReferralTreeDetails);
-
+router.put("/update-password/:userId", updateUserPassword);
+router.get("/", getAllUsers);
+router.get("/admin/all-users", getAllUsers);
+router.get("/admin/user/:id", getUserById);
 
 module.exports = router;
 

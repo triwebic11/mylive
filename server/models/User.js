@@ -46,58 +46,91 @@
 
 // module.exports = mongoose.model("User", userSchema);
 
-
-
-
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
 
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
- phone: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    dateOfBirth: {
+      type: Date,
+      required: true,
+    },
+    division: {
+      type: String,
+      enum: [
+        "Dhaka",
+        "Chattagram",
+        "Khulna",
+        "Rajshahi",
+        "Sylhet",
+        "Barishal",
+        "Rangpur",
+        "Mymensingh",
+      ],
+      required: true,
+    },
 
-  referralCode: {
-    type: String,
-    unique: true,
-  },
+    password: {
+      type: String,
+      required: true,
+    },
 
-  referredBy: {
-    type: String,
-    default: null,
-  },
+    referralCode: {
+      type: String,
+      unique: true,
+    },
 
-  referralTree: {
-    type: [String], // up to 10 levels
-    default: [],
+    referredBy: {
+      type: String,
+      default: null,
+    },
+
+    referralTree: {
+      type: [String], // up to 10 levels
+      default: [],
+    },
+    points: {
+      type: Number,
+      default: 0,
+    },
+
+    address: String,
+    bankInfo: {
+      bkash: String,
+      nagad: String,
+      rocket: String,
+      bankName: String,
+      accountNumber: String,
+      accountHolder: String,
+      branch: String,
+      routeNo: String,
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
   },
-  points: {
-  type: Number,
-  default: 0,
-},
-});
+  {
+    timestamps: true,
+    strict: false, // Allows for flexible schema
+  }
+);
 
 module.exports = mongoose.model("User", userSchema);
-
-
-
-
-
-
 
 // const mongoose = require("mongoose");
 

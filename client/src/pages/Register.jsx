@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-// import QRCode from "react-qr-code";
+
 import Dashboard from "./dashboard/Dashboard.jsx";
 const Register = () => {
   const navigate = useNavigate();
@@ -10,6 +10,8 @@ const Register = () => {
     name: "",
     email: "",
     phone: "",
+    dob: "",
+    division: "",
     password: "",
     referralCode: "",
   });
@@ -31,16 +33,24 @@ const Register = () => {
         form
       );
 
-      setUserReferralCode(res.data.referralCode);
-      setReferralTree(res.data.referralTree);
-      setRegisteredUser({
+      const userData = {
         name: form.name,
         email: form.email,
         phone: form.phone,
+        dob: form.dob,
+        division: form.division,
+        password: form.password,
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
         _id: res.data.userId,
-      });
+      };
+
+      // ✅ Local Storage-এ user data রাখো
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUserReferralCode(res.data.referralCode);
+      setReferralTree(res.data.referralTree);
+      setRegisteredUser(userData);
+
       Swal.fire({
         icon: "success",
         title: "Registration is Successful",
@@ -49,7 +59,7 @@ const Register = () => {
       });
 
       navigate("/login", {
-        state: { user: res.data.user },
+        state: { user: userData },
       });
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
@@ -60,7 +70,7 @@ const Register = () => {
     <div className="flex flex-col justify-center items-center min-h-screen w-full">
       <h2 className="text-3xl text-center my-6">User Registration</h2>
       <form onSubmit={handleSubmit}>
-        <h2>Enter your name</h2>
+        <h2>Full Name*</h2>
         <input
           name="name"
           onChange={handleChange}
@@ -70,7 +80,7 @@ const Register = () => {
           className="border border-gray-300 px-2 py-1 rounded-md "
         />
         <br />
-        <h1>Enter your email</h1>
+        <h1>Email*</h1>
         <input
           name="email"
           type="email"
@@ -81,7 +91,7 @@ const Register = () => {
           className="border border-gray-300 px-2 py-1 rounded-md my-2"
         />
         <br />
-        <h1>Enter your Phone Number</h1>
+        <h1>Phone Number</h1>
         <input
           name="phone"
           type="text"
@@ -92,6 +102,37 @@ const Register = () => {
           className="border border-gray-300 px-2 py-1 rounded-md my-2"
         />
         <br />
+        <h1>Dath Of Birth</h1>
+        <input
+          name="dob"
+          type="date"
+          onChange={handleChange}
+          value={form.dob}
+          placeholder="Dath Of Birth"
+          required
+          className="border border-gray-300 px-2 py-1 rounded-md my-2"
+        />
+        <br />
+        <div>
+          <label
+            htmlFor={name}
+            className="block text-base font-medium text-gray-700 mb-1"
+          >
+            Select Division
+          </label>
+          <select
+            name="division"
+            onChange={handleChange}
+            value={form.division}
+            required
+            className="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+          >
+            <option value="">Select Division</option>
+            <option value="Chattagram">Chattagram</option>
+            <option value="Dhaka">Dhaka</option>
+            <option value="Khulna">Khulna</option>
+          </select>
+        </div>
         <h2>Enter a new password</h2>
         <input
           name="password"
@@ -103,7 +144,7 @@ const Register = () => {
           className="border border-gray-300 px-2 py-1 rounded-md my-2"
         />{" "}
         <br />
-        <h2>Give a referralcode</h2>
+        <h2>Referrer ID</h2>
         <input
           name="referralCode"
           onChange={handleChange}
@@ -120,33 +161,35 @@ const Register = () => {
         </button>
       </form>
       {registeredUser && <Dashboard user={registeredUser} />}
-      {/* {userReferralCode && (
-        <div style={{ marginTop: "30px" }}>
-          <h3>🎉 Registration Successful!</h3>
-          <p>
-            <strong>Your Referral Code:</strong> {userReferralCode}
-          </p>
-          <QRCode
-            value={`http://localhost:5174/register?ref=${userReferralCode}`}
-          />
-          <p style={{ marginTop: "10px" }}>
-            <strong>Your 10-Level Upline:</strong>
-          </p>
-          <ul>
-            {referralTree.map((id, i) => (
-              <li key={id}>
-                Level {i + 1} → {id}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )} */}
     </div>
   );
 };
 
 export default Register;
 
+{
+  /* {userReferralCode && (
+  <div style={{ marginTop: "30px" }}>
+    <h3>🎉 Registration Successful!</h3>
+    <p>
+      <strong>Your Referral Code:</strong> {userReferralCode}
+    </p>
+    <QRCode
+      value={`http://localhost:5174/register?ref=${userReferralCode}`}
+    />
+    <p style={{ marginTop: "10px" }}>
+      <strong>Your 10-Level Upline:</strong>
+    </p>
+    <ul>
+      {referralTree.map((id, i) => (
+        <li key={id}>
+          Level {i + 1} → {id}
+        </li>
+      ))}
+    </ul>
+  </div>
+)} */
+}
 // import { useContext } from "react";
 // import AuthProvider from "../AuthProvider/AuthProvider";
 // import { set, useForm } from "react-hook-form";
