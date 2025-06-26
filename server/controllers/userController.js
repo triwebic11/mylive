@@ -105,7 +105,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-
 // ✅ Get All Users Controller
 const getAllUsers = async (req, res) => {
   try {
@@ -129,7 +128,22 @@ const getUserById = async (req, res) => {
   }
 };
 
+//update userInfo
 
+const updatProfileInfo = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const updates = req.body;
+
+    const user = await User.findByIdAndUpdate(userId, updates, { new: true });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ success: true, message: "Profile updated", user });
+  } catch (err) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
 //getMyReferrals
 
 const getMyReferrals = async (req, res) => {
@@ -217,6 +231,7 @@ module.exports = {
   updateUserPassword,
   getAllUsers,
   getUserById,
+  updatProfileInfo,
 };
 
 // const bcrypt = require("bcrypt");

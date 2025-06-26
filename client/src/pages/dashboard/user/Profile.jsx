@@ -2,6 +2,7 @@ import React from "react";
 // import useAuth from "../../../Hooks/useAuth";
 import UpdatePassword from "../../../components/UpdatePassword";
 import MobAndBankInfoForm from "../../../components/UpdateBanAndMobInfo";
+import UpdateProfileInfo from "../../../components/UpdateProfile";
 
 const Profile = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -25,7 +26,8 @@ const Profile = () => {
           <h1 className="font-bold">Profile Information</h1>
           <p>Update your account's profile information and email address.</p>
         </div>
-        <div className="grid justify-around grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+        <UpdateProfileInfo user={storedUser} />
+        {/* <div className="grid justify-around grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
           <div>
             <span>Name</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg ">
@@ -33,7 +35,7 @@ const Profile = () => {
             </div>
           </div>
           <div>
-            <span>Email</span>
+            <span>Phone</span>
             <div className="px-2 py-1 border border-gray-300 rounded-lg">
               {user?.email}
             </div>
@@ -98,7 +100,7 @@ const Profile = () => {
               Update
             </button>
           </div>
-        </div>
+        </div> */}
         <div className="mt-8">
           <MobAndBankInfoForm />
         </div>
