@@ -1,7 +1,8 @@
 import React from "react";
 import { QRCodeCanvas } from "qrcode.react";
-import MyReferrals from "./MyReferrals";
+
 import ReferralTree from "./ReferralTree";
+import MyReferral from "../../../../components/MyReferral";
 const Dashboard = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const user = storedUser?.user || {};
@@ -36,7 +37,7 @@ const Dashboard = () => {
       {/* Upline Tree */}
       <div className="bg-white shadow rounded-2xl p-6 mb-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-3">
-          📚 Your 10-Level Referral Upline Tree
+          📚 Referral Upline Tree
         </h3>
         {user?.referralTree?.length === 0 ? (
           <p className="text-gray-500">You were not referred by anyone.</p>
@@ -57,7 +58,7 @@ const Dashboard = () => {
           📝 Your Profile Info
         </h3>
         <p className="text-sm text-gray-600">
-          <strong>Email:</strong> {user.email}
+          <strong>Phone:</strong> {user.email}
         </p>
         <p className="text-sm text-gray-600">
           <strong>User ID:</strong> {user?._id}
@@ -75,7 +76,7 @@ const Dashboard = () => {
         </p>
       </div>
 
-      <MyReferrals referralCode={user?.referralCode} />
+      <MyReferral referralCode={user?.referralCode} />
       <ReferralTree referralTree={user?.referralTree} />
     </div>
   );
