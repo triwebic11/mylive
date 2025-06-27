@@ -19,7 +19,7 @@ import AboutUs from "./pages/AboutUs.jsx";
 import Management from "./pages/Management.jsx";
 import CoreValue from "./pages/CoreValue.jsx";
 import AuthProvider from "./AuthProvider/AuthProvider.jsx";
-import CashOnDelivery from "./pages/dashboard/SuperAdmin/CashOnDelivery.jsx";
+import CashOnDelivery from "./pages/dashboard/Admin/CashOnDelivery.jsx";
 import ProductDetails from "./components/ProductDetails.jsx";
 import Profile from "./pages/dashboard/user/Profile.jsx";
 import FontDashboard from "./pages/dashboard/SuperAdmin/FontDashboard.jsx";
@@ -40,6 +40,9 @@ import PackegForActive from "./pages/packeg/PackegForActive.jsx";
 import UpdatePassword from "./components/UpdatePassword.jsx";
 import UserDetails from "./components/UserDetails.jsx";
 import AllUsers from "./pages/admin/AllUsers.jsx";
+import AddProduct from "./pages/dashboard/Admin/AddProduct.jsx";
+import PackageUpdate from "./pages/dashboard/Admin/PackageUpdate.jsx";
+import AddPackages from "./pages/dashboard/Admin/AddPackages.jsx";
 
 const queryClients = new QueryClient();
 
@@ -79,7 +82,8 @@ const router = createBrowserRouter([
     children: [
       { path: "/dashboard/CashonDelivery", element: <Orders /> },
       { path: "/dashboard/profile", element: <Profile /> },
-      { path: "/dashboard/packages", element: <PackegForActive /> },
+      { path: "/dashboard/packages", element: <PackageUpdate /> },
+      { path: "/dashboard/AddPackages", element: <AddPackages /> },
       { path: "/dashboard/leaderboard", element: <FontDashboard /> },
       { path: "/dashboard/refer-link", element: <ReferLinkPage /> },
       { path: "/dashboard/my-team", element: <MyTeam /> },
@@ -96,6 +100,7 @@ const router = createBrowserRouter([
       { path: "/dashboard/my-order", element: <MyOrder /> },
       { path: "/dashboard/voucher", element: <Voucher /> },
       { path: "/dashboard/my-consistency", element: <MyConsistency /> },
+      { path: "/dashboard/AddProduct", element: <AddProduct /> },
     ],
   },
   {
