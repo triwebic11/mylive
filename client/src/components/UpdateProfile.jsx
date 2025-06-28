@@ -75,7 +75,6 @@ const UpdateProfileInfo = () => {
             value={form.name}
             onChange={handleChange}
             className="w-full border px-3 py-2 rounded-md mt-1"
-            required
           />
         </div>
 
@@ -87,7 +86,6 @@ const UpdateProfileInfo = () => {
             value={form.email}
             onChange={handleChange}
             className="w-full border px-3 py-2 rounded-md mt-1"
-            required
           />
         </div>
 
@@ -99,7 +97,6 @@ const UpdateProfileInfo = () => {
             value={form.phone}
             onChange={handleChange}
             className="w-full border px-3 py-2 rounded-md mt-1"
-            required
           />
         </div>
 

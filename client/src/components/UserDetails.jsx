@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import ReferralTree from "../pages/dashboard/user/Referals/ReferralTree";
+import MyReferral from "./MyReferral";
 const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
@@ -28,59 +30,6 @@ const UserDetails = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">User Details</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded shadow">
-        <div>
-          <strong>Name:</strong> {user.name}
-        </div>
-        <div>
-          <strong>Email:</strong> {user.email}
-        </div>
-        <div>
-          <strong>Phone:</strong> {user.phone}
-        </div>
-        <div>
-          <strong>Referral Code:</strong> {user.referralCode}
-        </div>
-        <div>
-          <strong>Referral Tree:</strong> {user.referralTree?.join(" > ")}
-        </div>
-        <div>
-          <strong>Address:</strong> {user.address || "N/A"}
-        </div>
-      </div>
-
-      <h2 className="text-xl font-semibold mt-6 mb-2">Bank Information</h2>
-      {bankInfo ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded shadow">
-          <div>
-            <strong>Bkash:</strong> {bankInfo.bkash}
-          </div>
-          <div>
-            <strong>Nagad:</strong> {bankInfo.nagad}
-          </div>
-          <div>
-            <strong>Rocket:</strong> {bankInfo.rocket}
-          </div>
-          <div>
-            <strong>Bank Name:</strong> {bankInfo.bankName}
-          </div>
-          <div>
-            <strong>Account No:</strong> {bankInfo.accountNumber}
-          </div>
-          <div>
-            <strong>Holder:</strong> {bankInfo.accountHolder}
-          </div>
-          <div>
-            <strong>Branch:</strong> {bankInfo.branch}
-          </div>
-          <div>
-            <strong>Route No:</strong> {bankInfo.routeNo}
-          </div>
-        </div>
-      ) : (
-        <p className="text-gray-600">No bank info found for this user.</p>
-      )}
       <div>
         <Link
           to="/allUsers"
@@ -90,11 +39,130 @@ const UserDetails = () => {
         </Link>
         <Link
           to="/dashboard"
-          className=" bg-amber-800 text-white border border-amber-500 px-2 py-1 rounded-xl hover:opacity-80 my-10 inline-block "
+          className=" bg-amber-800 text-white border border-amber-500 px-2 py-1 mx-6 rounded-xl hover:opacity-80 my-10 inline-block "
         >
           Go to Dashboard
         </Link>
       </div>
+      <h1 className="text-2xl font-bold mb-4">User Details</h1>
+      <div className="overflow-x-auto bg-white shadow rounded-lg mt-4">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="text-left font-bold px-6 py-3 text-lg text-gray-700">
+                Field
+              </th>
+              <th className="text-left px-6 py-3 text-lg font-bold text-gray-700">
+                Value
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">Name</td>
+              <td className="px-6 py-3">{user.name}</td>
+            </tr>
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">Email</td>
+              <td className="px-6 py-3">{user.email}</td>
+            </tr>
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">Phone</td>
+              <td className="px-6 py-3">{user.phone}</td>
+            </tr>
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">User ID</td>
+              <td className="px-6 py-3">{user._id}</td>
+            </tr>
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">
+                Referral Code
+              </td>
+              <td className="px-6 py-3">{user.referralCode}</td>
+            </tr>
+            {/* Uncomment below line if you want to show referral tree in string form */}
+            {/* <tr>
+        <td className="px-6 py-3 font-medium text-gray-600">Referral Tree</td>
+        <td className="px-6 py-3">{user.referralTree?.join(" > ")}</td>
+      </tr> */}
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">Address</td>
+              <td className="px-6 py-3">{user.address || "N/A"}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 className="text-xl font-semibold mt-6 mb-2">Bank Information</h2>
+      {bankInfo ? (
+        <div className="overflow-x-auto bg-white shadow rounded-lg mt-4">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-700">
+                  Field
+                </th>
+                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-700">
+                  Value
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              <tr className="hover:bg-gray-50 hover:shadow-md transition-all">
+                <td className="px-6 py-3 font-medium text-gray-600">Bkash</td>
+                <td className="px-6 py-3">{bankInfo.bkash || "N/A"}</td>
+              </tr>
+              <tr className="hover:bg-gray-50 hover:shadow-md transition-all">
+                <td className="px-6 py-3 font-medium text-gray-600">Nagad</td>
+                <td className="px-6 py-3">{bankInfo.nagad || "N/A"}</td>
+              </tr>
+              <tr className="hover:bg-gray-50 hover:shadow-md transition-all">
+                <td className="px-6 py-3 font-medium text-gray-600">Rocket</td>
+                <td className="px-6 py-3">{bankInfo.rocket || "N/A"}</td>
+              </tr>
+              <tr className="hover:bg-gray-50 hover:shadow-md transition-all">
+                <td className="px-6 py-3 font-medium text-gray-600">
+                  Bank Name
+                </td>
+                <td className="px-6 py-3">{bankInfo.bankName || "N/A"}</td>
+              </tr>
+              <tr className="hover:bg-gray-50 hover:shadow-md transition-all">
+                <td className="px-6 py-3 font-medium text-gray-600">
+                  Account No
+                </td>
+                <td className="px-6 py-3">{bankInfo.accountNumber || "N/A"}</td>
+              </tr>
+              <tr className="hover:bg-gray-50 hover:shadow-md transition-all">
+                <td className="px-6 py-3 font-medium text-gray-600">Holder</td>
+                <td className="px-6 py-3">{bankInfo.accountHolder || "N/A"}</td>
+              </tr>
+              <tr className="hover:bg-gray-50 hover:shadow-md transition-all">
+                <td className="px-6 py-3 font-medium text-gray-600">Branch</td>
+                <td className="px-6 py-3">{bankInfo.branch || "N/A"}</td>
+              </tr>
+              <tr className="hover:bg-gray-50 hover:shadow-md transition-all">
+                <td className="px-6 py-3 font-medium text-gray-600">
+                  Route No
+                </td>
+                <td className="px-6 py-3">{bankInfo.routeNo || "N/A"}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="text-gray-600">No bank info found for this user.</p>
+      )}
+      <h2 className="text-xl font-semibold mt-6 mb-2">Referral Information</h2>
+      <div className="bg-white shadow rounded-2xl p-6 mt-6">
+        <h3 className="text-lg font-semibold text-gray-700">
+          🎁 Total Referral Points
+        </h3>
+        <p className="text-2xl text-green-600 font-bold">
+          {user?.points || 0} Points
+        </p>
+      </div>
+      <MyReferral referralCode={user?.referralCode} />
+      <ReferralTree referralTree={user?.referralTree} />
     </div>
   );
 };

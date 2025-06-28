@@ -41,7 +41,7 @@ const ReferLinkPage = () => {
             type="text"
             value={referLink}
             readOnly
-            className="w-full text-center bg-gray-100 rounded-lg px-4 py-2 mb-4 border border-gray-300"
+            className="w-full text-center bg-gray-100 rounded-lg px-4 py-2 mb-4 border border-gray-300 text-wrap"
           />
           <div className="flex gap-4 justify-center">
             <button

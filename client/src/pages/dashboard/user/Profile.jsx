@@ -27,82 +27,10 @@ const Profile = () => {
           <p>Update your account's profile information and email address.</p>
         </div>
         <UpdateProfileInfo user={storedUser} />
-        {/* <div className="grid justify-around grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-          <div>
-            <span>Name</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg ">
-              {user?.name}
-            </div>
-          </div>
-          <div>
-            <span>Phone</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user?.email}
-            </div>
-          </div>
-          <div>
-            <span>Phone</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user?.phone}
-            </div>
-          </div>
-          <div>
-            <span>Refer Name</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Your refer name
-            </div>
-          </div>
-          <div>
-            <span>Placement</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Placement name
-            </div>
-          </div>
-          <div>
-            <span>Address</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              {user?.address || "You didn't add your address yet"}
-            </div>
-          </div>
-          <div>
-            <span>Image</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg cursor-pointer">
-              <input type="file" className="w-full" />
-            </div>
-          </div>
-          <div>
-            <span>Nominee Name</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Your nominee name
-            </div>
-          </div>
-          <div>
-            <span>Nominee Relation</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Nominee Relation
-            </div>
-          </div>
-          <div>
-            <span>Nominee Date Of Birth</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Nominee Date Of Birth
-            </div>
-          </div>
-          <div>
-            <span>Nominee Phone</span>
-            <div className="px-2 py-1 border border-gray-300 rounded-lg">
-              Nominee Phone
-            </div>
-          </div>
-          <br />
-          <div>
-            <button className="px-4 py-1 border rounded-xl cursor-pointer hover:bg-gray-100 duration-300">
-              Update
-            </button>
-          </div>
-        </div> */}
+
         <div className="mt-8">
           <MobAndBankInfoForm />
+          <UpdatePassword />
         </div>
       </div>
     </div>
