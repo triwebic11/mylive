@@ -1,35 +1,12 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
+import useProducts from "../../../Hooks/useProducts";
 
-const products = [
-    {
-        id: 1,
-        name: "oil",
-        price: 800,
-        image: "https://via.placeholder.com/100"
-    },
-    {
-        id: 2,
-        name: "Food",
-        price: 300,
-        image: "https://via.placeholder.com/100"
-    },
-    {
-        id: 3,
-        name: "test",
-        price: 200,
-        image: "https://via.placeholder.com/100"
-    },
 
-    {
-        id: 4,
-        name: "look",
-        price: 500,
-        image: "https://via.placeholder.com/100"
-    }
-];
 
 const CashOnDelivery = () => {
     const [cartItems, setCartItems] = useState([]);
+    const [products, isLoading, isError, error, refetch] = useProducts(); // Assuming useProducts is a custom hook that fetches products
     const [form, setForm] = useState({ name: "", phone: "", address: "", city: "" });
 
     const handleProductToggle = (product) => {
@@ -70,11 +47,11 @@ const CashOnDelivery = () => {
             <div className="mb-4">
                 <label className="block mb-2 font-medium">Select Products</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {products.map(product => {
+                    {products?.map(product => {
                         const selected = cartItems.find(item => item.id === product.id);
                         return (
                             <div key={product.id} className={`border p-3 rounded cursor-pointer ${selected ? 'bg-green-100' : 'bg-white'}`} onClick={() => handleProductToggle(product)}>
-                                <img src={product.image} alt={product.name} className="w-full h-24 object-cover rounded mb-2" />
+                                <img src={product?.image} alt={product.name} className="w-full h-24 object-cover rounded mb-2" />
                                 <h3 className="font-semibold">{product.name}</h3>
                                 <p>Tk {product.price}</p>
                                 {selected && (

@@ -67,7 +67,6 @@ const FontSize = Mark.create({
 
 const AddProduct = () => {
     const { register, handleSubmit } = useForm();
-    const [imageUrl, setImageUrl] = useState(null);
     const [details, setDetails] = useState("");
     const [imageUrls, setImageUrls] = useState([]);
     const axiosSecure = useAxiosSecure()

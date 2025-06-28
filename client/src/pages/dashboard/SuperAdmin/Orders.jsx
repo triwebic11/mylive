@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
@@ -60,7 +61,7 @@ const Orders = () => {
         queryFn: async () => {
             try {
                 const res = await axiosPublic.get(`/cashonDelivery/all`);
-                return res.data;
+                return Array.isArray(res.data) ? [...res.data].reverse() : [];;
             } catch (err) {
                 console.error("Error fetching cash on delivery:", err);
                 throw err;
@@ -200,8 +201,8 @@ const handleFilter = () => {
                                 className="border-t border-gray-200 hover:bg-gray-50 text-sm"
                             >
                                 <td className="px-4 py-2">{idx + 1}</td>
-                                <td className="px-4 py-2">{order?.product.image}</td>
-                                <td className="px-4 py-2">{order?.product.Price}</td>
+                                <td className="px-4 py-2"><img src={order?.product.image} alt="" className="w-20" /></td>
+                                <td className="px-4 py-2">{order?.product.price}</td>
 
                                 <td className="px-4 py-2">{order?.orderTime}</td>
                                
