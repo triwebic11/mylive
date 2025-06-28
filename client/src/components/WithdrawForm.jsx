@@ -2,14 +2,26 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const WithdrawForm = ({ user }) => {
+const WithdrawForm = ({ userId }) => {
+  const [user, setUser] = useState(null);
   const [withdrawPoints, setWithdrawPoints] = useState("");
   const [currentPoints, setCurrentPoints] = useState(0);
 
+  // Fetch user data by ID
   useEffect(() => {
-    if (user?._id) {
+    if (userId) {
       axios
-        .get(`http://localhost:5000/api/users/points/${user._id}`)
+        .get(`http://localhost:5000/api/users/${userId}`)
+        .then((res) => setUser(res.data))
+        .catch((err) => console.error("Failed to fetch user", err));
+    }
+  }, [userId]);
+
+  // Fetch current points
+  useEffect(() => {
+    if (userId) {
+      axios
+        .get(`http://localhost:5000/api/users/points/${userId}`)
         .then((res) => {
           setCurrentPoints(res.data.points || 0);
         })
@@ -17,7 +29,7 @@ const WithdrawForm = ({ user }) => {
           console.error("Failed to fetch points", err);
         });
     }
-  }, [user?._id]);
+  }, [userId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,15 +70,21 @@ const WithdrawForm = ({ user }) => {
     }
   };
 
-  return (
-    <div className="bg-white shadow-lg rounded-xl p-6 max-w-md mx-auto mt-6">
-      <h2 className="text-xl font-bold mb-4 text-center">💰 Withdraw Points</h2>
+  if (!user) return <p className="text-center mt-4">Loading user data...</p>;
 
-      <p className="text-center text-gray-600 mb-4">
-        You have{" "}
-        <span className="font-semibold text-green-600">{currentPoints}</span>{" "}
-        points available.
-      </p>
+  return (
+    <div className="min-h-screen flex flex-col justify-center items-center bg-white shadow-lg rounded-xl p-6 max-w-md mx-auto mt-6">
+      <div>
+        <h2 className="text-xl font-bold mb-4 text-center">
+          💰 Withdraw Points
+        </h2>
+
+        <p className="text-center text-gray-600 mb-4">
+          You have{" "}
+          <span className="font-semibold text-green-600">{user.points}</span>{" "}
+          points available.
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

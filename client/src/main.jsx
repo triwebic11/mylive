@@ -31,7 +31,7 @@ import MyTeam from "./pages/dashboard/user/Referals/MyTeam.jsx";
 import Transactions from "./pages/dashboard/user/wallet/Transactions.jsx";
 import TodayStatement from "./pages/dashboard/SuperAdmin/TodayStatement.jsx";
 import CommissionStatement from "./pages/dashboard/SuperAdmin/CommisionStatement.jsx";
-import Withdraw from "./pages/dashboard/SuperAdmin/Withdrow.jsx";
+import Withdraw from "./pages/dashboard/user/Withdorw.jsx";
 import MyOrder from "./pages/dashboard/SuperAdmin/MyOrder.jsx";
 import Voucher from "./pages/dashboard/SuperAdmin/Voucher.jsx";
 import MyConsistency from "./pages/dashboard/SuperAdmin/MyConsistency.jsx";
