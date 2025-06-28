@@ -53,12 +53,17 @@ const adminDashboardArry = [
     link: "/dashboard",
   },
   {
+    title: "Add Product",
+    icon: "",
+    link: "/dashboard/AddProduct",
+  },
+  {
     title: "Manage Packages",
     icon: "",
     link: "/dashboard",
     submenu: [
-      { title: "All Packages", icon: "", link: "/dashboard" },
-      { title: "Add Packages", icon: "", link: "/dashboard" },
+      { title: "All Packages", icon: "", link: "/dashboard/packages" },
+      { title: "Add Packages", icon: "", link: "/dashboard/AddPackages" },
     ],
   },
 ];

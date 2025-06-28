@@ -2,6 +2,7 @@ import React from "react";
 import { GoPackage } from "react-icons/go";
 import useUserData from "../../../Hooks/useUserData";
 import useAuth from "../../../Hooks/useAuth";
+import DashboardHeadings from "../../../components/DashboardHeadings";
 
 const plans = [
   {
@@ -89,10 +90,7 @@ export default function PackageUpdate() {
   return (
     <div className="max-w-7xl mx-auto  py-16 px-4 text-center">
       {/* Header */}
-      <h1 className="text-3xl md:text-4xl font-bold text-black mb-3">Our Packages</h1>
-      <p className="text-gray-600 mb-1">
-        Choose the best package that suits your needs and start earning today!
-      </p>
+      <DashboardHeadings heading={"Our Packages"} smalltext={"Choose the best package that suits your needs and start earning today!"}></DashboardHeadings>
       <p className="text-gray-600">
         Each package comes with unique features and benefits to help you maximize your earnings.
       </p>
