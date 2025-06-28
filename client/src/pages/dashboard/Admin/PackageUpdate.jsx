@@ -1,82 +1,18 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
-import { GoPackage } from "react-icons/go";
-import useUserData from "../../../Hooks/useUserData";
+import { GoPackage } from "react-icons/go";;
 import useAuth from "../../../Hooks/useAuth";
 import DashboardHeadings from "../../../components/DashboardHeadings";
+import usePackages from "../../../Hooks/usePackages";
 
-const plans = [
-  {
-    id: "1",
-    price: "2,000 TK",
-    PV: "1000",
-    name: "Regular",
-    description: "Basic membership with standard referral benefits.",
-    features: [
-      "Basic referral tracking",
-      "Access to limited offers",
-      "Email support",
-      "Referral bonus on first purchase",
-      "Monthly Bonus",
-      "Level 3 referral bonus",
-      "Level 3 14 ways commission bonus",
-    ],
-  },
-  {
-    id: "2",
-    price: "5,000 TK",
-    PV: "2500",
-    name: "Silver",
-    description: "Silver membership with improved referral bonus.",
-    features: [
-      "Email support",
-      "Higher referral bonus",
-      "Referral bonus on first purchase",
-      "Monthly Bonus",
-      "Level 10 referral bonus",
-      "Level 10 14 ways commission bonus",
-      "Priority support",
-      "Access to silver-only deals",
-    ],
-  },
-  {
-    id: "3",
-    price: "15,000 TK",
-    PV: "7500",
-    name: "Gold",
-    description: "Gold membership with advanced referral benefits.",
-    features: [
-      "Email support",
-      "Higher referral bonus",
-      "Referral bonus on first purchase",
-      "Monthly Bonus",
-      "Level 20 referral bonus",
-      "Level 20 14 ways commission bonus",
-      "24/7 support",
-      "Exclusive gold member deals",
-      "Referral leaderboard access",
-    ],
-  },
-  {
-    id: "4",
-    price: "35,000 TK",
-    PV: "17500",
-    name: "Platinum",
-    description: "Premium membership with maximum referral benefits.",
-    features: [
-      "Email support",
-      "Highest referral bonus",
-      "Referral bonus on first purchase",
-      "Monthly Bonus",
-      "Unlimited Level referral bonus",
-      "Unlimited 14 ways commission bonus",
-      "Dedicated account manager",
-      "Early access to new products",
-      "Exclusive platinum member events",
-    ],
-  },
-];
+
+
+
 export default function PackageUpdate() {
-  const { user } = useAuth();
+
+  const [packages, isLoading, isError, error, refetch] = usePackages()
+
+  const {user} = useAuth()
   console.log("user package compo", user);
 
   const handleAddPackage = (plan) => {
@@ -98,7 +34,7 @@ export default function PackageUpdate() {
 
       {/* Cards */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {plans.map((plan, index) => (
+        {packages?.map((plan, index) => (
           <div
             key={index}
             className={`rounded-xl ${plan.border} shadow-sm flex flex-col justify-between items-center py-8 transition duration-300 hover:bg-orange-100 hover:shadow-2xl`}

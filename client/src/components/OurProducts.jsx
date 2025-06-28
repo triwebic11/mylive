@@ -1,41 +1,12 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { onion, toxin, halwa, helth, neem, sampoo, protein, vigoproduct } from "../assets";
 import { Link } from 'react-router-dom';
+import useProducts from '../Hooks/useProducts';
 
 const OurProducts = () => {
-    const data = [
-        {
-            _id: 1,
-            image: vigoproduct,
-            details: "sdfsdfsdfsd"
-        },
-        {
-            _id: 2,
-            image: toxin,
-            details: "sdfsdfsdfsd"
-        },
-        {
-            _id: 3,
-            image: helth,
-            details: "sdfsdfsdfsd"
-        },
-        {
-            _id: 4,
-            image: neem,
-            details: "sdfsdfsdfsd"
-        },
-        {
-            _id: 5,
-            image: sampoo,
-            details: "sdfsdfsdfsd"
-        },
-        {
-            _id: 6,
-            image: protein,
-            details: "sdfsdfsdfsd"
-        },
+    const [products, isLoading, isError, error, refetch] = useProducts();
 
-    ]
     return (
         <div className='py-20'>
 
@@ -46,7 +17,7 @@ const OurProducts = () => {
         </div>
             <div className='grid grid-cols-1 md:grid-cols-2'>
                 {
-                    data?.map((item=> <>
+                    products?.map((item=> <>
                     <Link to={`/productdetails/${item._id}`} className="relative  h-[330px] group overflow-hidden">
                     {/* Image */}
                     <img

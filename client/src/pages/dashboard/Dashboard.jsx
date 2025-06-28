@@ -57,9 +57,13 @@ const adminDashboardArry = [
     link: "/allWithdrawals",
   },
   {
-    title: "Add Product",
+    title: "Manage Products",
     icon: "",
-    link: "/dashboard/AddProduct",
+    link: "/dashboard",
+    submenu: [
+      { title: "All Products", icon: "", link: "/dashboard/allProducts" },
+      { title: "Add Products", icon: "", link: "/dashboard/AddProduct" },
+    ],
   },
   {
     title: "Manage Packages",
@@ -67,7 +71,7 @@ const adminDashboardArry = [
     link: "/dashboard",
     submenu: [
       { title: "All Packages", icon: "", link: "/dashboard/packages" },
-      { title: "Add Packages", icon: "", link: "/dashboard/AddPackages" },
+      { title: "Update Packages", icon: "", link: "/dashboard/updatePackages" },
     ],
   },
 ];

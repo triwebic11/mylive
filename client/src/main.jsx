@@ -42,8 +42,9 @@ import UserDetails from "./components/UserDetails.jsx";
 import AllUsers from "./pages/admin/AllUsers.jsx";
 import AddProduct from "./pages/dashboard/Admin/AddProduct.jsx";
 import PackageUpdate from "./pages/dashboard/Admin/PackageUpdate.jsx";
-import AddPackages from "./pages/dashboard/Admin/AddPackages.jsx";
+import UpdatePackages from "./pages/dashboard/Admin/UpdatePackages.jsx";
 import AdminWithdrawRequests from "./components/AdminWithdrawRequests.jsx";
+import AllProducts from "./pages/dashboard/Admin/AllProducts.jsx";
 
 const queryClients = new QueryClient();
 
@@ -84,7 +85,8 @@ const router = createBrowserRouter([
       { path: "/dashboard/CashonDelivery", element: <Orders /> },
       { path: "/dashboard/profile", element: <Profile /> },
       { path: "/dashboard/packages", element: <PackageUpdate /> },
-      { path: "/dashboard/AddPackages", element: <AddPackages /> },
+      { path: "/dashboard/allProducts", element: <AllProducts /> },
+      { path: "/dashboard/updatePackages", element: <UpdatePackages /> },
       { path: "/dashboard/leaderboard", element: <FontDashboard /> },
       { path: "/dashboard/refer-link", element: <ReferLinkPage /> },
       { path: "/dashboard/my-team", element: <MyTeam /> },
