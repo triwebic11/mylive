@@ -19,7 +19,7 @@ function Footer() {
                     <p className="font-semibold text-blue-700 mb-4">ABOUT US</p>
                     <img
                         src={logo}
-                        alt="Liveon Logo"
+                        alt="SHS Lira Logo"
                         className="w-28 mb-2"
                     />
                     <p className="font-bold text-gray-800 text-sm text-center md:text-left">
@@ -79,9 +79,9 @@ function Footer() {
                     </div>
                 </div>
             </div>
-            <p className="bg-blue-800 text-white text-center py-3 text-sm">
+            <h4 className="bg-blue-800 text-white text-center py-3 text-sm">
                 Copyright <span>©</span> 2025, SHS Lira Manufacturing & Marketing LTD
-            </p>
+            </h4>
         </footer>
     );
 }

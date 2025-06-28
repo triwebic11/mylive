@@ -19,7 +19,6 @@ import AboutUs from "./pages/AboutUs.jsx";
 import Management from "./pages/Management.jsx";
 import CoreValue from "./pages/CoreValue.jsx";
 import AuthProvider from "./AuthProvider/AuthProvider.jsx";
-import CashOnDelivery from "./pages/dashboard/Admin/CashOnDelivery.jsx";
 import ProductDetails from "./components/ProductDetails.jsx";
 import Profile from "./pages/dashboard/user/Profile.jsx";
 import FontDashboard from "./pages/dashboard/SuperAdmin/FontDashboard.jsx";

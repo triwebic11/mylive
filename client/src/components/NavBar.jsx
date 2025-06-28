@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { FaUser, FaSignInAlt, FaBars } from "react-icons/fa";
+import { FaUser, FaSignInAlt, FaBars, FaTimes } from "react-icons/fa"; // added FaTimes
 import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../AuthProvider/AuthProvider";
 import Swal from "sweetalert2";
 import useAuth from "../Hooks/useAuth";
 
@@ -17,7 +16,7 @@ const menuItems = [
     ],
   },
   { label: "Packages", path: "/packages" },
-  { label: "Why Liveon", path: "/why-liveon" },
+  // { label: "Why SHS Lira", path: "/" },
   {
     label: "Products",
     subItems: [
@@ -39,12 +38,10 @@ function NavBar() {
   const [isAboutOpen, setAboutOpen] = useState(false);
   const [isProductsOpen, setProductsOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openSubmenu, setOpenSubmenu] = useState(null); // for mobile submenu toggle
+  const [openSubmenu, setOpenSubmenu] = useState(null);
 
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
-
-  console.log("navbar user coming", user);
 
   const toggleSubmenu = (label) => {
     setOpenSubmenu((prev) => (prev === label ? null : label));
@@ -64,11 +61,11 @@ function NavBar() {
 
   return (
     <nav className="bg-white shadow-md">
-      <div className="max-w-[1500px] mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="max-w-[1450px] mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo and Title */}
         <div className="flex items-center">
           <Link to={"/"}>
-            <img src={logo} alt="Liveon" className="h-14" />
+            <img src={logo} alt="SHS Lira" className="h-14" />
           </Link>
           <p className="font-semibold p-2 text-sm md:text-lg border rounded-full m-1 shadow-lg shadow-gray-300 hover:shadow-xl duration-200">
             SHS
@@ -94,7 +91,7 @@ function NavBar() {
                 <>
                   {item.label}
                   {(item.label === "About" && isAboutOpen) ||
-                  (item.label === "Products" && isProductsOpen) ? (
+                    (item.label === "Products" && isProductsOpen) ? (
                     <ul className="absolute top-5 left-0 w-64 bg-white border rounded shadow-md z-50">
                       {item.subItems.map((subItem, subIndex) => (
                         <li
@@ -147,14 +144,18 @@ function NavBar() {
             onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
             className="bg-red-600 p-2 rounded-sm"
           >
-            <FaBars className="text-white text-lg" />
+            {isMobileMenuOpen ? (
+              <FaTimes className="text-white text-lg" />
+            ) : (
+              <FaBars className="text-white text-lg" />
+            )}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden px-4 py-2 bg-gray-50 space-y-2 text-sm font-medium">
+        <div className=" lg:hidden px-4 py-2 bg-gray-50 space-y-2 text-sm font-medium">
           {menuItems.map((item, index) => (
             <div key={index}>
               {item.subItems ? (
