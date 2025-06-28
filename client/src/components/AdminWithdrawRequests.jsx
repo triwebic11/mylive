@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 const AdminWithdrawRequests = () => {
   const [requests, setRequests] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Load withdraw requests
   useEffect(() => {
@@ -39,12 +41,36 @@ const AdminWithdrawRequests = () => {
       Swal.fire("Error", "Failed to update request status", "error");
     }
   };
+  const filteredRequests = requests.filter((req) => {
+    const lowerSearch = searchTerm.toLowerCase();
+    return (
+      req.name.toLowerCase().includes(lowerSearch) ||
+      req.phone.toLowerCase().includes(lowerSearch)
+    );
+  });
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-xl mt-8">
+      <div>
+        <Link
+          to="/dashboard"
+          className="px-2 py-1 border border-gray-500 rounded-md text-lg shadow-lg hover:shadow-none duration-200"
+        >
+          Go Back
+        </Link>
+      </div>
       <h2 className="text-2xl font-bold mb-4 text-center">
         🧾 Withdraw Requests
       </h2>
+      <div className="flex justify-end mb-4">
+        <input
+          type="text"
+          placeholder="Search by name or phone"
+          className="border px-4 py-2 rounded-md shadow-sm w-full md:w-1/3 focus:outline-none focus:ring focus:ring-blue-200"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
 
       {requests.length === 0 ? (
         <p className="text-center text-gray-500">No withdraw requests found.</p>
@@ -61,7 +87,7 @@ const AdminWithdrawRequests = () => {
             </tr>
           </thead>
           <tbody>
-            {requests.map((req) => {
+            {filteredRequests.map((req) => {
               const date = new Date(req.createdAt).toLocaleString("en-BD", {
                 dateStyle: "medium",
                 timeStyle: "short",
