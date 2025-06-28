@@ -1,5 +1,6 @@
 import React from "react";
 import WithdrawForm from "../../../components/WithdrawForm";
+import UserWithdrawHistory from "../../../components/UserWithdrawHistory";
 
 const Withdorw = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -7,6 +8,7 @@ const Withdorw = () => {
   return (
     <div>
       <WithdrawForm userId={userId} />
+      <UserWithdrawHistory userId={userId} />
     </div>
   );
 };

@@ -38,7 +38,20 @@ const getAllWithdrawRequests = async (req, res) => {
   }
 };
 
+const getWithdrawRequestsByUser = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const requests = await WithdrawRequest.find({ userId, status: "approved" }).sort({ createdAt: -1 });
+    res.status(200).json(requests);
+  } catch (error) {
+    console.error("Failed to fetch user withdraw history", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   createWithdrawRequest,
   getAllWithdrawRequests,
+  getWithdrawRequestsByUser
 };
