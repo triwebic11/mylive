@@ -1,55 +1,23 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
-import { toxin, helth, neem, sampoo, protein, vigoproduct } from "../assets";
 import axios from 'axios';
 import moment from "moment";
+import useProducts from '../Hooks/useProducts';
 
 const ProductDetails = () => {
     const { id } = useParams();
-    const numericId = parseInt(id);
+    console.log("Product ID:", id);
+    // const numericId = parseInt(id);
+    const [products, isLoading, isError, error, refetch] = useProducts()
+    console.log("Products Data:", products);
 
-    const data = [
-        {
-            _id: 1,
-            image: vigoproduct,
-            details: "Vigo product helps in improving your health.",
-            Price: "2000",
-        },
-        {
-            _id: 2,
-            image: toxin,
-            details: "Toxin remover cleanses your body naturally.",
-            Price: "2000",
-        },
-        {
-            _id: 3,
-            image: helth,
-            details: "Health supplement for daily energy boost.",
-            Price: "2000",
-        },
-        {
-            _id: 4,
-            image: neem,
-            details: "Neem oil for skin and hair care.",
-            Price: "2000",
-        },
-        {
-            _id: 5,
-            image: sampoo,
-            details: "Herbal shampoo for strong, healthy hair.",
-            Price: "2000",
-        },
-        {
-            _id: 6,
-            image: protein,
-            details: "Protein supplement for muscle building.",
-            Price: "2000",
-        },
-    ];
+   
 
-    const product = data.find((item) => item._id === numericId);
+    const product = products?.find((item) => item._id === id);
+    console.log("Product Details:", product);
 
     const {
         register,
@@ -95,7 +63,7 @@ const ProductDetails = () => {
             <div className='md:w-[60%]'>
                 <img src={product?.image} alt="Product" className="w-full object-contain mb-4" />
                 <p className='text-2xl font-semibold'>Price {product?.Price}</p>
-                <p className="text-lg">{product?.details}</p>
+                <p className="text-lg" dangerouslySetInnerHTML={{ __html: product.details }}></p>
             </div>
 
             <div className="bg-white md:w-[40%] shadow-md p-6 rounded-md">
