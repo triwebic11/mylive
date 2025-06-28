@@ -42,7 +42,10 @@ const getWithdrawRequestsByUser = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const requests = await WithdrawRequest.find({ userId, status: "approved" }).sort({ createdAt: -1 });
+    const requests = await WithdrawRequest.find({
+      userId,
+      status: "approved",
+    }).sort({ createdAt: -1 });
     res.status(200).json(requests);
   } catch (error) {
     console.error("Failed to fetch user withdraw history", error);
@@ -50,8 +53,31 @@ const getWithdrawRequestsByUser = async (req, res) => {
   }
 };
 
+const updateWithdrawStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+    const updated = await WithdrawRequest.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Withdraw request not found" });
+    }
+
+    res.status(200).json({ message: "Status updated", request: updated });
+  } catch (error) {
+    console.error("Error updating status:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   createWithdrawRequest,
   getAllWithdrawRequests,
-  getWithdrawRequestsByUser
+  getWithdrawRequestsByUser,
+  updateWithdrawStatus,
 };

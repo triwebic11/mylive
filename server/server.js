@@ -17,13 +17,9 @@ connectDB();
 // Routes
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/cashonDelivery", require("./routes/CashOnDelivery"));
-app.use("/api/profile", accountInfoRoutes)
+app.use("/api/profile", accountInfoRoutes);
 app.use("/api/products", require("./routes/AddProductsroute"));
-
-
-
-
-
+app.use("/api/withdraw-requests", withdrawRoutes);
 
 app.get("/", (req, res) => {
   console.log("server is running");
