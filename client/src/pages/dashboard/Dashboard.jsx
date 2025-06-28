@@ -8,7 +8,6 @@ import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
 
 const dashboardArry = [
-  { title: "All User", icon: <MdOutlineShoppingBag />, link: "/allUsers" },
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboard" },
 
@@ -50,7 +49,12 @@ const adminDashboardArry = [
   {
     title: "All Users",
     icon: "",
-    link: "/dashboard",
+    link: "/allUsers",
+  },
+  {
+    title: "All Withdrawal",
+    icon: "",
+    link: "/allWithdrawals",
   },
   {
     title: "Add Product",
