@@ -70,8 +70,8 @@ function NavBar() {
           <Link to={"/"}>
             <img src={logo} alt="Liveon" className="h-14" />
           </Link>
-          <p className="font-semibold pl-2 md:text-2xl">
-            SHS Lira Enterprise Ltd
+          <p className="font-semibold p-2 text-sm md:text-lg border rounded-full m-1 shadow-lg shadow-gray-300 hover:shadow-xl duration-200">
+            SHS
           </p>
         </div>
 

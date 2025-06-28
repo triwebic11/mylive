@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 const WithdrawForm = ({ userId }) => {
   const [user, setUser] = useState(null);
   const [withdrawPoints, setWithdrawPoints] = useState("");
-  const [currentPoints, setCurrentPoints] = useState(0);
+  let currentPoints = user?.points;
 
   // Fetch user data by ID
   useEffect(() => {
@@ -14,20 +14,6 @@ const WithdrawForm = ({ userId }) => {
         .get(`http://localhost:5000/api/users/${userId}`)
         .then((res) => setUser(res.data))
         .catch((err) => console.error("Failed to fetch user", err));
-    }
-  }, [userId]);
-
-  // Fetch current points
-  useEffect(() => {
-    if (userId) {
-      axios
-        .get(`http://localhost:5000/api/users/points/${userId}`)
-        .then((res) => {
-          setCurrentPoints(res.data.points || 0);
-        })
-        .catch((err) => {
-          console.error("Failed to fetch points", err);
-        });
     }
   }, [userId]);
 
@@ -81,7 +67,7 @@ const WithdrawForm = ({ userId }) => {
 
         <p className="text-center text-gray-600 mb-4">
           You have{" "}
-          <span className="font-semibold text-green-600">{user.points}</span>{" "}
+          <span className="font-semibold text-green-600">{currentPoints}</span>{" "}
           points available.
         </p>
       </div>

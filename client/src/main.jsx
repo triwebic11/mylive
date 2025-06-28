@@ -43,6 +43,7 @@ import AllUsers from "./pages/admin/AllUsers.jsx";
 import AddProduct from "./pages/dashboard/Admin/AddProduct.jsx";
 import PackageUpdate from "./pages/dashboard/Admin/PackageUpdate.jsx";
 import AddPackages from "./pages/dashboard/Admin/AddPackages.jsx";
+import AdminWithdrawRequests from "./components/AdminWithdrawRequests.jsx";
 
 const queryClients = new QueryClient();
 
@@ -112,6 +113,7 @@ const router = createBrowserRouter([
     element: <UserDetails />,
   },
   { path: "/allUsers", element: <AllUsers /> },
+  { path: "/allWithdrawals", element: <AdminWithdrawRequests /> },
 ]);
 
 createRoot(document.getElementById("root")).render(
