@@ -3,6 +3,7 @@ import React from 'react';
 import { onion, toxin, halwa, helth, neem, sampoo, protein, vigoproduct } from "../assets";
 import { Link } from 'react-router-dom';
 import useProducts from '../Hooks/useProducts';
+import Container from './Container';
 
 const OurProducts = () => {
     const [products, isLoading, isError, error, refetch] = useProducts();
@@ -15,7 +16,8 @@ const OurProducts = () => {
                 <p className='text-lg'>100% natural raw materials</p>
 
             </div>
-            <div className='grid grid-cols-1  md:grid-cols-2'>
+            <Container>
+                <div className='grid grid-cols-1  md:grid-cols-2'>
                 {
                     products?.map((item => <>
                         <Link to={`/productdetails/${item._id}`} className="relative  h-[330px] group overflow-hidden">
@@ -46,6 +48,7 @@ const OurProducts = () => {
 
 
             </div>
+            </Container>
 
         </div>
 
