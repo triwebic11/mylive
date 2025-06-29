@@ -9,15 +9,22 @@ import useProducts from '../Hooks/useProducts';
 
 const ProductDetails = () => {
     const { id } = useParams();
-    console.log("Product ID:", id);
-    // const numericId = parseInt(id);
-    const [products, isLoading, isError, error, refetch] = useProducts()
-    console.log("Products Data:", products);
-
-   
+    const [products, isLoading, isError, error, refetch] = useProducts();
 
     const product = products?.find((item) => item._id === id);
+
     console.log("Product Details:", product);
+
+    const [quantity, setQuantity] = React.useState(1);
+    const increaseQty = () => setQuantity(prev => prev + 1);
+    const decreaseQty = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+
+    // Safely extract numeric price
+    const numericPrice = parseFloat(product?.price || 0);
+    const PV = product.pointValue * quantity
+    console.log("Point Value:", PV);
+
+    const totalPrice = quantity * numericPrice;
 
     const {
         register,
@@ -26,32 +33,39 @@ const ProductDetails = () => {
         formState: { errors },
     } = useForm();
 
-    const onSubmit = async(formData) => {
-        console.log("Order placed:", {
-            ...formData,
-            product,
-            paymentMethod: "Cash on Delivery",
-        });
+    const onSubmit = async (formData) => {
         const datas = {
             ...formData,
             product,
+            quantity,
+            totalPrice,
+            PV,
             paymentMethod: "Cash on Delivery",
             orderTime: moment().format("MMMM Do YYYY, h:mm:ss a"),
             status: "pending"
-        }
+        };
 
-        const res = await axios.post("http://localhost:5000/api/cashonDelivery/cashonDelivery", datas);
-        
+        try {
+            const res = await axios.post("http://localhost:5000/api/cashonDelivery/cashonDelivery", datas);
             console.log(res.data);
 
-        Swal.fire({
-            icon: "success",
-            title: "Order Placed",
-            text: "Your order has been placed successfully with Cash on Delivery!",
-            timer: 2000,
-        });
+            Swal.fire({
+                icon: "success",
+                title: "Order Placed",
+                text: "Your order has been placed successfully with Cash on Delivery!",
+                timer: 2000,
+            });
 
-        reset();
+            reset();
+            setQuantity(1);
+        } catch (err) {
+            console.error("Order failed:", err);
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: "Something went wrong while placing your order.",
+            });
+        }
     };
 
     if (!product) {
@@ -59,11 +73,11 @@ const ProductDetails = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto p-6 md:flex gap-8">
+        <div className="max-w-7xl pt-32 mx-auto p-6 md:flex gap-8">
             <div className='md:w-[60%]'>
                 <img src={product?.image} alt="Product" className="w-full object-contain mb-4" />
-                <p className='text-2xl font-semibold'>Price {product?.Price}</p>
-                <p className="text-lg" dangerouslySetInnerHTML={{ __html: product.details }}></p>
+                <p className='text-2xl font-semibold'>Price: {product?.price}</p>
+                <p className="text-lg" dangerouslySetInnerHTML={{ __html: product?.details }}></p>
             </div>
 
             <div className="bg-white md:w-[40%] shadow-md p-6 rounded-md">
@@ -114,6 +128,31 @@ const ProductDetails = () => {
                             className="w-full border px-3 py-2 rounded"
                             placeholder="Any special instructions?"
                         ></textarea>
+                    </div>
+
+                    {/* Quantity and Total Price */}
+                    <div>
+                        <label className="block font-medium mb-1">Quantity</label>
+                        <div className="flex items-center gap-4">
+                            <button
+                                type="button"
+                                onClick={decreaseQty}
+                                className="bg-gray-300 px-3 py-1 rounded text-lg"
+                            >
+                                −
+                            </button>
+                            <span className="text-lg font-medium">{quantity}</span>
+                            <button
+                                type="button"
+                                onClick={increaseQty}
+                                className="bg-gray-300 px-3 py-1 rounded text-lg"
+                            >
+                                +
+                            </button>
+                        </div>
+                        <p className="mt-2 text-gray-700 font-semibold">
+                            Total Price: {totalPrice.toLocaleString()} TK
+                        </p>
                     </div>
 
                     <button
