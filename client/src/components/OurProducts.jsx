@@ -17,7 +17,6 @@ const OurProducts = () => {
             </div>
             <div className='grid grid-cols-1  md:grid-cols-2'>
                 {
-<<<<<<< HEAD
                     data?.map((item => <>
                         <Link to={`/productdetails/${item._id}`} className="relative  h-[330px] group overflow-hidden">
                             {/* Image */}
@@ -26,16 +25,6 @@ const OurProducts = () => {
                                 alt=""
                                 className="w-full h-full object-cover transform transition duration-500 ease-in-out group-hover:scale-110 group-hover:brightness-75"
                             />
-=======
-                    products?.map((item=> <>
-                    <Link to={`/productdetails/${item._id}`} className="relative  h-[330px] group overflow-hidden">
-                    {/* Image */}
-                    <img
-                        src={item?.image}
-                        alt=""
-                        className="w-full h-full object-cover transform transition duration-500 ease-in-out group-hover:scale-110 group-hover:brightness-75"
-                    />
->>>>>>> 6f8436e4ed4ca770418579db2b8e5d905ef312ef
 
                             {/* Centered Text */}
                             <div className="absolute inset-0 z-10 flex items-center justify-center text-white text-xl font-semibold">
