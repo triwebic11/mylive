@@ -16,8 +16,7 @@ const OurProducts = () => {
                 <p className='text-lg'>100% natural raw materials</p>
 
             </div>
-            <Container>
-                <div className='grid grid-cols-1  md:grid-cols-2'>
+            <div className='grid grid-cols-1  md:grid-cols-2'>
                 {
                     products?.map((item => <>
                         <Link to={`/productdetails/${item._id}`} className="relative  h-[330px] group overflow-hidden">
@@ -48,7 +47,6 @@ const OurProducts = () => {
 
 
             </div>
-            </Container>
 
         </div>
 
