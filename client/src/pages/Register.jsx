@@ -2,8 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-
 import Dashboard from "./dashboard/Dashboard.jsx";
+
 const Register = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -32,10 +32,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/users/register",
-        form
-      );
+      const res = await axios.post("http://localhost:5000/api/users/register", form);
 
       const userData = {
         name: form.name,
@@ -52,7 +49,6 @@ const Register = () => {
         _id: res.data.userId,
       };
 
-      // ✅ Local Storage-এ user data রাখো
       localStorage.setItem("user", JSON.stringify(userData));
       setUserReferralCode(res.data.referralCode);
       setReferralTree(res.data.referralTree);
@@ -74,133 +70,149 @@ const Register = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen w-full">
-      <h2 className="text-3xl text-center my-6">User Registration</h2>
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 rounded-5xl px-4">
+      <h2 className="text-3xl font-semibold text-center mb-6">User Registration</h2>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-3xl bg-white p-4 rounded-md shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2"
+        className="w-full max-w-3xl bg-white p-6 rounded-md shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4"
       >
-        <h2>Full Name*</h2>
-        <input
-          name="name"
-          onChange={handleChange}
-          value={form.name}
-          placeholder="Your Name"
-          required
-          className="border border-gray-300 px-2 py-1 rounded-md "
-        />
-        <br />
-        <h1>Email*</h1>
-        <input
-          name="email"
-          type="email"
-          onChange={handleChange}
-          value={form.email}
-          placeholder="Email"
-          required
-          className="border border-gray-300 px-2 py-1 rounded-md my-2"
-        />
-        <br />
-        <h1>Phone Number*</h1>
-        <input
-          name="phone"
-          type="text"
-          onChange={handleChange}
-          value={form.phone}
-          placeholder="Phone Number"
-          required
-          className="border border-gray-300 px-2 py-1 rounded-md my-2"
-        />
-        <br />
-        <h1>Dath Of Birth</h1>
-        <input
-          name="dob"
-          type="date"
-          onChange={handleChange}
-          value={form.dob}
-          placeholder="Dath Of Birth"
-          required
-          className="border border-gray-300 px-2 py-1 rounded-md my-2"
-        />
-        <br />
         <div>
-          <label
-            htmlFor={name}
-            className="block text-base font-medium text-gray-700 mb-1"
-          >
-            Select Division
-          </label>
+          <label>Full Name*</label>
+          <input
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            required
+            placeholder="Your Name"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+
+        <div>
+          <label>Email*</label>
+          <input
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+            placeholder="Email"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+
+        <div>
+          <label>Phone Number*</label>
+          <input
+            name="phone"
+            type="text"
+            value={form.phone}
+            onChange={handleChange}
+            required
+            placeholder="Phone Number"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+
+        <div>
+          <label>Date of Birth</label>
+          <input
+            name="dob"
+            type="date"
+            value={form.dob}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+
+        <div>
+          <label>Select Division</label>
           <select
             name="division"
-            id="division"
-            type="text"
-            onChange={handleChange}
             value={form.division}
+            onChange={handleChange}
             required
-            className="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           >
             <option value="">Select Division</option>
-            <option value="Chattagram">Chattagram</option>
             <option value="Dhaka">Dhaka</option>
-            <option value="Khulna">Khulna</option>
+            <option value="Chattagram">Chattagram</option>
+            <option value="Rajshahi">Rajshahi</option>
+            <option value="Rangpur">Rangpur</option>
+            <option value="Mymensingh">Mymensingh</option>
+            <option value="Sylhet">Sylhet</option>
+            <option value="Barishal">Barishal</option>
           </select>
         </div>
-        <h2>Enter a new password</h2>
-        <input
-          name="password"
-          type="password"
-          onChange={handleChange}
-          value={form.password}
-          placeholder="Password"
-          required
-          className="border border-gray-300 px-2 py-1 rounded-md my-2"
-        />{" "}
-        <br />
-        <h2>City</h2>
-        <input
-          name="city"
-          type="text"
-          onChange={handleChange}
-          value={form.city}
-          placeholder="City"
-          className="border border-gray-300 px-2 py-1 rounded-md my-2"
-        />
-        <br />
-        <h2>Post Code</h2>
-        <input
-          name="postcode"
-          type="text"
-          onChange={handleChange}
-          value={form.postcode}
-          placeholder="Post Code"
-          className="border border-gray-300 px-2 py-1 rounded-md my-2"
-        />
-        <br />
-        <h2>Address</h2>
-        <input
-          name="address"
-          onChange={handleChange}
-          value={form.address}
-          placeholder="Address"
-          className="border border-gray-300 px-2 py-1 rounded-md my-2"
-        />
-        <br />
-        <h2>Referrer ID</h2>
-        <input
-          name="referralCode"
-          onChange={handleChange}
-          value={form.referralCode}
-          placeholder="Referral Code (optional)"
-          className="border border-gray-300 px-2 py-1 rounded-md my-2"
-        />
-        <br />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:opacity-80 duration-200"
-        >
-          Register
-        </button>
+
+        <div>
+          <label>Enter a new password</label>
+          <input
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            required
+            placeholder="Password"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+
+        <div>
+          <label>City</label>
+          <input
+            name="city"
+            value={form.city}
+            onChange={handleChange}
+            placeholder="City"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+
+        <div>
+          <label>Post Code</label>
+          <input
+            name="postcode"
+            value={form.postcode}
+            onChange={handleChange}
+            placeholder="Post Code"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+
+        <div className="lg:col-span-2">
+          <label>Address</label>
+          <input
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+            placeholder="Address"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+
+        <div className="lg:col-span-2">
+          <label>Referrer ID</label>
+          <input
+            name="referralCode"
+            value={form.referralCode}
+            onChange={handleChange}
+            placeholder="Referral Code (optional)"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+
+        <div className="lg:col-span-2 text-center mt-4">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition"
+          >
+            Register
+          </button>
+        </div>
       </form>
+
       {registeredUser && <Dashboard user={registeredUser} />}
     </div>
   );

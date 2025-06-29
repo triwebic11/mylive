@@ -23,27 +23,27 @@ function Footer() {
                         className="w-28 mb-2"
                     />
                     <p className="font-bold text-gray-800 text-sm text-center md:text-left">
-                        SHS Lira Manufacturing & Marketing LTD.
+                        SHS Lira Enterprise LTD.
                     </p>
                 </div>
 
                 {/* Quick Links */}
                 <div className="  items-center md:items-start">
-                    <p className="font-semibold text-blue-700 mb-4">QUICK LINKS</p>
-                    <ul className="flex-none ">
-                        <Link to="/">Home</Link> <br />
-                        <Link to="/">Products</Link><br />
-                        <Link to="/">Services</Link><br />
-                        <Link to="/">Contact Us</Link>
+                    <p className="font-semibold text-blue-700 mb-4 ">QUICK LINKS</p>
+                    <ul className="flex-none text-gray-800 ">
+                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Home</Link> <br />
+                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Products</Link><br />
+                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Services</Link><br />
+                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Contact Us</Link>
                     </ul>
                 </div>
 
                 {/* Contact */}
-                <div className="flex flex-col items-center md:items-start">
+                <div className="flex flex-col items-center text-sm md:items-start text-gray-800 font-semibold">
                     <p className="font-semibold text-blue-700 mb-4">CONTACT</p>
-                    <p>Website: www.shslira.com</p>
-                    <p>Email: shslira@gmail.com</p>
-                    <p>Customer Service: 01750873763</p>
+                    <p>Website: <Link to="https://www.shslira.com" target="blank" className="text-blue-600 hover:text-blue-800">www.shslira.com</Link> </p>
+                    <p>Email: <Link to="mailto:shslira@gmail.com" className="text-blue-600 hover:text-blue-800">shslira@gmail.com</Link></p>
+                    <p>Customer Service: <Link to="tel:01750873763" target="blank" className="text-blue-600 hover:text-blue-800">01750873763</Link></p>
                     <p>
                         Madrashas Road, Shubidhat, Hazipara<br />
                         Showroom/Sub Office: Vororamor, Setabganj, Dinajpur<br />
@@ -80,7 +80,7 @@ function Footer() {
                 </div>
             </div>
             <h4 className="bg-blue-800 text-white text-center py-3 text-sm">
-                Copyright <span>©</span> 2025, SHS Lira Manufacturing & Marketing LTD
+                Copyright © 2025, SHS Lira Enterprise LTD.
             </h4>
         </footer>
     );

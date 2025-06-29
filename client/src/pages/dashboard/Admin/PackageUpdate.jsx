@@ -10,7 +10,13 @@ import axios from "axios";
 export default function PackageUpdate() {
   const [packages, isLoading, isError, error, refetch] = usePackages();
 
+<<<<<<< HEAD
   const { user } = useAuth();
+=======
+  const [packages, isLoading, isError, error, refetch] = usePackages()
+
+  const { user } = useAuth()
+>>>>>>> e97efbd3b1dc8994d227449d57d5429ec795c5a4
   console.log("user package compo", user);
 
   const handleAddPackage = async (plan) => {
@@ -39,7 +45,7 @@ export default function PackageUpdate() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto  py-16 px-4 text-center">
+    <div className="max-w-7xl mx-auto  py-24 px-4 text-center">
       {/* Header */}
       <DashboardHeadings
         heading={"Our Packages"}
@@ -67,13 +73,10 @@ export default function PackageUpdate() {
 
             <p className="text-start p-4">{plan?.description}</p>
             <h1
-              className={`text-xl font-bold ${
-                plan?.name === "Platinum" && "bg-blue-300"
-              } ${plan?.name === "Regular" && "bg-green-300"} ${
-                plan?.name === "Gold" && "bg-red-300"
-              } ${
-                plan?.name === "Silver" && "bg-purple-300"
-              } mb-4 px-4 py-2 rounded-3xl`}
+              className={`text-xl font-bold ${plan?.name === "Platinum" && "bg-blue-300"
+                } ${plan?.name === "Regular" && "bg-green-300"} ${plan?.name === "Gold" && "bg-red-300"
+                } ${plan?.name === "Silver" && "bg-purple-300"
+                } mb-4 px-4 py-2 rounded-3xl`}
             >
               {plan.price}
             </h1>
