@@ -12,14 +12,14 @@ export default function PackageUpdate() {
 
   const [packages, isLoading, isError, error, refetch] = usePackages()
 
-  const {user} = useAuth()
+  const { user } = useAuth()
   console.log("user package compo", user);
 
   const handleAddPackage = (plan) => {
     console.log("Selected plan:", plan);
   };
   return (
-    <div className="max-w-7xl mx-auto  py-16 px-4 text-center">
+    <div className="max-w-7xl mx-auto  py-24 px-4 text-center">
       {/* Header */}
       <DashboardHeadings
         heading={"Our Packages"}
@@ -47,13 +47,10 @@ export default function PackageUpdate() {
 
             <p className="text-start p-4">{plan?.description}</p>
             <h1
-              className={`text-xl font-bold ${
-                plan?.name === "Platinum" && "bg-blue-300"
-              } ${plan?.name === "Regular" && "bg-green-300"} ${
-                plan?.name === "Gold" && "bg-red-300"
-              } ${
-                plan?.name === "Silver" && "bg-purple-300"
-              } mb-4 px-4 py-2 rounded-3xl`}
+              className={`text-xl font-bold ${plan?.name === "Platinum" && "bg-blue-300"
+                } ${plan?.name === "Regular" && "bg-green-300"} ${plan?.name === "Gold" && "bg-red-300"
+                } ${plan?.name === "Silver" && "bg-purple-300"
+                } mb-4 px-4 py-2 rounded-3xl`}
             >
               {plan.price}
             </h1>

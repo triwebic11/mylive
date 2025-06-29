@@ -80,7 +80,7 @@ function Footer() {
                 </div>
             </div>
             <h4 className="bg-blue-800 text-white text-center py-3 text-sm">
-                Copyright © 2025, SHS Lira Manufacturing & Marketing LTD
+                Copyright © 2025, SHS Lira Enterprise LTD.
             </h4>
         </footer>
     );
