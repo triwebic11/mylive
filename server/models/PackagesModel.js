@@ -10,7 +10,7 @@ const PackagesModel = new mongoose.Schema({
     required: true
   },
   PV: {
-    type: String,
+    type: Number,
     required: true
   },
   description: {
