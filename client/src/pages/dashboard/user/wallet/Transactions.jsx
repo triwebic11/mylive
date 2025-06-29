@@ -1,96 +1,96 @@
 import React from "react";
 
 const Transactions = () => {
-    const wallets = [
-        { name: "PV Wallet", amount: "3,946.73" },
-        { name: "Commission Wallet", amount: "188.65" },
-        { name: "Travel Fund Wallet", amount: "0.00" },
-        { name: "Car Fund Wallet", amount: "0.00" },
-        { name: "Purchase Wallet", amount: "0.00" },
-    ];
+  const wallets = [
+    { name: "PV Wallet", amount: "3,946.73" },
+    { name: "Commission Wallet", amount: "188.65" },
+    { name: "Travel Fund Wallet", amount: "0.00" },
+    { name: "Car Fund Wallet", amount: "0.00" },
+    { name: "Purchase Wallet", amount: "0.00" },
+  ];
 
-    const transactions = [
-        {
-            date: "24-05-2025",
-            time: "15:21:24",
-            source: "MD ABDUS SALAM",
-            amount: "500.00",
-        },
-        {
-            date: "12-02-2025",
-            time: "16:15:34",
-            source: "MD ABDUS SALAM",
-            amount: "500.00",
-        },
-        {
-            date: "16-12-2024",
-            time: "10:43:16",
-            source: "LIVEON {DSP}",
-            amount: "515.02",
-        },
-        {
-            date: "07-11-2024",
-            time: "21:03:32",
-            source: "LIVEON {DSP}",
-            amount: "545.00",
-        },
-        {
-            date: "08-10-2024",
-            time: "14:43:42",
-            source: "LIVEON {DSP}",
-            amount: "515.02",
-        },
-        {
-            date: "06-09-2024",
-            time: "14:47:51",
-            source: "LIVEON {DSP}",
-            amount: "500.00",
-        },
-        {
-            date: "02-08-2024",
-            time: "16:06:59",
-            source: "LIVEON {DSP}",
-            amount: "871.69",
-        },
-    ];
+  const transactions = [
+    {
+      date: "24-05-2025",
+      time: "15:21:24",
+      source: "MD ABDUS SALAM",
+      amount: "500.00",
+    },
+    {
+      date: "12-02-2025",
+      time: "16:15:34",
+      source: "MD ABDUS SALAM",
+      amount: "500.00",
+    },
+    {
+      date: "16-12-2024",
+      time: "10:43:16",
+      source: "SHS Lira {DSP}",
+      amount: "515.02",
+    },
+    {
+      date: "07-11-2024",
+      time: "21:03:32",
+      source: "SHS Lira {DSP}",
+      amount: "545.00",
+    },
+    {
+      date: "08-10-2024",
+      time: "14:43:42",
+      source: "SHS Lira {DSP}",
+      amount: "515.02",
+    },
+    {
+      date: "06-09-2024",
+      time: "14:47:51",
+      source: "SHS Lira {DSP}",
+      amount: "500.00",
+    },
+    {
+      date: "02-08-2024",
+      time: "16:06:59",
+      source: "SHS Lira {DSP}",
+      amount: "871.69",
+    },
+  ];
 
-    return (
-        <div className="mx-auto w-full max-w-6xl ">
-            <h2 style={{ textAlign: "center", marginBottom: "30px" }}>
-                PV Wallet Wallet Statement
-            </h2>
+  return (
+    <div className="mx-auto w-full max-w-6xl ">
+      <h2 style={{ textAlign: "center", marginBottom: "30px" }}>
+        PV Wallet Wallet Statement
+      </h2>
 
-            <div className="wallet-summary">
-                {wallets.map((wallet, idx) => (
-                    <div key={idx} className="wallet-box">
-                        <h4>{wallet.name}</h4>
-                        <p>{wallet.amount}</p>
-                    </div>
-                ))}
+      <div className="wallet-summary">
+        {wallets.map((wallet, idx) => (
+          <div key={idx} className="wallet-box">
+            <h4>{wallet.name}</h4>
+            <p>{wallet.amount}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="transaction-list">
+        {transactions.map((tx, idx) => (
+          <div key={idx} className="transaction">
+            <div className="left">
+              <img
+                src="https://img.icons8.com/color/48/000000/download.png"
+                alt="icon"
+              />
+              <div className="details">
+                <strong>Order Pv</strong>
+                <br />
+                [{tx.date}] [{tx.time}]
+                <br />
+                Sale Order From {tx.source}
+              </div>
             </div>
+            <div className="amount">{tx.amount}</div>
+          </div>
+        ))}
+      </div>
 
-            <div className="transaction-list">
-                {transactions.map((tx, idx) => (
-                    <div key={idx} className="transaction">
-                        <div className="left">
-                            <img
-                                src="https://img.icons8.com/color/48/000000/download.png"
-                                alt="icon"
-                            />
-                            <div className="details">
-                                <strong>Order Pv</strong>
-                                <br />
-                                [{tx.date}] [{tx.time}]
-                                <br />
-                                Sale Order From {tx.source}
-                            </div>
-                        </div>
-                        <div className="amount">{tx.amount}</div>
-                    </div>
-                ))}
-            </div>
-
-            <style jsx>{`
+      <style jsx>{`
         .container {
           max-width: 900px;
           margin: auto;
@@ -180,8 +180,8 @@ const Transactions = () => {
           }
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default Transactions;

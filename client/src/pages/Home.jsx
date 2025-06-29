@@ -14,14 +14,14 @@ import { BiDonateHeart } from "react-icons/bi";
 const Home = () => {
   return (
     <div>
-        <HomeSlider />
-        <ListOfDistributors></ListOfDistributors>
-         <Container>
-        <div className="flex flex-col md:flex-row justify-center items-center gap-5 py-10">
+      <HomeSlider />
+      <ListOfDistributors></ListOfDistributors>
+      <Container>
+        <div className="flex flex-col max-w-[1500px] mx-auto md:flex-row justify-center items-center gap-5 py-10">
           <Box
             icon={<IoIosHome />}
-            title="About Liveon"
-            pragraph="A brief history of Liveon"
+            title="About SHS Lira"
+            pragraph="A brief history of SHS Lira"
             bg="bg-blue-700"
           />
           <Box
@@ -33,15 +33,15 @@ const Home = () => {
           <Box
             icon={<BiDonateHeart />}
             title="CSR"
-            pragraph="Liveon's contribution to the society"
+            pragraph="SHS Lira's contribution to the society"
             bg="bg-green-700"
           />
         </div>
-      <div className="w-full flex justify-center items-center py-10">
+        {/* <div className="w-full flex justify-center items-center py-10">
         <video src="" controls className="w-full"></video>
-      </div>
+      </div> */}
       </Container>
-        <OurProducts></OurProducts>
+      <OurProducts></OurProducts>
     </div>
   );
 };
