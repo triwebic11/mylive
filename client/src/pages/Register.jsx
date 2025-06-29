@@ -68,11 +68,6 @@ const Register = () => {
       navigate("/packeg-active", {
         state: { user: userData },
       });
-      if (activePackeg) {
-        navigate("/login", {
-          state: { user: userData },
-        });
-      }
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
     }

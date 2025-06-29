@@ -46,6 +46,8 @@ import AdminWithdrawRequests from "./components/AdminWithdrawRequests.jsx";
 import AllProducts from "./pages/dashboard/Admin/AllProducts.jsx";
 import BalanceConversion from "./components/BalanceConversion.jsx";
 import AdminConversionRateForm from "./components/AdminConversionRateForm.jsx";
+import AdminPackageRequests from "./pages/dashboard/Admin/AdminPackageRequests.jsx";
+import PackageWaitingPage from "./components/PackageWaitingPage.jsx";
 
 const queryClients = new QueryClient();
 
@@ -76,6 +78,7 @@ const router = createBrowserRouter([
       { path: "/core-value", element: <CoreValue /> },
       { path: "/register", element: <Register /> },
       { path: "/packeg-active", element: <PackegForActive /> },
+      { path: "/package-waiting", element: <PackageWaitingPage /> },
       { path: "/login", element: <Login /> },
       { path: "/productdetails/:id", element: <ProductDetails /> },
       { path: "/packages", element: <PackegForActive /> },
@@ -120,6 +123,10 @@ const router = createBrowserRouter([
     element: <UserDetails />,
   },
   { path: "/admin-dashboard/allUsers", element: <AllUsers /> },
+  {
+    path: "/admin-dashboard/allPackageRequestUser",
+    element: <AdminPackageRequests />,
+  },
   {
     path: "/admin-dashboard/allWithdrawals",
     element: <AdminWithdrawRequests />,

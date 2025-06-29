@@ -1,23 +1,43 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import { GoPackage } from "react-icons/go";;
+import { GoPackage } from "react-icons/go";
 import useAuth from "../../../Hooks/useAuth";
 import DashboardHeadings from "../../../components/DashboardHeadings";
 import usePackages from "../../../Hooks/usePackages";
-
-
-
+import Swal from "sweetalert2";
+import axios from "axios";
 
 export default function PackageUpdate() {
+  const [packages, isLoading, isError, error, refetch] = usePackages();
 
-  const [packages, isLoading, isError, error, refetch] = usePackages()
-
-  const {user} = useAuth()
+  const { user } = useAuth();
   console.log("user package compo", user);
 
-  const handleAddPackage = (plan) => {
-    console.log("Selected plan:", plan);
+  const handleAddPackage = async (plan) => {
+    const userData = {
+      userId: user?._id,
+      name: user?.name,
+      email: user?.email,
+      phone: user?.phone,
+      packageName: plan.name,
+      packagePrice: plan.price,
+    };
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/package-requests",
+        userData
+      );
+      Swal.fire("Success", "Request sent to admin.", "success");
+
+      // ✅ Request success হলে wait page এ পাঠান
+      navigate("/package-waiting");
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Something went wrong", "error");
+    }
   };
+
   return (
     <div className="max-w-7xl mx-auto  py-16 px-4 text-center">
       {/* Header */}
