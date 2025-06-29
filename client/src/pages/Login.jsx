@@ -6,20 +6,25 @@ import axios from "axios";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 
 const Login = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const navigate = useNavigate();
-  const { user, setUser } = useContext(AuthContext)
+  const { user, setUser } = useContext(AuthContext);
 
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/users/login", data);
+      const res = await axios.post(
+        "http://localhost:5000/api/users/login",
+        data
+      );
       const loggedInUser = res?.data;
 
-
-      console.log('logeed',loggedInUser)
+      console.log("logeed", loggedInUser);
       localStorage.setItem("user", JSON.stringify(loggedInUser));
       setUser(loggedInUser);
-
 
       Swal.fire({
         icon: "success",
@@ -29,7 +34,6 @@ const Login = () => {
       });
 
       navigate("/dashboard"); // redirect to dashboard or home
-
     } catch (error) {
       if (error.response && error.response.status === 400) {
         Swal.fire({
@@ -58,7 +62,9 @@ const Login = () => {
             {...register("phone", { required: "Phone is required" })}
             className="w-full px-3 py-2 border border-gray-300 rounded"
           />
-          {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
+          {errors.phone && (
+            <p className="text-red-500 text-sm">{errors.phone.message}</p>
+          )}
         </div>
 
         <div className="mb-6">
@@ -68,7 +74,9 @@ const Login = () => {
             {...register("password", { required: "Password is required" })}
             className="w-full px-3 py-2 border border-gray-300 rounded"
           />
-          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
         </div>
 
         <button
@@ -80,7 +88,10 @@ const Login = () => {
 
         <p className="mt-4 text-sm text-center">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-blue-600 underline cursor-pointer hover:opacity-80 duration-200">
+          <Link
+            to="/register"
+            className="text-blue-600 underline cursor-pointer hover:opacity-80 duration-200"
+          >
             Register
           </Link>
         </p>

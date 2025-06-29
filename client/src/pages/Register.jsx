@@ -32,7 +32,10 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/api/users/register", form);
+      const res = await axios.post(
+        "http://localhost:5000/api/users/register",
+        form
+      );
 
       const userData = {
         name: form.name,
@@ -71,7 +74,9 @@ const Register = () => {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 rounded-5xl px-4">
-      <h2 className="text-3xl font-semibold text-center mb-6">User Registration</h2>
+      <h2 className="text-3xl font-semibold text-center mb-6">
+        User Registration
+      </h2>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-3xl bg-white p-6 rounded-md shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4"

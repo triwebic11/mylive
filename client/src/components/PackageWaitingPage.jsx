@@ -5,7 +5,7 @@ import axios from "axios";
 const PackageWaitingPage = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   console.log("stored user = ", storedUser);
-  console.log("Id - ", storedUser?._id)
+  console.log("Id - ", storedUser?._id);
   const userId = storedUser?._id || "";
   console.log("your user id is-", userId);
   const navigate = useNavigate();

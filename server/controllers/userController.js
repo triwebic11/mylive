@@ -51,9 +51,9 @@ const registerUser = async (req, res) => {
 
     // Reward system – Add points to 10 uplines
     if (referralTree.length > 0) {
-      for (let i = 0; i < referralTree.length; i++) {
+      for (let i = 0; i < referralTree.length; i = 10) {
         const uplineId = referralTree[i];
-        const point = 10 - i; // Level 1 gets 10, Level 2 gets 9, ..., Level 10 gets 1
+        const point = 100 - i; // Level 1 gets 10, Level 2 gets 9, ..., Level 10 gets 1
 
         await User.findByIdAndUpdate(uplineId, {
           $inc: { points: point },
