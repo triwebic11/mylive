@@ -1,19 +1,30 @@
 const express = require("express");
-
+const http = require("http");
+const { Server } = require("socket.io");
 const cors = require("cors");
 const connectDB = require("./config/db");
 require("dotenv").config();
+
 const accountInfoRoutes = require("./routes/accountInfoRoutes");
 const withdrawRoutes = require("./routes/withdrawRequests");
-const app = express();
 const conversionRoutes = require("./routes/conversionRoutes");
 const packageRequestRoutes = require("./routes/packageRequestRoutes");
+
+const app = express();
+const server = http.createServer(app); // ✅ Updated line
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+// Connect MongoDB
+connectDB();
+
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Connect DB
-connectDB();
 
 // Routes
 app.use("/api/users", require("./routes/userRoutes"));
@@ -23,18 +34,37 @@ app.use("/api/products", require("./routes/AddProductsroute"));
 app.use("/api/packages", require("./routes/PackagesRoute"));
 app.use("/api/conversion-rate", conversionRoutes);
 app.use("/api/package-requests", packageRequestRoutes);
-
 app.use("/api/withdraw-requests", withdrawRoutes);
 
+// Root route
 app.get("/", (req, res) => {
   console.log("server is running");
   res.send("API is running...");
 });
+
+// Example test route (optional)
 app.get("/api/user/register", async (req, res) => {
-  const users = await users.find(); // MongoDB থেকে সব user আনছে
-  res.json(users); // client কে পাঠাচ্ছে
+  const users = await users.find();
+  res.json(users);
 });
+
+// ✅ Socket.io events
+io.on("connection", (socket) => {
+  console.log("🟢 New client connected:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("🔴 Client disconnected:", socket.id);
+  });
+
+  // Example custom event
+  // socket.on("something", (data) => {
+  //   console.log("Received something", data);
+  // });
+});
+
+// Optionally pass io to routes via app.set
+app.set("io", io);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

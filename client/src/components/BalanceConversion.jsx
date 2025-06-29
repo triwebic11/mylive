@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { io } from "socket.io-client";
+
+// ✅ Socket connection
+const socket = io("http://localhost:5000"); // প্রয়োজনে env থেকে নিতে পারো
 
 const BalanceConversion = ({ userId }) => {
   const [point, setPoint] = useState(0);
   const [rate, setRate] = useState(1);
   const [taka, setTaka] = useState(0);
 
-  // Fetch user points
+  // ✅ Fetch user points initially
   useEffect(() => {
     if (userId) {
       axios
@@ -19,7 +23,7 @@ const BalanceConversion = ({ userId }) => {
     }
   }, [userId]);
 
-  // Fetch conversion rate
+  // ✅ Fetch conversion rate
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/conversion-rate")
@@ -30,10 +34,26 @@ const BalanceConversion = ({ userId }) => {
       .catch((err) => console.error("Failed to fetch conversion rate:", err));
   }, []);
 
-  // Calculate taka
+  // ✅ Recalculate taka when point or rate changes
   useEffect(() => {
     setTaka(point * rate);
   }, [point, rate]);
+
+  // ✅ Real-time socket listener
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("🟢 Connected to socket server:", socket.id);
+    });
+
+    socket.on("balance-updated", ({ userId: targetId, newPoints }) => {
+      if (targetId === userId) {
+        setPoint(newPoints);
+        console.log("🎉 Points updated via socket:", newPoints);
+      }
+    });
+
+    return () => socket.disconnect(); // Cleanup
+  }, [userId]);
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md mt-6">

@@ -56,8 +56,8 @@ const Layout = () => {
   const noHeaderFooter =
     location.pathname === "/register" ||
     location.pathname === "/login" ||
-    location.pathname === "/packeg-active";
-
+    location.pathname === "/packeg-active" ||
+    location.pathname === "/package-waiting";
   return (
     <div className="bg-gray-100">
       {!noHeaderFooter && <Header />}

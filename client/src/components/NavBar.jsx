@@ -15,7 +15,7 @@ const menuItems = [
       { label: "Core Value", path: "/core-value" },
     ],
   },
-  { label: "Packages", path: "/packages" },
+
   {
     label: "Products",
     subItems: [
@@ -93,7 +93,7 @@ function NavBar() {
                     </span>
                   </span>
                   {(item.label === "About" && isAboutOpen) ||
-                    (item.label === "Products" && isProductsOpen) ? (
+                  (item.label === "Products" && isProductsOpen) ? (
                     <ul className="absolute top-full left-0 mt-0 bg-white border rounded shadow-lg z-50 w-56 transition-all duration-300 ease-in-out opacity-100 translate-y-0">
                       {item.subItems.map((subItem, subIndex) => (
                         <li
