@@ -9,7 +9,7 @@ const OurProducts = () => {
     const [products, isLoading, isError, error, refetch] = useProducts();
 
     return (
-        <div className='py-20 '>
+        <div className='py-20 max-w-[1900px] mx-auto'>
 
             <div className='bg-gray-800 text-white py-20 flex flex-col items-center justify-center space-y-4'>
                 <p className='text-4xl font-semibold'>Our Products</p>

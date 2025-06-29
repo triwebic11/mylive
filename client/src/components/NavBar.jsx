@@ -15,7 +15,6 @@ const menuItems = [
       { label: "Core Value", path: "/core-value" },
     ],
   },
-
   {
     label: "Products",
     subItems: [
@@ -93,7 +92,7 @@ function NavBar() {
                     </span>
                   </span>
                   {(item.label === "About" && isAboutOpen) ||
-                  (item.label === "Products" && isProductsOpen) ? (
+                    (item.label === "Products" && isProductsOpen) ? (
                     <ul className="absolute top-full left-0 mt-0 bg-white border rounded shadow-lg z-50 w-56 transition-all duration-300 ease-in-out opacity-100 translate-y-0">
                       {item.subItems.map((subItem, subIndex) => (
                         <li
@@ -153,72 +152,84 @@ function NavBar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu + Backdrop */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-gray-50 px-4 py-3 space-y-2 text-sm font-medium">
-          {menuItems.map((item, index) => (
-            <div key={index}>
-              {item.subItems ? (
-                <>
-                  <div
-                    className="flex justify-between items-center font-semibold cursor-pointer py-1"
-                    onClick={() => toggleSubmenu(item.label)}
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0  bg-black/10 z-40"
+            onClick={() => setMobileMenuOpen(false)}
+          ></div>
+
+          {/* Mobile Menu */}
+          <div className="fixed top-16 left-0 w-full bg-gray-50 px-4 py-3 space-y-2 text-sm font-medium z-50">
+            {menuItems.map((item, index) => (
+              <div key={index}>
+                {item.subItems ? (
+                  <>
+                    <div
+                      className="flex justify-between items-center font-semibold cursor-pointer py-1"
+                      onClick={() => toggleSubmenu(item.label)}
+                    >
+                      <span>{item.label}</span>
+                      <span>{openSubmenu === item.label ? "▲" : "▼"}</span>
+                    </div>
+                    {openSubmenu === item.label && (
+                      <ul className="ml-4 space-y-1">
+                        {item.subItems.map((subItem, subIndex) => (
+                          <li key={subIndex} className="hover:text-blue-600">
+                            <Link to={subItem.path}>{subItem.label}</Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    to={item.path}
+                    className="block hover:text-blue-600 py-1"
                   >
-                    <span>{item.label}</span>
-                    <span>{openSubmenu === item.label ? "▲" : "▼"}</span>
-                  </div>
-                  {openSubmenu === item.label && (
-                    <ul className="ml-4 space-y-1">
-                      {item.subItems.map((subItem, subIndex) => (
-                        <li key={subIndex} className="hover:text-blue-600">
-                          <Link to={subItem.path}>{subItem.label}</Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                    {item.label}
+                  </Link>
+                )}
+              </div>
+            ))}
+
+            {/* Mobile Auth */}
+            <div className="pt-4 border-t mt-2">
+              {user ? (
+                <>
+                  <Link to="/dashboard" className="block py-1">
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block text-left py-1 hover:text-blue-600"
+                  >
+                    Logout
+                  </button>
                 </>
               ) : (
-                <Link to={item.path} className="block hover:text-blue-600 py-1">
-                  {item.label}
-                </Link>
+                <>
+                  <Link
+                    to="/login"
+                    className="flex items-center gap-1 py-1 hover:text-blue-600"
+                  >
+                    <FaUser />
+                    <span>Login</span>
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="flex items-center gap-1 py-1 hover:text-blue-600"
+                  >
+                    <FaSignInAlt />
+                    <span>Join Us</span>
+                  </Link>
+                </>
               )}
             </div>
-          ))}
-
-          {/* Mobile Auth */}
-          <div className="pt-4 border-t mt-2">
-            {user ? (
-              <>
-                <Link to="/dashboard" className="block py-1">
-                  Dashboard
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="block text-left py-1 hover:text-blue-600"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="flex items-center gap-1 py-1 hover:text-blue-600"
-                >
-                  <FaUser />
-                  <span>Login</span>
-                </Link>
-                <Link
-                  to="/register"
-                  className="flex items-center gap-1 py-1 hover:text-blue-600"
-                >
-                  <FaSignInAlt />
-                  <span>Join Us</span>
-                </Link>
-              </>
-            )}
           </div>
-        </div>
+        </>
       )}
     </nav>
   );
