@@ -2,16 +2,22 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const PackageWaitingPage = ({ user }) => {
+const PackageWaitingPage = () => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  console.log("stored user = ", storedUser);
+  console.log("Id - ", storedUser?._id)
+  const userId = storedUser?._id || "";
+  console.log("your user id is-", userId);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkApproval = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/package-requests/${user._id}`
+          `http://localhost:5000/api/package-requests/${userId}`
         );
         const status = res.data?.status;
+        console.log("your status is : ", status);
 
         if (status === "approved") {
           // ✅ Redirect user to login if approved
@@ -25,7 +31,7 @@ const PackageWaitingPage = ({ user }) => {
     // Check every 3 seconds
     const interval = setInterval(checkApproval, 3000);
     return () => clearInterval(interval);
-  }, [navigate, user._id]);
+  }, [navigate, userId]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

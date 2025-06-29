@@ -1,22 +1,18 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { GoPackage } from "react-icons/go";
-import useAuth from "../../../Hooks/useAuth";
+
 import DashboardHeadings from "../../../components/DashboardHeadings";
 import usePackages from "../../../Hooks/usePackages";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function PackageUpdate() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
 
-<<<<<<< HEAD
-  const { user } = useAuth();
-=======
-  const [packages, isLoading, isError, error, refetch] = usePackages()
-
-  const { user } = useAuth()
->>>>>>> e97efbd3b1dc8994d227449d57d5429ec795c5a4
   console.log("user package compo", user);
 
   const handleAddPackage = async (plan) => {
@@ -73,10 +69,13 @@ export default function PackageUpdate() {
 
             <p className="text-start p-4">{plan?.description}</p>
             <h1
-              className={`text-xl font-bold ${plan?.name === "Platinum" && "bg-blue-300"
-                } ${plan?.name === "Regular" && "bg-green-300"} ${plan?.name === "Gold" && "bg-red-300"
-                } ${plan?.name === "Silver" && "bg-purple-300"
-                } mb-4 px-4 py-2 rounded-3xl`}
+              className={`text-xl font-bold ${
+                plan?.name === "Platinum" && "bg-blue-300"
+              } ${plan?.name === "Regular" && "bg-green-300"} ${
+                plan?.name === "Gold" && "bg-red-300"
+              } ${
+                plan?.name === "Silver" && "bg-purple-300"
+              } mb-4 px-4 py-2 rounded-3xl`}
             >
               {plan.price}
             </h1>

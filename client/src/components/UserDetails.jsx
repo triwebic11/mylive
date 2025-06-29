@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import ReferralTree from "../pages/dashboard/user/Referals/ReferralTree";
 import MyReferral from "./MyReferral";
+import BalanceConversion from "./BalanceConversion";
 const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
@@ -32,7 +33,7 @@ const UserDetails = () => {
     <div className="p-6">
       <div>
         <Link
-          to="/allUsers"
+          to="/admin-dashboard/allUsers"
           className=" bg-amber-800 text-white border border-amber-500 px-2 py-1 rounded-xl hover:opacity-80 my-10 inline-block "
         >
           Go to Back
@@ -154,6 +155,7 @@ const UserDetails = () => {
       )}
       <h2 className="text-xl font-semibold mt-6 mb-2">Referral Information</h2>
       <div className="bg-white shadow rounded-2xl p-6 mt-6">
+        <BalanceConversion userId={user._id} />
         <h3 className="text-lg font-semibold text-gray-700">
           🎁 Total Referral Points
         </h3>

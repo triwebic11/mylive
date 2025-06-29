@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 const AdminPackageRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -27,7 +28,9 @@ const AdminPackageRequests = () => {
   // Approve handler
   const handleApprove = async (id) => {
     try {
-      await axios.patch(`/api/package-requests/approve/${id}`);
+      await axios.patch(
+        `http://localhost:5000/api/package-requests/approve/${id}`
+      );
       Swal.fire("Approved!", "Package activated for user.", "success");
 
       // Update local state
@@ -42,6 +45,14 @@ const AdminPackageRequests = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
+      <div>
+        <Link
+          to="/dashboard"
+          className="inline-block px-4 py-2 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700 transition duration-300"
+        >
+          Go Back to Dashboard
+        </Link>
+      </div>
       <h2 className="text-3xl font-bold text-center mb-8">Package Requests</h2>
 
       {requests.length === 0 ? (
