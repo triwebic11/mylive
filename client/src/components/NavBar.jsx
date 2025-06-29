@@ -67,9 +67,9 @@ function NavBar() {
       <div className="max-w-[1500px] mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo and Title */}
         <div className="flex items-center">
-          <Link to={"/"}>
+          {/* <Link to={"/"}>
             <img src={logo} alt="Liveon" className="h-14" />
-          </Link>
+          </Link> */}
           <p className="font-semibold p-2 text-sm md:text-lg border rounded-full m-1 shadow-lg shadow-gray-300 hover:shadow-xl duration-200">
             SHS
           </p>

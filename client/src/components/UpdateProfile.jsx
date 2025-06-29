@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 const UpdateProfileInfo = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.user?._id;
+  console.log("User dob:", storedUser?.user?.dob);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -16,20 +17,35 @@ const UpdateProfileInfo = () => {
     address: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
+  // 🔄 Load profile info from backend
   useEffect(() => {
-    if (storedUser) {
-      setForm({
-        name: storedUser.name || "",
-        email: storedUser.email || "",
-        phone: storedUser.phone || "",
-        dob: storedUser.dob || "",
-        division: storedUser.division || "",
-        city: storedUser.city || "",
-        postcode: storedUser.postcode || "",
-        address: storedUser.address || "",
-      });
-    }
-  }, []);
+    if (!userId) return;
+    setLoading(true);
+
+    axios
+      .get(`http://localhost:5000/api/users/${userId}`)
+      .then((res) => {
+        if (res.data) {
+          const user = res.data;
+          setForm({
+            name: user.name || "",
+            email: user.email || "",
+            phone: user.phone || "",
+            dob: new Date(user.dob).toISOString().split("T")[0] || "",
+            division: user.division || "",
+            city: user.city || "",
+            postcode: user.postcode || "",
+            address: user.address || "",
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load user info:", err);
+      })
+      .finally(() => setLoading(false));
+  }, [userId]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -37,20 +53,22 @@ const UpdateProfileInfo = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!userId) return alert("User not found");
 
     try {
-      const res = await axios.put(
-        `http://localhost:5000/api/users/${userId}`,
-        form
-      );
+      await axios.put(`http://localhost:5000/api/users/${userId}`, form);
 
-      Swal.fire("Success", "Profile updated successfully!", "success");
+      Swal.fire("✅ Success", "Profile updated successfully!", "success");
 
-      const updatedUser = { ...storedUser, ...form };
+      // Optionally update localStorage
+      const updatedUser = {
+        ...storedUser,
+        user: { ...storedUser.user, ...form },
+      };
       localStorage.setItem("user", JSON.stringify(updatedUser));
     } catch (err) {
       Swal.fire(
-        "Error",
+        "❌ Error",
         err.response?.data?.message || "Update failed",
         "error"
       );
@@ -67,104 +85,51 @@ const UpdateProfileInfo = () => {
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
-        <div>
-          <label className="block text-sm font-medium">Full Name</label>
-          <input
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md mt-1"
-          />
-        </div>
+        {/* Fields */}
+        {[
+          { label: "Full Name", name: "name" },
+          { label: "Phone", name: "email" },
+          { label: "Email", name: "phone" },
+          { label: "Date of Birth", name: "dob", type: "date" },
+          { label: "Division", name: "division", type: "select" },
+          { label: "City", name: "city" },
+          { label: "Post Code", name: "postcode" },
+          { label: "Address", name: "address", colSpan: 2 },
+        ].map(({ label, name, type = "text", colSpan }) => (
+          <div key={name} className={colSpan === 2 ? "md:col-span-2" : ""}>
+            <label className="block text-sm font-medium">{label}</label>
 
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md mt-1"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Phone</label>
-          <input
-            type="text"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md mt-1"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Date of Birth</label>
-          <input
-            type="date"
-            name="dob"
-            value={form.dob}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md mt-1"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Division</label>
-          <select
-            name="division"
-            value={form.division}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md mt-1"
-          >
-            <option value="">Select Division</option>
-            <option value="Dhaka">Dhaka</option>
-            <option value="Chattagram">Chattagram</option>
-            <option value="Khulna">Khulna</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">City</label>
-          <input
-            type="text"
-            name="city"
-            value={form.city}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md mt-1"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Post Code</label>
-          <input
-            type="text"
-            name="postcode"
-            value={form.postcode}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md mt-1"
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium">Address</label>
-          <input
-            type="text"
-            name="address"
-            value={form.address}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-md mt-1"
-          />
-        </div>
+            {type === "select" ? (
+              <select
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded-md mt-1"
+              >
+                <option value="">Select Division</option>
+                <option value="Dhaka">Dhaka</option>
+                <option value="Chattagram">Chattagram</option>
+                <option value="Khulna">Khulna</option>
+              </select>
+            ) : (
+              <input
+                type={type}
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded-md mt-1"
+              />
+            )}
+          </div>
+        ))}
 
         <div className="md:col-span-2 text-right mt-4">
           <button
             type="submit"
             className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+            disabled={loading}
           >
-            Update Profile
+            {loading ? "Saving..." : "Update Profile"}
           </button>
         </div>
       </form>

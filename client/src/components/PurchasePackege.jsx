@@ -1,12 +1,11 @@
-import React from 'react'
+import React from "react";
 
 const PurchasePackege = () => {
   return (
     <div>
-
-        <Packeg />
+      <Packeg />
     </div>
-  )
-}
+  );
+};
 
-export default PurchasePackege
+export default PurchasePackege;

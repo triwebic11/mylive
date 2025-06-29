@@ -41,21 +41,28 @@ const dashboardArry = [
 ];
 
 const adminDashboardArry = [
+   {
+    title: "All Users",
+    icon: "",
+    link: "/admin-dashboard/allUsers",
+  },
+   {
+    title: "All Withdrawal",
+    icon: "",
+    link: "/admin-dashboard/allWithdrawals",
+  },
+  {
+    title: "Balance Conversion",
+    icon: "",
+    link: "/admin-dashboard/balanceConversion",
+  },
   {
     title: "Cash On Delivery",
     icon: "",
     link: "/dashboard/CashonDelivery",
   },
-  {
-    title: "All Users",
-    icon: "",
-    link: "/allUsers",
-  },
-  {
-    title: "All Withdrawal",
-    icon: "",
-    link: "/allWithdrawals",
-  },
+ 
+ 
   {
     title: "Manage Products",
     icon: "",

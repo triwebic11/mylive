@@ -45,13 +45,17 @@ import PackageUpdate from "./pages/dashboard/Admin/PackageUpdate.jsx";
 import UpdatePackages from "./pages/dashboard/Admin/UpdatePackages.jsx";
 import AdminWithdrawRequests from "./components/AdminWithdrawRequests.jsx";
 import AllProducts from "./pages/dashboard/Admin/AllProducts.jsx";
+import BalanceConversion from "./components/BalanceConversion.jsx";
+import AdminConversionRateForm from "./components/AdminConversionRateForm.jsx";
 
 const queryClients = new QueryClient();
 
 const Layout = () => {
   const location = useLocation();
   const noHeaderFooter =
-    location.pathname === "/register" || location.pathname === "/login";
+    location.pathname === "/register" ||
+    location.pathname === "/login" ||
+    location.pathname === "/packeg-active";
 
   return (
     <div className="bg-gray-100">
@@ -72,6 +76,7 @@ const router = createBrowserRouter([
       { path: "/management", element: <Management /> },
       { path: "/core-value", element: <CoreValue /> },
       { path: "/register", element: <Register /> },
+      { path: "/packeg-active", element: <PackegForActive /> },
       { path: "/login", element: <Login /> },
       { path: "/productdetails/:id", element: <ProductDetails /> },
       { path: "/packages", element: <PackegForActive /> },
@@ -93,6 +98,7 @@ const router = createBrowserRouter([
       { path: "/dashboard/my-refer", element: <MyReferrals /> },
       { path: "/dashboard/transactions", element: <Transactions /> },
       { path: "/dashboard/register", element: <Register /> },
+
       { path: "/dashboard/today-statement", element: <TodayStatement /> },
       { path: "/dashboard/update-password", element: <UpdatePassword /> },
       {
@@ -114,8 +120,15 @@ const router = createBrowserRouter([
     path: "/admin-dashboard/user/:id",
     element: <UserDetails />,
   },
-  { path: "/allUsers", element: <AllUsers /> },
-  { path: "/allWithdrawals", element: <AdminWithdrawRequests /> },
+  { path: "/admin-dashboard/allUsers", element: <AllUsers /> },
+  {
+    path: "/admin-dashboard/allWithdrawals",
+    element: <AdminWithdrawRequests />,
+  },
+  {
+    path: "/admin-dashboard/balanceConversion",
+    element: <AdminConversionRateForm />,
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(

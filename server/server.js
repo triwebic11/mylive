@@ -6,7 +6,7 @@ require("dotenv").config();
 const accountInfoRoutes = require("./routes/accountInfoRoutes");
 const withdrawRoutes = require("./routes/withdrawRequests");
 const app = express();
-
+const conversionRoutes = require("./routes/conversionRoutes");
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -20,7 +20,7 @@ app.use("/api/cashonDelivery", require("./routes/CashOnDelivery"));
 app.use("/api/profile", accountInfoRoutes);
 app.use("/api/products", require("./routes/AddProductsroute"));
 app.use("/api/packages", require("./routes/PackagesRoute"));
-
+app.use("/api/conversion-rate", conversionRoutes);
 
 
 

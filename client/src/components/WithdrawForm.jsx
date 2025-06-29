@@ -59,7 +59,7 @@ const WithdrawForm = ({ userId }) => {
   if (!user) return <p className="text-center mt-4">Loading user data...</p>;
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-white shadow-lg rounded-xl p-6 max-w-md mx-auto mt-6">
+    <div className=" flex flex-col justify-center items-center bg-white shadow-lg rounded-xl p-6 max-w-md mx-auto mt-6">
       <div>
         <h2 className="text-xl font-bold mb-4 text-center">
           💰 Withdraw Points
