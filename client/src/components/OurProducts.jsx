@@ -17,7 +17,7 @@ const OurProducts = () => {
             </div>
             <div className='grid grid-cols-1  md:grid-cols-2'>
                 {
-                    data?.map((item => <>
+                    products?.map((item => <>
                         <Link to={`/productdetails/${item._id}`} className="relative  h-[330px] group overflow-hidden">
                             {/* Image */}
                             <img
