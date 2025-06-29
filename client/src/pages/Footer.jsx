@@ -17,11 +17,11 @@ function Footer() {
                 {/* About Us */}
                 <div className="flex flex-col items-center md:items-start">
                     <p className="font-semibold text-blue-700 mb-4">ABOUT US</p>
-                    <img
+                    <Link to={"/"}><img
                         src={logo}
                         alt="SHS Lira Logo"
                         className="w-28 mb-2"
-                    />
+                    /></Link>
                     <p className="font-bold text-gray-800 text-sm text-center md:text-left">
                         SHS Lira Enterprise LTD.
                     </p>

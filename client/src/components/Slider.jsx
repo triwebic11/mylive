@@ -14,7 +14,7 @@ const HomeSlider = () => {
     slidesToScroll: 1,
   };
   return (
-    <div className="slider-container max-w-[1900px]">
+    <div className="slider-container max-w-[1900px] mx-auto">
       <Slider {...settings}>
         <div>
           <img src={onion} alt="Onion" className="w-full max-h-[70vh] " />
