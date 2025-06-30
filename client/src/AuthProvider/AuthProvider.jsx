@@ -21,7 +21,7 @@ useEffect(() => {
   setLoading(false);
 }, []);
 
-  console.log('user',user)
+  console.log('user data from auth provider - ',user)
 
   const authInfo = {
     loading,

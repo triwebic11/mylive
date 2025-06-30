@@ -12,8 +12,9 @@ const AllUsers = () => {
     axios
       .get("http://localhost:5000/api/users/admin/all-users")
       .then((res) => {
-        setUsers(res.data);
-        setFilteredUsers(res.data); // initialize with all users
+        const reversedUsers = res.data.reverse(); // ✅ এখানেই reverse করো
+        setUsers(reversedUsers);
+        setFilteredUsers(reversedUsers);
       })
       .catch((err) => console.error("Failed to load users", err));
   }, []);
@@ -70,7 +71,7 @@ const AllUsers = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredUsers.map((user) => (
+          {filteredUsers?.map((user) => (
             <tr key={user._id} className="text-center">
               <td className="border px-4 py-2">{user.name}</td>
               <td className="border px-4 py-2">{user.phone}</td>

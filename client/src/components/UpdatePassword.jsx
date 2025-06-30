@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const UpdatePassword = () => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const userId = storedUser?.user._id;
-
+const UpdatePassword = ({ user }) => {
+  const userId = user?._id;
+  console.log("User ID from UpdatePassword component:", userId);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

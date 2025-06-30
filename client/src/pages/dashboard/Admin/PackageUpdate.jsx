@@ -7,9 +7,10 @@ import usePackages from "../../../Hooks/usePackages";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../../Hooks/useAuth";
 
 export default function PackageUpdate() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
 

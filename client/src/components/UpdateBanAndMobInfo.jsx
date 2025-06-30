@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-const MobAndBankInfoForm = () => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const userId = storedUser?.user._id;
+const MobAndBankInfoForm = ({ user }) => {
+  const userId = user?._id;
 
   const [formData, setFormData] = useState({
     bkash: "",
@@ -16,23 +15,6 @@ const MobAndBankInfoForm = () => {
     routeNo: "",
   });
   const [loading, setLoading] = useState(false);
-
-  // Load user from localStorage
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const parsed = JSON.parse(storedUser);
-        if (parsed && parsed._id) {
-          setUserId(parsed._id);
-        } else {
-          console.warn("Invalid user object in localStorage");
-        }
-      } catch (err) {
-        console.error("Failed to parse user from localStorage", err);
-      }
-    }
-  }, []);
 
   // Fetch existing data
   useEffect(() => {

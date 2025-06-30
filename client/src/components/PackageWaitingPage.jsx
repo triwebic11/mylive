@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import useAuth from "../Hooks/useAuth";
 
 const PackageWaitingPage = () => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  console.log("stored user = ", storedUser);
-  console.log("Id - ", storedUser?._id);
-  const userId = storedUser?._id || "";
+  const { user } = useAuth();
+  console.log("User data from useAuth in waiting page: ", user);
+  const userId = user?._id;
   console.log("your user id is-", userId);
   const navigate = useNavigate();
 

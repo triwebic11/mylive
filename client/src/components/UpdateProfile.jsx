@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const UpdateProfileInfo = () => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const userId = storedUser?.user?._id;
-  console.log("User dob:", storedUser?.user?.dob);
+const UpdateProfileInfo = ({ user }) => {
+  const userId = user?._id;
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -33,7 +31,7 @@ const UpdateProfileInfo = () => {
             name: user.name || "",
             email: user.email || "",
             phone: user.phone || "",
-            dob: new Date(user.dob).toISOString().split("T")[0] || "",
+            dob: user.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
             division: user.division || "",
             city: user.city || "",
             postcode: user.postcode || "",
@@ -60,7 +58,8 @@ const UpdateProfileInfo = () => {
 
       Swal.fire("✅ Success", "Profile updated successfully!", "success");
 
-      // Optionally update localStorage
+      // ✅ Update localStorage
+      const storedUser = JSON.parse(localStorage.getItem("user"));
       const updatedUser = {
         ...storedUser,
         user: { ...storedUser.user, ...form },
@@ -88,8 +87,8 @@ const UpdateProfileInfo = () => {
         {/* Fields */}
         {[
           { label: "Full Name", name: "name" },
-          { label: "Phone", name: "email" },
-          { label: "Email", name: "phone" },
+          { label: "Email", name: "email" }, // ✅ ঠিক করা
+          { label: "Phone", name: "phone" }, // ✅ ঠিক করা
           { label: "Date of Birth", name: "dob", type: "date" },
           { label: "Division", name: "division", type: "select" },
           { label: "City", name: "city" },
@@ -110,6 +109,11 @@ const UpdateProfileInfo = () => {
                 <option value="Dhaka">Dhaka</option>
                 <option value="Chattagram">Chattagram</option>
                 <option value="Khulna">Khulna</option>
+                <option value="Rajshahi">Rajshahi</option>
+                <option value="Rangpur">Rangpur</option>
+                <option value="Mymensingh">Mymensingh</option>
+                <option value="Sylhet">Sylhet</option>
+                <option value="Barishal">Barishal</option>
               </select>
             ) : (
               <input

@@ -8,7 +8,7 @@ const ReferLinkPage = () => {
   console.log("User data: ", user);
   const referralCode = storedUser?.user?.referralCode;
   console.log("your referral code is- ", referralCode);
-  const referLink = `https://localhost:5173/register?ref=${referralCode}`;
+  const referLink = `http://localhost:5173/register?ref=${referralCode}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referLink);

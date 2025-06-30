@@ -3,8 +3,10 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "./dashboard/Dashboard.jsx";
+import useAuth from "../Hooks/useAuth.jsx";
 
 const Register = () => {
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
@@ -56,6 +58,7 @@ const Register = () => {
       setUserReferralCode(res.data.referralCode);
       setReferralTree(res.data.referralTree);
       setRegisteredUser(userData);
+      setUser(userData);
 
       Swal.fire({
         icon: "success",

@@ -3,18 +3,12 @@ import React from "react";
 import UpdatePassword from "../../../components/UpdatePassword";
 import MobAndBankInfoForm from "../../../components/UpdateBanAndMobInfo";
 import UpdateProfileInfo from "../../../components/UpdateProfile";
-
+import useAuth from "../../../Hooks/useAuth";
 const Profile = () => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const user = storedUser?.user || {};
-  console.log("User data: ", user);
-  const referralCode = storedUser?.user?.referralCode;
-  console.log("your referral code is- ", referralCode);
-  // console.log("User information: ", users);
-
-  // if (!users) {
-  //   return <div className="p-4">Loading...</div>;
-  // }
+  const { user, setUser } = useAuth();
+// Extract user data from useAuth, fallback to empty object
+  // Ensure user is defined, fallback to empty object
+  console.log("User data from useAuth: ", user);
 
   return (
     <div className="w-full">
@@ -29,8 +23,8 @@ const Profile = () => {
         <UpdateProfileInfo user={user} />
 
         <div className="mt-8">
-          <MobAndBankInfoForm />
-          <UpdatePassword />
+          <MobAndBankInfoForm user={user} />
+          <UpdatePassword user={user} />
         </div>
       </div>
     </div>
