@@ -112,29 +112,30 @@ const router = createBrowserRouter([
       { path: "/dashboard/voucher", element: <Voucher /> },
       { path: "/dashboard/my-consistency", element: <MyConsistency /> },
       { path: "/dashboard/AddProduct", element: <AddProduct /> },
+      // {
+      //   path: "/dashboard",
+      //   element: <AdminDashboard />,
+      // },
+      {
+        path: "/dashboard/user/:id",
+        element: <UserDetails />,
+      },
+      { path: "/dashboard/allUsers", element: <AllUsers /> },
+      {
+        path: "/dashboard/allPackageRequestUser",
+        element: <AdminPackageRequests />,
+      },
+      {
+        path: "/dashboard/allWithdrawals",
+        element: <AdminWithdrawRequests />,
+      },
+      {
+        path: "/dashboard/balanceConversion",
+        element: <AdminConversionRateForm />,
+      },
     ],
   },
-  {
-    path: "/admin-dashboard",
-    element: <AdminDashboard />,
-  },
-  {
-    path: "/admin-dashboard/user/:id",
-    element: <UserDetails />,
-  },
-  { path: "/admin-dashboard/allUsers", element: <AllUsers /> },
-  {
-    path: "/admin-dashboard/allPackageRequestUser",
-    element: <AdminPackageRequests />,
-  },
-  {
-    path: "/admin-dashboard/allWithdrawals",
-    element: <AdminWithdrawRequests />,
-  },
-  {
-    path: "/admin-dashboard/balanceConversion",
-    element: <AdminConversionRateForm />,
-  },
+
 ]);
 
 createRoot(document.getElementById("root")).render(

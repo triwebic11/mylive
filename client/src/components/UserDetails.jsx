@@ -13,13 +13,13 @@ const UserDetails = () => {
   useEffect(() => {
     // 1. fetch user details
     axios
-      .get(`http://localhost:5000/api/users/admin/user/${id}`)
+      .get(`https://apidata.shslira.com/api/users/admin/user/${id}`)
       .then((res) => setUser(res.data))
       .catch((err) => console.error("Failed to load user", err));
 
     // 2. fetch all bank info and filter current user's one
     axios
-      .get("http://localhost:5000/api/profile/all")
+      .get("https://apidata.shslira.com/api/profile/all")
       .then((res) => {
         const userBankInfo = res.data.find((info) => info.userId === id);
         setBankInfo(userBankInfo);

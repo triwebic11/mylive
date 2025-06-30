@@ -10,7 +10,7 @@ const AdminWithdrawRequests = () => {
   // Load withdraw requests
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/withdraw-requests")
+      .get("https://apidata.shslira.com/api/withdraw-requests")
       .then((res) => setRequests(res.data))
       .catch((err) => console.error("Failed to fetch requests", err));
   }, []);
@@ -26,7 +26,7 @@ const AdminWithdrawRequests = () => {
 
       if (confirm.isConfirmed) {
         await axios.patch(
-          `http://localhost:5000/api/withdraw-requests/${id}/status`,
+          `https://apidata.shslira.com/api/withdraw-requests/${id}/status`,
           { status }
         );
 

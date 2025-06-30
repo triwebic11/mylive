@@ -14,9 +14,8 @@ router.post("/accountsInfo", createBankInfo);
 // Get by userId
 router.get("/accountsInfo/:userId", getBankInfo);
 
-// Get all account info
 router.get("/all", getAllAccountInfo);
-// Update by userId
+
 router.put("/:userId", updateBankInfo);
 
 module.exports = router;

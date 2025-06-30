@@ -10,7 +10,7 @@ const AllUsers = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/users/admin/all-users")
+      .get("https://apidata.shslira.com/api/users/admin/all-users")
       .then((res) => {
         const reversedUsers = res.data.reverse(); // ✅ এখানেই reverse করো
         setUsers(reversedUsers);
