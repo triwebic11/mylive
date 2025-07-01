@@ -202,7 +202,7 @@ const handleFilter = () => {
                             >
                                 <td className="px-4 py-2">{idx + 1}</td>
                                 <td className="px-4 py-2"><img src={order?.product.image} alt="" className="w-20" /></td>
-                                <td className="px-4 py-2">{order?.product.price}</td>
+                                <td className="px-4 py-2">{order?.product.totalPrice}</td>
 
                                 <td className="px-4 py-2">{order?.orderTime}</td>
                                

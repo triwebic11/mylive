@@ -7,7 +7,7 @@ require("dotenv").config();
 
 const accountInfoRoutes = require("./routes/accountInfoRoutes");
 const withdrawRoutes = require("./routes/withdrawRequests");
-const conversionRoutes = require("./routes/conversionRoutes");
+
 const packageRequestRoutes = require("./routes/packageRequestRoutes");
 
 const app = express();
@@ -32,7 +32,7 @@ app.use("/api/cashonDelivery", require("./routes/CashOnDelivery"));
 app.use("/api/profile", accountInfoRoutes);
 app.use("/api/products", require("./routes/AddProductsroute"));
 app.use("/api/packages", require("./routes/PackagesRoute"));
-app.use("/api/conversion-rate", conversionRoutes);
+app.use("/api/conversion-rate", require("./routes/conversionRoutes"));
 app.use("/api/package-requests", packageRequestRoutes);
 app.use("/api/withdraw-requests", withdrawRoutes);
 

@@ -29,7 +29,7 @@ export default function PackageUpdate() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/package-requests",
+        "https://apidata.shslira.com/api/package-requests",
         userData
       );
       Swal.fire("Success", "Request sent to admin.", "success");

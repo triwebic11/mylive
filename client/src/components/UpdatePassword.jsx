@@ -26,7 +26,7 @@ const UpdatePassword = ({ user }) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/users/update-password/${userId}`,
+        `https://apidata.shslira.com/api/users/update-password/${userId}`,
         {
           currentPassword,
           newPassword,

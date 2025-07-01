@@ -22,7 +22,7 @@ const MobAndBankInfoForm = ({ user }) => {
     setLoading(true);
 
     axios
-      .get(`http://localhost:5000/api/profile/accountsInfo/${userId}`)
+      .get(`https://apidata.shslira.com/api/profile/accountsInfo/${userId}`)
       .then((res) => {
         if (res.data) {
           setFormData({
@@ -49,7 +49,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
   const handleCreate = async () => {
     try {
-      await axios.post("http://localhost:5000/api/profile/accountsInfo", {
+      await axios.post("https://apidata.shslira.com/api/profile/accountsInfo", {
         userId,
         ...formData,
       });
@@ -68,7 +68,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/profile/${userId}`, formData);
+      await axios.put(`https://apidata.shslira.com/api/profile/${userId}`, formData);
 
       Swal.fire({
         icon: "success",
@@ -88,7 +88,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/profile/accountsInfo/${userId}`
+        `https://apidata.shslira.com/api/profile/accountsInfo/${userId}`
       );
       if (res.data) {
         await handleUpdate();

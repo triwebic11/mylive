@@ -10,7 +10,7 @@ const AdminConversionRateForm = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/conversion-rate")
+      .get("https://apidata.shslira.com/api/conversion-rate")
       .then((res) => {
         const rate = res.data?.pointToTaka || 1;
         setCurrentRate(rate);
@@ -35,7 +35,7 @@ const AdminConversionRateForm = () => {
     const pointToTaka = taka / points;
 
     try {
-      await axios.put("http://localhost:5000/api/conversion-rate", {
+      await axios.put("https://apidata.shslira.com/api/conversion-rate", {
         pointToTaka,
       });
 

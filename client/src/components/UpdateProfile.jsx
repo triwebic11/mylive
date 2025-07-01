@@ -23,7 +23,7 @@ const UpdateProfileInfo = ({ user }) => {
     setLoading(true);
 
     axios
-      .get(`http://localhost:5000/api/users/${userId}`)
+      .get(`https://apidata.shslira.com/api/users/${userId}`)
       .then((res) => {
         if (res.data) {
           const user = res.data;
@@ -54,7 +54,7 @@ const UpdateProfileInfo = ({ user }) => {
     if (!userId) return alert("User not found");
 
     try {
-      await axios.put(`http://localhost:5000/api/users/${userId}`, form);
+      await axios.put(`https://apidata.shslira.com/api/users/${userId}`, form);
 
       Swal.fire("✅ Success", "Profile updated successfully!", "success");
 

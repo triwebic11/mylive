@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
+import useUserById from "../../Hooks/useUserById";
+import useRole from "../../Hooks/useRole";
 
 const dashboardArry = [
   { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
@@ -44,22 +46,22 @@ const adminDashboardArry = [
   {
     title: "All Users",
     icon: "",
-    link: "/admin-dashboard/allUsers",
+    link: "/dashboard/allUsers",
   },
   {
     title: "All Package Requester",
     icon: "",
-    link: "/admin-dashboard/allPackageRequestUser",
+    link: "/dashboard/allPackageRequestUser",
   },
   {
     title: "All Withdrawal",
     icon: "",
-    link: "/admin-dashboard/allWithdrawals",
+    link: "/dashboard/allWithdrawals",
   },
   {
     title: "Balance Conversion",
     icon: "",
-    link: "/admin-dashboard/balanceConversion",
+    link: "/dashboard/balanceConversion",
   },
   {
     title: "Cash On Delivery",
@@ -92,6 +94,10 @@ const Dashboard = () => {
   const { setUser } = useContext(AuthContext);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [data, isLoading, isError, error, refetch] = useUserById();
+  const {role} = useRole()
+  console.log("User role from useRole: ", role);
+  console.log("User data from useUserById: ", data);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -156,10 +162,11 @@ const Dashboard = () => {
         </div>
 
         {/* admin dashboard */}
-        <p className="text-red-600">Admin Dashboard</p>
+        {/* <p className="text-red-600">Admin Dashboard</p> */}
 
         <nav className="flex flex-col gap-2">
-          {adminDashboardArry?.map((item, index) => (
+          {
+            role === "admin" && adminDashboardArry?.map((item, index) => (
             <div key={index} className="bg-blue-100 rounded-lg">
               <div
                 className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
@@ -201,7 +208,8 @@ const Dashboard = () => {
                 </ul>
               )}
             </div>
-          ))}
+          ))
+          }
 
           {/* <button
             onClick={handleLogout}
@@ -211,10 +219,10 @@ const Dashboard = () => {
           </button> */}
         </nav>
 
-        <p className="text-red-600">User Dashboard</p>
+        {/* <p className="text-red-600">User Dashboard</p> */}
 
         <nav className="flex flex-col gap-2">
-          {dashboardArry.map((item, index) => (
+          {role === "user" && dashboardArry.map((item, index) => (
             <div key={index} className="bg-blue-100 rounded-lg">
               <div
                 className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"

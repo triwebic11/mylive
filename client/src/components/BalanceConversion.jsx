@@ -3,7 +3,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 // ✅ Socket connection
-const socket = io("http://localhost:5000"); // প্রয়োজনে env থেকে নিতে পারো
+const socket = io("http://localhost:5000"); 
 
 const BalanceConversion = ({ userId }) => {
   const [point, setPoint] = useState(0);
@@ -14,7 +14,7 @@ const BalanceConversion = ({ userId }) => {
   useEffect(() => {
     if (userId) {
       axios
-        .get(`http://localhost:5000/api/users/${userId}`)
+        .get(`https://apidata.shslira.com/api/users/${userId}`)
         .then((res) => {
           const userPoints = res.data?.points || 0;
           setPoint(userPoints);
@@ -26,7 +26,7 @@ const BalanceConversion = ({ userId }) => {
   // ✅ Fetch conversion rate
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/conversion-rate")
+      .get("https://apidata.shslira.com/api/conversion-rate")
       .then((res) => {
         const currentRate = res.data?.pointToTaka || 1;
         setRate(currentRate);

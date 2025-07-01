@@ -6,6 +6,7 @@ import UpdateProfileInfo from "../../../components/UpdateProfile";
 import useAuth from "../../../Hooks/useAuth";
 const Profile = () => {
   const { user, setUser } = useAuth();
+  console.log("User data from useAuth: ", user);
 // Extract user data from useAuth, fallback to empty object
   // Ensure user is defined, fallback to empty object
   console.log("User data from useAuth: ", user);
