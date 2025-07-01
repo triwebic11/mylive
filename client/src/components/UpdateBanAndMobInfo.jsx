@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 const MobAndBankInfoForm = ({ user }) => {
-  const userId = user?._id;
+  const userId = user?.user._id;
 
   const [formData, setFormData] = useState({
     bkash: "",
@@ -68,7 +68,10 @@ const MobAndBankInfoForm = ({ user }) => {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`https://apidata.shslira.com/api/profile/${userId}`, formData);
+      await axios.put(
+        `https://apidata.shslira.com/api/profile/${userId}`,
+        formData
+      );
 
       Swal.fire({
         icon: "success",

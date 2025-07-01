@@ -3,7 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const UpdateProfileInfo = ({ user }) => {
-  const userId = user?._id;
+  const userId = user?.user._id;
   const [form, setForm] = useState({
     name: "",
     email: "",

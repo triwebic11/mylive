@@ -12,7 +12,7 @@ const AllUsers = () => {
     axios
       .get("https://apidata.shslira.com/api/users/admin/all-users")
       .then((res) => {
-        const reversedUsers = res.data.reverse(); // ✅ এখানেই reverse করো
+        const reversedUsers = res.data.reverse(); //
         setUsers(reversedUsers);
         setFilteredUsers(reversedUsers);
       })
@@ -85,7 +85,7 @@ const AllUsers = () => {
               </td>
               <td className="border px-4 py-2">
                 <Link
-                  to={`/admin-dashboard/user/${user._id}`}
+                  to={`/dashboard/user/${user._id}`}
                   className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                 >
                   Details

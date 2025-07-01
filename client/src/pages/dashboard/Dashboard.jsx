@@ -87,6 +87,7 @@ const adminDashboardArry = [
       { title: "Update Packages", icon: "", link: "/dashboard/updatePackages" },
     ],
   },
+  { title: "Update Password", icon: "", link: "/dashboard/update-password" },
 ];
 
 const Dashboard = () => {
@@ -95,7 +96,7 @@ const Dashboard = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [data, isLoading, isError, error, refetch] = useUserById();
-  const {role} = useRole()
+  const { role } = useRole();
   console.log("User role from useRole: ", role);
   console.log("User data from useUserById: ", data);
 
@@ -165,51 +166,50 @@ const Dashboard = () => {
         {/* <p className="text-red-600">Admin Dashboard</p> */}
 
         <nav className="flex flex-col gap-2">
-          {
-            role === "admin" && adminDashboardArry?.map((item, index) => (
-            <div key={index} className="bg-blue-100 rounded-lg">
-              <div
-                className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
-                onClick={() =>
-                  item.submenu
-                    ? toggleDropdown(index)
-                    : (navigate(item.link), closeSidebar())
-                }
-              >
-                <div className="flex items-center gap-2">
-                  {item.icon && <span>{item.icon}</span>}
-                  {item.link ? (
-                    <span>{item.title}</span>
-                  ) : (
-                    <span>{item.title}</span>
+          {role === "admin" &&
+            adminDashboardArry?.map((item, index) => (
+              <div key={index} className="bg-blue-100 rounded-lg">
+                <div
+                  className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
+                  onClick={() =>
+                    item.submenu
+                      ? toggleDropdown(index)
+                      : (navigate(item.link), closeSidebar())
+                  }
+                >
+                  <div className="flex items-center gap-2">
+                    {item.icon && <span>{item.icon}</span>}
+                    {item.link ? (
+                      <span>{item.title}</span>
+                    ) : (
+                      <span>{item.title}</span>
+                    )}
+                  </div>
+                  {item.submenu && (
+                    <span>
+                      {openDropdown === index ? (
+                        <IoChevronUp size={20} />
+                      ) : (
+                        <IoChevronDown size={20} />
+                      )}
+                    </span>
                   )}
                 </div>
-                {item.submenu && (
-                  <span>
-                    {openDropdown === index ? (
-                      <IoChevronUp size={20} />
-                    ) : (
-                      <IoChevronDown size={20} />
-                    )}
-                  </span>
+                {item.submenu && openDropdown === index && (
+                  <ul className="ml-4 flex flex-col gap-1 py-2">
+                    {item.submenu.map((subItem, subIndex) => (
+                      <li
+                        key={subIndex}
+                        className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
+                        onClick={closeSidebar}
+                      >
+                        <Link to={subItem.link}>{subItem.title}</Link>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
-              {item.submenu && openDropdown === index && (
-                <ul className="ml-4 flex flex-col gap-1 py-2">
-                  {item.submenu.map((subItem, subIndex) => (
-                    <li
-                      key={subIndex}
-                      className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
-                      onClick={closeSidebar}
-                    >
-                      <Link to={subItem.link}>{subItem.title}</Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))
-          }
+            ))}
 
           {/* <button
             onClick={handleLogout}
@@ -222,49 +222,50 @@ const Dashboard = () => {
         {/* <p className="text-red-600">User Dashboard</p> */}
 
         <nav className="flex flex-col gap-2">
-          {role === "user" && dashboardArry.map((item, index) => (
-            <div key={index} className="bg-blue-100 rounded-lg">
-              <div
-                className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
-                onClick={() =>
-                  item.submenu
-                    ? toggleDropdown(index)
-                    : (navigate(item.link), closeSidebar())
-                }
-              >
-                <div className="flex items-center gap-2">
-                  {item.icon && <span>{item.icon}</span>}
-                  {item.link ? (
-                    <span>{item.title}</span>
-                  ) : (
-                    <span>{item.title}</span>
+          {role === "user" &&
+            dashboardArry.map((item, index) => (
+              <div key={index} className="bg-blue-100 rounded-lg">
+                <div
+                  className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
+                  onClick={() =>
+                    item.submenu
+                      ? toggleDropdown(index)
+                      : (navigate(item.link), closeSidebar())
+                  }
+                >
+                  <div className="flex items-center gap-2">
+                    {item.icon && <span>{item.icon}</span>}
+                    {item.link ? (
+                      <span>{item.title}</span>
+                    ) : (
+                      <span>{item.title}</span>
+                    )}
+                  </div>
+                  {item.submenu && (
+                    <span>
+                      {openDropdown === index ? (
+                        <IoChevronUp size={20} />
+                      ) : (
+                        <IoChevronDown size={20} />
+                      )}
+                    </span>
                   )}
                 </div>
-                {item.submenu && (
-                  <span>
-                    {openDropdown === index ? (
-                      <IoChevronUp size={20} />
-                    ) : (
-                      <IoChevronDown size={20} />
-                    )}
-                  </span>
+                {item.submenu && openDropdown === index && (
+                  <ul className="ml-4 flex flex-col gap-1 py-2">
+                    {item.submenu.map((subItem, subIndex) => (
+                      <li
+                        key={subIndex}
+                        className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
+                        onClick={closeSidebar}
+                      >
+                        <Link to={subItem.link}>{subItem.title}</Link>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
-              {item.submenu && openDropdown === index && (
-                <ul className="ml-4 flex flex-col gap-1 py-2">
-                  {item.submenu.map((subItem, subIndex) => (
-                    <li
-                      key={subIndex}
-                      className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
-                      onClick={closeSidebar}
-                    >
-                      <Link to={subItem.link}>{subItem.title}</Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
+            ))}
 
           <button
             onClick={handleLogout}
