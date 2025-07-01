@@ -63,7 +63,7 @@ function NavBar() {
         {/* Logo */}
         <Link to={"/"} className="flex items-center gap-2">
           <img src={logo} alt="SHS Lira" className="h-12" />
-          <span className="hidden md:visible text-lg font-bold text-gray-700 hover:text-blue-600 transition">
+          <span className="hidden md:block text-lg font-bold text-gray-700 hover:text-blue-600 transition">
             SHS Lira
           </span>
         </Link>
@@ -92,7 +92,7 @@ function NavBar() {
                     </span>
                   </span>
                   {(item.label === "About" && isAboutOpen) ||
-                  (item.label === "Products" && isProductsOpen) ? (
+                    (item.label === "Products" && isProductsOpen) ? (
                     <ul className="absolute top-full left-0 mt-0 bg-white border rounded shadow-lg z-50 w-56 transition-all duration-300 ease-in-out opacity-100 translate-y-0">
                       {item.subItems.map((subItem, subIndex) => (
                         <li
@@ -142,12 +142,12 @@ function NavBar() {
         </ul>
 
         {/* Mobile Menu Button */}
-        <div className="lg:hidden ">
+        <div className="lg:hidden">
           <button
             onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-white bg-blue-600 p-2 rounded-md mr-6"
+            className="text-white bg-blue-600 p-2 rounded-md"
           >
-            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+            {isMobileMenuOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
           </button>
         </div>
       </div>
@@ -157,7 +157,7 @@ function NavBar() {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0  bg-black/10 z-40"
+            className="fixed inset-0 bg-black/10 z-40"
             onClick={() => setMobileMenuOpen(false)}
           ></div>
 
@@ -177,8 +177,13 @@ function NavBar() {
                     {openSubmenu === item.label && (
                       <ul className="ml-4 space-y-1">
                         {item.subItems.map((subItem, subIndex) => (
-                          <li key={subIndex} className="hover:text-blue-600">
-                            <Link to={subItem.path}>{subItem.label}</Link>
+                          <li key={subIndex} className="hover:text-blue-600 text-sm">
+                            <Link
+                              to={subItem.path}
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              {subItem.label}
+                            </Link>
                           </li>
                         ))}
                       </ul>
@@ -187,7 +192,8 @@ function NavBar() {
                 ) : (
                   <Link
                     to={item.path}
-                    className="block hover:text-blue-600 py-1"
+                    className="block hover:text-blue-600 py-1 text-sm"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.label}
                   </Link>
@@ -196,15 +202,22 @@ function NavBar() {
             ))}
 
             {/* Mobile Auth */}
-            <div className="pt-4 border-t mt-2">
+            <div className="pt-3 border-t mt-2">
               {user ? (
                 <>
-                  <Link to="/dashboard" className="block py-1">
+                  <Link
+                    to="/dashboard"
+                    className="block py-1 text-sm"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     Dashboard
                   </Link>
                   <button
-                    onClick={handleLogout}
-                    className="block text-left py-1 hover:text-blue-600"
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block text-left py-1 text-sm hover:text-blue-600"
                   >
                     Logout
                   </button>
@@ -213,14 +226,16 @@ function NavBar() {
                 <>
                   <Link
                     to="/login"
-                    className="flex items-center gap-1 py-1 hover:text-blue-600"
+                    className="flex items-center gap-1 py-1 text-sm hover:text-blue-600"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     <FaUser />
                     <span>Login</span>
                   </Link>
                   <Link
                     to="/register"
-                    className="flex items-center gap-1 py-1 hover:text-blue-600"
+                    className="flex items-center gap-1 py-1 text-sm hover:text-blue-600"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     <FaSignInAlt />
                     <span>Join Us</span>
