@@ -3,6 +3,7 @@ import { QRCodeCanvas } from "qrcode.react";
 
 import ReferralTree from "./ReferralTree";
 import MyReferral from "../../../../components/MyReferral";
+import ReferralLevelBadge from "../../../../components/ReferralLevelBadge";
 const Dashboard = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const user = storedUser?.user || {};
@@ -16,7 +17,7 @@ const Dashboard = () => {
       <h2 className="text-2xl font-bold mb-6 text-center">
         👤 Welcome, {user?.name}!
       </h2>
-
+      <ReferralLevelBadge />
       {/* Referral Code + QR */}
       <div className="bg-white shadow rounded-2xl p-6 mb-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import ReferralTree from "../pages/dashboard/user/Referals/ReferralTree";
 import MyReferral from "./MyReferral";
 import BalanceConversion from "./BalanceConversion";
+import ReferralLevelBadge from "./ReferralLevelBadge";
 const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
@@ -46,6 +47,7 @@ const UserDetails = () => {
         </Link>
       </div>
       <h1 className="text-2xl font-bold mb-4">User Details</h1>
+      <ReferralLevelBadge />
       <div className="overflow-x-auto bg-white shadow rounded-lg mt-4">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-100">

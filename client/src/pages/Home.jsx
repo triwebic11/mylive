@@ -8,16 +8,13 @@ import { IoIosHome } from "react-icons/io";
 import { TfiCup } from "react-icons/tfi";
 import { BiDonateHeart } from "react-icons/bi";
 
-
-
-
 const Home = () => {
   return (
     <div className="py-18">
       <HomeSlider />
       <ListOfDistributors></ListOfDistributors>
       <Container>
-        <div className="flex flex-col max-w-[1500px] mx-auto md:flex-row justify-center items-center gap-5 py-10">
+        <div className="flex flex-col max-w-[1450px] mx-auto md:flex-row justify-center items-center gap-5 py-10">
           <Box
             icon={<IoIosHome />}
             title="About SHS Lira"

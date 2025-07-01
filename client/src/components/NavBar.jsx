@@ -63,13 +63,13 @@ function NavBar() {
         {/* Logo */}
         <Link to={"/"} className="flex items-center gap-2">
           <img src={logo} alt="SHS Lira" className="h-12" />
-          <span className="text-lg font-bold text-gray-700 hover:text-blue-600 transition">
+          <span className="hidden md:visible text-lg font-bold text-gray-700 hover:text-blue-600 transition">
             SHS Lira
           </span>
         </Link>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex space-x-6 text-sm font-medium items-center">
+        <ul className="hidden lg:flex space-x-6 text-sm font-medium items-center">
           {menuItems.map((item, index) => (
             <li
               key={index}
@@ -92,7 +92,7 @@ function NavBar() {
                     </span>
                   </span>
                   {(item.label === "About" && isAboutOpen) ||
-                    (item.label === "Products" && isProductsOpen) ? (
+                  (item.label === "Products" && isProductsOpen) ? (
                     <ul className="absolute top-full left-0 mt-0 bg-white border rounded shadow-lg z-50 w-56 transition-all duration-300 ease-in-out opacity-100 translate-y-0">
                       {item.subItems.map((subItem, subIndex) => (
                         <li
@@ -142,10 +142,10 @@ function NavBar() {
         </ul>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden">
+        <div className="lg:hidden ">
           <button
             onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-white bg-blue-600 p-2 rounded-md"
+            className="text-white bg-blue-600 p-2 rounded-md mr-6"
           >
             {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
           </button>

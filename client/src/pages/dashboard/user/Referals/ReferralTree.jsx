@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import ReferralLevelBadge from "../../../../components/ReferralLevelBadge";
+import useAuth from "../../../../Hooks/useAuth";
 const ReferralTree = ({ referralTree }) => {
+  const { userPackage } = useAuth();
   const [uplines, setUplines] = useState([]);
   console.log("upline tree data: ", uplines);
-
+  console.log("userPackage data: ", userPackage);
   useEffect(() => {
     if (referralTree?.length > 0) {
       axios

@@ -11,6 +11,7 @@ import useAuth from "../../../Hooks/useAuth";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
+  const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
 
@@ -32,7 +33,8 @@ export default function PackageUpdate() {
         userData
       );
       Swal.fire("Success", "Request sent to admin.", "success");
-
+      localStorage.setItem("userPackage", JSON.stringify(userData));
+      setUserPackage(userData);
       // ✅ Request success হলে wait page এ পাঠান
       navigate("/package-waiting");
     } catch (err) {
