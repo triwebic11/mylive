@@ -1,9 +1,9 @@
 import { useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "./dashboard/Dashboard.jsx";
 import useAuth from "../Hooks/useAuth.jsx";
+import useAxiosPublic from "../Hooks/useAxiosPublic.jsx";
 
 const Register = () => {
   const { setUser } = useAuth();
@@ -25,6 +25,7 @@ const Register = () => {
   const [referralTree, setReferralTree] = useState([]);
   const [registeredUser, setRegisteredUser] = useState(null);
   const [activePackeg, setActivePackeg] = useState("unactive");
+  const axiosPublic = useAxiosPublic()
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,8 +35,8 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        "https://apidata.shslira.com/api/users/register",
+      const res = await axiosPublic.post(
+        "/users/register",
         form
       );
 

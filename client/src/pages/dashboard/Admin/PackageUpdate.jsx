@@ -8,12 +8,14 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../Hooks/useAuth";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
   const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
+  const axiosSecure = useAxiosSecure()
 
   console.log("user package compo", user);
 
@@ -28,8 +30,8 @@ export default function PackageUpdate() {
     };
 
     try {
-      const res = await axios.post(
-        "https://apidata.shslira.com/api/package-requests",
+      const res = await axiosSecure.post(
+        "/package-requests",
         userData
       );
       Swal.fire("Success", "Request sent to admin.", "success");

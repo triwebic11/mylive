@@ -94,7 +94,7 @@ const Dashboard = () => {
   const { setUser } = useContext(AuthContext);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [data, isLoading, isError, error, refetch] = useUserById();
+  const [data] = useUserById();
   const {role} = useRole()
   console.log("User role from useRole: ", role);
   console.log("User data from useUserById: ", data);

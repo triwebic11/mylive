@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import axios from "axios";
 import { AuthContext } from "../AuthProvider/AuthProvider";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 const Login = () => {
   const {
@@ -13,11 +13,12 @@ const Login = () => {
   } = useForm();
   const navigate = useNavigate();
   const { user, setUser } = useContext(AuthContext);
+  const axiosPublic = useAxiosPublic()
 
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post(
-        "https://apidata.shslira.com/api/users/login",
+      const res = await axiosPublic.post(
+        "/users/login",
         data
       );
       const loggedInUser = res?.data;

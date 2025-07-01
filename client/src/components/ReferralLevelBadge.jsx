@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useAuth from "../Hooks/useAuth";
-import axios from "axios";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 // 📦 Define style & emoji by package
 const packageStyles = {
@@ -34,13 +34,14 @@ export default function ReferralLevelBadge() {
   const [userPackage, setUserPackage] = useState(null);
   const { user } = useAuth();
   const userId = user?.user?._id;
+  const axiosSecure = useAxiosSecure()
 
   useEffect(() => {
     const fetchPackage = async () => {
       if (!userId) return;
       try {
-        const res = await axios.get(
-          `http://localhost:5000/api/package-requests/${userId}`
+        const res = await axiosSecure.get(
+          `/package-requests/${userId}`
         );
         setUserPackage(res.data);
         localStorage.setItem("userPackage", JSON.stringify(res.data));
@@ -50,7 +51,7 @@ export default function ReferralLevelBadge() {
     };
 
     fetchPackage();
-  }, [userId]);
+  }, [axiosSecure, userId]);
 
   if (!userPackage?.packageName)
     return <div className="text-gray-600">Sorry, no package found.</div>;
