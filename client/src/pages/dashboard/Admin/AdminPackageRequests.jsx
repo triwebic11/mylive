@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const AdminPackageRequests = () => {
   const [requests, setRequests] = useState([]);
+  const axiosSecure = useAxiosSecure()
 
   // Fetch all requests from backend
   useEffect(() => {
-    axios
-      .get("https://apidata.shslira.com/api/package-requests")
+    axiosSecure
+      .get("/package-requests")
       .then((res) => {
         const data = res.data;
         if (Array.isArray(data)) {
@@ -23,13 +24,13 @@ const AdminPackageRequests = () => {
         console.error("❌ Fetch error:", err);
         setRequests([]);
       });
-  }, []);
+  }, [axiosSecure]);
 
   // Approve handler
   const handleApprove = async (id) => {
     try {
-      await axios.patch(
-        `https://apidata.shslira.com/api/package-requests/approve/${id}`
+      await axiosSecure.patch(
+        `/package-requests/approve/${id}`
       );
       Swal.fire("Approved!", "Package activated for user.", "success");
 

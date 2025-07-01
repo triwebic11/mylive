@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import useAuth from "../Hooks/useAuth";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const PackageWaitingPage = () => {
   const { user } = useAuth();
@@ -10,12 +10,13 @@ const PackageWaitingPage = () => {
   const userId = user?._id;
   console.log("your user id is-", userId);
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure()
 
   useEffect(() => {
     const checkApproval = async () => {
       try {
-        const res = await axios.get(
-          `https://apidata.shslira.com/api/package-requests/${userId}`
+        const res = await axiosSecure.get(
+          `/package-requests/${userId}`
         );
         const status = res.data?.status;
         console.log("your status is : ", status);

@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import ReferralTree from "../pages/dashboard/user/Referals/ReferralTree";
 import MyReferral from "./MyReferral";
 import BalanceConversion from "./BalanceConversion";
 import ReferralLevelBadge from "./ReferralLevelBadge";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
+  const axiosSecure = useAxiosSecure()
 
   useEffect(() => {
     // 1. fetch user details
-    axios
-      .get(`https://apidata.shslira.com/api/users/admin/user/${id}`)
+    axiosSecure
+      .get(`/users/admin/user/${id}`)
       .then((res) => setUser(res.data))
       .catch((err) => console.error("Failed to load user", err));
 
     // 2. fetch all bank info and filter current user's one
-    axios
-      .get("https://apidata.shslira.com/api/profile/all")
+    axiosSecure
+      .get("/profile/all")
       .then((res) => {
         const userBankInfo = res.data.find((info) => info.userId === id);
         setBankInfo(userBankInfo);
       })
       .catch((err) => console.error("Failed to load bank info", err));
-  }, [id]);
+  }, [axiosSecure, id]);
 
   if (!user) return <div>Loading user info...</div>;
 

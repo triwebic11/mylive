@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { io } from "socket.io-client";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 // ✅ Socket connection
 const socket = io("http://localhost:5000"); 
@@ -9,30 +9,30 @@ const BalanceConversion = ({ userId }) => {
   const [point, setPoint] = useState(0);
   const [rate, setRate] = useState(1);
   const [taka, setTaka] = useState(0);
+  const axiosSecure = useAxiosSecure()
 
   // ✅ Fetch user points initially
   useEffect(() => {
     if (userId) {
-      axios
-        .get(`https://apidata.shslira.com/api/users/${userId}`)
+      axiosSecure.get(`/users/${userId}`)
         .then((res) => {
           const userPoints = res.data?.points || 0;
           setPoint(userPoints);
         })
         .catch((err) => console.error("Failed to fetch user:", err));
     }
-  }, [userId]);
+  }, [axiosSecure, userId]);
 
-  // ✅ Fetch conversion rate
+ 
   useEffect(() => {
-    axios
-      .get("https://apidata.shslira.com/api/conversion-rate")
+    axiosSecure
+      .get("/conversion-rate")
       .then((res) => {
         const currentRate = res.data?.pointToTaka || 1;
         setRate(currentRate);
       })
       .catch((err) => console.error("Failed to fetch conversion rate:", err));
-  }, []);
+  }, [axiosSecure]);
 
   // ✅ Recalculate taka when point or rate changes
   useEffect(() => {

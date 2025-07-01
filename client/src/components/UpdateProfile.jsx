@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const UpdateProfileInfo = ({ user }) => {
   const userId = user?.user._id;
@@ -16,14 +16,15 @@ const UpdateProfileInfo = ({ user }) => {
   });
 
   const [loading, setLoading] = useState(false);
+  const axiosSecure = useAxiosSecure()
 
   // 🔄 Load profile info from backend
   useEffect(() => {
     if (!userId) return;
     setLoading(true);
 
-    axios
-      .get(`https://apidata.shslira.com/api/users/${userId}`)
+    axiosSecure
+      .get(`/users/${userId}`)
       .then((res) => {
         if (res.data) {
           const user = res.data;
@@ -43,7 +44,7 @@ const UpdateProfileInfo = ({ user }) => {
         console.error("Failed to load user info:", err);
       })
       .finally(() => setLoading(false));
-  }, [userId]);
+  }, [axiosSecure, userId]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -54,7 +55,7 @@ const UpdateProfileInfo = ({ user }) => {
     if (!userId) return alert("User not found");
 
     try {
-      await axios.put(`https://apidata.shslira.com/api/users/${userId}`, form);
+      await axiosSecure.put(`/users/${userId}`, form);
 
       Swal.fire("✅ Success", "Profile updated successfully!", "success");
 

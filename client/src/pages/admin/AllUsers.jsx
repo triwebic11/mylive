@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const axiosSecure = useAxiosSecure()
   let userStatus = "Active"; // Assuming all users are active for now
 
   useEffect(() => {
-    axios
-      .get("https://apidata.shslira.com/api/users/admin/all-users")
+    axiosSecure
+      .get("/users/admin/all-users")
       .then((res) => {
         const reversedUsers = res.data.reverse(); //
         setUsers(reversedUsers);

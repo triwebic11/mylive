@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const WithdrawForm = ({ userId }) => {
   const [user, setUser] = useState(null);
   const [withdrawPoints, setWithdrawPoints] = useState("");
   let currentPoints = user?.points;
+  const axiosSecure = useAxiosSecure()
 
   // Fetch user data by ID
   useEffect(() => {
     if (userId) {
-      axios
-        .get(`https://apidata.shslira.com/api/users/${userId}`)
+      axiosSecure
+        .get(`/users/${userId}`)
         .then((res) => setUser(res.data))
         .catch((err) => console.error("Failed to fetch user", err));
     }
-  }, [userId]);
+  }, [axiosSecure, userId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,8 +41,8 @@ const WithdrawForm = ({ userId }) => {
     };
 
     try {
-      await axios.post(
-        "https://apidata.shslira.com/api/withdraw-requests",
+      await axiosSecure.post(
+        "/withdraw-requests",
         requestData
       );
       Swal.fire(
