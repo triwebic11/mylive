@@ -58,11 +58,11 @@ function NavBar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+    <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50 overflow-x-hidden">
       <div className="max-w-[1450px] mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to={"/"} className="flex items-center gap-2">
-          <img src={logo} alt="SHS Lira" className="h-12" />
+          <img src={logo} alt="SHS Lira" className="h-10" />
           <span className="hidden md:block text-lg font-bold text-gray-700 hover:text-blue-600 transition">
             SHS Lira
           </span>
@@ -93,11 +93,11 @@ function NavBar() {
                   </span>
                   {(item.label === "About" && isAboutOpen) ||
                     (item.label === "Products" && isProductsOpen) ? (
-                    <ul className="absolute top-full left-0 mt-0 bg-white border rounded shadow-lg z-50 w-56 transition-all duration-300 ease-in-out opacity-100 translate-y-0">
+                    <ul className="absolute top-full left-0 mt-0 bg-white border rounded shadow-lg z-50 w-56">
                       {item.subItems.map((subItem, subIndex) => (
                         <li
                           key={subIndex}
-                          className="px-4 py-2 hover:bg-gray-100 transition"
+                          className="px-4 py-2 hover:bg-gray-100"
                         >
                           <Link to={subItem.path}>{subItem.label}</Link>
                         </li>
@@ -152,7 +152,7 @@ function NavBar() {
         </div>
       </div>
 
-      {/* Mobile Menu + Backdrop */}
+      {/* Mobile Menu & Backdrop */}
       {isMobileMenuOpen && (
         <>
           {/* Backdrop */}
@@ -162,7 +162,7 @@ function NavBar() {
           ></div>
 
           {/* Mobile Menu */}
-          <div className="fixed top-16 left-0 w-full bg-gray-50 px-4 py-3 space-y-2 text-sm font-medium z-50">
+          <div className="fixed top-16 left-0 w-full bg-gray-50 px-3 py-2 space-y-2 text-sm font-medium z-50 overflow-x-hidden">
             {menuItems.map((item, index) => (
               <div key={index}>
                 {item.subItems ? (

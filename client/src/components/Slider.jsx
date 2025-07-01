@@ -12,6 +12,7 @@ const HomeSlider = () => {
     cssEase: "linear",
     slidesToShow: 1,
     slidesToScroll: 1,
+    arrows: false,
   };
   return (
     <div className="slider-container max-w-[1900px] mx-auto">
