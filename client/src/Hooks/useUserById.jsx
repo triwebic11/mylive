@@ -4,10 +4,7 @@ import useAuth from './useAuth';
 
 const useUserById = () => {
     const { user } = useAuth();
-
-    console.log("useUserById user:", user?._id);
     const axiosPublic = useAxiosPublic();
-
     const {
         data,
         isLoading,
@@ -15,13 +12,11 @@ const useUserById = () => {
         error,
         refetch
     } = useQuery({
-        // queryKey: ['user', user?.user?._id], // add id to refetch per user
-        queryKey: ['user', user?._id], // add id to refetch per user
-        enabled: !!user?.user?._id,          // only run when user._id is available
+        queryKey: ['user', user?.user?._id], 
+        enabled: !!user?.user?._id,          
         queryFn: async () => {
-            const response = await axiosPublic.get(`/users/${user?._id}`);
-            // const response = await axiosPublic.get(`/users/${user?.user?._id}`);
-            return response.data; // ✅ Axios handles JSON parsing
+            const response = await axiosPublic.get(`/users/${user?.user?._id}`);
+            return response.data; 
         },
     });
 

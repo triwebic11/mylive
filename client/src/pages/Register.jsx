@@ -35,10 +35,8 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const res = await axiosPublic.post(
-        "/users/register",
-        form
-      );
+      const res = await axiosPublic.post("/users/register",form);
+      console.log("Registration response:", res.data);
 
       const userData = {
         name: form.name,

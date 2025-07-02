@@ -18,7 +18,7 @@ const AllUsers = () => {
         setFilteredUsers(reversedUsers);
       })
       .catch((err) => console.error("Failed to load users", err));
-  }, []);
+  }, [axiosSecure]);
 
   const handleSearch = () => {
     const term = searchTerm.toLowerCase();

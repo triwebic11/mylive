@@ -28,7 +28,7 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  console.log("user data from auth provider - ", user);
+  console.log("user localStorageeeee- ", user?.user);
 
   const authInfo = {
     loading,
