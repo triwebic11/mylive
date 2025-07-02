@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const MyReferral = ({ referralCode }) => {
   const [referrals, setReferrals] = useState([]);
+  const axiosSecure = useAxiosSecure()
   console.log("Your referrals is = ", referrals);
 
   useEffect(() => {
     if (referralCode) {
-      axios
-        .get(`http://localhost:5000/api/users/my-referrals/${referralCode}`)
+      axiosSecure
+        .get(`/users/my-referrals/${referralCode}`)
         .then((res) => setReferrals(res.data))
         .catch((err) => console.error("Failed to fetch referrals", err));
     }
-  }, [referralCode]);
+  }, [axiosSecure, referralCode]);
 
   return (
     <div className="max-h-[400px] overflow-y-auto bg-white shadow rounded-2xl p-6 mt-6">

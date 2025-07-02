@@ -4,6 +4,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import ReferralTree from "./ReferralTree";
 import MyReferral from "../../../../components/MyReferral";
 import ReferralLevelBadge from "../../../../components/ReferralLevelBadge";
+import BalanceConversion from "../../../../components/BalanceConversion";
 const Dashboard = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const user = storedUser?.user || {};
@@ -69,11 +70,8 @@ const Dashboard = () => {
         </p>
       </div>
       <div className="bg-white shadow rounded-2xl p-6 mt-6">
-        <h3 className="text-lg font-semibold text-gray-700">
-          🎁 Total Referral Points
-        </h3>
         <p className="text-2xl text-green-600 font-bold">
-          {user?.points || 0} Points
+          <BalanceConversion userId={user._id} />
         </p>
       </div>
 

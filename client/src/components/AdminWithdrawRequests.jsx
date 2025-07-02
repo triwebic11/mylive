@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const AdminWithdrawRequests = () => {
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const axiosSecure = useAxiosSecure()
 
   // Load withdraw requests
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/withdraw-requests")
+    axiosSecure.get("/withdraw-requests")
       .then((res) => setRequests(res.data))
       .catch((err) => console.error("Failed to fetch requests", err));
-  }, []);
+  }, [axiosSecure]);
 
   const handleStatusUpdate = async (id, status) => {
     try {
@@ -25,8 +25,8 @@ const AdminWithdrawRequests = () => {
       });
 
       if (confirm.isConfirmed) {
-        await axios.patch(
-          `http://localhost:5000/api/withdraw-requests/${id}/status`,
+        await axiosSecure.patch(
+          `/withdraw-requests/${id}/status`,
           { status }
         );
 

@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import ReferralLevelBadge from "../../../../components/ReferralLevelBadge";
 import useAuth from "../../../../Hooks/useAuth";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 const ReferralTree = ({ referralTree }) => {
   const { userPackage } = useAuth();
   const [uplines, setUplines] = useState([]);
+  const axiosSecure = useAxiosSecure()
   console.log("upline tree data: ", uplines);
   console.log("userPackage data: ", userPackage);
   useEffect(() => {
     if (referralTree?.length > 0) {
+<<<<<<< HEAD
       axios
         .post("http://localhost:5000/api/users/referral-tree", {
+=======
+      axiosSecure
+        .post("/users/referral-tree", {
+>>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
           ids: referralTree,
         })
         .then((res) => setUplines(res.data))

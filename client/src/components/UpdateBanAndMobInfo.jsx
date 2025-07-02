@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 const MobAndBankInfoForm = ({ user }) => {
-  const userId = user?.user?._id;
+  const userId = user?.user._id;
 
   const [formData, setFormData] = useState({
     bkash: "",
@@ -15,14 +15,15 @@ const MobAndBankInfoForm = ({ user }) => {
     routeNo: "",
   });
   const [loading, setLoading] = useState(false);
+  const axiosSecure = useAxiosSecure()
 
   // Fetch existing data
   useEffect(() => {
     if (!userId) return;
     setLoading(true);
 
-    axios
-      .get(`http://localhost:5000/api/profile/accountsInfo/${userId}`)
+    axiosSecure
+      .get(`/profile/accountsInfo/${userId}`)
       .then((res) => {
         if (res.data) {
           setFormData({
@@ -41,7 +42,7 @@ const MobAndBankInfoForm = ({ user }) => {
         console.warn("No existing bank info found or error:", err.message);
       })
       .finally(() => setLoading(false));
-  }, [userId]);
+  }, [axiosSecure, userId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,7 +50,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
   const handleCreate = async () => {
     try {
-      await axios.post("http://localhost:5000/api/profile/accountsInfo", {
+      await axiosSecure.post("/profile/accountsInfo", {
         userId,
         ...formData,
       });
@@ -68,7 +69,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/profile/${userId}`, formData);
+      await axiosSecure.put(`/profile/${userId}`, formData);
 
       Swal.fire({
         icon: "success",
@@ -87,8 +88,8 @@ const MobAndBankInfoForm = ({ user }) => {
     if (!userId) return alert("❌ User not found. Please login again.");
 
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/profile/accountsInfo/${userId}`
+      const res = await axiosSecure.get(
+        `/profile/accountsInfo/${userId}`
       );
       if (res.data) {
         await handleUpdate();

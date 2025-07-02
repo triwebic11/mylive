@@ -1,17 +1,23 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const UserWithdrawHistory = ({ userId }) => {
   const [history, setHistory] = useState([]);
+  const axiosSecure = useAxiosSecure()
 
   useEffect(() => {
     if (userId) {
+<<<<<<< HEAD
       axios
         .get(`http://localhost:5000/api/withdraw-requests/user/${userId}`)
+=======
+      axiosSecure
+        .get(`/withdraw-requests/user/${userId}`)
+>>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
         .then((res) => setHistory(res.data))
         .catch((err) => console.error("Failed to fetch history", err));
     }
-  }, [userId]);
+  }, [axiosSecure, userId]);
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mt-8">

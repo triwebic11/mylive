@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const axiosSecure = useAxiosSecure()
   let userStatus = "Active"; // Assuming all users are active for now
 
   useEffect(() => {
+<<<<<<< HEAD
     axios
       .get("http://localhost:5000/api/users/admin/all-users")
+=======
+    axiosSecure
+      .get("/users/admin/all-users")
+>>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
       .then((res) => {
-        const reversedUsers = res.data.reverse(); // ✅ এখানেই reverse করো
+        const reversedUsers = res.data.reverse(); //
         setUsers(reversedUsers);
         setFilteredUsers(reversedUsers);
       })
@@ -85,7 +91,7 @@ const AllUsers = () => {
               </td>
               <td className="border px-4 py-2">
                 <Link
-                  to={`/admin-dashboard/user/${user._id}`}
+                  to={`/dashboard/user/${user._id}`}
                   className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                 >
                   Details

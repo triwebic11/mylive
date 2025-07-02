@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import socket from "./socket";
@@ -8,16 +7,16 @@ const AdminConversionRateForm = () => {
   const [currentRate, setCurrentRate] = useState(1);
   const [pointInput, setPointInput] = useState("");
   const [takaInput, setTakaInput] = useState("");
+  const axiosSecure = useAxiosSecure()
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/conversion-rate")
+    axiosSecure.get("/conversion-rate")
       .then((res) => {
         const rate = res.data?.pointToTaka || 1;
         setCurrentRate(rate);
       })
       .catch((err) => console.error("Failed to fetch conversion rate", err));
-  }, []);
+  }, [axiosSecure]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -36,7 +35,7 @@ const AdminConversionRateForm = () => {
     const pointToTaka = taka / points;
 
     try {
-      await axios.put("http://localhost:5000/api/conversion-rate", {
+      await axiosSecure.put("/conversion-rate", {
         pointToTaka,
       });
       socket.emit("conversionRateUpdated", {

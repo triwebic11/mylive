@@ -6,10 +6,12 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import moment from "moment";
 import useProducts from "../Hooks/useProducts";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [products, isLoading, isError, error, refetch] = useProducts();
+  const axiosPublic = useAxiosPublic()
 
   const product = products?.find((item) => item._id === id);
 
@@ -46,8 +48,8 @@ const ProductDetails = () => {
     };
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/cashonDelivery/cashonDelivery",
+      const res = await axiosPublic.post(
+        "/cashonDelivery/cashonDelivery",
         datas
       );
       console.log(res.data);

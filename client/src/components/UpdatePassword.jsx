@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const UpdatePassword = ({ user }) => {
-  const userId = user?.user?._id;
+  const userId = user?.user._id;
   console.log("User ID from UpdatePassword component:", userId);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const axiosSecure = useAxiosSecure()
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
@@ -25,8 +26,8 @@ const UpdatePassword = ({ user }) => {
     }
 
     try {
-      const response = await axios.put(
-        `http://localhost:5000/api/users/update-password/${userId}`,
+      const response = await axiosSecure.put(
+        `/users/update-password/${userId}`,
         {
           currentPassword,
           newPassword,
