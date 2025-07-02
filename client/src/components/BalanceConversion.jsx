@@ -1,29 +1,27 @@
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
-
-// ✅ Socket connection
-const socket = io("http://localhost:5000"); 
+import socket from "./socket"; // ✅ shared socket used
 
 const BalanceConversion = ({ userId }) => {
   const [point, setPoint] = useState(0);
   const [rate, setRate] = useState(1);
   const [taka, setTaka] = useState(0);
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
-  // ✅ Fetch user points initially
+  // ✅ Fetch user points
   useEffect(() => {
     if (userId) {
-      axiosSecure.get(`/users/${userId}`)
+      axiosSecure
+        .get(`/users/${userId}`)
         .then((res) => {
           const userPoints = res.data?.points || 0;
           setPoint(userPoints);
         })
         .catch((err) => console.error("Failed to fetch user:", err));
     }
-  }, [axiosSecure, userId]);
+  }, [userId]);
 
- 
+  // ✅ Fetch conversion rate
   useEffect(() => {
     axiosSecure
       .get("/conversion-rate")
@@ -32,27 +30,36 @@ const BalanceConversion = ({ userId }) => {
         setRate(currentRate);
       })
       .catch((err) => console.error("Failed to fetch conversion rate:", err));
-  }, [axiosSecure]);
+  }, []);
 
-  // ✅ Recalculate taka when point or rate changes
+  // ✅ Calculate taka
   useEffect(() => {
     setTaka(point * rate);
   }, [point, rate]);
 
-  // ✅ Real-time socket listener
+  // ✅ Listen to real-time updates
   useEffect(() => {
     socket.on("connect", () => {
-      console.log("🟢 Connected to socket server:", socket.id);
+      console.log("🟢 Socket connected:", socket.id);
     });
 
     socket.on("balance-updated", ({ userId: targetId, newPoints }) => {
       if (targetId === userId) {
         setPoint(newPoints);
-        console.log("🎉 Points updated via socket:", newPoints);
+        console.log("🎯 Points updated via socket:", newPoints);
       }
     });
 
-    return () => socket.disconnect(); // Cleanup
+    socket.on("conversionRateChanged", ({ pointToTaka }) => {
+      setRate(pointToTaka);
+      console.log("💸 Conversion rate updated:", pointToTaka);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("balance-updated");
+      socket.off("conversionRateChanged");
+    };
   }, [userId]);
 
   return (

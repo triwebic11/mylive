@@ -2,22 +2,26 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
+import socket from "./socket"; // ✅ import shared socket
 
 const AdminConversionRateForm = () => {
   const [currentRate, setCurrentRate] = useState(1);
   const [pointInput, setPointInput] = useState("");
   const [takaInput, setTakaInput] = useState("");
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
+  // ✅ Load current rate
   useEffect(() => {
-    axiosSecure.get("/conversion-rate")
+    axiosSecure
+      .get("/conversion-rate")
       .then((res) => {
         const rate = res.data?.pointToTaka || 1;
         setCurrentRate(rate);
       })
       .catch((err) => console.error("Failed to fetch conversion rate", err));
-  }, [axiosSecure]);
+  }, []);
 
+  // ✅ Handle form submit
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -35,9 +39,10 @@ const AdminConversionRateForm = () => {
     const pointToTaka = taka / points;
 
     try {
-      await axiosSecure.put("/conversion-rate", {
-        pointToTaka,
-      });
+      await axiosSecure.put("/conversion-rate", { pointToTaka });
+
+      // ✅ Emit to socket (with key: pointToTaka)
+      socket.emit("conversionRateUpdated", { pointToTaka });
 
       setCurrentRate(pointToTaka.toFixed(2));
       setPointInput("");
@@ -65,7 +70,6 @@ const AdminConversionRateForm = () => {
       <h2 className="text-xl font-semibold mb-4 text-center">
         ⚙️ Update Conversion Rate
       </h2>
-
       <p className="text-gray-600 text-center mb-4">
         📌 Current: <span className="font-bold">1 Point = {currentRate} ৳</span>
       </p>
