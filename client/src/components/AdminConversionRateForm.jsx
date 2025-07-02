@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import socket from "./socket";
 
 const AdminConversionRateForm = () => {
   const [currentRate, setCurrentRate] = useState(1);
@@ -10,7 +11,7 @@ const AdminConversionRateForm = () => {
 
   useEffect(() => {
     axios
-      .get("https://apidata.shslira.com/api/conversion-rate")
+      .get("http://localhost:5000/api/conversion-rate")
       .then((res) => {
         const rate = res.data?.pointToTaka || 1;
         setCurrentRate(rate);
@@ -35,8 +36,11 @@ const AdminConversionRateForm = () => {
     const pointToTaka = taka / points;
 
     try {
-      await axios.put("https://apidata.shslira.com/api/conversion-rate", {
+      await axios.put("http://localhost:5000/api/conversion-rate", {
         pointToTaka,
+      });
+      socket.emit("conversionRateUpdated", {
+        newRate: pointToTaka,
       });
 
       setCurrentRate(pointToTaka.toFixed(2));

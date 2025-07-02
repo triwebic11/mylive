@@ -15,7 +15,7 @@ const PackageWaitingPage = () => {
     const checkApproval = async () => {
       try {
         const res = await axios.get(
-          `https://apidata.shslira.com/api/package-requests/${userId}`
+          `http://localhost:5000/api/package-requests/${userId}`
         );
         const status = res.data?.status;
         console.log("your status is : ", status);

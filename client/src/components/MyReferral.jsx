@@ -8,7 +8,7 @@ const MyReferral = ({ referralCode }) => {
   useEffect(() => {
     if (referralCode) {
       axios
-        .get(`https://apidata.shslira.com/api/users/my-referrals/${referralCode}`)
+        .get(`http://localhost:5000/api/users/my-referrals/${referralCode}`)
         .then((res) => setReferrals(res.data))
         .catch((err) => console.error("Failed to fetch referrals", err));
     }

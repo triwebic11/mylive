@@ -9,7 +9,7 @@ const AdminPackageRequests = () => {
   // Fetch all requests from backend
   useEffect(() => {
     axios
-      .get("https://apidata.shslira.com/api/package-requests")
+      .get("http://localhost:5000/api/package-requests")
       .then((res) => {
         const data = res.data;
         if (Array.isArray(data)) {
@@ -29,7 +29,7 @@ const AdminPackageRequests = () => {
   const handleApprove = async (id) => {
     try {
       await axios.patch(
-        `https://apidata.shslira.com/api/package-requests/approve/${id}`
+        `http://localhost:5000/api/package-requests/approve/${id}`
       );
       Swal.fire("Approved!", "Package activated for user.", "success");
 

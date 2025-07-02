@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 
-// ✅ Socket connection
-const socket = io("http://localhost:5000"); 
+// ✅ Use live or local backend URL
+const socket = io("http://localhost:5000");
 
 const BalanceConversion = ({ userId }) => {
   const [point, setPoint] = useState(0);
@@ -14,7 +14,7 @@ const BalanceConversion = ({ userId }) => {
   useEffect(() => {
     if (userId) {
       axios
-        .get(`https://apidata.shslira.com/api/users/${userId}`)
+        .get(`http://localhost:5000/api/users/${userId}`)
         .then((res) => {
           const userPoints = res.data?.points || 0;
           setPoint(userPoints);
@@ -23,10 +23,10 @@ const BalanceConversion = ({ userId }) => {
     }
   }, [userId]);
 
-  // ✅ Fetch conversion rate
+  // ✅ Fetch conversion rate initially
   useEffect(() => {
     axios
-      .get("https://apidata.shslira.com/api/conversion-rate")
+      .get("http://localhost:5000/api/conversion-rate")
       .then((res) => {
         const currentRate = res.data?.pointToTaka || 1;
         setRate(currentRate);
@@ -34,17 +34,19 @@ const BalanceConversion = ({ userId }) => {
       .catch((err) => console.error("Failed to fetch conversion rate:", err));
   }, []);
 
-  // ✅ Recalculate taka when point or rate changes
+  // ✅ Calculate Taka based on point and rate
   useEffect(() => {
     setTaka(point * rate);
   }, [point, rate]);
 
-  // ✅ Real-time socket listener
+  // ✅ Real-time socket listeners
   useEffect(() => {
+    // Handle socket connect
     socket.on("connect", () => {
       console.log("🟢 Connected to socket server:", socket.id);
     });
 
+    // Point updated for this user
     socket.on("balance-updated", ({ userId: targetId, newPoints }) => {
       if (targetId === userId) {
         setPoint(newPoints);
@@ -52,7 +54,18 @@ const BalanceConversion = ({ userId }) => {
       }
     });
 
-    return () => socket.disconnect(); // Cleanup
+    // Conversion rate updated globally
+    socket.on("conversionRateChanged", ({ pointToTaka }) => {
+      setRate(pointToTaka);
+      console.log("💸 Rate updated via socket:", pointToTaka);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      socket.off("connect");
+      socket.off("balance-updated");
+      socket.off("conversionRateChanged");
+    };
   }, [userId]);
 
   return (

@@ -47,7 +47,7 @@ const ProductDetails = () => {
 
     try {
       const res = await axios.post(
-        "https://apidata.shslira.com/api/cashonDelivery/cashonDelivery",
+        "http://localhost:5000/api/cashonDelivery/cashonDelivery",
         datas
       );
       console.log(res.data);

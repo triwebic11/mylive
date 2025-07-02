@@ -7,7 +7,7 @@ const UserWithdrawHistory = ({ userId }) => {
   useEffect(() => {
     if (userId) {
       axios
-        .get(`https://apidata.shslira.com/api/withdraw-requests/user/${userId}`)
+        .get(`http://localhost:5000/api/withdraw-requests/user/${userId}`)
         .then((res) => setHistory(res.data))
         .catch((err) => console.error("Failed to fetch history", err));
     }

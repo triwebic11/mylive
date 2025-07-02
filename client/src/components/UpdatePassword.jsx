@@ -3,7 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const UpdatePassword = ({ user }) => {
-  const userId = user?._id;
+  const userId = user?.user?._id;
   console.log("User ID from UpdatePassword component:", userId);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -26,7 +26,7 @@ const UpdatePassword = ({ user }) => {
 
     try {
       const response = await axios.put(
-        `https://apidata.shslira.com/api/users/update-password/${userId}`,
+        `http://localhost:5000/api/users/update-password/${userId}`,
         {
           currentPassword,
           newPassword,

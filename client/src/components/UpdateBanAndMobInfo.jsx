@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 const MobAndBankInfoForm = ({ user }) => {
-  const userId = user?._id;
+  const userId = user?.user?._id;
 
   const [formData, setFormData] = useState({
     bkash: "",
@@ -22,7 +22,7 @@ const MobAndBankInfoForm = ({ user }) => {
     setLoading(true);
 
     axios
-      .get(`https://apidata.shslira.com/api/profile/accountsInfo/${userId}`)
+      .get(`http://localhost:5000/api/profile/accountsInfo/${userId}`)
       .then((res) => {
         if (res.data) {
           setFormData({
@@ -49,7 +49,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
   const handleCreate = async () => {
     try {
-      await axios.post("https://apidata.shslira.com/api/profile/accountsInfo", {
+      await axios.post("http://localhost:5000/api/profile/accountsInfo", {
         userId,
         ...formData,
       });
@@ -68,7 +68,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`https://apidata.shslira.com/api/profile/${userId}`, formData);
+      await axios.put(`http://localhost:5000/api/profile/${userId}`, formData);
 
       Swal.fire({
         icon: "success",
@@ -88,7 +88,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
     try {
       const res = await axios.get(
-        `https://apidata.shslira.com/api/profile/accountsInfo/${userId}`
+        `http://localhost:5000/api/profile/accountsInfo/${userId}`
       );
       if (res.data) {
         await handleUpdate();

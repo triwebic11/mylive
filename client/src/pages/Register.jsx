@@ -35,7 +35,7 @@ const Register = () => {
 
     try {
       const res = await axios.post(
-        "https://apidata.shslira.com/api/users/register",
+        "http://localhost:5000/api/users/register",
         form
       );
 

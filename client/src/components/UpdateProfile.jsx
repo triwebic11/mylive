@@ -3,7 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const UpdateProfileInfo = ({ user }) => {
-  const userId = user?._id;
+  const userId = user?.user?._id;
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -23,7 +23,7 @@ const UpdateProfileInfo = ({ user }) => {
     setLoading(true);
 
     axios
-      .get(`https://apidata.shslira.com/api/users/${userId}`)
+      .get(`http://localhost:5000/api/users/${userId}`)
       .then((res) => {
         if (res.data) {
           const user = res.data;
@@ -54,7 +54,7 @@ const UpdateProfileInfo = ({ user }) => {
     if (!userId) return alert("User not found");
 
     try {
-      await axios.put(`https://apidata.shslira.com/api/users/${userId}`, form);
+      await axios.put(`http://localhost:5000/api/users/${userId}`, form);
 
       Swal.fire("✅ Success", "Profile updated successfully!", "success");
 

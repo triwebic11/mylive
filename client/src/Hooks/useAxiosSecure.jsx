@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosSecure = axios.create({
-  baseURL: "https://apidata.shslira.com/api",
+  baseURL: "http://localhost:5000/api",
 });
 
 const useAxiosSecure = () => {

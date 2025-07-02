@@ -11,7 +11,7 @@ const WithdrawForm = ({ userId }) => {
   useEffect(() => {
     if (userId) {
       axios
-        .get(`https://apidata.shslira.com/api/users/${userId}`)
+        .get(`http://localhost:5000/api/users/${userId}`)
         .then((res) => setUser(res.data))
         .catch((err) => console.error("Failed to fetch user", err));
     }
@@ -41,7 +41,7 @@ const WithdrawForm = ({ userId }) => {
 
     try {
       await axios.post(
-        "https://apidata.shslira.com/api/withdraw-requests",
+        "http://localhost:5000/api/withdraw-requests",
         requestData
       );
       Swal.fire(

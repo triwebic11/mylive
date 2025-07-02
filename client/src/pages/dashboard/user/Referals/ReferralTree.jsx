@@ -10,7 +10,7 @@ const ReferralTree = ({ referralTree }) => {
   useEffect(() => {
     if (referralTree?.length > 0) {
       axios
-        .post("https://apidata.shslira.com/api/users/referral-tree", {
+        .post("http://localhost:5000/api/users/referral-tree", {
           ids: referralTree,
         })
         .then((res) => setUplines(res.data))
