@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import useAxiosSecure from "../Hooks/useAxiosSecure";
-import socket from "./socket"; // ✅ import shared socket
+import socket from "./socket";
 
 const AdminConversionRateForm = () => {
   const [currentRate, setCurrentRate] = useState(1);

@@ -10,8 +10,13 @@ const AllUsers = () => {
   let userStatus = "Active"; // Assuming all users are active for now
 
   useEffect(() => {
+<<<<<<< HEAD
+    axios
+      .get("http://localhost:5000/api/users/admin/all-users")
+=======
     axiosSecure
       .get("/users/admin/all-users")
+>>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
       .then((res) => {
         const reversedUsers = res.data.reverse(); //
         setUsers(reversedUsers);

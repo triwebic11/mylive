@@ -15,7 +15,7 @@ const server = http.createServer(app); // ✅ Updated line
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", "https://shslira.com"],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
   },
 });
 
@@ -42,12 +42,6 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Example test route (optional)
-app.get("/api/user/register", async (req, res) => {
-  const users = await users.find();
-  res.json(users);
-});
-
 // ✅ Socket.io events
 io.on("connection", (socket) => {
   console.log("🟢 New client connected:", socket.id);
@@ -61,7 +55,6 @@ io.on("connection", (socket) => {
     console.log("🔴 Client disconnected:", socket.id);
   });
 });
-
 
 // Optionally pass io to routes via app.set
 app.set("io", io);

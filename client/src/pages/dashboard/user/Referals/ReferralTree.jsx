@@ -9,8 +9,13 @@ const ReferralTree = ({ referralTree }) => {
   console.log("userPackage data: ", userPackage);
   useEffect(() => {
     if (referralTree?.length > 0) {
+<<<<<<< HEAD
+      axios
+        .post("http://localhost:5000/api/users/referral-tree", {
+=======
       axiosSecure
         .post("/users/referral-tree", {
+>>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
           ids: referralTree,
         })
         .then((res) => setUplines(res.data))

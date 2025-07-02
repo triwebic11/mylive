@@ -39,10 +39,12 @@ const BalanceConversion = ({ userId }) => {
 
   // ✅ Listen to real-time updates
   useEffect(() => {
+    // Handle socket connect
     socket.on("connect", () => {
       console.log("🟢 Socket connected:", socket.id);
     });
 
+    // Point updated for this user
     socket.on("balance-updated", ({ userId: targetId, newPoints }) => {
       if (targetId === userId) {
         setPoint(newPoints);

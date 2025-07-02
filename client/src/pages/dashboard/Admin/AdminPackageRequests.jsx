@@ -9,8 +9,13 @@ const AdminPackageRequests = () => {
 
   // Fetch all requests from backend
   useEffect(() => {
+<<<<<<< HEAD
+    axios
+      .get("http://localhost:5000/api/package-requests")
+=======
     axiosSecure
       .get("/package-requests")
+>>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
       .then((res) => {
         const data = res.data;
         if (Array.isArray(data)) {
@@ -29,8 +34,13 @@ const AdminPackageRequests = () => {
   // Approve handler
   const handleApprove = async (id) => {
     try {
+<<<<<<< HEAD
+      await axios.patch(
+        `http://localhost:5000/api/package-requests/approve/${id}`
+=======
       await axiosSecure.patch(
         `/package-requests/approve/${id}`
+>>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
       );
       Swal.fire("Approved!", "Package activated for user.", "success");
 

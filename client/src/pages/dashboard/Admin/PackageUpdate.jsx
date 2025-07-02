@@ -30,8 +30,13 @@ export default function PackageUpdate() {
     };
 
     try {
+<<<<<<< HEAD
+      const res = await axios.post(
+        "http://localhost:5000/api/package-requests",
+=======
       const res = await axiosSecure.post(
         "/package-requests",
+>>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
         userData
       );
       Swal.fire("Success", "Request sent to admin.", "success");
