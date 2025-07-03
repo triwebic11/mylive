@@ -7,20 +7,19 @@ import ReferralLevelBadge from "../../../../components/ReferralLevelBadge";
 import BalanceConversion from "../../../../components/BalanceConversion";
 import useAuth from "../../../../Hooks/useAuth";
 const Dashboard = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const userId = user?.user?._id;
-  const userReferralCode = user?.user?.referralCode || {};
+  const referralCode = user?.user?.referralCode || {};
   console.log("User data: ", user);
-  const referralCode = storedUser?.user?.referralCode;
-  console.log("your referral code is- ", referralCode);
-  const referralLink = `https://yourdomain.com/register?ref=${userReferralCode}`;
+
+  const referralLink = `https://yourdomain.com/register?ref=${referralCode}`;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6 text-center">
         👤 Welcome, {user?.user?.name}!
       </h2>
-      <ReferralLevelBadge />
+      <ReferralLevelBadge userId={userId} />
       {/* Referral Code + QR */}
       <div className="bg-white shadow rounded-2xl p-6 mb-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">

@@ -7,7 +7,7 @@ const PackageWaitingPage = () => {
   const { user } = useAuth();
   const { setUserPackage } = useAuth(); // Assuming you have a method to set user package
   console.log("User data from useAuth in waiting page: ", user);
-  const userId = user?.user?._id;
+  const userId = user?._id;
   console.log("your user id is-", userId);
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
@@ -16,9 +16,10 @@ const PackageWaitingPage = () => {
     const checkApproval = async () => {
       try {
         const res = await axiosSecure.get(`/package-requests/${userId}`);
-        const status = res.data?.status;
+        const status = res?.data?.status;
+
         console.log("your status is : ", status);
-        console.log("User package request data: ", res.data);
+        console.log("User package request data: ", res?.data);
         localStorage.setItem("userPackage", JSON.stringify(res.data));
         setUserPackage(res.data);
 

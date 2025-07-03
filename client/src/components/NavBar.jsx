@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaUser, FaSignInAlt, FaBars, FaTimes } from "react-icons/fa";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAuth from "../Hooks/useAuth";
@@ -62,7 +62,7 @@ function NavBar() {
       <div className="max-w-[1450px] mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to={"/"} className="flex items-center gap-2">
-          <img src={logo} alt="SHS Lira" className="h-12" />
+          <img src={logo} alt="SHS Lira" className="h-12 " />
           <span className="hidden md:block text-lg font-bold text-gray-700 hover:text-blue-600 transition">
             SHS Lira
           </span>

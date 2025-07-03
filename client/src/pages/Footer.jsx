@@ -1,6 +1,6 @@
 
-import logo from "../assets/logo.png"
-import { googlePlay, appStore, paymentMethod } from "../assets";
+
+import { googlePlay, appStore, paymentMethod, logo } from "../assets";
 import {
     FaFacebookF,
     FaYoutube,
@@ -20,7 +20,7 @@ function Footer() {
                     <Link to={"/"}><img
                         src={logo}
                         alt="SHS Lira Logo"
-                        className="w-28 mb-2"
+                        className="w-28 mb-2 "
                     /></Link>
                     <p className="font-bold text-gray-800 text-sm text-center md:text-left">
                         SHS Lira Enterprise LTD.

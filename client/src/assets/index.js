@@ -16,7 +16,7 @@ import sampoo from "./productsampoo.jpg";
 import protein from "./protein.jpg";
 import vigoproduct from "./vigoproduct.jpg";
 import odoc from "./odoc.jpg";
-import logo from "./logo.png";
+import logo from "./logo.jpg";
 
 export {
   onion,

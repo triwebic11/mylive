@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useAuth from "../Hooks/useAuth";
+// import useAuth from "../Hooks/useAuth";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 // 📦 Define style & emoji by package
@@ -30,19 +30,17 @@ const packageStyles = {
   },
 };
 
-export default function ReferralLevelBadge() {
+export default function ReferralLevelBadge({ userId }) {
   const [userPackage, setUserPackage] = useState(null);
-  const { user } = useAuth();
-  const userId = user?.user?._id;
-  const axiosSecure = useAxiosSecure()
+  // const { user } = useAuth();
+  // const userId = user?.user?._id;
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     const fetchPackage = async () => {
       if (!userId) return;
       try {
-        const res = await axiosSecure.get(
-          `/package-requests/${userId}`
-        );
+        const res = await axiosSecure.get(`/package-requests/${userId}`);
         setUserPackage(res.data);
         localStorage.setItem("userPackage", JSON.stringify(res.data));
       } catch (err) {
