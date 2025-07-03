@@ -1,4 +1,4 @@
-const ConversionRate = require("../models/conversionRate");
+const ConversionRate = require("../models/ConversionRate");
 
 // Get current conversion rate
 const getConversionRate = async (req, res) => {
