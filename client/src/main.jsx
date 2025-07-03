@@ -97,36 +97,13 @@ const router = createBrowserRouter([
         index: true,
         element: <PrivetRouter><FontDashboard /></PrivetRouter>,
       },
+
+      // admin Routes
       { path: "/dashboard/CashonDelivery", element: <PrivetRouter><AdminRoute><Orders /></AdminRoute></PrivetRouter> },
-      { path: "/dashboard/profile", element: <PrivetRouter><Profile /></PrivetRouter> },
       { path: "/dashboard/packages", element: <PrivetRouter><AdminRoute><PackageUpdate /></AdminRoute></PrivetRouter> },
       { path: "/dashboard/allProducts", element: <PrivetRouter><AdminRoute><AllProducts /></AdminRoute></PrivetRouter> },
       { path: "/dashboard/updatePackages", element: <PrivetRouter><AdminRoute><UpdatePackages /></AdminRoute></PrivetRouter> },
-      { path: "/dashboard/refer-link", element: <PrivetRouter><ReferLinkPage /></PrivetRouter> },
-      { path: "/dashboard/my-team", element: <PrivetRouter><MyTeam /></PrivetRouter> },
-      { path: "/dashboard/my-refer", element: <PrivetRouter><MyReferrals /></PrivetRouter> },
-      { path: "/dashboard/transactions", element: <PrivetRouter><Transactions /></PrivetRouter> },
-      { path: "/dashboard/register", element: <PrivetRouter><Register /></PrivetRouter> },
-
-      { path: "/dashboard/today-statement", element: <PrivetRouter><TodayStatement /></PrivetRouter> },
       { path: "/dashboard/update-password", element: <PrivetRouter><AdminRoute><UpdatePassword /></AdminRoute></PrivetRouter> },
-      {
-        path: "/dashboard/commission-statement",
-        element: <PrivetRouter><CommissionStatement /></PrivetRouter>,
-      },
-      { path: "/dashboard/withdraw", element: <PrivetRouter><Withdraw /></PrivetRouter> },
-      { path: "/dashboard/my-order", element: <PrivetRouter><MyOrder /></PrivetRouter> },
-      { path: "/dashboard/voucher", element: <PrivetRouter><Voucher /></PrivetRouter> },
-      { path: "/dashboard/my-consistency", element: <PrivetRouter><MyConsistency /></PrivetRouter> },
-      { path: "/dashboard/AddProduct", element: <PrivetRouter><AdminRoute><AddProduct /></AdminRoute></PrivetRouter> },
-      // {
-      //   path: "/dashboard",
-      //   element: <AdminDashboard />,
-      // },
-      {
-        path: "/dashboard/user/:id",
-        element: <PrivetRouter><UserDetails /></PrivetRouter>,
-      },
       { path: "/dashboard/allUsers", element: <PrivetRouter><AdminRoute><AllUsers /></AdminRoute></PrivetRouter> },
       {
         path: "/dashboard/allPackageRequestUser",
@@ -140,6 +117,36 @@ const router = createBrowserRouter([
         path: "/dashboard/balanceConversion",
         element: <PrivetRouter><AdminRoute><AdminConversionRateForm /></AdminRoute></PrivetRouter>,
       },
+       { path: "/dashboard/AddProduct", element: <PrivetRouter><AdminRoute><AddProduct /></AdminRoute></PrivetRouter> },
+
+
+      // user routessss
+      { path: "/dashboard/profile", element: <PrivetRouter><Profile /></PrivetRouter> },
+      { path: "/dashboard/refer-link", element: <PrivetRouter><ReferLinkPage /></PrivetRouter> },
+      { path: "/dashboard/my-team", element: <PrivetRouter><MyTeam /></PrivetRouter> },
+      { path: "/dashboard/my-refer", element: <PrivetRouter><MyReferrals /></PrivetRouter> },
+      { path: "/dashboard/transactions", element: <PrivetRouter><Transactions /></PrivetRouter> },
+      { path: "/dashboard/register", element: <PrivetRouter><Register /></PrivetRouter> },
+
+      { path: "/dashboard/today-statement", element: <PrivetRouter><TodayStatement /></PrivetRouter> },
+      {
+        path: "/dashboard/commission-statement",
+        element: <PrivetRouter><CommissionStatement /></PrivetRouter>,
+      },
+      { path: "/dashboard/withdraw", element: <PrivetRouter><Withdraw /></PrivetRouter> },
+      { path: "/dashboard/my-order", element: <PrivetRouter><MyOrder /></PrivetRouter> },
+      { path: "/dashboard/voucher", element: <PrivetRouter><Voucher /></PrivetRouter> },
+      { path: "/dashboard/my-consistency", element: <PrivetRouter><MyConsistency /></PrivetRouter> },
+     
+      // {
+      //   path: "/dashboard",
+      //   element: <AdminDashboard />,
+      // },
+      {
+        path: "/dashboard/user/:id",
+        element: <PrivetRouter><UserDetails /></PrivetRouter>,
+      },
+      
     ],
   },
 ]);
