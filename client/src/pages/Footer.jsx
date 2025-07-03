@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 function Footer() {
     return (
-        <footer className="bg-gray-100 mt-10 text-center md:text-left text-sm text-gray-700">
+        <footer className="bg-gray-100 mt-6 text-center md:text-left text-sm text-gray-700">
             <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* About Us */}
                 <div className="flex flex-col items-center md:items-start">
@@ -34,7 +34,7 @@ function Footer() {
                         <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Home</Link> <br />
                         <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Products</Link><br />
                         <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Services</Link><br />
-                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Contact Us</Link>
+                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/about-us">Contact Us</Link>
                     </ul>
                 </div>
 
