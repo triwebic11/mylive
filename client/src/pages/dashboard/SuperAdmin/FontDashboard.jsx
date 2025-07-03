@@ -29,28 +29,28 @@ const TopSlider = () => {
 
 const FontDashboard = () => {
     const stats = [
-        { title: "Total Refer", value: 10 },
-        { title: "Total Free Team", value: 139 },
-        { title: "Total Active Team", value: 58 },
+        { title: "Total Refer", value: 0 },
+        { title: "Total Free Team", value: 0 },
+        { title: "Total Active Team", value: 0 },
         { title: "Currently Expired", value: 0 },
         { title: "Total Voucher", value: 0 },
-        { title: "Previous Month Pv", value: 500 },
+        { title: "Previous Month Pv", value: 0 },
         { title: "Current Month Pv", value: 0 },
         { title: "Monthly down sale pv", value: 0 },
-        { title: "Total Team Sale Pv", value: 127512 },
-        { title: "Total Team Member", value: 197 },
+        { title: "Total Team Sale Pv", value: 0 },
+        { title: "Total Team Member", value: 0 },
         { title: "Current Purchase Amount", value: 0 },
-        { title: "Total Purchase Amount", value: 9080 },
-        { title: "Total Purchase Pv", value: 3946.73 },
-        { title: "Refer Commission", value: 1006.47 },
-        { title: "Generation Commission", value: 3870.79 },
-        { title: "Mega Commission", value: 1486.02 },
-        { title: "Repurchase Sponsor Bonus", value: 117.87 },
+        { title: "Total Purchase Amount", value: 0 },
+        { title: "Total Purchase Pv", value: 0 },
+        { title: "Refer Commission", value: 0 },
+        { title: "Generation Commission", value: 0 },
+        { title: "Mega Commission", value: 0 },
+        { title: "Repurchase Sponsor Bonus", value: 0 },
         { title: "Special Fund", value: 0 },
-        { title: "Withdrawable Balance", value: 188.65 },
-        { title: "Total Withdraw", value: 6600 },
-        { title: "Repurchase Commission", value: 307.50 },
-        { title: "Total TDS", value: 660 }
+        { title: "Withdrawable Balance", value: 0 },
+        { title: "Total Withdraw", value: 0 },
+        { title: "Repurchase Commission", value: 0 },
+        { title: "Total TDS", value: 0 }
     ];
 
     const fundStats = [

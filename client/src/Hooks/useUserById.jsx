@@ -12,8 +12,8 @@ const useUserById = () => {
         error,
         refetch
     } = useQuery({
-        queryKey: ['user', user?.user?._id], 
-        enabled: !!user?.user?._id,          
+        queryKey: ['user', user?.user?._id],
+        enabled: !!user?.user?._id,
         queryFn: async () => {
             const response = await axiosPublic.get(`/users/${user?.user?._id}`);
             return response.data; 
