@@ -43,10 +43,10 @@ const AboutUs = () => {
     return (
         <section className="bg-gray-100 min-h-screen py-12 px-6 md:px-16 lg:px-24">
             <div className=" p-8 md:p-12 max-w-7xl mx-auto">
-                <h1 className="text-4xl font-bold text-center text-indigo-700 mb-10  pb-4">About Us – SHS Enterprise</h1>
+                <h1 className="text-4xl font-bold text-center text-indigo-700 mb-10  pb-4">About Us – SHS Enterprise Ltd</h1>
 
                 <div className="mb-10 bg-white rounded-2xl shadow-xl p-10">
-                    <h2 className="text-3xl font-bold mb-8 text-indigo-600">Businesses operated here at our SHS Enterprise</h2>
+                    <h2 className="text-3xl font-bold mb-8 text-indigo-600">Businesses operated here at our SHS Enterprise  Ltd</h2>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 list-disc list-inside text-gray-700">
                         <li>S H S Lira Building Construction and Development Ltd.</li>
                         <li>S H S Lira Printing and Packaging</li>
