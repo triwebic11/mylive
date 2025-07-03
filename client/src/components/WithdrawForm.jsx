@@ -6,7 +6,7 @@ const WithdrawForm = ({ userId }) => {
   const [user, setUser] = useState(null);
   const [withdrawPoints, setWithdrawPoints] = useState("");
   let currentPoints = user?.points;
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   // Fetch user data by ID
   useEffect(() => {
@@ -41,10 +41,7 @@ const WithdrawForm = ({ userId }) => {
     };
 
     try {
-      await axiosSecure.post(
-        "/withdraw-requests",
-        requestData
-      );
+      await axiosSecure.post("/withdraw-requests", requestData);
       Swal.fire(
         "Success",
         "Your withdraw request has been submitted!",

@@ -4,7 +4,7 @@ import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 const ReferralTree = ({ referralTree }) => {
   const { userPackage } = useAuth();
   const [uplines, setUplines] = useState([]);
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
   console.log("upline tree data: ", uplines);
   console.log("userPackage data: ", userPackage);
   useEffect(() => {

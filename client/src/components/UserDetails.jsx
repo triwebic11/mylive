@@ -10,7 +10,7 @@ const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     // 1. fetch user details
@@ -35,7 +35,7 @@ const UserDetails = () => {
     <div className="p-6">
       <div>
         <Link
-          to="/admin-dashboard/allUsers"
+          to="/dashboard/allUsers"
           className=" bg-amber-800 text-white border border-amber-500 px-2 py-1 rounded-xl hover:opacity-80 my-10 inline-block "
         >
           Go to Back

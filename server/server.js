@@ -14,8 +14,8 @@ const app = express();
 const server = http.createServer(app); // ✅ Updated line
 const io = new Server(server, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
+    origin: ["http://localhost:5173", "https://shslira.com"],
+    methods: ["GET", "POST", "PUT"],
   },
 });
 
@@ -42,24 +42,18 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Example test route (optional)
-app.get("/api/user/register", async (req, res) => {
-  const users = await users.find();
-  res.json(users);
-});
-
 // ✅ Socket.io events
 io.on("connection", (socket) => {
   console.log("🟢 New client connected:", socket.id);
 
+  socket.on("conversionRateUpdated", ({ pointToTaka }) => {
+    console.log("🌀 New rate broadcast:", pointToTaka);
+    io.emit("conversionRateChanged", { pointToTaka });
+  });
+
   socket.on("disconnect", () => {
     console.log("🔴 Client disconnected:", socket.id);
   });
-
-  // Example custom event
-  // socket.on("something", (data) => {
-  //   console.log("Received something", data);
-  // });
 });
 
 // Optionally pass io to routes via app.set

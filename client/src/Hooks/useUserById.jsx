@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import useAxiosPublic from './useAxiosPublic';
-import useAuth from './useAuth';
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "./useAxiosPublic";
+import useAuth from "./useAuth";
 
 const useUserById = () => {
     const { user } = useAuth();
@@ -20,9 +20,9 @@ const useUserById = () => {
         },
     });
 
-    console.log("useUserById dataaaaaaa:", data);
+  console.log("useUserById dataaaaaaa:", data);
 
-    return [data, isLoading, isError, error, refetch];
+  return [data, isLoading, isError, error, refetch];
 };
 
 export default useUserById;
