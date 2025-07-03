@@ -48,6 +48,7 @@ import BalanceConversion from "./components/BalanceConversion.jsx";
 import AdminConversionRateForm from "./components/AdminConversionRateForm.jsx";
 import AdminPackageRequests from "./pages/dashboard/Admin/AdminPackageRequests.jsx";
 import PackageWaitingPage from "./components/PackageWaitingPage.jsx";
+import PrivetRouter from "./Routes/PrivetRoutes.jsx";
 
 const queryClients = new QueryClient();
 
@@ -93,50 +94,50 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/leaderboard",
         index: true,
-        element: <FontDashboard />,
+        element: <PrivetRouter><FontDashboard /></PrivetRouter>,
       },
-      { path: "/dashboard/CashonDelivery", element: <Orders /> },
-      { path: "/dashboard/profile", element: <Profile /> },
-      { path: "/dashboard/packages", element: <PackageUpdate /> },
-      { path: "/dashboard/allProducts", element: <AllProducts /> },
-      { path: "/dashboard/updatePackages", element: <UpdatePackages /> },
-      { path: "/dashboard/refer-link", element: <ReferLinkPage /> },
-      { path: "/dashboard/my-team", element: <MyTeam /> },
-      { path: "/dashboard/my-refer", element: <MyReferrals /> },
-      { path: "/dashboard/transactions", element: <Transactions /> },
-      { path: "/dashboard/register", element: <Register /> },
+      { path: "/dashboard/CashonDelivery", element: <PrivetRouter><Orders /></PrivetRouter> },
+      { path: "/dashboard/profile", element: <PrivetRouter><Profile /></PrivetRouter> },
+      { path: "/dashboard/packages", element: <PrivetRouter><PackageUpdate /></PrivetRouter> },
+      { path: "/dashboard/allProducts", element: <PrivetRouter><AllProducts /></PrivetRouter> },
+      { path: "/dashboard/updatePackages", element: <PrivetRouter><UpdatePackages /></PrivetRouter> },
+      { path: "/dashboard/refer-link", element: <PrivetRouter><ReferLinkPage /></PrivetRouter> },
+      { path: "/dashboard/my-team", element: <PrivetRouter><MyTeam /></PrivetRouter> },
+      { path: "/dashboard/my-refer", element: <PrivetRouter><MyReferrals /></PrivetRouter> },
+      { path: "/dashboard/transactions", element: <PrivetRouter><Transactions /></PrivetRouter> },
+      { path: "/dashboard/register", element: <PrivetRouter><Register /></PrivetRouter> },
 
-      { path: "/dashboard/today-statement", element: <TodayStatement /> },
-      { path: "/dashboard/update-password", element: <UpdatePassword /> },
+      { path: "/dashboard/today-statement", element: <PrivetRouter><TodayStatement /></PrivetRouter> },
+      { path: "/dashboard/update-password", element: <PrivetRouter><UpdatePassword /></PrivetRouter> },
       {
         path: "/dashboard/commission-statement",
-        element: <CommissionStatement />,
+        element: <PrivetRouter><CommissionStatement /></PrivetRouter>,
       },
-      { path: "/dashboard/withdraw", element: <Withdraw /> },
-      { path: "/dashboard/my-order", element: <MyOrder /> },
-      { path: "/dashboard/voucher", element: <Voucher /> },
-      { path: "/dashboard/my-consistency", element: <MyConsistency /> },
-      { path: "/dashboard/AddProduct", element: <AddProduct /> },
+      { path: "/dashboard/withdraw", element: <PrivetRouter><Withdraw /></PrivetRouter> },
+      { path: "/dashboard/my-order", element: <PrivetRouter><MyOrder /></PrivetRouter> },
+      { path: "/dashboard/voucher", element: <PrivetRouter><Voucher /></PrivetRouter> },
+      { path: "/dashboard/my-consistency", element: <PrivetRouter><MyConsistency /></PrivetRouter> },
+      { path: "/dashboard/AddProduct", element: <PrivetRouter><AddProduct /></PrivetRouter> },
       // {
       //   path: "/dashboard",
       //   element: <AdminDashboard />,
       // },
       {
         path: "/dashboard/user/:id",
-        element: <UserDetails />,
+        element: <PrivetRouter><UserDetails /></PrivetRouter>,
       },
-      { path: "/dashboard/allUsers", element: <AllUsers /> },
+      { path: "/dashboard/allUsers", element: <PrivetRouter><AllUsers /></PrivetRouter> },
       {
         path: "/dashboard/allPackageRequestUser",
-        element: <AdminPackageRequests />,
+        element: <PrivetRouter><AdminPackageRequests /></PrivetRouter>,
       },
       {
         path: "/dashboard/allWithdrawals",
-        element: <AdminWithdrawRequests />,
+        element: <PrivetRouter><AdminWithdrawRequests /></PrivetRouter>,
       },
       {
         path: "/dashboard/balanceConversion",
-        element: <AdminConversionRateForm />,
+        element: <PrivetRouter><AdminConversionRateForm /></PrivetRouter>,
       },
     ],
   },

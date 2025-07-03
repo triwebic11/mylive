@@ -10,6 +10,7 @@ const {
   getAllUsers,
   getUserById,
   updatProfileInfo,
+  updateUserRole,
 } = require("../controllers/userController");
 
 router.post("/register", registerUser);
@@ -23,6 +24,7 @@ router.get("/:id", getUserById);
 router.put("/:id", updatProfileInfo);
 router.get("/admin/all-users", getAllUsers);
 router.get("/admin/user/:id", getUserById);
+router.patch("/updaterole/:id", updateUserRole);
 
 module.exports = router;
 

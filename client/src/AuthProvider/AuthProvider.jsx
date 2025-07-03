@@ -28,7 +28,7 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  console.log("user localStorageeeee- ", user?.user);
+  console.log("user localStorage ", user?.user);
 
   const authInfo = {
     loading,

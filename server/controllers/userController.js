@@ -222,6 +222,30 @@ const updateUserPassword = async (req, res) => {
   }
 };
 
+const updateUserRole = async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  try {
+    const updatedRole = await User.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedRole) {
+      return res.status(404).json({ message: 'Role not found' });
+    }
+
+    res.json({
+      message: 'Role updated successfully',
+      product: updatedRole,
+    });
+  } catch (error) {
+    console.error('Patch update failed:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -232,6 +256,7 @@ module.exports = {
   getAllUsers,
   getUserById,
   updatProfileInfo,
+  updateUserRole
 };
 
 // const bcrypt = require("bcrypt");
