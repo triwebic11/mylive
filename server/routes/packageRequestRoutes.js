@@ -16,7 +16,6 @@ router.get("/", getAllRequests);
 // PATCH - Admin approves request
 router.patch("/approve/:id", approveRequest);
 
-// GET - Get request by user ID (optional use for user status check)
 router.get("/:userId", getUserRequest);
 
 module.exports = router;

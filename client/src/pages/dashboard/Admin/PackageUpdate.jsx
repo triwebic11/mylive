@@ -9,26 +9,26 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useUserById from "../../../Hooks/useUserById";
 
 export default function PackageUpdate() {
-  const { user } = useAuth();
-  const {userInfo} = user?.user;
-  console.log("Your Info",userInfo)
+  const [data] = useUserById()
+  console.log("Your Info",data)
   const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
   const axiosSecure = useAxiosSecure();
 
-  console.log("user package compo", user);
+  console.log("user package compo----", data);
 
   const handleAddPackage = async (plan) => {
     const userData = {
-      userId: userInfo?._id,
-      name: userInfo?.name,
-      email: userInfo?.email,
-      phone: userInfo?.phone,
-      packageName: plan.name,
-      packagePrice: plan.price,
+      userId: data?._id,
+      name: data?.name,
+      email: data?.email,
+      phone: data?.phone,
+      packageName: plan?.name,
+      packagePrice: plan?.price,
     };
 
     try {
