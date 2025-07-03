@@ -96,7 +96,7 @@ const Dashboard = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [data] = useUserById();
-  const {role} = useRole()
+  const { role } = useRole();
   console.log("User role from useRole: ", role);
   console.log("User data from useUserById: ", data);
 

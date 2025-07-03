@@ -89,8 +89,12 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: <Dashboard />,
     children: [
-      {index: true, element: <FontDashboard /> },
-      { path: "/dashboard/leaderboard",index: true, element: <FontDashboard /> },
+      { index: true, element: <FontDashboard /> },
+      {
+        path: "/dashboard/leaderboard",
+        index: true,
+        element: <FontDashboard />,
+      },
       { path: "/dashboard/CashonDelivery", element: <Orders /> },
       { path: "/dashboard/profile", element: <Profile /> },
       { path: "/dashboard/packages", element: <PackageUpdate /> },
@@ -136,7 +140,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-
 ]);
 
 createRoot(document.getElementById("root")).render(

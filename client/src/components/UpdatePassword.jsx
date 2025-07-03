@@ -3,12 +3,12 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const UpdatePassword = ({ user }) => {
-  const userId = user?.user._id;
+  const userId = user?.user?._id;
   console.log("User ID from UpdatePassword component:", userId);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();

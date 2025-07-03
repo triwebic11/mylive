@@ -17,13 +17,8 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-<<<<<<< HEAD
-      const res = await axios.post(
-        "http://localhost:5000/api/users/login",
-=======
       const res = await axiosPublic.post(
         "/users/login",
->>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
         data
       );
       const loggedInUser = res?.data;

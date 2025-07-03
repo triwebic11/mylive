@@ -45,10 +45,12 @@ app.get("/", (req, res) => {
 // ✅ Socket.io events
 io.on("connection", (socket) => {
   console.log("🟢 New client connected:", socket.id);
-  socket.on("conversionRateUpdated", (data) => {
-    console.log("📢 Broadcasting new rate:", data);
-    io.emit("conversionRateChanged", data); // Broadcast to all
+
+  socket.on("conversionRateUpdated", ({ pointToTaka }) => {
+    console.log("🌀 New rate broadcast:", pointToTaka);
+    io.emit("conversionRateChanged", { pointToTaka });
   });
+
   socket.on("disconnect", () => {
     console.log("🔴 Client disconnected:", socket.id);
   });

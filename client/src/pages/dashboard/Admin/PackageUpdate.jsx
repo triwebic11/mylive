@@ -12,33 +12,27 @@ import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
+  const {userInfo} = user?.user;
+  console.log("Your Info",userInfo)
   const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   console.log("user package compo", user);
 
   const handleAddPackage = async (plan) => {
     const userData = {
-      userId: user?._id,
-      name: user?.name,
-      email: user?.email,
-      phone: user?.phone,
+      userId: userInfo?._id,
+      name: userInfo?.name,
+      email: userInfo?.email,
+      phone: userInfo?.phone,
       packageName: plan.name,
       packagePrice: plan.price,
     };
 
     try {
-<<<<<<< HEAD
-      const res = await axios.post(
-        "http://localhost:5000/api/package-requests",
-=======
-      const res = await axiosSecure.post(
-        "/package-requests",
->>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
-        userData
-      );
+      const res = await axiosSecure.post("/package-requests", userData);
       Swal.fire("Success", "Request sent to admin.", "success");
       localStorage.setItem("userPackage", JSON.stringify(userData));
       setUserPackage(userData);

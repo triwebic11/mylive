@@ -6,18 +6,13 @@ const WithdrawForm = ({ userId }) => {
   const [user, setUser] = useState(null);
   const [withdrawPoints, setWithdrawPoints] = useState("");
   let currentPoints = user?.points;
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   // Fetch user data by ID
   useEffect(() => {
     if (userId) {
-<<<<<<< HEAD
-      axios
-        .get(`http://localhost:5000/api/users/${userId}`)
-=======
       axiosSecure
         .get(`/users/${userId}`)
->>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
         .then((res) => setUser(res.data))
         .catch((err) => console.error("Failed to fetch user", err));
     }
@@ -46,15 +41,7 @@ const WithdrawForm = ({ userId }) => {
     };
 
     try {
-<<<<<<< HEAD
-      await axios.post(
-        "http://localhost:5000/api/withdraw-requests",
-=======
-      await axiosSecure.post(
-        "/withdraw-requests",
->>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
-        requestData
-      );
+      await axiosSecure.post("/withdraw-requests", requestData);
       Swal.fire(
         "Success",
         "Your withdraw request has been submitted!",

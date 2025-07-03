@@ -10,28 +10,18 @@ const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     // 1. fetch user details
-<<<<<<< HEAD
-    axios
-      .get(`http://localhost:5000/api/users/admin/user/${id}`)
-=======
     axiosSecure
       .get(`/users/admin/user/${id}`)
->>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
       .then((res) => setUser(res.data))
       .catch((err) => console.error("Failed to load user", err));
 
     // 2. fetch all bank info and filter current user's one
-<<<<<<< HEAD
-    axios
-      .get("http://localhost:5000/api/profile/all")
-=======
     axiosSecure
       .get("/profile/all")
->>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
       .then((res) => {
         const userBankInfo = res.data.find((info) => info.userId === id);
         setBankInfo(userBankInfo);

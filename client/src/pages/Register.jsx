@@ -35,13 +35,8 @@ const Register = () => {
     e.preventDefault();
 
     try {
-<<<<<<< HEAD
-      const res = await axios.post(
-        "http://localhost:5000/api/users/register",
-=======
       const res = await axiosPublic.post(
         "/users/register",
->>>>>>> bbaccfe9b54a016cd416b0c936af57ae2eaae710
         form
       );
 
