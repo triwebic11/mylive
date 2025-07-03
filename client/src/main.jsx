@@ -49,6 +49,7 @@ import AdminConversionRateForm from "./components/AdminConversionRateForm.jsx";
 import AdminPackageRequests from "./pages/dashboard/Admin/AdminPackageRequests.jsx";
 import PackageWaitingPage from "./components/PackageWaitingPage.jsx";
 import PrivetRouter from "./Routes/PrivetRoutes.jsx";
+import AdminRoute from "./Routes/AdminRoute.jsx";
 
 const queryClients = new QueryClient();
 
@@ -96,11 +97,11 @@ const router = createBrowserRouter([
         index: true,
         element: <PrivetRouter><FontDashboard /></PrivetRouter>,
       },
-      { path: "/dashboard/CashonDelivery", element: <PrivetRouter><Orders /></PrivetRouter> },
+      { path: "/dashboard/CashonDelivery", element: <PrivetRouter><AdminRoute><Orders /></AdminRoute></PrivetRouter> },
       { path: "/dashboard/profile", element: <PrivetRouter><Profile /></PrivetRouter> },
-      { path: "/dashboard/packages", element: <PrivetRouter><PackageUpdate /></PrivetRouter> },
-      { path: "/dashboard/allProducts", element: <PrivetRouter><AllProducts /></PrivetRouter> },
-      { path: "/dashboard/updatePackages", element: <PrivetRouter><UpdatePackages /></PrivetRouter> },
+      { path: "/dashboard/packages", element: <PrivetRouter><AdminRoute><PackageUpdate /></AdminRoute></PrivetRouter> },
+      { path: "/dashboard/allProducts", element: <PrivetRouter><AdminRoute><AllProducts /></AdminRoute></PrivetRouter> },
+      { path: "/dashboard/updatePackages", element: <PrivetRouter><AdminRoute><UpdatePackages /></AdminRoute></PrivetRouter> },
       { path: "/dashboard/refer-link", element: <PrivetRouter><ReferLinkPage /></PrivetRouter> },
       { path: "/dashboard/my-team", element: <PrivetRouter><MyTeam /></PrivetRouter> },
       { path: "/dashboard/my-refer", element: <PrivetRouter><MyReferrals /></PrivetRouter> },
@@ -108,7 +109,7 @@ const router = createBrowserRouter([
       { path: "/dashboard/register", element: <PrivetRouter><Register /></PrivetRouter> },
 
       { path: "/dashboard/today-statement", element: <PrivetRouter><TodayStatement /></PrivetRouter> },
-      { path: "/dashboard/update-password", element: <PrivetRouter><UpdatePassword /></PrivetRouter> },
+      { path: "/dashboard/update-password", element: <PrivetRouter><AdminRoute><UpdatePassword /></AdminRoute></PrivetRouter> },
       {
         path: "/dashboard/commission-statement",
         element: <PrivetRouter><CommissionStatement /></PrivetRouter>,
@@ -117,7 +118,7 @@ const router = createBrowserRouter([
       { path: "/dashboard/my-order", element: <PrivetRouter><MyOrder /></PrivetRouter> },
       { path: "/dashboard/voucher", element: <PrivetRouter><Voucher /></PrivetRouter> },
       { path: "/dashboard/my-consistency", element: <PrivetRouter><MyConsistency /></PrivetRouter> },
-      { path: "/dashboard/AddProduct", element: <PrivetRouter><AddProduct /></PrivetRouter> },
+      { path: "/dashboard/AddProduct", element: <PrivetRouter><AdminRoute><AddProduct /></AdminRoute></PrivetRouter> },
       // {
       //   path: "/dashboard",
       //   element: <AdminDashboard />,
@@ -126,18 +127,18 @@ const router = createBrowserRouter([
         path: "/dashboard/user/:id",
         element: <PrivetRouter><UserDetails /></PrivetRouter>,
       },
-      { path: "/dashboard/allUsers", element: <PrivetRouter><AllUsers /></PrivetRouter> },
+      { path: "/dashboard/allUsers", element: <PrivetRouter><AdminRoute><AllUsers /></AdminRoute></PrivetRouter> },
       {
         path: "/dashboard/allPackageRequestUser",
-        element: <PrivetRouter><AdminPackageRequests /></PrivetRouter>,
+        element: <PrivetRouter><AdminRoute><AdminPackageRequests /></AdminRoute></PrivetRouter>,
       },
       {
         path: "/dashboard/allWithdrawals",
-        element: <PrivetRouter><AdminWithdrawRequests /></PrivetRouter>,
+        element: <PrivetRouter><AdminRoute><AdminWithdrawRequests /></AdminRoute></PrivetRouter>,
       },
       {
         path: "/dashboard/balanceConversion",
-        element: <PrivetRouter><AdminConversionRateForm /></PrivetRouter>,
+        element: <PrivetRouter><AdminRoute><AdminConversionRateForm /></AdminRoute></PrivetRouter>,
       },
     ],
   },
