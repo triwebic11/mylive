@@ -19,7 +19,7 @@ const Dashboard = () => {
       <h2 className="text-2xl font-bold mb-6 text-center">
         👤 Welcome, {user?.user?.name}!
       </h2>
-      <ReferralLevelBadge />
+      <ReferralLevelBadge userId={userId} />
       {/* Referral Code + QR */}
       <div className="bg-white shadow rounded-2xl p-6 mb-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">
