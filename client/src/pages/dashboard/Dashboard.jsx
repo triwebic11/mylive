@@ -143,7 +143,7 @@ const Dashboard = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-white px-4 py-6 overflow-y-auto transform transition-transform duration-300 flex-shrink-0
+        className={`fixed md:fixed  top-0 inset-y-0 left-0 z-40 w-64 bg-white px-4 py-6 overflow-y-auto transform transition-transform duration-300 flex-shrink-0
         ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
@@ -277,7 +277,7 @@ const Dashboard = () => {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-4">
+      <main className="flex-1 md:ml-64 p-4">
         <Outlet />
       </main>
     </div>

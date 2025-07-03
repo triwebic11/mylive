@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Pagination from "../../components/Pagination";
+import Swal from "sweetalert2";
 
 
 const AllUsers = () => {
@@ -67,8 +68,14 @@ const AllUsers = () => {
 
         // Also update filtered users based on current filter/search
         filterUsersByRoleAndSearch(roleFilter, searchTerm);
+        Swal.fire({
+              icon: "success",
+              title: "Role updated",
+              text: "Role updated successfully!",
+              confirmButtonColor: "#3085d6",
+            });
 
-        alert("Role updated successfully!");
+        
       } else {
         alert("Role update failed. Try again.");
       }

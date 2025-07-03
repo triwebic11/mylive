@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAuth from "../../../Hooks/useAuth";
 
 const AdminPackageRequests = () => {
+  const { user } = useAuth();
+  const userId = user?.user?._id;
+  console.log("user id from admin page request = ", userId);
   const [requests, setRequests] = useState([]);
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   // Fetch all requests from backend
   useEffect(() => {
@@ -13,6 +17,7 @@ const AdminPackageRequests = () => {
       .get("/package-requests")
       .then((res) => {
         const data = res.data;
+        console.log("your data form admin request aprove: ", data);
         if (Array.isArray(data)) {
           setRequests(data);
         } else {
@@ -29,9 +34,7 @@ const AdminPackageRequests = () => {
   // Approve handler
   const handleApprove = async (id) => {
     try {
-      await axiosSecure.patch(
-        `/package-requests/approve/${id}`
-      );
+      await axiosSecure.patch(`/package-requests/approve/${id}`);
       Swal.fire("Approved!", "Package activated for user.", "success");
 
       // Update local state

@@ -58,6 +58,10 @@ const AllProducts = () => {
 
     return (
         <div>
+            <h1 className="text-2xl pt-20 pb-5  font-bold mb-2">
+        All Products{" "}
+        
+      </h1>
             <div className="overflow-x-auto p-4">
                 <table className="min-w-full bg-white border border-gray-200">
                     <thead>

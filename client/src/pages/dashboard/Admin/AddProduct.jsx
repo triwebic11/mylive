@@ -132,9 +132,14 @@ const AddProduct = () => {
     };
 
     return (
+        <>
+        <h1 className="text-2xl pt-20 pb-5 md:ml-20 font-bold mb-2">
+        Add Products{" "}
+        
+      </h1>
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="max-w-xl mx-auto p-4 space-y-4 bg-white shadow rounded"
+            className="md:max-w-[80%] w-full mx-auto p-4 space-y-4 bg-white shadow rounded"
         >
             {/* Product Name */}
             <div>
@@ -226,6 +231,7 @@ const AddProduct = () => {
                 Add Product
             </button>
         </form>
+        </>
     );
 };
 
