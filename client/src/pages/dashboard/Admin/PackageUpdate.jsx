@@ -12,8 +12,8 @@ import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
-  const {userInfo} = user?.user;
-  console.log("Your Info",userInfo)
+
+  console.log("User Info from package update page = ", user);
   const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
@@ -23,10 +23,10 @@ export default function PackageUpdate() {
 
   const handleAddPackage = async (plan) => {
     const userData = {
-      userId: userInfo?._id,
-      name: userInfo?.name,
-      email: userInfo?.email,
-      phone: userInfo?.phone,
+      userId: user?._id,
+      name: user?.name,
+      email: user?.email,
+      phone: user?.phone,
       packageName: plan.name,
       packagePrice: plan.price,
     };
