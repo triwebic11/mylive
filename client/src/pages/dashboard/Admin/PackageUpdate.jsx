@@ -20,7 +20,7 @@ export default function PackageUpdate() {
   const [packages, isLoading, isError, error, refetch] = usePackages();
   const axiosSecure = useAxiosSecure();
 
-  console.log("user package compo----", data);
+  // console.log("user package compo----", data);
 
   const handleAddPackage = async (plan) => {
     const userData = {
