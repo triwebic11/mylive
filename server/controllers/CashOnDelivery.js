@@ -21,75 +21,125 @@ const generateUniqueOrderNumberforcashondelivery = async () => {
 const CashonDeliverypost = async (req, res) => {
   try {
     const order = req.body;
-    const { email, PV, product } = order;
-    console.log("order come",order)
+    const { email, PV, product,sector } = order;
 
-    // Create unique order number
+    console.log("Order Received:", order);
+
+    // Create Unique Order Number
     const orderNumber = await generateUniqueOrderNumberforcashondelivery();
-    order?.orderNumber = orderNumber;
+    order.orderNumber = orderNumber;
 
-    // Save order
+    console.log("ordernumber", orderNumber)
+
+    // Save Order
     const result = await CashOnDeliveryModel.create(order);
+    console.log("result", result)
 
-    // Get Buyer
+
+    // Find Buyer
     const buyer = await User.findOne({ email });
     if (!buyer) {
       return res.status(404).json({ message: "Buyer not found" });
     }
 
-    // Add points to buyer
+    console.log("buyeerrrrr", buyer)
+
+    // Add full PV to buyer's total points
     buyer.points += PV;
 
-    // Initialize AllEntry if not exists
     if (!buyer.AllEntry) {
       buyer.AllEntry = { incoming: [], outgoing: [] };
     }
 
-    // If buyer has referredBy, reward the referrer
+    // ReferredBy থাকলে referrer কে খুঁজে বের করো
     if (buyer.referredBy) {
       const referrer = await User.findOne({ referralCode: buyer.referredBy });
 
       if (referrer) {
-        const reward = Math.floor(PV * 0.1); // 10% reward
+        const reward = Math.floor(PV * 0.10); // ১০% referrer কে
 
-        // Add reward points to referrer
+        // Referrer কে points দিন
         referrer.points += reward;
 
-        // Initialize AllEntry if not exists
         if (!referrer.AllEntry) {
           referrer.AllEntry = { incoming: [], outgoing: [] };
         }
 
-        // ✅ Log to referrer's incoming
+        // ✅ Referrer's incoming log
         referrer.AllEntry.incoming.push({
           fromUser: buyer._id,
           name: buyer.name,
+          sector: sector,
           email: buyer.email,
           pointReceived: reward,
           product: product?.name || "Unknown Product",
+          type: "referral",
           date: new Date(),
         });
 
-        // ✅ Log to buyer's outgoing
+        // ✅ Buyer's outgoing log (to referrer)
         buyer.AllEntry.outgoing.push({
           toUser: referrer._id,
           name: referrer.name,
+          sector: sector,
           email: referrer.email,
           pointGiven: reward,
           product: product?.name || "Unknown Product",
+          type: "referral",
           date: new Date(),
         });
 
         await referrer.save();
+
+        // ✅ Buyer's incoming log (remaining 90%)
+        const remaining = PV - reward;
+        if (remaining > 0) {
+          buyer.AllEntry.incoming.push({
+            fromUser: buyer._id,
+            name: buyer.name,
+            sector: sector,
+            email: buyer.email,
+            pointReceived: remaining,
+            product: product?.name || "Unknown Product",
+            type: "self-after-referral",
+            date: new Date(),
+          });
+        }
+
+      } else {
+        // referrer not found → full PV goes to buyer incoming
+        buyer.AllEntry.incoming.push({
+          fromUser: buyer._id,
+          name: buyer.name,
+          sector: buyer.sector,
+          email: buyer.email,
+          pointReceived: PV,
+          product: product?.name || "Unknown Product",
+          type: "self-purchase",
+          date: new Date(),
+        });
       }
+    } else {
+      // No referredBy → full PV goes to buyer
+      buyer.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        name: buyer.name,
+        email: buyer.email,
+        pointReceived: PV,
+        product: product?.name || "Unknown Product",
+        type: "self-purchase",
+        date: new Date(),
+      });
     }
 
-    await buyer.save();
+
+    await buyer.save(); // Save buyer
 
     res.status(201).json({
-      message: "Order placed and referral points distributed",
+      message: "Order placed and referral reward distributed",
       result,
     });
+
   } catch (err) {
     console.error("CashOnDelivery error:", err);
     res.status(500).json({
@@ -98,6 +148,7 @@ const CashonDeliverypost = async (req, res) => {
     });
   }
 };
+
 
 const getCashonDelivery = async (req, res) => {
   try {

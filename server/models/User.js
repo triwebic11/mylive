@@ -150,11 +150,55 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
-  {},
+  {
+    name: String,
+    email: String,
+    phone: String,
+    password: String,
+    referralCode: String,
+    referredBy: String,
+    referralTree: [String],
+    points: {
+      type: Number,
+      default: 0,
+    },
+    role: {
+      type: String,
+      default: "user",
+    },
+    package: {
+      type: String,
+      default: "Normal",
+    },
+    AllEntry: {
+      incoming: [
+        {
+          fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          name: String,
+          sector: String,
+          email: String,
+          pointReceived: Number,
+          product: String,
+          date: Date,
+        },
+      ],
+      outgoing: [
+        {
+          toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          name: String,
+          sector: String,
+          email: String,
+          pointGiven: Number,
+          product: String,
+          date: Date,
+        },
+      ],
+    },
+  },
   {
     timestamps: true,
-    strict: false,
   }
 );
 
 module.exports = mongoose.model("User", userSchema);
+
