@@ -7,11 +7,15 @@ import axios from "axios";
 import moment from "moment";
 import useProducts from "../Hooks/useProducts";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
+import useUserById from "../Hooks/useUserById";
+import { useState } from "react";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [products, isLoading, isError, error, refetch] = useProducts();
+  const [data] = useUserById()
   const axiosPublic = useAxiosPublic()
+  const [userStatus, setuserStatus] = useState("")
 
   const product = products?.find((item) => item._id === id);
 
@@ -36,12 +40,20 @@ const ProductDetails = () => {
   } = useForm();
 
   const onSubmit = async (formData) => {
+    if(data?.email !== formData?.email){
+      setuserStatus("unRegisted")
+    }else{
+      setuserStatus("registered")
+    }
+    // console.loh(data?.email)
+
     const datas = {
       ...formData,
       product,
       quantity,
       totalPrice,
       sector: "ProductPurchase",
+      userStatus,
       PV,
       paymentMethod: "Cash on Delivery",
       orderTime: moment().format("MMMM Do YYYY, h:mm:ss a"),

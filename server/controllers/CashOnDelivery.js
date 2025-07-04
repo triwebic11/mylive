@@ -21,7 +21,7 @@ const generateUniqueOrderNumberforcashondelivery = async () => {
 const CashonDeliverypost = async (req, res) => {
   try {
     const order = req.body;
-    const { email, PV, product,sector } = order;
+    const { email, PV, product, sector} = order;
 
     console.log("Order Received:", order);
 
@@ -35,12 +35,17 @@ const CashonDeliverypost = async (req, res) => {
     const result = await CashOnDeliveryModel.create(order);
     console.log("result", result)
 
-
     // Find Buyer
     const buyer = await User.findOne({ email });
-    if (!buyer) {
-      return res.status(404).json({ message: "Buyer not found" });
-    }
+    // if (!buyer) {
+    //   return res.status(404).json({ message: "Buyer not found" });
+    // }
+   if (!buyer) {
+  return res.status(201).json({
+    message: "Unregistered user cash on delivery",
+    result,
+  });
+}
 
     console.log("buyeerrrrr", buyer)
 

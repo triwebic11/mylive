@@ -157,6 +157,7 @@ const userSchema = new mongoose.Schema(
     password: String,
     referralCode: String,
     referredBy: String,
+    userStatus: String,
     referralTree: [String],
     points: {
       type: Number,
