@@ -4,13 +4,12 @@ import useAuth from "../Hooks/useAuth";
 
 
 const UserRoute = ({children}) => {
-    const {role} = useRole()
-    const {loading} = useAuth()
+     const { role, isLoading: roleLoading } = useRole();
+    const { loading: authLoading } = useAuth();
 
-    if(loading){
-        return <p>Loading...</p>
+    if (authLoading || roleLoading) {
+        return <p>Loading...</p>;
     }
-
     if (role === 'user') {
         return children;
     }

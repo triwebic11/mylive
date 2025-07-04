@@ -1,9 +1,7 @@
 const { ObjectId } = require("mongodb");
 const nodemailer = require("nodemailer");
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; 
-
-
-const distributeReferralCommission = require("../utils/distributeReferralCommission");
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+const User = require("../models/User");
 const CashOnDeliveryModel = require("../models/CashOnDeliveryModel");
 
 const generateUniqueOrderNumberforcashondelivery = async () => {
@@ -11,89 +9,150 @@ const generateUniqueOrderNumberforcashondelivery = async () => {
   let isUnique = false;
 
   while (!isUnique) {
-    orderNumber = Math.floor(10000000000 + Math.random() * 90000000000); // Generate 11-digit number
-    const existingCashOnDelivery = await CashOnDeliveryModel.findOne({ orderNumber });
-    // const existingPayment = await paymentsCollections.findOne({ orderNumber });
-
-    if (!existingCashOnDelivery) {
-      isUnique = true;
-    }
+    orderNumber = Math.floor(10000000000 + Math.random() * 90000000000);
+    const existing = await CashOnDeliveryModel.findOne({ orderNumber });
+    if (!existing) isUnique = true;
   }
   return orderNumber;
 };
 
-
-// post cashondelivery
+// POST cash on delivery with referral update
+// ✅ POST Cash on Delivery Order
 const CashonDeliverypost = async (req, res) => {
   try {
     const order = req.body;
+    const { email, PV, product, sector} = order;
+
+    console.log("Order Received:", order);
+
+    // Create Unique Order Number
     const orderNumber = await generateUniqueOrderNumberforcashondelivery();
     order.orderNumber = orderNumber;
 
-    const result = await CashOnDeliveryModel.insertOne(order);
+    console.log("ordernumber", orderNumber)
 
-    // Send Email
-    // const mailOptions = {
-    //   from: process.env.EMAIL_USER,
-    //   to: order?.email,
-    //   subject: 'Order Confirmation from SHS Lira Enterprise LTD',
-    //   html: `
-    //     <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
-    //     <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-    //       <div style="background-color: #4CAF50; color: #ffffff; padding: 10px 0; text-align: center; border-radius: 8px 8px 0 0;">
-    //         <h1 style="margin: 0;">Order Confirmation</h1>
-    //       </div>
-    //       <div style="text-align: center; margin: auto; width: 100%; padding: 20px;">
-    //         <div>
-    //           <img src="https://i.ibb.co.com/TqgPrsDc/logo.png" alt="logo" style="width: 100px; height: auto; margin: 0 auto; display: block;" />
-    //         </div>
-    //       </div>
-    //       <div style="padding: 20px; line-height: 1.6;">
-    //         <h2 style="color: #333; margin-bottom: 10px;">Hello, ${order?.cus_Name}!</h2>
-    //         <p style="color: #555; font-size: 16px;">Thank you for shopping with us. Your order has been successfully placed!</p>
-    //         <p style="color: #555;">Location: ${order?.location?.district} - ${order?.location?.city} - ${order?.location?.area} - ${order?.location?.localArea}</p>
-    //         <div style="background-color: #f9f9f9; padding: 15px; border-radius: 6px; margin-top: 20px;">
-    //           <h3 style="color: #333;">Order Details</h3>
-    //           <table style="width: 100%; border-collapse: collapse;">
-    //             <tr>
-    //               <th style="padding: 10px; border: 1px solid #ddd; text-align: left; background-color: #4CAF50; color: #ffffff;">Product</th>
-    //               <th style="padding: 10px; border: 1px solid #ddd; text-align: left; background-color: #4CAF50; color: #ffffff;">Quantity</th>
-    //               <th style="padding: 10px; border: 1px solid #ddd; text-align: left; background-color: #4CAF50; color: #ffffff;">Price</th>
-    //             </tr>
-    //             ${order?.products?.map(item => `
-    //               <tr>
-    //                 <td style="padding: 10px; border: 1px solid #ddd;">${item?.name}</td>
-    //                 <td style="padding: 10px; border: 1px solid #ddd;">${item?.quantity}</td>
-    //                 <td style="padding: 10px; border: 1px solid #ddd;">$${item?.price}</td>
-    //               </tr>
-    //             `).join("")}
-    //           </table>
-    //         </div>
-    //         <p style="color: #555; font-size: 16px;">We are processing your order and will notify you when it ships. If you have any questions, feel free to <a href="mailto:kaziagri5@gmail.com" style="color: #4CAF50;">contact us</a>.</p>
-    //         <a href="https://kaziagritech.com" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px; margin-top: 20px;">Visit Our Store</a>
-    //       </div>
-    //       <div style="text-align: center; padding: 10px 0; background-color: #f1f1f1; border-radius: 0 0 8px 8px; color: #777; font-size: 14px;">
-    //         <p>If you did not make this order, please <a href="mailto:kaziagri5@gmail.com" style="color: #4CAF50;">contact us</a> immediately.</p>
-    //         <p>Best regards,<br><strong>Your Kazi AgriTech Team</strong></p>
-    //       </div>
-    //     </div>
-    //     </body>
-    //   `
-    // };
+    // Save Order
+    const result = await CashOnDeliveryModel.create(order);
+    console.log("result", result)
 
-    // await transporter.sendMail(mailOptions);
+    // Find Buyer
+    const buyer = await User.findOne({ email });
+    // if (!buyer) {
+    //   return res.status(404).json({ message: "Buyer not found" });
+    // }
+   if (!buyer) {
+  return res.status(201).json({
+    message: "Unregistered user cash on delivery",
+    result,
+  });
+}
 
-    // Clear user's cart
-    // await cartsCollections.deleteMany({ CustomerEmail: order.cus_email });
+    console.log("buyeerrrrr", buyer)
 
-    // Send final response
-    res.status(201).json(result);
+    // Add full PV to buyer's total points
+    buyer.points += PV;
+
+    if (!buyer.AllEntry) {
+      buyer.AllEntry = { incoming: [], outgoing: [] };
+    }
+
+    // ReferredBy থাকলে referrer কে খুঁজে বের করো
+    if (buyer.referredBy) {
+      const referrer = await User.findOne({ referralCode: buyer.referredBy });
+
+      if (referrer) {
+        const reward = Math.floor(PV * 0.10); // ১০% referrer কে
+
+        // Referrer কে points দিন
+        referrer.points += reward;
+
+        if (!referrer.AllEntry) {
+          referrer.AllEntry = { incoming: [], outgoing: [] };
+        }
+
+        // ✅ Referrer's incoming log
+        referrer.AllEntry.incoming.push({
+          fromUser: buyer._id,
+          name: buyer.name,
+          sector: sector,
+          email: buyer.email,
+          pointReceived: reward,
+          product: product?.name || "Unknown Product",
+          type: "referral",
+          date: new Date(),
+        });
+
+        // ✅ Buyer's outgoing log (to referrer)
+        buyer.AllEntry.outgoing.push({
+          toUser: referrer._id,
+          name: referrer.name,
+          sector: sector,
+          email: referrer.email,
+          pointGiven: reward,
+          product: product?.name || "Unknown Product",
+          type: "referral",
+          date: new Date(),
+        });
+
+        await referrer.save();
+
+        // ✅ Buyer's incoming log (remaining 90%)
+        const remaining = PV - reward;
+        if (remaining > 0) {
+          buyer.AllEntry.incoming.push({
+            fromUser: buyer._id,
+            name: buyer.name,
+            sector: sector,
+            email: buyer.email,
+            pointReceived: remaining,
+            product: product?.name || "Unknown Product",
+            type: "self-after-referral",
+            date: new Date(),
+          });
+        }
+
+      } else {
+        // referrer not found → full PV goes to buyer incoming
+        buyer.AllEntry.incoming.push({
+          fromUser: buyer._id,
+          name: buyer.name,
+          sector: buyer.sector,
+          email: buyer.email,
+          pointReceived: PV,
+          product: product?.name || "Unknown Product",
+          type: "self-purchase",
+          date: new Date(),
+        });
+      }
+    } else {
+      // No referredBy → full PV goes to buyer
+      buyer.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        name: buyer.name,
+        email: buyer.email,
+        pointReceived: PV,
+        product: product?.name || "Unknown Product",
+        type: "self-purchase",
+        date: new Date(),
+      });
+    }
+
+
+    await buyer.save(); // Save buyer
+
+    res.status(201).json({
+      message: "Order placed and referral reward distributed",
+      result,
+    });
+
   } catch (err) {
     console.error("CashOnDelivery error:", err);
-    res.status(500).json({ message: "Failed to place order", error: err.message });
+    res.status(500).json({
+      message: "Failed to place order",
+      error: err.message,
+    });
   }
 };
-
 
 
 const getCashonDelivery = async (req, res) => {
@@ -105,17 +164,16 @@ const getCashonDelivery = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch orders", error: err.message });
   }
 };
+
 const updatecashondelivery = async (req, res) => {
   try {
     const id = req.params.id;
     const updateData = req.body;
-
     const result = await CashOnDeliveryModel.findByIdAndUpdate(
       id,
       { $set: updateData },
-      { new: true, upsert: true } // return updated doc
+      { new: true, upsert: true }
     );
-
     res.status(200).json(result);
   } catch (err) {
     console.error("Update error:", err);
@@ -123,5 +181,8 @@ const updatecashondelivery = async (req, res) => {
   }
 };
 
-
-module.exports = { getCashonDelivery, CashonDeliverypost, updatecashondelivery };
+module.exports = {
+  getCashonDelivery,
+  CashonDeliverypost,
+  updatecashondelivery,
+};

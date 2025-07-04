@@ -1,22 +1,17 @@
-
-
 import { Navigate } from "react-router";
 import useAuth from "../Hooks/useAuth";
 
-// import Spinner from "../Componants/Spinner/Spinner";
+const PrivateRoute = ({ children }) => {
+    const { user, loading } = useAuth();
 
-
-
-const PrivetRouter = ({children}) => {
-    const {user, loading} = useAuth()
-    if(loading){
-        return <p>Loading...</p>
+    if (loading) {
+        return <p>Loading...</p>;
     }
-    if(user){
-        return children
+    if (user) {
+        return children;
     }
 
-    return <Navigate to="/login" ></Navigate>
+    return <Navigate to="/login" replace />;
 };
 
-export default PrivetRouter;
+export default PrivateRoute;

@@ -11,6 +11,8 @@ const AdminPackageRequests = () => {
   const [requests, setRequests] = useState([]);
   const axiosSecure = useAxiosSecure();
 
+  console.log(requests)
+
   // Fetch all requests from backend
   useEffect(() => {
     axiosSecure
@@ -21,12 +23,12 @@ const AdminPackageRequests = () => {
         if (Array.isArray(data)) {
           setRequests(data);
         } else {
-          console.warn("❌ Not an array:", data);
+          console.warn(" Not an array:", data);
           setRequests([]);
         }
       })
       .catch((err) => {
-        console.error("❌ Fetch error:", err);
+        console.error(" Fetch error:", err);
         setRequests([]);
       });
   }, [axiosSecure]);
@@ -59,7 +61,7 @@ const AdminPackageRequests = () => {
       </div>
       <h2 className="text-3xl font-bold text-center mb-8">Package Requests</h2>
 
-      {requests.length === 0 ? (
+      {requests?.length === 0 ? (
         <p className="text-center text-gray-500">No package requests found.</p>
       ) : (
         <div className="overflow-x-auto">
@@ -76,13 +78,13 @@ const AdminPackageRequests = () => {
               </tr>
             </thead>
             <tbody>
-              {requests.map((req) => (
+              {requests?.map((req) => (
                 <tr key={req._id} className="text-center">
-                  <td className="px-4 py-2 border">{req.name}</td>
-                  <td className="px-4 py-2 border">{req.email}</td>
-                  <td className="px-4 py-2 border">{req.phone}</td>
-                  <td className="px-4 py-2 border">{req.packageName}</td>
-                  <td className="px-4 py-2 border">{req.packagePrice}</td>
+                  <td className="px-4 py-2 border">{req?.name}</td>
+                  <td className="px-4 py-2 border">{req?.email}</td>
+                  <td className="px-4 py-2 border">{req?.phone}</td>
+                  <td className="px-4 py-2 border">{req?.packageName}</td>
+                  <td className="px-4 py-2 border">{req?.packagePrice}</td>
                   <td className="px-4 py-2 border font-semibold">
                     <span
                       className={`px-3 py-1 rounded-full text-white text-sm ${

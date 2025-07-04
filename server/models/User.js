@@ -46,115 +46,160 @@
 
 // module.exports = mongoose.model("User", userSchema);
 
+// const mongoose = require("mongoose");
+
+// const userSchema = new mongoose.Schema(
+//   {
+//     name: {
+//       type: String,
+//       required: true,
+//     },
+
+//     email: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//     },
+//     phone: {
+//       type: String,
+//       required: true,
+//     },
+//     dob: {
+//       type: Date,
+//     },
+//     division: {
+//       type: String,
+//       enum: [
+//         "Dhaka",
+//         "Chattagram",
+//         "Khulna",
+//         "Rajshahi",
+//         "Sylhet",
+//         "Barishal",
+//         "Rangpur",
+//         "Mymensingh",
+//       ],
+//     },
+//     city: {
+//       type: String,
+//     },
+//     postcode: {
+//       type: String,
+//     },
+//     address: {
+//       type: String,
+//     },
+
+//     password: {
+//       type: String,
+//       required: true,
+//     },
+
+//     referralCode: {
+//       type: String,
+//       unique: true,
+//     },
+
+//     referredBy: {
+//       type: String,
+//       default: null,
+//     },
+
+//     referralTree: {
+//       type: [String], // up to 10 levels
+//       default: [],
+//     },
+//     points: {
+//       type: Number,
+//       default: 0,
+//     },
+//     package: {
+//       type: String,
+//       enum: ["Normal", "Silver", "Gold", "Platinum"],
+//       default: "Normal",
+//     },
+//     packageExpireDate: {
+//       type: Date,
+//     },
+
+//     address: String,
+//     bankInfo: {
+//       bkash: String,
+//       nagad: String,
+//       rocket: String,
+//       bankName: String,
+//       accountNumber: String,
+//       accountHolder: String,
+//       branch: String,
+//       routeNo: String,
+//     },
+//     role: {
+//       type: String,
+//       enum: ["user", "admin"],
+//       default: "user",
+//     },
+//   },
+//   {
+//     timestamps: true,
+//     strict: false, // Allows for flexible schema
+//   }
+// );
+
+// module.exports = mongoose.model("User", userSchema);
+
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    phone: {
-      type: String,
-      required: true,
-    },
-    dob: {
-      type: Date,
-    },
-    division: {
-      type: String,
-      enum: [
-        "Dhaka",
-        "Chattagram",
-        "Khulna",
-        "Rajshahi",
-        "Sylhet",
-        "Barishal",
-        "Rangpur",
-        "Mymensingh",
-      ],
-    },
-    city: {
-      type: String,
-    },
-    postcode: {
-      type: String,
-    },
-    address: {
-      type: String,
-    },
-
-    password: {
-      type: String,
-      required: true,
-    },
-
-    referralCode: {
-      type: String,
-      unique: true,
-    },
-
-    referredBy: {
-      type: String,
-      default: null,
-    },
-
-    referralTree: {
-      type: [String], // up to 10 levels
-      default: [],
-    },
+    name: String,
+    email: String,
+    phone: String,
+    password: String,
+    referralCode: String,
+    referredBy: String,
+    userStatus: String,
+    referralTree: [String],
     points: {
       type: Number,
       default: 0,
     },
-    package: {
-      type: String,
-      enum: ["Normal", "Silver", "Gold", "Platinum"],
-      default: "Normal",
-    },
-    packageExpireDate: {
-      type: Date,
-    },
-
-    address: String,
-    bankInfo: {
-      bkash: String,
-      nagad: String,
-      rocket: String,
-      bankName: String,
-      accountNumber: String,
-      accountHolder: String,
-      branch: String,
-      routeNo: String,
-    },
     role: {
       type: String,
-      enum: ["user", "admin"],
       default: "user",
+    },
+    package: {
+      type: String,
+      default: "Normal",
+    },
+    AllEntry: {
+      incoming: [
+        {
+          fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          name: String,
+          sector: String,
+          email: String,
+          pointReceived: Number,
+          product: String,
+          date: Date,
+        },
+      ],
+      outgoing: [
+        {
+          toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          name: String,
+          sector: String,
+          email: String,
+          pointGiven: Number,
+          product: String,
+          date: Date,
+        },
+      ],
     },
   },
   {
     timestamps: true,
-    strict: false, // Allows for flexible schema
   }
 );
 
 module.exports = mongoose.model("User", userSchema);
 
-// const mongoose = require("mongoose");
-
-// const userSchema = new mongoose.Schema(
-//   {},
-//   {
-//     timestamps: true,
-//     strict: false,
-//   }
-// );
-
-// module.exports = mongoose.model("User", userSchema);

@@ -3,7 +3,7 @@ const router = express.Router();
 const { getCashonDelivery, CashonDeliverypost,updatecashondelivery } = require("../controllers/CashOnDelivery");
 
 
-router.post("/cashonDelivery", CashonDeliverypost);
+router.post("/postdata", CashonDeliverypost);
 router.get("/all", getCashonDelivery);
 router.patch("/:id", updatecashondelivery);
 
