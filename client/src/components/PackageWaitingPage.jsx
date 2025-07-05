@@ -35,7 +35,7 @@ const PackageWaitingPage = () => {
     // Check every 3 seconds
     const interval = setInterval(checkApproval, 3000);
     return () => clearInterval(interval);
-  }, [navigate, userId, setUserPackage]);
+  }, [navigate, userId, setUserPackage, axiosSecure]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

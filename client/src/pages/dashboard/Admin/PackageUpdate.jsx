@@ -18,6 +18,7 @@ export default function PackageUpdate() {
   const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
+  console.log(packages)
   const axiosSecure = useAxiosSecure();
 
   // console.log("user package compo----", data);
@@ -30,6 +31,7 @@ export default function PackageUpdate() {
       phone: user?.phone,
       packageName: plan.name,
       packagePrice: plan.price,
+      PackagePV: plan.PV,
     };
 
     try {
