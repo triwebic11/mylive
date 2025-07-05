@@ -156,10 +156,10 @@ const userSchema = new mongoose.Schema(
     phone: String,
     password: String,
     referralCode: String,
-    referredBy: String,
+    referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
     userStatus: String,
-    GenarationLevel: Number,
-    MegaGenarationLevel: Number,
+    GenerationLevel: { type: Number, default: 0 },
+    MegaGenerationLevel: { type: Number, default: 0 },
     TargetPV: [Number],
     Position: String,
 
@@ -186,6 +186,7 @@ const userSchema = new mongoose.Schema(
           email: String,
           pointReceived: Number,
           product: String,
+          type: String,          // Added type for filtering (e.g. "self-purchase")
           date: Date,
         },
       ],
@@ -206,6 +207,7 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
 
 module.exports = mongoose.model("User", userSchema);
 

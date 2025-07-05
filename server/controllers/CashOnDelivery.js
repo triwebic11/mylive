@@ -80,7 +80,6 @@ const updatecashondelivery = async (req, res) => {
   try {
     const id = req.params.id;
     const updateData = req.body;
-
     // console.log("user id data ",id)
 
     // Fetch the existing order
