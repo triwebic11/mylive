@@ -12,7 +12,7 @@ const Dashboard = () => {
   const referralCode = user?.user?.referralCode || {};
   console.log("User data: ", user);
 
-  const referralLink = `https://yourdomain.com/register?ref=${referralCode}`;
+  const referralLink = `https://shslira.com/register?ref=${referralCode}`;
 
   return (
     <div className="max-w-4xl mx-auto p-6">

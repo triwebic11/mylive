@@ -56,7 +56,7 @@ const UpdatePassword = ({ user }) => {
   return (
     <form
       onSubmit={handlePasswordUpdate}
-      className="space-y-4 mt-10 flex justify-center items-center w-full flex-col min-h-screen"
+      className="space-y-4 mt-10 flex justify-center items-center w-full flex-col py-8"
     >
       <h2 className="text-xl font-semibold mb-4">🔐 Update Password</h2>
       <div>
@@ -67,7 +67,7 @@ const UpdatePassword = ({ user }) => {
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
           required
-          className=" px-3 py-2 border rounded-md"
+          className=" px-3 py-2 border rounded-md w-full"
         />
       </div>
       <div>
@@ -78,7 +78,7 @@ const UpdatePassword = ({ user }) => {
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
-          className="px-3 py-2 border rounded-md"
+          className="px-3 py-2 border rounded-md w-full"
         />
       </div>
       <div>
@@ -94,7 +94,7 @@ const UpdatePassword = ({ user }) => {
       </div>
       <button
         type="submit"
-        className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700"
+        className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-green-700"
       >
         Update Password
       </button>

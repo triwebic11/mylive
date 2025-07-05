@@ -4,10 +4,12 @@ import UpdatePassword from "../../../components/UpdatePassword";
 import MobAndBankInfoForm from "../../../components/UpdateBanAndMobInfo";
 import UpdateProfileInfo from "../../../components/UpdateProfile";
 import useAuth from "../../../Hooks/useAuth";
+import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 const Profile = () => {
   const { user, setUser } = useAuth();
+  const userId = user?.user?._id || ""; // Ensure userId is defined, fallback to empty string
   console.log("User data from useAuth: ", user);
-// Extract user data from useAuth, fallback to empty object
+  // Extract user data from useAuth, fallback to empty object
   // Ensure user is defined, fallback to empty object
   console.log("User data from useAuth: ", user);
 
@@ -16,6 +18,7 @@ const Profile = () => {
       <div>
         <h1 className="text-2xl font-bold">Profile</h1>
       </div>
+      <ReferralLevelBadge userId={userId} />
       <div className="w-full bg-white ml-4 mt-4 p-4 rounded-lg shadow-md">
         <div>
           <h1 className="font-bold">Profile Information</h1>

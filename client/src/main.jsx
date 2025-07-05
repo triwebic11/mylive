@@ -96,48 +96,244 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/leaderboard",
         index: true,
-        element: <PrivetRouter><FontDashboard /></PrivetRouter>,
+        element: (
+          <PrivetRouter>
+            <FontDashboard />
+          </PrivetRouter>
+        ),
       },
 
       // --------admin Routes---------
-      { path: "/dashboard/CashonDelivery", element: <PrivetRouter><AdminRoute><Orders /></AdminRoute></PrivetRouter> },
-      { path: "/dashboard/packages", element: <PrivetRouter><AdminRoute><PackageUpdate /></AdminRoute></PrivetRouter> },
-      { path: "/dashboard/allProducts", element: <PrivetRouter><AdminRoute><AllProducts /></AdminRoute></PrivetRouter> },
-      { path: "/dashboard/updatePackages", element: <PrivetRouter><AdminRoute><UpdatePackages /></AdminRoute></PrivetRouter> },
-      { path: "/dashboard/update-password", element: <PrivetRouter><AdminRoute><UpdatePassword /></AdminRoute></PrivetRouter> },
-      { path: "/dashboard/allUsers", element: <PrivetRouter><AdminRoute><AllUsers /></AdminRoute></PrivetRouter> },
+      {
+        path: "/dashboard/CashonDelivery",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <Orders />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/packages",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <PackageUpdate />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/allProducts",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <AllProducts />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/updatePackages",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <UpdatePackages />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/update-password",
+        element: (
+          <PrivetRouter>
+            <UpdatePassword />
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/allUsers",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <AllUsers />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
       {
         path: "/dashboard/allPackageRequestUser",
-        element: <PrivetRouter><AdminRoute><AdminPackageRequests /></AdminRoute></PrivetRouter>,
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <AdminPackageRequests />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
       },
       {
         path: "/dashboard/allWithdrawals",
-        element: <PrivetRouter><AdminRoute><AdminWithdrawRequests /></AdminRoute></PrivetRouter>,
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <AdminWithdrawRequests />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
       },
       {
         path: "/dashboard/balanceConversion",
-        element: <PrivetRouter><AdminRoute><AdminConversionRateForm /></AdminRoute></PrivetRouter>,
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <AdminConversionRateForm />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
       },
-      { path: "/dashboard/AddProduct", element: <PrivetRouter><AdminRoute><AddProduct /></AdminRoute></PrivetRouter> },
-      { path: "/dashboard/user/:id", element: <PrivetRouter><AdminRoute><UserDetails /></AdminRoute></PrivetRouter> },
-
+      {
+        path: "/dashboard/AddProduct",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <AddProduct />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/user/:id",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <UserDetails />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
 
       //-------- user routessss--------
-      { path: "/dashboard/profile", element: <PrivetRouter><UserRoute><Profile /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/refer-link", element: <PrivetRouter><UserRoute><ReferLinkPage /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/my-team", element: <PrivetRouter><UserRoute><MyTeam /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/my-refer", element: <PrivetRouter><UserRoute><MyReferrals /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/transactions", element: <PrivetRouter><UserRoute><Transactions /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/register", element: <PrivetRouter><UserRoute><Register /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/today-statement", element: <PrivetRouter><UserRoute><TodayStatement /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/commission-statement", element: <PrivetRouter><UserRoute><CommissionStatement /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/withdraw", element: <PrivetRouter><UserRoute><Withdraw /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/my-order", element: <PrivetRouter><UserRoute><MyOrder /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/voucher", element: <PrivetRouter><UserRoute><Voucher /></UserRoute></PrivetRouter> },
-      { path: "/dashboard/my-consistency", element: <PrivetRouter><UserRoute><MyConsistency /></UserRoute></PrivetRouter> },
-      
-
-
+      {
+        path: "/dashboard/profile",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <Profile />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/refer-link",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <ReferLinkPage />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/my-team",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <MyTeam />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/my-refer",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <MyReferrals />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/transactions",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <Transactions />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/register",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <Register />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/today-statement",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <TodayStatement />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/commission-statement",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <CommissionStatement />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/withdraw",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <Withdraw />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/my-order",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <MyOrder />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/voucher",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <Voucher />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/my-consistency",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <MyConsistency />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
     ],
   },
 ]);

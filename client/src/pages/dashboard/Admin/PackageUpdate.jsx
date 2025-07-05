@@ -5,11 +5,10 @@ import { GoPackage } from "react-icons/go";
 import DashboardHeadings from "../../../components/DashboardHeadings";
 import usePackages from "../../../Hooks/usePackages";
 import Swal from "sweetalert2";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
-import useUserById from "../../../Hooks/useUserById";
 
 export default function PackageUpdate() {
   const { user } = useAuth();

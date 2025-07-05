@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Dashboard from "./dashboard/Dashboard.jsx";
 import useAuth from "../Hooks/useAuth.jsx";
 import useAxiosPublic from "../Hooks/useAxiosPublic.jsx";
-
+import { logo } from "../assets/index.js"; // Assuming you have a logo image
 const Register = () => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // ✅ for query params
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -21,11 +23,20 @@ const Register = () => {
     referralCode: "",
   });
 
+  // ✅ Set referral code from URL if available
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const refCode = params.get("ref");
+    if (refCode) {
+      setForm((prev) => ({ ...prev, referralCode: refCode }));
+    }
+  }, [location.search]);
+
+  const axiosPublic = useAxiosPublic();
   const [userReferralCode, setUserReferralCode] = useState("");
   const [referralTree, setReferralTree] = useState([]);
   const [registeredUser, setRegisteredUser] = useState(null);
   const [activePackeg, setActivePackeg] = useState("unactive");
-  const axiosPublic = useAxiosPublic()
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,11 +44,8 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await axiosPublic.post("/users/register",form);
-      console.log("Registration response:", res.data);
-
+      const res = await axiosPublic.post("/users/register", form);
       const userData = {
         name: form.name,
         email: form.email,
@@ -53,7 +61,6 @@ const Register = () => {
         referralTree: res.data.referralTree,
         _id: res.data.userId,
       };
-
       localStorage.setItem("user", JSON.stringify(userData));
       setUserReferralCode(res.data.referralCode);
       setReferralTree(res.data.referralTree);
@@ -74,12 +81,14 @@ const Register = () => {
       alert(err.response?.data?.message || "Registration failed");
     }
   };
-
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 rounded-5xl px-4">
-      <h2 className="text-3xl font-semibold text-center mb-6">
-        User Registration
-      </h2>
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 rounded-5xl px-4 py-5">
+      <div>
+        <Link to="/">
+          <img src={logo} alt="Logo" className="w-24 h-24 mx-auto mb-4" />
+        </Link>
+      </div>
+      <h2 className="text-3xl font-semibold text-center mb-6">Register Now</h2>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-3xl bg-white p-6 rounded-md shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4"
