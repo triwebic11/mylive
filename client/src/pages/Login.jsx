@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
+import { logo } from "../assets/index.js"; // Assuming you have a logo image
 
 const Login = () => {
   const {
@@ -13,14 +14,11 @@ const Login = () => {
   } = useForm();
   const navigate = useNavigate();
   const { user, setUser } = useContext(AuthContext);
-  const axiosPublic = useAxiosPublic()
+  const axiosPublic = useAxiosPublic();
 
   const onSubmit = async (data) => {
     try {
-      const res = await axiosPublic.post(
-        "/users/login",
-        data
-      );
+      const res = await axiosPublic.post("/users/login", data);
       const loggedInUser = res?.data;
 
       console.log("logeed", loggedInUser);
@@ -49,11 +47,16 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-5">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8 rounded shadow-md w-full max-w-md"
       >
+        <div>
+          <Link to="/">
+            <img src={logo} alt="Logo" className="w-24 h-24 mx-auto mb-4" />
+          </Link>
+        </div>
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
         <div className="mb-4">

@@ -14,7 +14,7 @@ const app = express();
 const server = http.createServer(app); // ✅ Updated line
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://shslira.com","https://apidata.shslira.com"],
+    origin: ["http://localhost:5173", "https://shslira.com"],
     methods: ["GET", "POST", "PUT"],
   },
 });

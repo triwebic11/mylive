@@ -27,7 +27,7 @@ const BalanceConversion = ({ userId }) => {
       .get("/conversion-rate")
       .then((res) => {
         const currentRate = res.data?.pointToTaka || 1;
-        setRate(currentRate);
+        setRate(parseFloat(currentRate).toFixed(2));
       })
       .catch((err) => console.error("Failed to fetch conversion rate:", err));
   }, []);
