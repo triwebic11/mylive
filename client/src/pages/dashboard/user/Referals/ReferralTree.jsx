@@ -16,7 +16,7 @@ const ReferralTree = ({ referralTree }) => {
         .then((res) => setUplines(res.data))
         .catch((err) => console.error("Failed to load tree", err));
     }
-  }, [referralTree]);
+  }, [axiosSecure, referralTree]);
 
   return (
     <div className="max-h-[400px] overflow-y-auto bg-white shadow rounded-2xl p-6 mt-6">

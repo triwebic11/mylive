@@ -56,6 +56,7 @@ const Register = () => {
         postcode: form.postcode,
         address: form.address,
         password: form.password,
+        
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
         _id: res.data.userId,

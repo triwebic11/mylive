@@ -104,7 +104,15 @@ const UpdatePackages = () => {
 
               <div>
                 <label className="block font-medium">PV</label>
-                <input {...register('PV')} className="w-full border p-2 rounded" />
+                <input type='number' {...register('PV')} className="w-full border p-2 rounded" />
+              </div>
+              <div>
+                <label className="block font-medium">Generation Commission Level</label>
+                <input type='number' {...register('GenerationLevel')} className="w-full border p-2 rounded" />
+              </div>
+              <div>
+                <label className="block font-medium">Mega Generation Commission Level </label>
+                <input type='number' {...register('MegaGenerationLevel')} className="w-full border p-2 rounded" />
               </div>
 
               <div>
@@ -114,7 +122,7 @@ const UpdatePackages = () => {
 
               <div>
                 <label className="block font-medium mb-1">Features</label>
-                {fields.map((field, index) => (
+                {fields?.map((field, index) => (
                   <div key={field.id} className="flex gap-2 items-center mb-2">
                     <input
                       {...register(`features.${index}`)}

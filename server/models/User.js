@@ -158,6 +158,11 @@ const userSchema = new mongoose.Schema(
     referralCode: String,
     referredBy: String,
     userStatus: String,
+    GenarationLevel: Number,
+    MegaGenarationLevel: Number,
+    TargetPV: [Number],
+    Position: String,
+
     referralTree: [String],
     points: {
       type: Number,
@@ -171,6 +176,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Normal",
     },
+    PackagePV: String,
     AllEntry: {
       incoming: [
         {

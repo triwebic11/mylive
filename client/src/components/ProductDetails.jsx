@@ -16,10 +16,11 @@ const ProductDetails = () => {
   const [data] = useUserById()
   const axiosPublic = useAxiosPublic()
   const [userStatus, setuserStatus] = useState("")
+  
 
   const product = products?.find((item) => item._id === id);
 
-  console.log("Product Details:", product);
+  // console.log("Product Details:", product);
 
   const [quantity, setQuantity] = React.useState(1);
   const increaseQty = () => setQuantity((prev) => prev + 1);
@@ -28,7 +29,7 @@ const ProductDetails = () => {
   // Safely extract numeric price
   const numericPrice = parseFloat(product?.price || 0);
   const PV = product?.pointValue * quantity;
-  console.log("Point Value:", PV);
+  // console.log("Point Value:", PV);
 
   const totalPrice = quantity * numericPrice;
 
@@ -49,6 +50,7 @@ const ProductDetails = () => {
 
     const datas = {
       ...formData,
+      userId: data?._id, 
       product,
       quantity,
       totalPrice,

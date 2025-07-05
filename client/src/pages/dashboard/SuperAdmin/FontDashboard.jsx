@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import useUserById from "../../../Hooks/useUserById";
 
 const DashboardCard = ({ title, value }) => (
     <div className="bg-white p-4 rounded-2xl shadow-md flex flex-col justify-between h-24">
@@ -28,6 +29,7 @@ const TopSlider = () => {
 };
 
 const FontDashboard = () => {
+    const [data] = useUserById()
     const stats = [
         { title: "Total Refer", value: 0 },
         { title: "Total Free Team", value: 0 },
@@ -64,9 +66,15 @@ const FontDashboard = () => {
         <div className=" w-[88%] mx-auto p-6 bg-gray-100 min-h-screen">
             <TopSlider />
 
+            <p>Name: {data?.name}</p>
+            <p>Role: {data?.role}</p>
+            <p>Phone: {data?.phone}</p>
+            <p>Package: {data?.package}</p>
+
+
             <header className="mb-6">
                 <h1 className="text-2xl font-bold text-center text-purple-800">
-                    Welcome to SHS Lira Products Marketing Ltd.
+                    Welcome to SHS Lira Enterprise Ltd.
                 </h1>
                 <p className="text-center text-sm text-gray-600">Repurchase Validity: 30d 23h 59m 59s</p>
             </header>

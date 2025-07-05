@@ -13,6 +13,14 @@ const PackagesModel = new mongoose.Schema({
     type: Number,
     required: true
   },
+  GenerationLevel: {
+    type: Number,
+    required: true
+  },
+  MegaGenerationLevel: {
+    type: Number,
+    required: true
+  },
   description: {
     type: String,
     required: true
