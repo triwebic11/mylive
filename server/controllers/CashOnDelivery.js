@@ -189,18 +189,18 @@ const updatecashondelivery = async (req, res) => {
           case "advance-consistency":
             await handleAdvanceConsistency(buyer, PV, product);
             break;
-          case "travel":
-            await allocateFund(buyer, PV, "travelFund", 0.04);
-            break;
-          case "car":
-            await allocateFund(buyer, PV, "carFund", 0.04);
-            break;
-          case "house":
-            await allocateFund(buyer, PV, "houseFund", 0.02);
-            break;
-          case "dsp":
-            await allocateFund(buyer, PV, "dsp", 0.15);
-            break;
+          // case "travel":
+          //   await allocateFund(buyer, PV, "travelFund", 0.04);
+          //   break;
+          // case "car":
+          //   await allocateFund(buyer, PV, "carFund", 0.04);
+          //   break;
+          // case "house":
+          //   await allocateFund(buyer, PV, "houseFund", 0.02);
+          //   break;
+          // case "dsp":
+          //   await allocateFund(buyer, PV, "dsp", 0.15);
+          //   break;
         }
       }
 
