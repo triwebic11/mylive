@@ -51,6 +51,7 @@ import PackageWaitingPage from "./components/PackageWaitingPage.jsx";
 import PrivetRouter from "./Routes/PrivetRoutes.jsx";
 import AdminRoute from "./Routes/AdminRoute.jsx";
 import UserRoute from "./Routes/UserRoute.jsx";
+import Kyc from "./pages/dashboard/user/Kyc.jsx";
 
 const queryClients = new QueryClient();
 
@@ -320,6 +321,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <UserRoute>
               <Voucher />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/kyc",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <Kyc />
             </UserRoute>
           </PrivetRouter>
         ),

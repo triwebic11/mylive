@@ -38,7 +38,7 @@ const dashboardArry = [
   { title: "My Order", icon: "", link: "/dashboard/my-order" },
   { title: "Package Update", icon: "", link: "/dashboard/fontDashboard" },
   { title: "Support", icon: "", link: "/dashboard" },
-  { title: "Kyc", icon: "", link: "/dashboard" },
+  { title: "Kyc", icon: "", link: "/dashboard/kyc" },
   { title: "Update Password", icon: "", link: "/dashboard/update-password" },
 ];
 
