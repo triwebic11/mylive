@@ -37,7 +37,7 @@ const dashboardArry = [
   { title: "Withdraw", icon: "", link: "/dashboard/withdraw" },
   { title: "My Order", icon: "", link: "/dashboard/my-order" },
   { title: "Package Update", icon: "", link: "/dashboard/fontDashboard" },
-  { title: "Support", icon: "", link: "/dashboard" },
+  { title: "Support", icon: "", link: "/dashboard/support" },
   { title: "Kyc", icon: "", link: "/dashboard" },
   { title: "Update Password", icon: "", link: "/dashboard/update-password" },
 ];
@@ -144,9 +144,8 @@ const Dashboard = () => {
       {/* Sidebar */}
       <aside
         className={`fixed md:fixed  top-0 inset-y-0 left-0 z-40 w-64 bg-white px-4 py-6 overflow-y-auto transform transition-transform duration-300 flex-shrink-0
-        ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         <div className="flex items-center justify-between mb-6">
           <Link to="/" onClick={closeSidebar}>
