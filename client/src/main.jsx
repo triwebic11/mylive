@@ -52,6 +52,8 @@ import PrivetRouter from "./Routes/PrivetRoutes.jsx";
 import AdminRoute from "./Routes/AdminRoute.jsx";
 import UserRoute from "./Routes/UserRoute.jsx";
 import Kyc from "./pages/dashboard/user/Kyc.jsx";
+import Support from "./pages/dashboard/user/Support.jsx";
+import SocialLink from "./pages/SocialLink.jsx";
 
 const queryClients = new QueryClient();
 
@@ -67,6 +69,7 @@ const Layout = () => {
       {!noHeaderFooter && <Header />}
       <Outlet />
       {!noHeaderFooter && <Footer />}
+      {!noHeaderFooter && <SocialLink />}
     </div>
   );
 };
@@ -331,6 +334,17 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <UserRoute>
               <Kyc />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+
+      {
+        path: "/dashboard/support",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <Support />
             </UserRoute>
           </PrivetRouter>
         ),

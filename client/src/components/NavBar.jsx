@@ -59,11 +59,11 @@ function NavBar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
-      <div className="max-w-[1450px] mx-auto px-4 flex items-center justify-between">
+      <div className="max-w-[1450px] mx-auto my-0 px-4 flex items-center justify-between ">
         {/* Logo */}
         <Link to={"/"} className="flex items-center gap-2">
-          <img src={logo} alt="SHS Lira" className="h-32" />
-         
+          <img src={logo} alt="SHS Lira" className="h-28" />
+
         </Link>
 
         {/* Desktop Menu */}

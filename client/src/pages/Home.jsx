@@ -10,7 +10,7 @@ import { BiDonateHeart } from "react-icons/bi";
 
 const Home = () => {
   return (
-    <div className="py-18">
+    <div className="py-20">
       <HomeSlider />
       <ListOfDistributors></ListOfDistributors>
       <Container>
@@ -34,9 +34,9 @@ const Home = () => {
             bg="bg-green-700"
           />
         </div>
-        {/* <div className="w-full flex justify-center items-center py-10">
-        <video src="" controls className="w-full"></video>
-      </div> */}
+        <div className="w-full flex justify-center items-center py-10">
+          <video src="https://res.cloudinary.com/dlmbqhvnm/video/upload/v1751724178/WhatsApp_Video_2025-07-05_at_4.50.56_AM_titwwy.mp4" controls className="w-full"></video>
+        </div>
       </Container>
       <OurProducts></OurProducts>
     </div>
