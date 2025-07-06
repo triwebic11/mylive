@@ -38,7 +38,7 @@ app.use("/api/package-requests", packageRequestRoutes);
 app.use("/api/withdraw-requests", withdrawRoutes);
 // app.use("/api/uploads", require("./routes/uploadRoute"));
 
-cron.schedule("0 2 1 * *", async () => {
+cron.schedule("* * * * *", async () => {
   console.log("📆 Monthly commission running from server.js...");
   await processMonthlyLevelCommissions();
 });
