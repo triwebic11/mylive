@@ -3,15 +3,20 @@ import Dropzone from "react-dropzone";
 import axios from "axios";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
-
+import useAuth from "../../../Hooks/useAuth";
+import useKycStatus from "../../../components/useKycStatus";
 // Cloudinary credentials
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dlmbqhvnm/image/upload";
 const UPLOAD_PRESET = "SHSLIRA";
 
 const Kyc = () => {
+  const { user } = useAuth();
+  const userId = user?.user?._id;
+  const phone = user?.user?.phone || "";
   const [frontImage, setFrontImage] = useState("");
   const [backImage, setBackImage] = useState("");
   const axiosSecure = useAxiosSecure();
+  const kycStatus = useKycStatus();
 
   // Front image upload handler
   const handleFrontUpload = async (file) => {
@@ -50,10 +55,12 @@ const Kyc = () => {
     const payload = {
       frontImage,
       backImage,
+      userId,
+      phone,
     };
 
     try {
-      await axiosSecure.post("/users/kyc", payload);
+      await axiosSecure.post("/kyc", payload);
       Swal.fire("Success", "KYC submitted successfully!", "success");
       setFrontImage("");
       setBackImage("");
@@ -65,6 +72,15 @@ const Kyc = () => {
 
   return (
     <>
+      <div className="p-4 text-xl text-center font-bold">
+        {kycStatus === "verified" ? (
+          <div className="text-green-600 font-bold">User Verified ✅</div>
+        ) : kycStatus === "pending" ? (
+          <div className="text-yellow-600">KYC Pending...</div>
+        ) : (
+          <div className="text-red-600">Not Submitted</div>
+        )}
+      </div>
       <h1 className="text-2xl pt-20 pb-5 md:ml-20 font-bold mb-2">
         Upload Your NID (Front & Back)
       </h1>

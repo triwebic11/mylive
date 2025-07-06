@@ -28,6 +28,7 @@ const KycDisplay = ({ userId }) => {
 
   return (
     <div className="space-y-4 mt-6">
+      <h1 className="text-lg font-bold">User KYC</h1>
       <div>
         <p className="font-semibold">Front Side:</p>
         <img

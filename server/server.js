@@ -11,6 +11,7 @@ const {
 const accountInfoRoutes = require("./routes/accountInfoRoutes");
 const withdrawRoutes = require("./routes/withdrawRequests");
 const packageRequestRoutes = require("./routes/packageRequestRoutes");
+const kycRoutes = require('./routes/kycRoutes');
 const app = express();
 const server = http.createServer(app); // ✅ Updated line
 const io = new Server(server, {
@@ -36,6 +37,7 @@ app.use("/api/packages", require("./routes/PackagesRoute"));
 app.use("/api/conversion-rate", require("./routes/conversionRoutes"));
 app.use("/api/package-requests", packageRequestRoutes);
 app.use("/api/withdraw-requests", withdrawRoutes);
+app.use('/api/kyc', kycRoutes);
 // app.use("/api/uploads", require("./routes/uploadRoute"));
 
 cron.schedule("* * * * *", async () => {

@@ -54,6 +54,7 @@ import UserRoute from "./Routes/UserRoute.jsx";
 import Kyc from "./pages/dashboard/user/Kyc.jsx";
 import Support from "./pages/dashboard/user/Support.jsx";
 import SocialLink from "./pages/SocialLink.jsx";
+import AdminKycList from "./components/AdminKycList.jsx";
 
 const queryClients = new QueryClient();
 
@@ -212,6 +213,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <AdminRoute>
               <UserDetails />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/kycVerified",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <AdminKycList />
             </AdminRoute>
           </PrivetRouter>
         ),

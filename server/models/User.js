@@ -176,14 +176,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Normal",
     },
-      frontImage: {
-      type: String,
-      required: true,
-    },
-    backImage: {
-      type: String,
-      required: true,
-    },
+    //   frontImage: {
+    //   type: String,
+    //   required: true,
+    // },
+    // backImage: {
+    //   type: String,
+    //   required: true,
+    // },
     PackagePV: String,
     AllEntry: {
       incoming: [

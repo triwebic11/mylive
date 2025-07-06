@@ -88,6 +88,7 @@ const adminDashboardArry = [
     ],
   },
   { title: "Update Password", icon: "", link: "/dashboard/update-password" },
+  { title: "User KYC Verified Request", icon: "", link: "/dashboard/kycVerified" },
 ];
 
 const Dashboard = () => {

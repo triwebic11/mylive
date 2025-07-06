@@ -1,5 +1,5 @@
 const express = require("express");
-const verifyJWT = require("../middlewares/verifyJWT");
+
 const router = express.Router();
 const {
   registerUser,
@@ -28,8 +28,8 @@ router.put("/:id", updatProfileInfo);
 router.get("/admin/all-users", getAllUsers);
 router.get("/admin/user/:id", getUserById);
 router.patch("/updaterole/:id", updateUserRole);
-router.post("/kyc", verifyJWT, submitKycImages);
-router.get("/kyc/:id", getUserKycById);
+// router.post("/kyc", submitKycImages);
+// router.get("/kyc/:id", getUserKycById);
 
 module.exports = router;
 
