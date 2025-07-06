@@ -90,6 +90,9 @@ const processMonthlyLevelCommissions = async () => {
     let leftPV = 0;
     let rightPV = 0;
 
+    console.log(`\n📌 Checking user: ${rootUser.name} (${rootUser.email})`);
+    console.log(`📊 Total downlines: ${downlines.length}`);
+
     for (const { user: downUser, level } of downlines) {
       const monthlyPV = (downUser.AllEntry?.incoming || []).filter(entry => {
         const d = new Date(entry.date);
@@ -103,6 +106,8 @@ const processMonthlyLevelCommissions = async () => {
       const side = downUser._id.toString().slice(-1) % 2 === 0 ? "left" : "right";
       if (side === "left") leftPV += monthlyPV;
       else rightPV += monthlyPV;
+
+      console.log(`  📥 Level ${level}: ${downUser.name} => ${monthlyPV} PV (${side} side)`);
 
       let commissionRate = 0;
       let type = "";
@@ -134,11 +139,13 @@ const processMonthlyLevelCommissions = async () => {
             level,
             date: new Date(),
           });
+          console.log(`    ✅ Commission added: ${commission} PV (${type})`);
         }
       }
     }
 
-    // ✅ Designation assignment with bonus, level, fund
+    console.log(`📦 Total PV: ${totalPV}, Left: ${leftPV}, Right: ${rightPV}`);
+
     for (const pos of POSITIONS) {
       if (leftPV >= pos.PV && rightPV >= pos.PV) {
         if (rootUser.Position !== pos.name) {
@@ -161,6 +168,7 @@ const processMonthlyLevelCommissions = async () => {
               level: 0,
               date: new Date(),
             });
+            console.log(`🎁 Product Bonus (${pos.name}): ${pos.benefit.value} PV`);
           } else if (pos.benefit.type === "fund") {
             const fundAmount = Math.floor(totalPV * pos.benefit.percent);
             if (!rootUser.funds) rootUser.funds = {};
@@ -178,6 +186,7 @@ const processMonthlyLevelCommissions = async () => {
               level: 0,
               date: new Date(),
             });
+            console.log(`💰 Fund Bonus (${pos.name}): ${fundAmount} PV to ${pos.benefit.fund}`);
           }
         }
         break;
@@ -185,9 +194,10 @@ const processMonthlyLevelCommissions = async () => {
     }
 
     await rootUser.save();
+    console.log(`✅ Done processing: ${rootUser.email}`);
   }
 
-  console.log("✅ Full monthly level-based commission & designation processed.");
+  console.log("\n🎉 Full monthly level-based commission & designation processed.");
 };
 
 module.exports = { processMonthlyLevelCommissions };
