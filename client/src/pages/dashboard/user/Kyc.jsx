@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import axios from "axios";
+import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 // Cloudinary credentials
@@ -52,12 +53,13 @@ const Kyc = () => {
     };
 
     try {
-      await axiosSecure.post("/products/product", payload); // Adjust route as needed
-      alert("KYC submitted successfully!");
+      await axiosSecure.post("/users/kyc", payload);
+      Swal.fire("Success", "KYC submitted successfully!", "success");
       setFrontImage("");
       setBackImage("");
     } catch (error) {
       console.error("Submit Error:", error);
+      Swal.fire("Error", "Failed to submit KYC. Try again.", "error");
     }
   };
 

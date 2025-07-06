@@ -33,6 +33,7 @@ const Login = () => {
       });
 
       navigate("/dashboard"); // redirect to dashboard or home
+      localStorage.setItem("access-token", response.data.token);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         Swal.fire({

@@ -246,6 +246,63 @@ const updateUserRole = async (req, res) => {
   }
 };
 
+// KYC Image Submit Controller
+const submitKycImages = async (req, res) => {
+  try {
+    const { frontImage, backImage } = req.body;
+
+    if (!frontImage || !backImage) {
+      return res.status(400).json({ message: "Both images are required." });
+    }
+
+    // Update logged-in user's front and back image
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        frontImage,
+        backImage,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json({
+      message: "KYC images submitted successfully.",
+      user: {
+        _id: updatedUser._id,
+        frontImage: updatedUser.frontImage,
+        backImage: updatedUser.backImage,
+      },
+    });
+  } catch (error) {
+    console.error("KYC Submission Error:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+const getUserKycById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId).select("frontImage backImage");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json({
+      frontImage: user.frontImage,
+      backImage: user.backImage,
+    });
+  } catch (error) {
+    console.error("KYC fetch error:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -256,7 +313,9 @@ module.exports = {
   getAllUsers,
   getUserById,
   updatProfileInfo,
-  updateUserRole
+  updateUserRole,
+  submitKycImages,
+  getUserKycById,
 };
 
 // const bcrypt = require("bcrypt");

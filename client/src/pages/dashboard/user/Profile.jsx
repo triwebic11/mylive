@@ -5,6 +5,7 @@ import MobAndBankInfoForm from "../../../components/UpdateBanAndMobInfo";
 import UpdateProfileInfo from "../../../components/UpdateProfile";
 import useAuth from "../../../Hooks/useAuth";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
+import KycDisplay from "../../../components/KycDisplay";
 const Profile = () => {
   const { user, setUser } = useAuth();
   const userId = user?.user?._id || ""; // Ensure userId is defined, fallback to empty string
@@ -19,6 +20,8 @@ const Profile = () => {
         <h1 className="text-2xl font-bold">Profile</h1>
       </div>
       <ReferralLevelBadge userId={userId} />
+      <h1>User KYC - </h1>
+      <KycDisplay userId={userId} />
       <div className="w-full bg-white ml-4 mt-4 p-4 rounded-lg shadow-md">
         <div>
           <h1 className="font-bold">Profile Information</h1>

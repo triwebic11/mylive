@@ -36,7 +36,7 @@ const dashboardArry = [
   { title: "Voucher", icon: "", link: "/dashboard/voucher" },
   { title: "Withdraw", icon: "", link: "/dashboard/withdraw" },
   { title: "My Order", icon: "", link: "/dashboard/my-order" },
-  { title: "Package Update", icon: "", link: "/dashboard/fontDashboard" },
+  { title: "Package Update", icon: "", link: "/dashboard" },
   { title: "Support", icon: "", link: "/dashboard/support" },
   { title: "Kyc", icon: "", link: "/dashboard/kyc" },
   { title: "Update Password", icon: "", link: "/dashboard/update-password" },
