@@ -2,7 +2,7 @@ import React from 'react';
 
 const CoreValue = () => {
     return (
-        <div className='max-w-6xl mx-auto my-10 py-18'>
+        <div className='max-w-6xl mx-auto my-10 mt-12 py-18'>
             <div className="flex flex-col lg:flex-row flex-wrap justify-center gap-6 p-4">
                 <div className="bg-white shadow-xl  p-6 w-full lg:w-[48%] rounded-xl">
                     <h2 className="text-xl font-bold mb-2 border-b-2 border-blue-800 inline-block">OUR VISION</h2>

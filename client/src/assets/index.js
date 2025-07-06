@@ -17,6 +17,8 @@ import protein from "./protein.jpg";
 import vigoproduct from "./vigoproduct.jpg";
 import odoc from "./odoc.jpg";
 import logo from "./logo.jpg";
+import banner1 from "./banner1.jpg";
+import banner2 from "./banner2.jpg";
 
 export {
   onion,
@@ -37,4 +39,6 @@ export {
   vigoproduct,
   logo,
   DIT,
+  banner1,
+  banner2,
 };

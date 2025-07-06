@@ -41,7 +41,7 @@ import { FaWhatsapp } from "react-icons/fa";
 
 const AboutUs = () => {
     return (
-        <section className="bg-gray-100 min-h-screen py-12 px-6 md:px-16 lg:px-24">
+        <section className="bg-gray-100 min-h-screen py-12 mt-8 px-6 md:px-16 lg:px-24">
             <div className=" p-8 md:p-12 max-w-7xl mx-auto">
                 <h1 className="text-4xl font-bold text-center text-indigo-700 mb-10  pb-4">About Us – SHS Enterprise Ltd</h1>
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useUserById from "../../../Hooks/useUserById";
+import { banner1, banner2 } from "../../../assets";
 
 const DashboardCard = ({ title, value }) => (
     <div className="bg-white p-4 rounded-2xl shadow-md flex flex-col justify-between h-24">
@@ -9,24 +10,29 @@ const DashboardCard = ({ title, value }) => (
 );
 
 const TopSlider = () => {
-    const images = ["/slider1.jpg", "/slider2.jpg", "/slider3.jpg", "/slider4.jpg"];
+    const images = [banner1, banner2];
     const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-        }, 2000);
+        }, 3000);
         return () => clearInterval(interval);
-    }, [images.length]);
+    }, []);
 
     return (
         <div className="w-full overflow-hidden bg-white shadow rounded-2xl mb-6">
             <div className="flex justify-center items-center p-4">
-                <img src={images[currentIndex]} alt={`Slider ${currentIndex + 1}`} className="h-20 object-contain transition-all duration-500" />
+                <img
+                    src={images[currentIndex]}
+                    alt={`Slider ${currentIndex + 1}`}
+                    className="w-[500px] h-32 object-contain mx-auto transition-all duration-500"
+                />
             </div>
         </div>
     );
 };
+
 
 const FontDashboard = () => {
     const [data] = useUserById()

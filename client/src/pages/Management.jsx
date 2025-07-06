@@ -3,7 +3,7 @@ import { chairman, dirMar, dirOpe, DIT, managingDir } from '../assets';
 
 const Management = () => {
     return (
-        <div className='p-2 py-18'>
+        <div className='p-2 py-18 mt-8'>
             <div className="max-w-6xl mx-auto p-6 bg-white shadow-xl rounded-lg  border-blue-900 my-10">
                 <h2 className="text-xl md:text-2xl font-bold mb-4">
                     <span className="mr-2">▸ Our Chairman</span>
