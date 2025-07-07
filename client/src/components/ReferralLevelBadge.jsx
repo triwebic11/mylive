@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 // 📦 Define style & emoji by package
+
 const packageStyles = {
   Friend: {
     bg: "bg-gray-100",
@@ -16,17 +17,23 @@ const packageStyles = {
     emoji: "🥈",
     level: 5,
   },
-  BussinessRelative: {
+  "Bussiness Relative": {
     bg: "bg-yellow-100",
     text: "text-yellow-900",
     emoji: "🥇",
     level: 7,
   },
-  BussinessRelation: {
+  "Bussiness Relation": {
     bg: "bg-indigo-100",
     text: "text-indigo-900",
     emoji: "💎",
     level: 10,
+  },
+  Normal: {
+    bg: "bg-indigo-100",
+    text: "text-indigo-900",
+    emoji: "📄",
+    level: 0,
   },
 };
 
