@@ -216,7 +216,15 @@ const Register = () => {
             name="referralCode"
             value={form.referralCode}
             onChange={handleChange}
-            placeholder="Referral Code (optional)"
+            required
+            placeholder="Referral Code "
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+        <div className="lg:col-span-2">
+          <label>Placement ID</label>
+          <input
+            placeholder="Placement Id (optional)"
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           />
         </div>
@@ -228,6 +236,13 @@ const Register = () => {
           >
             Register
           </button>
+
+          {/* <Link
+            to="/login"
+            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition mx-2"
+          >
+            Login
+          </Link> */}
         </div>
       </form>
 

@@ -31,7 +31,7 @@ import Transactions from "./pages/dashboard/user/wallet/Transactions.jsx";
 import TodayStatement from "./pages/dashboard/SuperAdmin/TodayStatement.jsx";
 import CommissionStatement from "./pages/dashboard/SuperAdmin/CommisionStatement.jsx";
 import Withdraw from "./pages/dashboard/user/Withdorw.jsx";
-import MyOrder from "./pages/dashboard/SuperAdmin/MyOrder.jsx";
+import MyOrder from "./pages/dashboard/user/MyOrder.jsx";
 import Voucher from "./pages/dashboard/SuperAdmin/Voucher.jsx";
 import MyConsistency from "./pages/dashboard/SuperAdmin/MyConsistency.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
@@ -55,6 +55,7 @@ import Kyc from "./pages/dashboard/user/Kyc.jsx";
 import Support from "./pages/dashboard/user/Support.jsx";
 import SocialLink from "./pages/SocialLink.jsx";
 import AdminKycList from "./components/AdminKycList.jsx";
+import OurProducts from "./components/OurProducts.jsx";
 
 const queryClients = new QueryClient();
 
@@ -229,6 +230,26 @@ const router = createBrowserRouter([
       },
 
       //-------- user routessss--------
+      {
+        path: "/dashboard/marketPlace",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <OurProducts />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+        {
+        path: "/dashboard/userPackages",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <PackageUpdate />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
       {
         path: "/dashboard/profile",
         element: (

@@ -67,6 +67,7 @@ const registerUser = async (req, res) => {
       // DB থেকে package খুঁজে বের করো
       const packageReq = await PackageRequest.findOne({ userId: newUser._id });
       const userPackage = packageReq?.packageName;
+      console.log("User Package:", userPackage);
 
       // Generation ও point সেটিংস
       const packageSettings = {

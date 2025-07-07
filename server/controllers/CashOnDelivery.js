@@ -27,7 +27,7 @@ const generateUniqueOrderNumberforcashondelivery = async () => {
 // Decide if the sector is "ProductPurchase" or "repurchase"
 const decideFinalSector = (buyer) => {
   const hasPreviousProductPurchase = buyer.AllEntry?.incoming?.some(
-    entry => entry.sector === "ProductPurchase"
+    (entry) => entry.sector === "ProductPurchase"
   );
   return hasPreviousProductPurchase ? "repurchase" : "ProductPurchase";
 };
@@ -35,7 +35,7 @@ const decideFinalSector = (buyer) => {
 // Check last 4 months to decide if user deserves consistency bonus
 const checkAndApplyConsistencyBonus = (buyer, currentPV, product) => {
   const entries = buyer.AllEntry?.incoming || [];
-  const purchaseEntries = entries.filter(e =>
+  const purchaseEntries = entries.filter((e) =>
     ["ProductPurchase", "repurchase"].includes(e.sector)
   );
 
@@ -49,7 +49,7 @@ const checkAndApplyConsistencyBonus = (buyer, currentPV, product) => {
   let isConsistent = true;
   for (const { start, end } of lastFourMonths) {
     const monthlyPV = purchaseEntries
-      .filter(e => moment(e.date).isBetween(start, end, undefined, "[]"))
+      .filter((e) => moment(e.date).isBetween(start, end, undefined, "[]"))
       .reduce((sum, e) => sum + (e.pointReceived || 0), 0);
 
     if (monthlyPV < 2000) {
@@ -60,7 +60,7 @@ const checkAndApplyConsistencyBonus = (buyer, currentPV, product) => {
 
   // If user was consistent, add bonus
   if (isConsistent) {
-    const bonus = Math.floor(currentPV * 0.10);
+    const bonus = Math.floor(currentPV * 0.1);
     buyer.points += bonus;
     buyer.AllEntry.incoming.push({
       fromUser: buyer._id,
@@ -89,8 +89,13 @@ const updatecashondelivery = async (req, res) => {
     }
 
     // Determine if order transitioned to 'shipped'
-    const wasPending = existingOrder.status !== "shipped" && updateData.status === "shipped";
-    const updatedOrder = await CashOnDeliveryModel.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+    const wasPending =
+      existingOrder.status !== "shipped" && updateData.status === "shipped";
+    const updatedOrder = await CashOnDeliveryModel.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true }
+    );
 
     if (wasPending && updateData.status === "shipped") {
       const { PV, product } = updatedOrder;
@@ -107,9 +112,10 @@ const updatecashondelivery = async (req, res) => {
       if (buyer.referredBy) {
         const referrer = await User.findOne({ referralCode: buyer.referredBy });
         if (referrer) {
-          if (!referrer.AllEntry) referrer.AllEntry = { incoming: [], outgoing: [] };
+          if (!referrer.AllEntry)
+            referrer.AllEntry = { incoming: [], outgoing: [] };
 
-          const reward = Math.floor(PV * 0.10);
+          const reward = Math.floor(PV * 0.1);
           referrer.points += reward;
 
           // Referrer gets incoming
@@ -169,9 +175,11 @@ const updatecashondelivery = async (req, res) => {
 
       // ➤ Dynamic sector activation check
       const activeSectors = [];
-      if (finalSector === "repurchase" && userSectors.repurchase) activeSectors.push("repurchase");
+      if (finalSector === "repurchase" && userSectors.repurchase)
+        activeSectors.push("repurchase");
       if (userSectors.consistency) activeSectors.push("consistency");
-      if (userSectors.advanceConsistency) activeSectors.push("advance-consistency");
+      if (userSectors.advanceConsistency)
+        activeSectors.push("advance-consistency");
       if (userSectors.travel) activeSectors.push("travel");
       if (userSectors.car) activeSectors.push("car");
       if (userSectors.house) activeSectors.push("house");
@@ -210,7 +218,9 @@ const updatecashondelivery = async (req, res) => {
     res.status(200).json(updatedOrder);
   } catch (err) {
     console.error("Update error:", err);
-    res.status(500).json({ message: "Failed to update order", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to update order", error: err.message });
   }
 };
 
@@ -245,7 +255,25 @@ const getCashonDelivery = async (req, res) => {
     res.status(200).json(orders);
   } catch (err) {
     console.error("Fetch error:", err);
-    res.status(500).json({ message: "Failed to fetch orders", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch orders", error: err.message });
+  }
+};
+
+const userBasedCashonDelivery = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const orders = await CashOnDeliveryModel.find({ userId: ObjectId(userId) });
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+    res.status(200).json(orders);
+  } catch (err) {
+    console.error("User-based fetch error:", err);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch user orders", error: err.message });
   }
 };
 
@@ -253,4 +281,5 @@ module.exports = {
   getCashonDelivery,
   CashonDeliverypost,
   updatecashondelivery,
+  userBasedCashonDelivery,
 };

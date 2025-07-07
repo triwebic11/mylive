@@ -6,12 +6,15 @@ import MyReferral from "./MyReferral";
 import BalanceConversion from "./BalanceConversion";
 import ReferralLevelBadge from "./ReferralLevelBadge";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
+import useKycStatusById from "./useKycStatusById";
 import KycDisplay from "./KycDisplay";
 const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
   const axiosSecure = useAxiosSecure();
+  const kycStatus = useKycStatusById(id);
+  console.log("your kyc status - ", kycStatus); // Custom hook to get KYC status
 
   useEffect(() => {
     // 1. fetch user details
@@ -50,6 +53,24 @@ const UserDetails = () => {
       </div>
       <h1 className="text-2xl font-bold mb-4">User Details</h1>
       <ReferralLevelBadge userId={id} />
+      <div className="px-6 py-4">
+        <h1 className="text-2xl font-bold text-center mb-4">KYC Status</h1>
+        <div className="flex justify-center">
+          {kycStatus === "verified" ? (
+            <div className="bg-green-100 text-green-800 border border-green-400 px-6 py-3 rounded-lg shadow-sm text-lg font-semibold flex items-center gap-2">
+              <span className="text-xl">✅</span> User Verified
+            </div>
+          ) : kycStatus === "pending" ? (
+            <div className="bg-yellow-100 text-yellow-800 border border-yellow-400 px-6 py-3 rounded-lg shadow-sm text-lg font-semibold flex items-center gap-2">
+              <span className="text-xl">⏳</span> KYC Pending...
+            </div>
+          ) : (
+            <div className="bg-red-100 text-red-800 border border-red-400 px-6 py-3 rounded-lg shadow-sm text-lg font-semibold flex items-center gap-2">
+              <span className="text-xl">❌</span> Not Submitted
+            </div>
+          )}
+        </div>
+      </div>
 
       <div className="overflow-x-auto bg-white shadow rounded-lg mt-4">
         <table className="min-w-full divide-y divide-gray-200">

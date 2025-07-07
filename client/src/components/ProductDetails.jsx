@@ -9,14 +9,16 @@ import useProducts from "../Hooks/useProducts";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 import useUserById from "../Hooks/useUserById";
 import { useState } from "react";
+import useAuth from "../Hooks/useAuth";
 
 const ProductDetails = () => {
+  const { user } = useAuth();
+  console.log("User Id from products:", user?.user?._id);
   const { id } = useParams();
   const [products, isLoading, isError, error, refetch] = useProducts();
-  const [data] = useUserById()
-  const axiosPublic = useAxiosPublic()
-  const [userStatus, setuserStatus] = useState("")
-  
+  const [data] = useUserById();
+  const axiosPublic = useAxiosPublic();
+  const [userStatus, setuserStatus] = useState("");
 
   const product = products?.find((item) => item._id === id);
 
@@ -41,16 +43,16 @@ const ProductDetails = () => {
   } = useForm();
 
   const onSubmit = async (formData) => {
-    if(data?.email !== formData?.email){
-      setuserStatus("unRegisted")
-    }else{
-      setuserStatus("registered")
+    if (data?.email !== formData?.email) {
+      setuserStatus("unRegisted");
+    } else {
+      setuserStatus("registered");
     }
     // console.loh(data?.email)
 
     const datas = {
       ...formData,
-      userId: data?._id, 
+      userId: user?.user?._id,
       product,
       quantity,
       totalPrice,
@@ -63,8 +65,8 @@ const ProductDetails = () => {
     };
 
     try {
-     const res = await axiosPublic.post("/cashonDelivery/postdata", datas);
-      console.log(res.data);
+      const res = await axiosPublic.post("/cashonDelivery/postdata", datas);
+      console.log("Response data from product", res.data);
 
       Swal.fire({
         icon: "success",
@@ -203,7 +205,7 @@ const ProductDetails = () => {
   );
 };
 
-export default ProductDetails
+export default ProductDetails;
 
 // export default ProductDetails;
 /* eslint-disable no-unused-vars */

@@ -5,44 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 
-// const orders = [
-//   {
-//     id: "#000000028",
-//     date: "2017-04-12 10:29:28",
-//     billTo: "Supplier Demo",
-//     shipTo: "Supplier Demo",
-//     subtotal: 45.0,
-//     income: 40.5,
-//     status: "Pending",
-//   },
-//   {
-//     id: "#000000027",
-//     date: "2017-03-31 11:50:22",
-//     billTo: "Veronica Costello",
-//     shipTo: "Veronica Costello",
-//     subtotal: 120.0,
-//     income: 108.0,
-//     status: "Complete",
-//   },
-//   {
-//     id: "#000000026",
-//     date: "2017-03-31 11:35:41",
-//     billTo: "Veronica Costello",
-//     shipTo: "Veronica Costello",
-//     subtotal: 122.0,
-//     income: 109.8,
-//     status: "Complete",
-//   },
-//   {
-//     id: "#000000025",
-//     date: "2017-03-31 11:33:01",
-//     billTo: "Veronica Costello",
-//     shipTo: "Veronica Costello",
-//     subtotal: 20.0,
-//     income: 18.0,
-//     status: "Complete",
-//   },
-// ];
 
 const Orders = () => {
     const [searchId, setSearchId] = useState("");
@@ -234,3 +196,44 @@ const handleFilter = () => {
 };
 
 export default Orders;
+
+
+
+// const orders = [
+//   {
+//     id: "#000000028",
+//     date: "2017-04-12 10:29:28",
+//     billTo: "Supplier Demo",
+//     shipTo: "Supplier Demo",
+//     subtotal: 45.0,
+//     income: 40.5,
+//     status: "Pending",
+//   },
+//   {
+//     id: "#000000027",
+//     date: "2017-03-31 11:50:22",
+//     billTo: "Veronica Costello",
+//     shipTo: "Veronica Costello",
+//     subtotal: 120.0,
+//     income: 108.0,
+//     status: "Complete",
+//   },
+//   {
+//     id: "#000000026",
+//     date: "2017-03-31 11:35:41",
+//     billTo: "Veronica Costello",
+//     shipTo: "Veronica Costello",
+//     subtotal: 122.0,
+//     income: 109.8,
+//     status: "Complete",
+//   },
+//   {
+//     id: "#000000025",
+//     date: "2017-03-31 11:33:01",
+//     billTo: "Veronica Costello",
+//     shipTo: "Veronica Costello",
+//     subtotal: 20.0,
+//     income: 18.0,
+//     status: "Complete",
+//   },
+// ];

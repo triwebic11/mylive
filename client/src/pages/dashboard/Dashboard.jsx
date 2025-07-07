@@ -10,11 +10,15 @@ import useUserById from "../../Hooks/useUserById";
 import useRole from "../../Hooks/useRole";
 
 const dashboardArry = [
-  { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/" },
+  {
+    title: "Market Place",
+    icon: <MdOutlineShoppingBag />,
+    link: "/dashboard/marketPlace",
+  },
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboard" },
 
   { title: "Profile", icon: "", link: "/dashboard/profile" },
-  { title: "Packages", icon: "", link: "/dashboard/packages" },
+  { title: "Packages", icon: "", link: "/dashboard/userPackages" },
   {
     title: "Referrals",
     icon: "",
@@ -88,7 +92,11 @@ const adminDashboardArry = [
     ],
   },
   { title: "Update Password", icon: "", link: "/dashboard/update-password" },
-  { title: "User KYC Verified Request", icon: "", link: "/dashboard/kycVerified" },
+  {
+    title: "User KYC Verified Request",
+    icon: "",
+    link: "/dashboard/kycVerified",
+  },
 ];
 
 const Dashboard = () => {

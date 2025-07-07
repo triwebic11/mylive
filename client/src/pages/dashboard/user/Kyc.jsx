@@ -17,6 +17,7 @@ const Kyc = () => {
   const [backImage, setBackImage] = useState("");
   const axiosSecure = useAxiosSecure();
   const kycStatus = useKycStatus();
+  console.log("your kyc status - ", kycStatus); // Custom hook to get KYC status
 
   // Front image upload handler
   const handleFrontUpload = async (file) => {
@@ -72,15 +73,25 @@ const Kyc = () => {
 
   return (
     <>
-      <div className="p-4 text-xl text-center font-bold">
-        {kycStatus === "verified" ? (
-          <div className="text-green-600 font-bold">User Verified ✅</div>
-        ) : kycStatus === "pending" ? (
-          <div className="text-yellow-600">KYC Pending...</div>
-        ) : (
-          <div className="text-red-600">Not Submitted</div>
-        )}
+      <div className="px-6 py-4">
+        <h1 className="text-2xl font-bold text-center mb-4">KYC Status</h1>
+        <div className="flex justify-center">
+          {kycStatus === "verified" ? (
+            <div className="bg-green-100 text-green-800 border border-green-400 px-6 py-3 rounded-lg shadow-sm text-lg font-semibold flex items-center gap-2">
+              <span className="text-xl">✅</span> User Verified
+            </div>
+          ) : kycStatus === "pending" ? (
+            <div className="bg-yellow-100 text-yellow-800 border border-yellow-400 px-6 py-3 rounded-lg shadow-sm text-lg font-semibold flex items-center gap-2">
+              <span className="text-xl">⏳</span> KYC Pending...
+            </div>
+          ) : (
+            <div className="bg-red-100 text-red-800 border border-red-400 px-6 py-3 rounded-lg shadow-sm text-lg font-semibold flex items-center gap-2">
+              <span className="text-xl">❌</span> Not Submitted
+            </div>
+          )}
+        </div>
       </div>
+
       <h1 className="text-2xl pt-20 pb-5 md:ml-20 font-bold mb-2">
         Upload Your NID (Front & Back)
       </h1>

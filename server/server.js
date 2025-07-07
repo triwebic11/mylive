@@ -5,13 +5,13 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 require("dotenv").config();
 const cron = require("node-cron");
-const {
-  processMonthlyLevelCommissions,
-} = require("./utils/fullMonthlyLevelCommissionProcessor");
+// const {
+//   processMonthlyLevelCommissions,
+// } = require("./utils/fullMonthlyLevelCommissionProcessor");
 const accountInfoRoutes = require("./routes/accountInfoRoutes");
 const withdrawRoutes = require("./routes/withdrawRequests");
 const packageRequestRoutes = require("./routes/packageRequestRoutes");
-const kycRoutes = require('./routes/kycRoutes');
+const kycRoutes = require("./routes/kycRoutes");
 const app = express();
 const server = http.createServer(app); // ✅ Updated line
 const io = new Server(server, {
@@ -37,13 +37,13 @@ app.use("/api/packages", require("./routes/PackagesRoute"));
 app.use("/api/conversion-rate", require("./routes/conversionRoutes"));
 app.use("/api/package-requests", packageRequestRoutes);
 app.use("/api/withdraw-requests", withdrawRoutes);
-app.use('/api/kyc', kycRoutes);
+app.use("/api/kyc", kycRoutes);
 // app.use("/api/uploads", require("./routes/uploadRoute"));
 
-cron.schedule("* * * * *", async () => {
-  console.log("📆 Monthly commission running from server.js...");
-  await processMonthlyLevelCommissions();
-});
+// cron.schedule("* * * * *", async () => {
+//   console.log("📆 Monthly commission running from server.js...");
+//   await processMonthlyLevelCommissions();
+// });
 
 // Root route
 app.get("/", (req, res) => {
