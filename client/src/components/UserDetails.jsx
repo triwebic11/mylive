@@ -50,9 +50,7 @@ const UserDetails = () => {
       </div>
       <h1 className="text-2xl font-bold mb-4">User Details</h1>
       <ReferralLevelBadge userId={id} />
-      <div>
-        <KycDisplay userId={id} />
-      </div>
+
       <div className="overflow-x-auto bg-white shadow rounded-lg mt-4">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-100">

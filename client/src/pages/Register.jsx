@@ -56,7 +56,7 @@ const Register = () => {
         postcode: form.postcode,
         address: form.address,
         password: form.password,
-        
+
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
         _id: res.data.userId,
@@ -79,6 +79,7 @@ const Register = () => {
       });
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
+      console.log("register err - ", err);
     }
   };
   return (

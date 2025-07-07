@@ -32,7 +32,7 @@ const AdminKycList = () => {
   };
 
   return (
-    <div className="p-6 overflow-hidden">
+    <div className="p-6 ">
       <h1 className="text-2xl font-bold mb-4">KYC Requests</h1>
       {kycList.length === 0 ? (
         <p>No KYC Requests Found.</p>
@@ -57,22 +57,22 @@ const AdminKycList = () => {
 
                   {/* Front Image with hover zoom */}
                   <td className="p-2">
-                    <div className="">
+                    <div className="w-48 h-32">
                       <img
                         src={item.frontImage}
                         alt="Front"
-                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-[2.5]"
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-[2]"
                       />
                     </div>
                   </td>
 
                   {/* Back Image with hover zoom */}
                   <td className="p-2">
-                    <div className="">
+                    <div className="w-48 h-32">
                       <img
                         src={item.backImage}
                         alt="Back"
-                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-[2.5]"
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-[2]"
                       />
                     </div>
                   </td>

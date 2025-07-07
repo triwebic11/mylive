@@ -4,29 +4,29 @@ import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 // 📦 Define style & emoji by package
 const packageStyles = {
-  Normal: {
+  Friend: {
     bg: "bg-gray-100",
     text: "text-gray-800",
     emoji: "📦",
-    level: 5,
+    level: 3,
   },
-  Silver: {
+  Family: {
     bg: "bg-gray-200",
     text: "text-gray-700",
     emoji: "🥈",
-    level: 10,
+    level: 5,
   },
-  Gold: {
+  BussinessRelative: {
     bg: "bg-yellow-100",
     text: "text-yellow-900",
     emoji: "🥇",
-    level: 15,
+    level: 7,
   },
-  Platinum: {
+  BussinessRelation: {
     bg: "bg-indigo-100",
     text: "text-indigo-900",
     emoji: "💎",
-    level: "Unlimited",
+    level: 10,
   },
 };
 
