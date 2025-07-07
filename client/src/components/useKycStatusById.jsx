@@ -1,4 +1,3 @@
-// src/components/useKycStatusById.js
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 
@@ -8,15 +7,18 @@ const useKycStatusById = (userId) => {
 
   useEffect(() => {
     if (!userId) return;
-    axiosSecure
-      .get(`/kyc/user/${userId}`)
-      .then((res) => {
+
+    const fetchKycStatus = async () => {
+      try {
+        const res = await axiosSecure.get(`/kyc/user/${userId}`);
         setStatus(res.data?.status || "not_submitted");
-      })
-      .catch((err) => {
-        console.error("Failed to fetch KYC status", err);
+      } catch (err) {
+        console.error("❌ Failed to fetch KYC status by ID:", err);
         setStatus("not_submitted");
-      });
+      }
+    };
+
+    fetchKycStatus();
   }, [userId, axiosSecure]);
 
   return status;

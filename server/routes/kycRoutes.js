@@ -66,4 +66,20 @@ router.get("/status/:userId", async (req, res) => {
   }
 });
 
+router.get("/user/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const kycData = await KYC.findOne({ userId });
+    if (!kycData) {
+      return res.json({ status: "not_submitted" });
+    }
+
+    return res.json({ status: kycData.status });
+  } catch (error) {
+    console.error("Error fetching KYC status:", error.message);
+    return res.status(500).json({ status: "error", message: "Server error" });
+  }
+});
+
 module.exports = router;

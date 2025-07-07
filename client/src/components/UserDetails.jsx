@@ -14,7 +14,8 @@ const UserDetails = () => {
   const [bankInfo, setBankInfo] = useState(null);
   const axiosSecure = useAxiosSecure();
   const kycStatus = useKycStatusById(id);
-  console.log("your kyc status - ", kycStatus); // Custom hook to get KYC status
+  console.log("your kyc status - ", kycStatus);
+  console.log("userId from userDetails- ", id); // Custom hook to get KYC status
 
   useEffect(() => {
     // 1. fetch user details
