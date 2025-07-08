@@ -114,12 +114,12 @@ const AboutUs = () => {
                     <h2 className="text-xl font-semibold mb-2 text-indigo-700">📞 Contact</h2>
                     <div className="flex flex-col items-center space-y-2 text-lg">
                         <a
-                            href="https://wa.me/880305137916"
+                            href="https://wa.me/8801713784136"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center text-green-600 hover:underline"
                         >
-                            <FaWhatsapp className="mr-2 text-xl" /> 0305137916
+                            <FaWhatsapp className="mr-2 text-xl" /> 01713784136
                         </a>
                         <a
                             href="https://wa.me/8801750873763"

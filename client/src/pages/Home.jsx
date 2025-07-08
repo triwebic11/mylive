@@ -10,7 +10,7 @@ import { BiDonateHeart } from "react-icons/bi";
 
 const Home = () => {
   return (
-    <div className="py-20">
+    <div className="py-16">
       <HomeSlider />
       <ListOfDistributors></ListOfDistributors>
       <Container>

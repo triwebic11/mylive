@@ -2,7 +2,7 @@ import { FaWhatsapp } from "react-icons/fa";
 
 const Support = () => {
   const contacts = [
-    { number: "0305137916", label: "Support 1" },
+    { number: "01713784136", label: "Support 1" },
     { number: "01750873763", label: "Support 2" },
   ];
 
