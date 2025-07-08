@@ -141,7 +141,7 @@ const Management = () => {
                         <img
                             src={DIT}
                             alt="Chairman Md Monirul Islam"
-                            className="rounded-lg object-cover w-full h-auto"
+                            className="rounded-lg object-cover w-full h-[400px] "
                         />
                     </div>
                 </div>

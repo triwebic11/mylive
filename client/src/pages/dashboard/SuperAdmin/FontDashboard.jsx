@@ -69,19 +69,19 @@ const FontDashboard = () => {
     ];
 
     return (
-        <div className=" w-[88%] mx-auto p-6 bg-gray-100 min-h-screen">
+        <div className=" w-[100%] mx-auto  min-h-screen">
             <TopSlider />
 
-            <p>Name: {data?.name}</p>
+            {/* <p>Name: {data?.name}</p>
             <p>Role: {data?.role}</p>
             <p>Phone: {data?.phone}</p>
-            <p>Package: {data?.package}</p>
+            <p>Package: {data?.package}</p> */}
 
 
             <header className="mb-6">
-                <h1 className="text-2xl font-bold text-center text-purple-800">
+                {/* <h1 className="hidden md:inline-flex md:text-center lg:text-center text-2xl font-bold  text-purple-800">
                     Welcome to SHS Lira Enterprise Ltd.
-                </h1>
+                </h1> */}
                 <p className="text-center text-sm text-gray-600">Repurchase Validity: 30d 23h 59m 59s</p>
             </header>
 

@@ -10,93 +10,57 @@ import useUserById from "../../Hooks/useUserById";
 import useRole from "../../Hooks/useRole";
 
 const dashboardArry = [
-  {
-    title: "Market Place",
-    icon: <MdOutlineShoppingBag />,
-    link: "/dashboard/marketPlace",
-  },
+  { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/dashboard/marketPlace" },
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboard" },
-
-  { title: "Profile", icon: "", link: "/dashboard/profile" },
-  { title: "Packages", icon: "", link: "/dashboard/userPackages" },
+  { title: "Profile", link: "/dashboard/profile" },
+  { title: "Packages", link: "/dashboard/userPackages" },
   {
     title: "Referrals",
-    icon: "",
     submenu: [
-      { title: "Refer Link", icon: "", link: "/dashboard/refer-link" },
-      { title: "My Team", icon: "", link: "/dashboard/my-team" },
-      { title: "My Refer", icon: "", link: "/dashboard/my-refer" },
-      { title: "Register", icon: "", link: "/dashboard/register" },
+      { title: "Refer Link", link: "/dashboard/refer-link" },
+      { title: "My Team", link: "/dashboard/my-team" },
+      { title: "My Refer", link: "/dashboard/my-refer" },
+      { title: "Register", link: "/dashboard/register" },
     ],
   },
   {
     title: "Wallet Statement",
-    icon: "",
     submenu: [{ title: "Transactions", link: "/dashboard/transactions" }],
   },
-  { title: "Today Statement", icon: "", link: "/dashboard/today-statement" },
-  { title: "C-Statement", icon: "", link: "/dashboard/commission-statement" },
-  { title: "My Consistency", icon: "", link: "/dashboard/my-consistency" },
-  { title: "Voucher", icon: "", link: "/dashboard/voucher" },
-  { title: "Withdraw", icon: "", link: "/dashboard/withdraw" },
-  { title: "My Order", icon: "", link: "/dashboard/my-order" },
-  { title: "Package Update", icon: "", link: "/dashboard" },
-  { title: "Support", icon: "", link: "/dashboard/support" },
-  { title: "Kyc", icon: "", link: "/dashboard/kyc" },
-  { title: "Update Password", icon: "", link: "/dashboard/update-password" },
+  { title: "Today Statement", link: "/dashboard/today-statement" },
+  { title: "C-Statement", link: "/dashboard/commission-statement" },
+  { title: "My Consistency", link: "/dashboard/my-consistency" },
+  { title: "Voucher", link: "/dashboard/voucher" },
+  { title: "Withdraw", link: "/dashboard/withdraw" },
+  { title: "My Order", link: "/dashboard/my-order" },
+  { title: "Package Update", link: "/dashboard" },
+  { title: "Support", link: "/dashboard/support" },
+  { title: "Kyc", link: "/dashboard/kyc" },
+  { title: "Update Password", link: "/dashboard/update-password" },
 ];
 
 const adminDashboardArry = [
-  {
-    title: "All Users",
-    icon: "",
-    link: "/dashboard/allUsers",
-  },
-  {
-    title: "All Package Requester",
-    icon: "",
-    link: "/dashboard/allPackageRequestUser",
-  },
-  {
-    title: "All Withdrawal",
-    icon: "",
-    link: "/dashboard/allWithdrawals",
-  },
-  {
-    title: "Balance Conversion",
-    icon: "",
-    link: "/dashboard/balanceConversion",
-  },
-  {
-    title: "Cash On Delivery",
-    icon: "",
-    link: "/dashboard/CashonDelivery",
-  },
-
+  { title: "All Users", link: "/dashboard/allUsers" },
+  { title: "All Package Requester", link: "/dashboard/allPackageRequestUser" },
+  { title: "All Withdrawal", link: "/dashboard/allWithdrawals" },
+  { title: "Balance Conversion", link: "/dashboard/balanceConversion" },
+  { title: "Cash On Delivery", link: "/dashboard/CashonDelivery" },
   {
     title: "Manage Products",
-    icon: "",
-    link: "/dashboard",
     submenu: [
-      { title: "All Products", icon: "", link: "/dashboard/allProducts" },
-      { title: "Add Products", icon: "", link: "/dashboard/AddProduct" },
+      { title: "All Products", link: "/dashboard/allProducts" },
+      { title: "Add Products", link: "/dashboard/AddProduct" },
     ],
   },
   {
     title: "Manage Packages",
-    icon: "",
-    link: "/dashboard",
     submenu: [
-      { title: "All Packages", icon: "", link: "/dashboard/packages" },
-      { title: "Update Packages", icon: "", link: "/dashboard/updatePackages" },
+      { title: "All Packages", link: "/dashboard/packages" },
+      { title: "Update Packages", link: "/dashboard/updatePackages" },
     ],
   },
-  { title: "Update Password", icon: "", link: "/dashboard/update-password" },
-  {
-    title: "User KYC Verified Request",
-    icon: "",
-    link: "/dashboard/kycVerified",
-  },
+  { title: "Update Password", link: "/dashboard/update-password" },
+  { title: "User KYC Verified Request", link: "/dashboard/kycVerified" },
 ];
 
 const Dashboard = () => {
@@ -106,8 +70,6 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [data] = useUserById();
   const { role } = useRole();
-  console.log("User role from useRole: ", role);
-  console.log("User data from useUserById: ", data);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -131,150 +93,123 @@ const Dashboard = () => {
 
   const closeSidebar = () => setSidebarOpen(false);
 
-  return (
-    <div className="flex min-h-screen">
-      {/* Mobile menu button */}
-      <button
-        className="md:hidden p-4 focus:outline-none fixed bg-white shadow-2xl top-0"
-        onClick={handleSidebarToggle}
-        aria-label="Open sidebar"
-      >
-        <MdMenu size={24} />
-      </button>
+  const menuArray = role === "admin" ? adminDashboardArry : dashboardArry;
 
-      {/* Overlay for mobile */}
+  return (
+    <div className="flex min-h-screen flex-col md:flex-row relative">
+      {/* Mobile Top Navbar */}
+      <div className="md:hidden w-full bg-white shadow-md fixed top-0 left-0 z-40 px-4 py-3 flex justify-between items-center h-16">
+        <button onClick={handleSidebarToggle} aria-label="Toggle Menu">
+          {sidebarOpen ? <IoClose size={24} /> : <MdMenu size={24} />}
+        </button>
+        <Link to="/">
+          <img src={logo} alt="Logo" className="w-24" />
+        </Link>
+      </div>
+
+      {/* Mobile Sidebar Menu (scrollable) */}
+      <div
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } w-[60%] px-4 py-6 overflow-y-auto`}
+      >
+        <nav className="flex flex-col gap-2">
+          {menuArray.map((item, index) => (
+            <div key={index}>
+              <div
+                className="flex justify-between items-center font-semibold py-2 px-2 hover:bg-gray-100 rounded cursor-pointer"
+                onClick={() =>
+                  item.submenu
+                    ? toggleDropdown(index)
+                    : (navigate(item.link), setSidebarOpen(false))
+                }
+              >
+                <span>{item.title}</span>
+                {item.submenu && (
+                  <span>
+                    {openDropdown === index ? (
+                      <IoChevronUp size={18} />
+                    ) : (
+                      <IoChevronDown size={18} />
+                    )}
+                  </span>
+                )}
+              </div>
+              {item.submenu && openDropdown === index && (
+                <ul className="pl-4 space-y-1">
+                  {item.submenu.map((subItem, subIndex) => (
+                    <li
+                      key={subIndex}
+                      className="text-sm hover:bg-gray-200 px-2 py-1 rounded"
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <Link to={subItem.link}>{subItem.title}</Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+
+          <button
+            onClick={handleLogout}
+            className="w-full mt-3 bg-blue-100 px-3 py-2 rounded font-bold hover:bg-gray-200"
+          >
+            Logout
+          </button>
+        </nav>
+      </div>
+
+      {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-30 md:hidden "
+          className="md:hidden fixed inset-0 bg-black/40 z-30"
           onClick={closeSidebar}
         />
       )}
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed md:fixed  top-0 inset-y-0 left-0 z-40 w-64 bg-white px-4 py-6 overflow-y-auto transform transition-transform duration-300 flex-shrink-0
-        ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
-      >
-        <div className="flex items-center justify-between mb-6">
-          <Link to="/" onClick={closeSidebar}>
-            <img src={logo} alt="Logo" className="w-32 " />
-          </Link>
-          {/* Close button for mobile */}
-          <button
-            className="md:hidden focus:outline-none"
-            onClick={closeSidebar}
-            aria-label="Close sidebar"
-          >
-            <IoClose size={22} />
-          </button>
-        </div>
-
-        {/* admin dashboard */}
-        {/* <p className="text-red-600">Admin Dashboard</p> */}
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:block fixed top-0 left-0 inset-y-0 w-64 bg-white px-4 py-6 overflow-y-auto z-40 shadow">
+        <Link to="/" className="block mb-6">
+          <img src={logo} alt="Logo" className="w-32" />
+        </Link>
 
         <nav className="flex flex-col gap-2">
-          {role === "admin" &&
-            adminDashboardArry?.map((item, index) => (
-              <div key={index} className="bg-blue-100 rounded-lg">
-                <div
-                  className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
-                  onClick={() =>
-                    item.submenu
-                      ? toggleDropdown(index)
-                      : (navigate(item.link), closeSidebar())
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    {item.icon && <span>{item.icon}</span>}
-                    {item.link ? (
-                      <span>{item.title}</span>
-                    ) : (
-                      <span>{item.title}</span>
-                    )}
-                  </div>
-                  {item.submenu && (
-                    <span>
-                      {openDropdown === index ? (
-                        <IoChevronUp size={20} />
-                      ) : (
-                        <IoChevronDown size={20} />
-                      )}
-                    </span>
-                  )}
+          {menuArray.map((item, index) => (
+            <div key={index} className="bg-blue-100 rounded-lg">
+              <div
+                className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
+                onClick={() =>
+                  item.submenu ? toggleDropdown(index) : navigate(item.link)
+                }
+              >
+                <div className="flex items-center gap-2">
+                  {item.icon && <span>{item.icon}</span>}
+                  <span>{item.title}</span>
                 </div>
-                {item.submenu && openDropdown === index && (
-                  <ul className="ml-4 flex flex-col gap-1 py-2">
-                    {item.submenu.map((subItem, subIndex) => (
-                      <li
-                        key={subIndex}
-                        className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
-                        onClick={closeSidebar}
-                      >
-                        <Link to={subItem.link}>{subItem.title}</Link>
-                      </li>
-                    ))}
-                  </ul>
+                {item.submenu && (
+                  <span>
+                    {openDropdown === index ? (
+                      <IoChevronUp size={20} />
+                    ) : (
+                      <IoChevronDown size={20} />
+                    )}
+                  </span>
                 )}
               </div>
-            ))}
-
-          {/* <button
-            onClick={handleLogout}
-            className="bg-blue-100 px-2 font-bold py-2 rounded-lg hover:bg-gray-200 duration-300 mt-4"
-          >
-            Logout
-          </button> */}
-        </nav>
-
-        {/* <p className="text-red-600">User Dashboard</p> */}
-
-        <nav className="flex flex-col gap-2">
-          {role === "user" &&
-            dashboardArry.map((item, index) => (
-              <div key={index} className="bg-blue-100 rounded-lg">
-                <div
-                  className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
-                  onClick={() =>
-                    item.submenu
-                      ? toggleDropdown(index)
-                      : (navigate(item.link), closeSidebar())
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    {item.icon && <span>{item.icon}</span>}
-                    {item.link ? (
-                      <span>{item.title}</span>
-                    ) : (
-                      <span>{item.title}</span>
-                    )}
-                  </div>
-                  {item.submenu && (
-                    <span>
-                      {openDropdown === index ? (
-                        <IoChevronUp size={20} />
-                      ) : (
-                        <IoChevronDown size={20} />
-                      )}
-                    </span>
-                  )}
-                </div>
-                {item.submenu && openDropdown === index && (
-                  <ul className="ml-4 flex flex-col gap-1 py-2">
-                    {item.submenu.map((subItem, subIndex) => (
-                      <li
-                        key={subIndex}
-                        className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
-                        onClick={closeSidebar}
-                      >
-                        <Link to={subItem.link}>{subItem.title}</Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
+              {item.submenu && openDropdown === index && (
+                <ul className="ml-4 flex flex-col gap-1 py-2">
+                  {item.submenu.map((subItem, subIndex) => (
+                    <li
+                      key={subIndex}
+                      className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
+                    >
+                      <Link to={subItem.link}>{subItem.title}</Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
 
           <button
             onClick={handleLogout}
@@ -285,8 +220,8 @@ const Dashboard = () => {
         </nav>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 md:ml-64 p-4">
+      {/* Main Content */}
+      <main className="flex-1 md:ml-64 p-4 pt-20 md:pt-4">
         <Outlet />
       </main>
     </div>
