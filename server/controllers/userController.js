@@ -52,54 +52,54 @@ const registerUser = async (req, res) => {
     });
 
     // Reward system – Add points to 10 uplines
-    // if (referralTree.length > 0) {
-    //   for (let i = 0; i < referralTree.length; i = 10) {
-    //     const uplineId = referralTree[i];
-    //     const point = 100 - i;
-
-    //     await User.findByIdAndUpdate(uplineId, {
-    //       $inc: { points: point },
-    //     });
-    //   }
-    // }
-
     if (referralTree.length > 0) {
-      // DB থেকে package খুঁজে বের করো
-      const packageReq = await PackageRequest.findOne({ userId: newUser._id });
-      const userPackage = packageReq?.packageName;
-      console.log("User Package:", userPackage);
+      for (let i = 0; i < referralTree.length; i = 10) {
+        const uplineId = referralTree[i];
+        const point = 100 - i;
 
-      // Generation ও point সেটিংস
-      const packageSettings = {
-        "Business Relation": { generations: 10, startPoint: 1000 },
-        "Business Relative": { generations: 7, startPoint: 700 },
-        Family: { generations: 5, startPoint: 500 },
-        Friend: { generations: 3, startPoint: 300 },
-      };
-
-      const settings = packageSettings[userPackage];
-
-      if (settings) {
-        const { generations, startPoint } = settings;
-
-        for (let i = 0; i < generations; i++) {
-          const uplineId = referralTree[i];
-          if (!uplineId) break;
-
-          const point = startPoint - i * 100;
-          if (point <= 0) break;
-
-          await User.findByIdAndUpdate(uplineId, {
-            $inc: { points: point },
-          });
-        }
-      } else {
-        console.log(
-          "Invalid package or no package found for user:",
-          newUser._id
-        );
+        await User.findByIdAndUpdate(uplineId, {
+          $inc: { points: point },
+        });
       }
     }
+
+    // if (referralTree.length > 0) {
+    //   // DB থেকে package খুঁজে বের করো
+    //   const packageReq = await PackageRequest.findOne({ userId: newUser._id });
+    //   const userPackage = packageReq?.packageName;
+    //   console.log("User Package:", userPackage);
+
+    // Generation ও point সেটিংস
+    //   const packageSettings = {
+    //     "Business Relation": { generations: 10, startPoint: 1000 },
+    //     "Business Relative": { generations: 7, startPoint: 700 },
+    //     Family: { generations: 5, startPoint: 500 },
+    //     Friend: { generations: 3, startPoint: 300 },
+    //   };
+
+    //   const settings = packageSettings[userPackage];
+
+    //   if (settings) {
+    //     const { generations, startPoint } = settings;
+
+    //     for (let i = 0; i < generations; i++) {
+    //       const uplineId = referralTree[i];
+    //       if (!uplineId) break;
+
+    //       const point = startPoint - i * 100;
+    //       if (point <= 0) break;
+
+    //       await User.findByIdAndUpdate(uplineId, {
+    //         $inc: { points: point },
+    //       });
+    //     }
+    //   } else {
+    //     console.log(
+    //       "Invalid package or no package found for user:",
+    //       newUser._id
+    //     );
+    //   }
+    // }
 
     res.status(201).json({
       message: "User registered successfully",

@@ -6,11 +6,12 @@ import useAxiosSecure from "../Hooks/useAxiosSecure";
 const AdminWithdrawRequests = () => {
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   // Load withdraw requests
   useEffect(() => {
-    axiosSecure.get("/withdraw-requests")
+    axiosSecure
+      .get("/withdraw-requests")
       .then((res) => setRequests(res.data))
       .catch((err) => console.error("Failed to fetch requests", err));
   }, [axiosSecure]);
@@ -25,10 +26,7 @@ const AdminWithdrawRequests = () => {
       });
 
       if (confirm.isConfirmed) {
-        await axiosSecure.patch(
-          `/withdraw-requests/${id}/status`,
-          { status }
-        );
+        await axiosSecure.patch(`/withdraw-requests/${id}/status`, { status });
 
         setRequests((prev) =>
           prev.map((req) => (req._id === id ? { ...req, status } : req))
@@ -59,9 +57,7 @@ const AdminWithdrawRequests = () => {
           Go Back
         </Link>
       </div>
-      <h2 className="text-2xl font-bold mb-4 text-center">
-        🧾 Withdraw Requests
-      </h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">Withdraw Requests</h2>
       <div className="flex justify-end mb-4">
         <input
           type="text"
