@@ -5,9 +5,9 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 require("dotenv").config();
 const cron = require("node-cron");
-// const {
-//   processMonthlyLevelCommissions,
-// } = require("./utils/fullMonthlyLevelCommissionProcessor");
+const {
+  processMonthlyLevelCommissions,
+} = require("./utils/fullMonthlyLevelCommissionProcessor");
 const accountInfoRoutes = require("./routes/accountInfoRoutes");
 const withdrawRoutes = require("./routes/withdrawRequests");
 const packageRequestRoutes = require("./routes/packageRequestRoutes");

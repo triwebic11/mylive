@@ -75,22 +75,19 @@ const checkAndApplyConsistencyBonus = (buyer, currentPV, product) => {
   }
 };
 
-// Update order status and handle all income logic
 const updatecashondelivery = async (req, res) => {
   try {
     const id = req.params.id;
     const updateData = req.body;
-    // console.log("user id data ",id)
 
-    // Fetch the existing order
     const existingOrder = await CashOnDeliveryModel.findById(id);
     if (!existingOrder) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Determine if order transitioned to 'shipped'
     const wasPending =
       existingOrder.status !== "shipped" && updateData.status === "shipped";
+
     const updatedOrder = await CashOnDeliveryModel.findByIdAndUpdate(
       id,
       { $set: updateData },
@@ -105,10 +102,7 @@ const updatecashondelivery = async (req, res) => {
       if (!buyer.AllEntry) buyer.AllEntry = { incoming: [], outgoing: [] };
       buyer.points += PV;
 
-      const finalSector = decideFinalSector(buyer);
-      const userSectors = buyer.sectors || {};
-
-      // ➤ Referral reward logic
+      // ➤ 1. REFERRAL REWARD
       if (buyer.referredBy) {
         const referrer = await User.findOne({ referralCode: buyer.referredBy });
         if (referrer) {
@@ -118,11 +112,10 @@ const updatecashondelivery = async (req, res) => {
           const reward = Math.floor(PV * 0.1);
           referrer.points += reward;
 
-          // Referrer gets incoming
           referrer.AllEntry.incoming.push({
             fromUser: buyer._id,
             name: buyer.name,
-            sector: finalSector,
+            sector: "referral",
             email: buyer.email,
             pointReceived: reward,
             product: product?.name,
@@ -130,11 +123,10 @@ const updatecashondelivery = async (req, res) => {
             date: new Date(),
           });
 
-          // Buyer logs outgoing
           buyer.AllEntry.outgoing.push({
             toUser: referrer._id,
             name: referrer.name,
-            sector: finalSector,
+            sector: "referral",
             email: referrer.email,
             pointGiven: reward,
             product: product?.name,
@@ -144,13 +136,12 @@ const updatecashondelivery = async (req, res) => {
 
           await referrer.save();
 
-          // Buyer gets remaining
           const remaining = PV - reward;
           if (remaining > 0) {
             buyer.AllEntry.incoming.push({
               fromUser: buyer._id,
               name: buyer.name,
-              sector: finalSector,
+              sector: "self-after-referral",
               email: buyer.email,
               pointReceived: remaining,
               product: product?.name,
@@ -160,57 +151,23 @@ const updatecashondelivery = async (req, res) => {
           }
         }
       } else {
-        // No referral → all PV to buyer
+        // ➤ NO REFERRER → ALL PV TO BUYER
         buyer.AllEntry.incoming.push({
           fromUser: buyer._id,
           name: buyer.name,
           email: buyer.email,
-          sector: finalSector,
+          sector: "self-purchase",
           pointReceived: PV,
           product: product?.name,
-          type: finalSector === "repurchase" ? "repurchase" : "self-purchase",
+          type: "self-purchase",
           date: new Date(),
         });
       }
 
-      // ➤ Dynamic sector activation check
-      const activeSectors = [];
-      if (finalSector === "repurchase" && userSectors.repurchase)
-        activeSectors.push("repurchase");
-      if (userSectors.consistency) activeSectors.push("consistency");
-      if (userSectors.advanceConsistency)
-        activeSectors.push("advance-consistency");
-      if (userSectors.travel) activeSectors.push("travel");
-      if (userSectors.car) activeSectors.push("car");
-      if (userSectors.house) activeSectors.push("house");
-      if (userSectors.dsp) activeSectors.push("dsp");
-
-      // ➤ Process active income handlers
-      for (const sectorType of activeSectors) {
-        switch (sectorType) {
-          case "repurchase":
-            await handleRepurchaseCommission(buyer, PV, product, finalSector);
-            break;
-          case "consistency":
-            checkAndApplyConsistencyBonus(buyer, PV, product);
-            break;
-          case "advance-consistency":
-            await handleAdvanceConsistency(buyer, PV, product);
-            break;
-          // case "travel":
-          //   await allocateFund(buyer, PV, "travelFund", 0.04);
-          //   break;
-          // case "car":
-          //   await allocateFund(buyer, PV, "carFund", 0.04);
-          //   break;
-          // case "house":
-          //   await allocateFund(buyer, PV, "houseFund", 0.02);
-          //   break;
-          // case "dsp":
-          //   await allocateFund(buyer, PV, "dsp", 0.15);
-          //   break;
-        }
-      }
+      // ➤ 2. ALL BONUS/COMMISSIONS EXECUTED DIRECTLY (no flag check)
+      await handleRepurchaseCommission(buyer, PV, product, "repurchase");
+      checkAndApplyConsistencyBonus(buyer, PV, product);
+      await handleAdvanceConsistency(buyer, PV, product);
 
       await buyer.save();
     }
@@ -223,6 +180,7 @@ const updatecashondelivery = async (req, res) => {
       .json({ message: "Failed to update order", error: err.message });
   }
 };
+
 
 // Handle POST order without processing income immediately
 const CashonDeliverypost = async (req, res) => {
