@@ -12,6 +12,7 @@ const {
   getUserById,
   updatProfileInfo,
   updateUserRole,
+  userAgregateData,
   submitKycImages,
   getUserKycById,
 } = require("../controllers/userController");
@@ -28,6 +29,7 @@ router.put("/:id", updatProfileInfo);
 router.get("/admin/all-users", getAllUsers);
 router.get("/admin/user/:id", getUserById);
 router.patch("/updaterole/:id", updateUserRole);
+router.get("/userAgregateData/:id", userAgregateData);
 // router.post("/kyc", submitKycImages);
 // router.get("/kyc/:id", getUserKycById);
 
