@@ -4,7 +4,7 @@ import { banner1, banner2 } from "../../../assets";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 import useAuth from "../../../Hooks/useAuth";
 
-import { FaArrowRight } from "react-icons/fa"; // Matching arrow icon
+import { FaArrowRight } from "react-icons/fa"; // 
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 
@@ -92,13 +92,13 @@ const FontDashboard = () => {
   const [duration, setDuration] = useState("15s");
 
 
-    const axiosPublic = useAxiosPublic()
-    
-    const { data: agregate, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['agregate',data?._id],
+  const axiosPublic = useAxiosPublic()
+
+  const { data: agregate, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['agregate', data?._id],
     queryFn: async () => {
-        const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
-        return res.data;
+      const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
+      return res.data;
     },
 });
 // console.log('agretateee',agregate)
@@ -115,26 +115,26 @@ const FontDashboard = () => {
   }, []);
 
   const {
-      data: orders,
-    } = useQuery({
-      queryKey: ["orders"],
-      queryFn: async () => {
-        try {
-          const res = await axiosPublic.get(`/cashonDelivery/all`);
-          return Array.isArray(res.data) ? [...res.data].reverse() : [];
-        } catch (err) {
-          console.error("Error fetching cash on delivery:", err);
-          throw err;
-        }
-      },
-    });
-     const userProductsArry = orders?.filter(
+    data: orders,
+  } = useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/cashonDelivery/all`);
+        return Array.isArray(res.data) ? [...res.data].reverse() : [];
+      } catch (err) {
+        console.error("Error fetching cash on delivery:", err);
+        throw err;
+      }
+    },
+  });
+  const userProductsArry = orders?.filter(
     (order) => order?.userId === data?._id
   );
-     const shippedProductsArry = userProductsArry?.filter(
+  const shippedProductsArry = userProductsArry?.filter(
     (order) => order?.status === 'shipped'
   );
-     const pendingProductsArry = userProductsArry?.filter(
+  const pendingProductsArry = userProductsArry?.filter(
     (order) => order?.status === 'pending'
   );
 

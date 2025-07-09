@@ -110,38 +110,44 @@ const Dashboard = () => {
           {sidebarOpen ? <IoClose size={24} /> : <MdMenu size={24} />}
         </button>
         {/* // Riyad Babu aikhane kaj koren// Riyad Babu aikhane kaj */}
-        <div className="flex justify-end items-center">
+        <div className="flex justify-end items-center gap-4 relative">
+          {/* Logo */}
           <Link to="">
             <img src={logo} alt="Logo" className="w-24" />
           </Link>
+
+          {/* Username Button */}
           <button
             onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
-            className="px-4 text-lg font-bold flex items-center"
+            className="flex items-center gap-2 px-4 py-2 font-semibold text-lg bg-white hover:bg-gray-100 rounded-md transition duration-300"
           >
-            {user?.user?.name} <div className="rotate-180 text-2xl px-3">^</div>
+            {user?.user?.name}
+            <span className="rotate-180 text-xl"></span>
           </button>
+
+          {/* Dropdown Sidebar */}
           {rightSidebarOpen && (
-            <div className="fixed top-16 right-0 w-64 bg-white shadow-lg z-50 p-4">
-              <div className="text-center text-black">
+            <div className="absolute top-16 right-0 w-28 bg-white shadow-lg z-50 p-4 rounded-md ">
+              <div className="text-center text-black font-semibold hover:text-purple-700 mb-2">
                 <Link to="/dashboard/profile">Profile</Link>
               </div>
               <button
                 onClick={handleLogout}
-                className="bg-blue-100 px-2 font-bold py-2 rounded-lg text-center cursor-pointer hover:bg-gray-200 duration-300 mt-4"
+                className="w-full px-4 py-2 font-semibold  hover:text-purple-700 rounded-md  transition duration-300"
               >
                 Logout
               </button>
             </div>
           )}
         </div>
+
         {/* // Riyad Babu aikhane kaj koren// Riyad Babu aikhane kaj */}
       </div>
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <nav className="flex flex-col gap-2">
           {menuArray.map((item, index) => (
