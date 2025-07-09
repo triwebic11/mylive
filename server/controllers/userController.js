@@ -3,6 +3,8 @@ const PackageRequest = require("../models/PackageRequest");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
+
 // Referral Code Generator
 const generateReferralCode = async () => {
   let code;
@@ -286,6 +288,79 @@ const updateUserRole = async (req, res) => {
   }
 };
 
+// Optional utility to generate summary from user
+const generateUserSummary = (user) => {
+  const outgoing = user.AllEntry?.outgoing || [];
+
+  const getSumBySector = (sectorName) => {
+    return outgoing
+      .filter(entry => entry.sector === sectorName)
+      .reduce((sum, entry) => sum + (entry.pointGiven || 0), 0);
+  };
+
+  const productPurchasePoints = getSumBySector("ProductPurchase");
+  const referCommission = getSumBySector("ReferCommission");
+  const generationCommission = getSumBySector("GenerationCommission");
+  const megaCommission = getSumBySector("MegaCommission");
+  const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
+  const repurchaseCommission = getSumBySector("RepurchaseCommission");
+  const specialFund = getSumBySector("SpecialFund");
+  const withdrawableBalance = getSumBySector("Withdrawable");
+  const totalWithdraw = getSumBySector("Withdraw");
+  const totalTDS = getSumBySector("TDS");
+
+  return [
+    { title: "Total Refer", value: user.referralTree?.length || 0 },
+    { title: "Total Free Team", value: 0 },
+    { title: "Total Active Team", value: 0 },
+    { title: "Currently Expired", value: new Date(user.packageExpireDate) < new Date() ? 1 : 0 },
+    { title: "Total Voucher", value: 0 },
+    { title: "Previous Month Pv", value: 0 },
+    { title: "Current Month Pv", value: user.TargetPV?.reduce((sum, pv) => sum + (pv.currentMonthPV || 0), 0) || 0 },
+    { title: "Monthly down sale pv", value: 0 },
+    { title: "Total Team Sale Pv", value: 0 },
+    { title: "Total Team Member", value: user.referralTree?.length || 0 },
+    { title: "Current Purchase Amount", value: 0 },
+    { title: "Total Purchase Amount", value: 0 },
+    { title: "Total Purchase Pv", value: productPurchasePoints },
+    { title: "Refer Commission", value: referCommission },
+    { title: "Generation Commission", value: generationCommission },
+    { title: "Mega Commission", value: megaCommission },
+    { title: "Repurchase Sponsor Bonus", value: repurchaseSponsorBonus },
+    { title: "Special Fund", value: specialFund },
+    { title: "Withdrawable Balance", value: withdrawableBalance },
+    { title: "Total Withdraw", value: totalWithdraw },
+    { title: "Repurchase Commission", value: repurchaseCommission },
+    { title: "Total TDS", value: totalTDS }
+  ];
+};
+
+
+const userAgregateData = async (req, res) => {
+  try {
+    const id = req.params.id; // or req.body.id
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const summary = generateUserSummary(user);
+
+    res.status(200).json({
+      success: true,
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      summary,
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+};
+
 // KYC Image Submit Controller
 // const submitKycImages = async (req, res) => {
 //   try {
@@ -354,6 +429,7 @@ module.exports = {
   getUserById,
   updatProfileInfo,
   updateUserRole,
+  userAgregateData,
   // submitKycImages,
   // getUserKycById,
 };

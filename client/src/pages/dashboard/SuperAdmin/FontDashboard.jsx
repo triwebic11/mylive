@@ -4,7 +4,13 @@ import { banner1, banner2 } from "../../../assets";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 import useAuth from "../../../Hooks/useAuth";
 
+<<<<<<< HEAD
 import { FaArrowRight } from "react-icons/fa";
+=======
+import { FaArrowRight } from "react-icons/fa"; // Matching arrow icon
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
+>>>>>>> 53d3c4b5ea586764bd63ac6fbad9367efb1446ee
 
 const DashboardCard = ({ title, value }) => (
   <div className="bg-white rounded-xl border border-gray-200 shadow-md flex justify-between items-center p-4 min-h-[100px] relative">
@@ -89,6 +95,18 @@ const FontDashboard = () => {
   ];
   const [duration, setDuration] = useState("15s");
 
+
+    const axiosPublic = useAxiosPublic()
+    
+    const { data: agregate, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['agregate',data?._id],
+    queryFn: async () => {
+        const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
+        return res.data;
+    },
+});
+console.log('agretateee',agregate)
+
   useEffect(() => {
     const updateDuration = () => {
       const isLargeScreen = window.innerWidth >= 768;
@@ -100,9 +118,39 @@ const FontDashboard = () => {
     return () => window.removeEventListener("resize", updateDuration);
   }, []);
 
+  const {
+      data: orders,
+    } = useQuery({
+      queryKey: ["orders"],
+      queryFn: async () => {
+        try {
+          const res = await axiosPublic.get(`/cashonDelivery/all`);
+          return Array.isArray(res.data) ? [...res.data].reverse() : [];
+        } catch (err) {
+          console.error("Error fetching cash on delivery:", err);
+          throw err;
+        }
+      },
+    });
+     const userProductsArry = orders?.filter(
+    (order) => order?.userId === data?._id
+  );
+     const shippedProductsArry = userProductsArry?.filter(
+    (order) => order?.status === 'shipped'
+  );
+     const pendingProductsArry = userProductsArry?.filter(
+    (order) => order?.status === 'pending'
+  );
+
+  console.log(userProductsArry)
+
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">
+<<<<<<< HEAD
       <h2 className="md:px-2 text-xl font-semibold">Dashborard</h2>
+=======
+      <h2 className="p-2 text-xl font-semibold">Dashboard</h2>
+>>>>>>> 53d3c4b5ea586764bd63ac6fbad9367efb1446ee
       <div className="relative w-full overflow-hidden py-2 flex items-center">
         {/* Inline keyframes only once */}
         <style>
@@ -152,7 +200,7 @@ const FontDashboard = () => {
         {/* Header Bar */}
         <div className="bg-pink-600 text-white flex justify-between items-center px-4 py-2 rounded-md">
           <h2 className="text-base font-semibold">Repurchase Validity</h2>
-          <span className="text-sm font-bold uppercase">EXPIRED</span>
+          <span className="text-sm font-bold uppercase">Active</span>
         </div>
 
         {/* Cards Row */}
@@ -162,12 +210,12 @@ const FontDashboard = () => {
             <div className="bg-white h-28 shadow-black/80 shadow-sm rounded-md p-4 flex justify-between items-center text-center text-sm">
               <div className="flex-1">
                 <div className="inline-block bg-green-300 text-green-900 font-semibold px-3 py-1 rounded-full text-xs">
-                  Expired
+                  Active
                 </div>
                 <p className="mt-1 text-gray-700">Status</p>
               </div>
               <div className="flex-1 border-l">
-                <p className="font-bold text-gray-800">Platinum</p>
+                <p className="font-bold text-gray-800">{data?.package}</p>
                 <p className="text-gray-700">Package</p>
               </div>
               <div className="flex-1 border-l">
@@ -183,16 +231,16 @@ const FontDashboard = () => {
               <h3 className="text-purple-700 font-bold text-base mb-2">Order</h3>
               <div className="flex justify-between items-center">
                 <div className="flex-1">
-                  <p className="font-bold text-gray-900">0</p>
+                  <p className="font-bold text-gray-900">{userProductsArry?.length}</p>
                   <p className="text-gray-700">Total</p>
                 </div>
                 <div className="flex-1 border-l">
-                  <p className="font-bold text-gray-900">7</p>
+                  <p className="font-bold text-gray-900">{shippedProductsArry?.length}</p>
                   <p className="text-gray-700">Approved</p>
                 </div>
                 <div className="flex-1 border-l">
-                  <p className="font-bold text-gray-900">0</p>
-                  <p className="text-gray-700">Cancelled</p>
+                  <p className="font-bold text-gray-900">{pendingProductsArry?.length}</p>
+                  <p className="text-gray-700">Pending</p>
                 </div>
               </div>
             </div>
@@ -201,8 +249,8 @@ const FontDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-        {stats.map((stat, idx) => (
-          <DashboardCard key={idx} title={stat.title} value={stat.value} />
+        {agregate?.summary?.map((stat, idx) => (
+          <DashboardCard key={idx} title={stat?.title} value={stat.value} />
         ))}
       </div>
 
