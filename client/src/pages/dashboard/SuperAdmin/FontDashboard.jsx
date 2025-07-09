@@ -4,13 +4,9 @@ import { banner1, banner2 } from "../../../assets";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 import useAuth from "../../../Hooks/useAuth";
 
-<<<<<<< HEAD
-import { FaArrowRight } from "react-icons/fa";
-=======
-import { FaArrowRight } from "react-icons/fa"; // Matching arrow icon
+import { FaArrowRight } from "react-icons/fa"; // 
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
->>>>>>> 53d3c4b5ea586764bd63ac6fbad9367efb1446ee
 
 const DashboardCard = ({ title, value }) => (
   <div className="bg-white rounded-xl border border-gray-200 shadow-md flex justify-between items-center p-4 min-h-[100px] relative">
@@ -96,16 +92,16 @@ const FontDashboard = () => {
   const [duration, setDuration] = useState("15s");
 
 
-    const axiosPublic = useAxiosPublic()
-    
-    const { data: agregate, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['agregate',data?._id],
+  const axiosPublic = useAxiosPublic()
+
+  const { data: agregate, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['agregate', data?._id],
     queryFn: async () => {
-        const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
-        return res.data;
+      const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
+      return res.data;
     },
-});
-console.log('agretateee',agregate)
+  });
+  console.log('agretateee', agregate)
 
   useEffect(() => {
     const updateDuration = () => {
@@ -119,26 +115,26 @@ console.log('agretateee',agregate)
   }, []);
 
   const {
-      data: orders,
-    } = useQuery({
-      queryKey: ["orders"],
-      queryFn: async () => {
-        try {
-          const res = await axiosPublic.get(`/cashonDelivery/all`);
-          return Array.isArray(res.data) ? [...res.data].reverse() : [];
-        } catch (err) {
-          console.error("Error fetching cash on delivery:", err);
-          throw err;
-        }
-      },
-    });
-     const userProductsArry = orders?.filter(
+    data: orders,
+  } = useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/cashonDelivery/all`);
+        return Array.isArray(res.data) ? [...res.data].reverse() : [];
+      } catch (err) {
+        console.error("Error fetching cash on delivery:", err);
+        throw err;
+      }
+    },
+  });
+  const userProductsArry = orders?.filter(
     (order) => order?.userId === data?._id
   );
-     const shippedProductsArry = userProductsArry?.filter(
+  const shippedProductsArry = userProductsArry?.filter(
     (order) => order?.status === 'shipped'
   );
-     const pendingProductsArry = userProductsArry?.filter(
+  const pendingProductsArry = userProductsArry?.filter(
     (order) => order?.status === 'pending'
   );
 
@@ -146,11 +142,7 @@ console.log('agretateee',agregate)
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">
-<<<<<<< HEAD
-      <h2 className="md:px-2 text-xl font-semibold">Dashborard</h2>
-=======
       <h2 className="p-2 text-xl font-semibold">Dashboard</h2>
->>>>>>> 53d3c4b5ea586764bd63ac6fbad9367efb1446ee
       <div className="relative w-full overflow-hidden py-2 flex items-center">
         {/* Inline keyframes only once */}
         <style>
