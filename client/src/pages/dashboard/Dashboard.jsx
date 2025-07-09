@@ -8,9 +8,14 @@ import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
 import useUserById from "../../Hooks/useUserById";
 import useRole from "../../Hooks/useRole";
+import useAuth from "../../Hooks/useAuth";
 
 const dashboardArry = [
-  { title: "Market Place", icon: <MdOutlineShoppingBag />, link: "/dashboard/marketPlace" },
+  {
+    title: "Market Place",
+    icon: <MdOutlineShoppingBag />,
+    link: "/dashboard/marketPlace",
+  },
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboard" },
   { title: "Profile", link: "/dashboard/profile" },
   { title: "Packages", link: "/dashboard/userPackages" },
@@ -70,6 +75,7 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [data] = useUserById();
   const { role } = useRole();
+  const { user } = useAuth();
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -98,19 +104,29 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
       {/* Mobile Top Navbar */}
-      <div className="md:hidden w-full bg-white shadow-md fixed top-0 left-0 z-40 px-4 py-3 flex justify-between items-center h-16">
+      <div className="md:hidden w-full bg-white shadow-md fixed top-0 left-0 z-40 px-4 py-3 flex justify-around items-center h-16">
         <button onClick={handleSidebarToggle} aria-label="Toggle Menu">
           {sidebarOpen ? <IoClose size={24} /> : <MdMenu size={24} />}
         </button>
-        <Link to="/">
-          <img src={logo} alt="Logo" className="w-24" />
-        </Link>
+
+        <div className="flex justify-between items-center">
+          <Link to="/">
+            <img src={logo} alt="Logo" className="w-24" />
+          </Link>
+          <button
+            onClick={handleSidebarToggle}
+            className="px-4 text-lg font-bold flex items-center"
+          >
+            {user?.user?.name} <div className="rotate-180 text-2xl px-3">^</div>
+          </button>
+        </div>
       </div>
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <nav className="flex flex-col gap-2">
           {menuArray.map((item, index) => (
