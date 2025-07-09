@@ -1,58 +1,23 @@
 import React from "react";
+import useUserById from "../../../../Hooks/useUserById";
 
 const Transactions = () => {
-  const wallets = [
-    { name: "PV Wallet", amount: "3,946.73" },
-    { name: "Commission Wallet", amount: "188.65" },
+  const [data] = useUserById()
+ 
+  const totalOutgoingPoints = data?.AllEntry?.incoming?.reduce(
+  (sum, entry) => sum + (entry?.pointGiven || 0),
+  0
+);
+ const wallets = [
+    { name: "PV Wallet", amount: totalOutgoingPoints || "0.00" },
+    { name: "Commission Wallet", amount: "0.00" },
     { name: "Travel Fund Wallet", amount: "0.00" },
     { name: "Car Fund Wallet", amount: "0.00" },
     { name: "Purchase Wallet", amount: "0.00" },
   ];
+  
 
-  const transactions = [
-    {
-      date: "24-05-2025",
-      time: "15:21:24",
-      source: "MD ABDUS SALAM",
-      amount: "500.00",
-    },
-    {
-      date: "12-02-2025",
-      time: "16:15:34",
-      source: "MD ABDUS SALAM",
-      amount: "500.00",
-    },
-    {
-      date: "16-12-2024",
-      time: "10:43:16",
-      source: "SHS Lira {DSP}",
-      amount: "515.02",
-    },
-    {
-      date: "07-11-2024",
-      time: "21:03:32",
-      source: "SHS Lira {DSP}",
-      amount: "545.00",
-    },
-    {
-      date: "08-10-2024",
-      time: "14:43:42",
-      source: "SHS Lira {DSP}",
-      amount: "515.02",
-    },
-    {
-      date: "06-09-2024",
-      time: "14:47:51",
-      source: "SHS Lira {DSP}",
-      amount: "500.00",
-    },
-    {
-      date: "02-08-2024",
-      time: "16:06:59",
-      source: "SHS Lira {DSP}",
-      amount: "871.69",
-    },
-  ];
+  // console.log('dataaaaaaaa',data?.AllEntry?.outgoing)
 
   return (
     <div className="mx-auto w-full max-w-6xl ">
@@ -70,22 +35,49 @@ const Transactions = () => {
       </div>
 
       <div className="transaction-list">
-        {transactions.map((tx, idx) => (
+        <h1 className="bg-blue-500 text-white p-2 rounded-md">Your All Points</h1>
+        {
+          data?.AllEntry?.incoming?.length == 0 && <>
+          
+         <p> Not Entrys</p>
+          </> 
+        }
+        {data?.AllEntry?.incoming?.map((item, idx) => (
+          <div key={idx} className="transaction">
+            
+            <div className="left">
+              <img
+                src="https://img.icons8.com/color/48/000000/download.png"
+                alt="icon"
+                className=""
+              />
+              <div className="details">
+                <p>Sector : {item?.sector || 'Not Define'}</p>
+                <p>Point : {item?.pointGiven || 0} </p>
+                <p>Name : {item?.name || 0} </p>
+              </div>
+            </div>
+            {/* <div className="amount">{item?.amount}</div> */}
+          </div>
+        ))}
+      </div>
+      <div className="transaction-list">
+        <h1 className="bg-blue-500 text-white p-2 rounded-md">All Outgoing Point</h1>
+        {data?.AllEntry?.outgoing?.map((item, idx) => (
           <div key={idx} className="transaction">
             <div className="left">
               <img
                 src="https://img.icons8.com/color/48/000000/download.png"
                 alt="icon"
+                className="rotate-180"
               />
               <div className="details">
-                <strong>Order Pv</strong>
-                <br />
-                [{tx.date}] [{tx.time}]
-                <br />
-                Sale Order From {tx.source}
+                <p>Sector : {item?.sector || 'Not Define'}</p>
+                <p>Point : {item?.pointGiven || 0} </p>
+                <p>Name : {item?.name || 0} </p>
               </div>
             </div>
-            <div className="amount">{tx.amount}</div>
+            {/* <div className="amount">{item?.amount}</div> */}
           </div>
         ))}
       </div>

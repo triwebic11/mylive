@@ -58,30 +58,30 @@ const FontDashboard = () => {
   const [data] = useUserById();
   const { user } = useAuth();
   const userId = user?.user?._id || ""; // Ensure userId is defined, fallback to empty string
-  const stats = [
-    { title: "Total Refer", value: 0 },
-    { title: "Total Free Team", value: 0 },
-    { title: "Total Active Team", value: 0 },
-    { title: "Currently Expired", value: 0 },
-    { title: "Total Voucher", value: 0 },
-    { title: "Previous Month Pv", value: 0 },
-    { title: "Current Month Pv", value: 0 },
-    { title: "Monthly down sale pv", value: 0 },
-    { title: "Total Team Sale Pv", value: 0 },
-    { title: "Total Team Member", value: 0 },
-    { title: "Current Purchase Amount", value: 0 },
-    { title: "Total Purchase Amount", value: 0 },
-    { title: "Total Purchase Pv", value: 0 },
-    { title: "Refer Commission", value: 0 },
-    { title: "Generation Commission", value: 0 },
-    { title: "Mega Commission", value: 0 },
-    { title: "Repurchase Sponsor Bonus", value: 0 },
-    { title: "Special Fund", value: 0 },
-    { title: "Withdrawable Balance", value: 0 },
-    { title: "Total Withdraw", value: 0 },
-    { title: "Repurchase Commission", value: 0 },
-    { title: "Total TDS", value: 0 },
-  ];
+  // const stats = [
+  //   { title: "Total Refer", value: 0 },
+  //   { title: "Total Free Team", value: 0 },
+  //   { title: "Total Active Team", value: 0 },
+  //   { title: "Currently Expired", value: 0 },
+  //   { title: "Total Voucher", value: 0 },
+  //   { title: "Previous Month Pv", value: 0 },
+  //   { title: "Current Month Pv", value: 0 },
+  //   { title: "Monthly down sale pv", value: 0 },
+  //   { title: "Total Team Sale Pv", value: 0 },
+  //   { title: "Total Team Member", value: 0 },
+  //   { title: "Current Purchase Amount", value: 0 },
+  //   { title: "Total Purchase Amount", value: 0 },
+  //   { title: "Total Purchase Pv", value: 0 },
+  //   { title: "Refer Commission", value: 0 },
+  //   { title: "Generation Commission", value: 0 },
+  //   { title: "Mega Commission", value: 0 },
+  //   { title: "Repurchase Sponsor Bonus", value: 0 },
+  //   { title: "Special Fund", value: 0 },
+  //   { title: "Withdrawable Balance", value: 0 },
+  //   { title: "Total Withdraw", value: 0 },
+  //   { title: "Repurchase Commission", value: 0 },
+  //   { title: "Total TDS", value: 0 },
+  // ];
 
   const fundStats = [
     { title: "Car Fund", value: 0 },
@@ -101,7 +101,7 @@ const FontDashboard = () => {
         return res.data;
     },
 });
-console.log('agretateee',agregate)
+// console.log('agretateee',agregate)
 
   useEffect(() => {
     const updateDuration = () => {
@@ -138,7 +138,7 @@ console.log('agretateee',agregate)
     (order) => order?.status === 'pending'
   );
 
-  console.log(userProductsArry)
+  // console.log(userProductsArry)
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">
