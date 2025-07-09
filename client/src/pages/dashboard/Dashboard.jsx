@@ -73,6 +73,7 @@ const Dashboard = () => {
   const { setUser } = useContext(AuthContext);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const [data] = useUserById();
   const { role } = useRole();
   const { user } = useAuth();
@@ -108,25 +109,39 @@ const Dashboard = () => {
         <button onClick={handleSidebarToggle} aria-label="Toggle Menu">
           {sidebarOpen ? <IoClose size={24} /> : <MdMenu size={24} />}
         </button>
-
+        {/* // Riyad Babu aikhane kaj koren// Riyad Babu aikhane kaj */}
         <div className="flex justify-end items-center">
           <Link to="">
             <img src={logo} alt="Logo" className="w-24" />
           </Link>
           <button
-            onClick={handleSidebarToggle}
+            onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
             className="px-4 text-lg font-bold flex items-center"
           >
             {user?.user?.name} <div className="rotate-180 text-2xl px-3">^</div>
-
           </button>
+          {rightSidebarOpen && (
+            <div className="fixed top-16 right-0 w-64 bg-white shadow-lg z-50 p-4">
+              <div className="text-center text-black">
+                <Link to="/dashboard/profile">Profile</Link>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="bg-blue-100 px-2 font-bold py-2 rounded-lg text-center cursor-pointer hover:bg-gray-200 duration-300 mt-4"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
+        {/* // Riyad Babu aikhane kaj koren// Riyad Babu aikhane kaj */}
       </div>
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <nav className="flex flex-col gap-2">
           {menuArray.map((item, index) => (
