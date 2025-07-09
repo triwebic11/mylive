@@ -4,7 +4,7 @@ import { banner1, banner2 } from "../../../assets";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 import useAuth from "../../../Hooks/useAuth";
 
-import { FaArrowRight } from "react-icons/fa"; // Matching arrow icon
+import { FaArrowRight } from "react-icons/fa";
 
 const DashboardCard = ({ title, value }) => (
   <div className="bg-white rounded-xl border border-gray-200 shadow-md flex justify-between items-center p-4 min-h-[100px] relative">
@@ -55,7 +55,7 @@ const TopSlider = () => {
 const FontDashboard = () => {
   const [data] = useUserById();
   const { user } = useAuth();
-  const userId = user?.user?._id || ""; // Ensure userId is defined, fallback to empty string
+  const userId = user?.user?._id || "";
   const stats = [
     { title: "Total Refer", value: 0 },
     { title: "Total Free Team", value: 0 },
@@ -102,7 +102,7 @@ const FontDashboard = () => {
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">
-      <h2 className="p-2 text-xl font-semibold">Dashborard</h2>
+      <h2 className="md:px-2 text-xl font-semibold">Dashborard</h2>
       <div className="relative w-full overflow-hidden py-2 flex items-center">
         {/* Inline keyframes only once */}
         <style>
