@@ -104,13 +104,13 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
       {/* Mobile Top Navbar */}
-      <div className="md:hidden w-full bg-white shadow-md fixed top-0 left-0 z-40 px-4 py-3 flex justify-around items-center h-16">
+      <div className="md:hidden w-full bg-white shadow-md fixed top-0 left-0 z-40 px-4 py-3 flex justify-between items-center h-16">
         <button onClick={handleSidebarToggle} aria-label="Toggle Menu">
           {sidebarOpen ? <IoClose size={24} /> : <MdMenu size={24} />}
         </button>
 
-        <div className="flex justify-between items-center">
-          <Link to="/">
+        <div className="flex justify-end items-center">
+          <Link to="">
             <img src={logo} alt="Logo" className="w-24" />
           </Link>
           <button
@@ -118,15 +118,15 @@ const Dashboard = () => {
             className="px-4 text-lg font-bold flex items-center"
           >
             {user?.user?.name} <div className="rotate-180 text-2xl px-3">^</div>
+
           </button>
         </div>
       </div>
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <nav className="flex flex-col gap-2">
           {menuArray.map((item, index) => (
@@ -185,7 +185,7 @@ const Dashboard = () => {
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:block fixed top-0 left-0 inset-y-0 w-64 bg-white px-4 py-6 overflow-y-auto z-40 shadow">
-        <Link to="/" className="block mb-6">
+        <Link to="" className="block mb-6">
           <img src={logo} alt="Logo" className="w-32" />
         </Link>
 

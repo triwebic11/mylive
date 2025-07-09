@@ -4,12 +4,29 @@ import { banner1, banner2 } from "../../../assets";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 import useAuth from "../../../Hooks/useAuth";
 
+import { FaArrowRight } from "react-icons/fa"; // Matching arrow icon
+
 const DashboardCard = ({ title, value }) => (
-  <div className="bg-white p-4 rounded-2xl shadow-md flex flex-col justify-between h-24">
-    <h3 className="text-sm text-gray-600 font-semibold">{title}</h3>
-    <p className="text-xl font-bold text-purple-700">{value}</p>
+  <div className="bg-white rounded-xl border border-gray-200 shadow-md flex justify-between items-center p-4 min-h-[100px] relative">
+    {/* Left: Icon + Title */}
+    <div className=" items-center ">
+      <span className="text-sm text-purple-800 font-semibold">{title}</span>
+      <div className="w-10 h-10 border border-purple-600 flex items-center justify-center rounded-md">
+        <FaArrowRight className="text-purple-700 text-sm" />
+      </div>
+    </div>
+
+    {/* Right: Value */}
+    <div>
+      <span className="text-xl font-bold text-purple-700">{value}</span>
+    </div>
+
+    {/* Bottom Border Highlight */}
+    <div className="absolute bottom-0 left-0 w-full h-[1.5px] bg-yellow-500 rounded-b-xl" />
   </div>
 );
+
+
 
 const TopSlider = () => {
   const images = [banner1, banner2];
@@ -70,9 +87,50 @@ const FontDashboard = () => {
     { title: "Tour Fund", value: 0 },
     { title: "Home Fund", value: 0 },
   ];
+  const [duration, setDuration] = useState("15s");
+
+  useEffect(() => {
+    const updateDuration = () => {
+      const isLargeScreen = window.innerWidth >= 768;
+      setDuration(isLargeScreen ? "25s" : "15s");
+    };
+
+    updateDuration();
+    window.addEventListener("resize", updateDuration);
+    return () => window.removeEventListener("resize", updateDuration);
+  }, []);
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">
+      <h2 className="p-2 text-xl font-semibold">Dashborard</h2>
+      <div className="relative w-full overflow-hidden py-2 flex items-center">
+        {/* Inline keyframes only once */}
+        <style>
+          {`
+          @keyframes slideNoticeText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+          }
+        `}
+        </style>
+
+        {/* Static Notice Label */}
+        <div className="p-2 font-bold text-xl text-black whitespace-nowrap">
+          Notice:
+        </div>
+
+        {/* Scrolling Text */}
+        <div className="flex-1 overflow-hidden">
+          <div
+            className="whitespace-nowrap font-bold text-xl text-black md:text-base"
+            style={{
+              animation: `slideNoticeText ${duration} linear infinite`,
+            }}
+          >
+            Welcome to SHS Lira Enterprise Ltd.
+          </div>
+        </div>
+      </div>
       <TopSlider />
 
       {/* <p>Name: {data?.name}</p>
@@ -88,9 +146,61 @@ const FontDashboard = () => {
           Repurchase Validity: 30d 23h 59m 59s
         </p> */}
       </header>
-      <ReferralLevelBadge userId={userId} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <ReferralLevelBadge userId={userId} />
+      <div className="w-full mx-auto p-2 space-y-4">
+        {/* Header Bar */}
+        <div className="bg-pink-600 text-white flex justify-between items-center px-4 py-2 rounded-md">
+          <h2 className="text-base font-semibold">Repurchase Validity</h2>
+          <span className="text-sm font-bold uppercase">EXPIRED</span>
+        </div>
+
+        {/* Cards Row */}
+        <div className="md:flex md:gap-4 space-y-4 md:space-y-0">
+          {/* Status Card */}
+          <div className="md:w-1/2">
+            <div className="bg-white h-28 shadow-black/80 shadow-sm rounded-md p-4 flex justify-between items-center text-center text-sm">
+              <div className="flex-1">
+                <div className="inline-block bg-green-300 text-green-900 font-semibold px-3 py-1 rounded-full text-xs">
+                  Expired
+                </div>
+                <p className="mt-1 text-gray-700">Status</p>
+              </div>
+              <div className="flex-1 border-l">
+                <p className="font-bold text-gray-800">Platinum</p>
+                <p className="text-gray-700">Package</p>
+              </div>
+              <div className="flex-1 border-l">
+                <p className="font-bold text-gray-800">None</p>
+                <p className="text-gray-700">Rank</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Order Card */}
+          <div className="md:w-1/2">
+            <div className="bg-white shadow-black/80 shadow-sm rounded-md p-2 text-center text-sm h-28  ">
+              <h3 className="text-purple-700 font-bold text-base mb-2">Order</h3>
+              <div className="flex justify-between items-center">
+                <div className="flex-1">
+                  <p className="font-bold text-gray-900">0</p>
+                  <p className="text-gray-700">Total</p>
+                </div>
+                <div className="flex-1 border-l">
+                  <p className="font-bold text-gray-900">7</p>
+                  <p className="text-gray-700">Approved</p>
+                </div>
+                <div className="flex-1 border-l">
+                  <p className="font-bold text-gray-900">0</p>
+                  <p className="text-gray-700">Cancelled</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
         {stats.map((stat, idx) => (
           <DashboardCard key={idx} title={stat.title} value={stat.value} />
         ))}
