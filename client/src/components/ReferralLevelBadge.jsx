@@ -17,13 +17,13 @@ const packageStyles = {
     emoji: "🥈",
     level: 5,
   },
-  "Bussiness Relative": {
+  "Business Relative": {
     bg: "bg-yellow-100",
     text: "text-yellow-900",
     emoji: "🥇",
     level: 7,
   },
-  "Bussiness Relation": {
+  "Business Relation": {
     bg: "bg-indigo-100",
     text: "text-indigo-900",
     emoji: "💎",

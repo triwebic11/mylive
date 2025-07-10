@@ -3,8 +3,6 @@ const PackageRequest = require("../models/PackageRequest");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-
-
 // Referral Code Generator
 const generateReferralCode = async () => {
   let code;
@@ -54,54 +52,58 @@ const registerUser = async (req, res) => {
     });
 
     // Reward system – Add points to 10 uplines
-    if (referralTree.length > 0) {
-      for (let i = 0; i < referralTree.length; i = 10) {
-        const uplineId = referralTree[i];
-        const point = 100 - i;
-
-        await User.findByIdAndUpdate(uplineId, {
-          $inc: { points: point },
-        });
-      }
-    }
-
     // if (referralTree.length > 0) {
-    //   // DB থেকে package খুঁজে বের করো
-    //   const packageReq = await PackageRequest.findOne({ userId: newUser._id });
-    //   const userPackage = packageReq?.packageName;
-    //   console.log("User Package:", userPackage);
+    //   for (let i = 0; i < referralTree.length; i = 10) {
+    //     const uplineId = referralTree[i];
+    //     const point = 100 - i;
 
-    // Generation ও point সেটিংস
-    //   const packageSettings = {
-    //     "Business Relation": { generations: 10, startPoint: 1000 },
-    //     "Business Relative": { generations: 7, startPoint: 700 },
-    //     Family: { generations: 5, startPoint: 500 },
-    //     Friend: { generations: 3, startPoint: 300 },
-    //   };
-
-    //   const settings = packageSettings[userPackage];
-
-    //   if (settings) {
-    //     const { generations, startPoint } = settings;
-
-    //     for (let i = 0; i < generations; i++) {
-    //       const uplineId = referralTree[i];
-    //       if (!uplineId) break;
-
-    //       const point = startPoint - i * 100;
-    //       if (point <= 0) break;
-
-    //       await User.findByIdAndUpdate(uplineId, {
-    //         $inc: { points: point },
-    //       });
-    //     }
-    //   } else {
-    //     console.log(
-    //       "Invalid package or no package found for user:",
-    //       newUser._id
-    //     );
+    //     await User.findByIdAndUpdate(uplineId, {
+    //       $inc: { points: point },
+    //     });
     //   }
     // }
+
+    // ধরলাম newUser হচ্ছে যিনি register করলেন
+    if (referralTree.length > 0) {
+      for (let i = 0; i < referralTree.length; i++) {
+        const uplineId = referralTree[i];
+        if (!uplineId) break;
+
+        // উল্টা করে প্রত্যেক upline user এর প্যাকেজ বের করো
+        const packageReq = await PackageRequest.findOne({ userId: uplineId });
+        const userPackage = packageReq?.packageName;
+        console.log("packageReq", packageReq);
+        const packageSettings = {
+          "Business Relation": { generations: 10, startPoint: 1000 },
+          "Business Relative": { generations: 7, startPoint: 700 },
+          Family: { generations: 5, startPoint: 500 },
+          Friend: { generations: 3, startPoint: 300 },
+        };
+
+        const settings = packageSettings[userPackage];
+
+        if (!settings) {
+          console.log("Invalid package or no package for upline:", uplineId);
+          continue;
+        }
+
+        const { generations, startPoint } = settings;
+
+        // এখন দেখো, এই upline user এর জন্য newUser কততম generation
+        if (i < generations) {
+          const point = startPoint - i * 100;
+          if (point <= 0) break;
+
+          await User.findByIdAndUpdate(uplineId, {
+            $inc: { points: point },
+          });
+
+          console.log(
+            `Upline ${uplineId} got ${point} points from generation ${i + 1}`
+          );
+        }
+      }
+    }
 
     res.status(201).json({
       message: "User registered successfully",
@@ -294,7 +296,7 @@ const generateUserSummary = (user) => {
 
   const getSumBySector = (sectorName) => {
     return outgoing
-      .filter(entry => entry.sector === sectorName)
+      .filter((entry) => entry.sector === sectorName)
       .reduce((sum, entry) => sum + (entry.pointGiven || 0), 0);
   };
 
@@ -313,10 +315,18 @@ const generateUserSummary = (user) => {
     { title: "Total Refer", value: user.referralTree?.length || 0 },
     { title: "Total Free Team", value: 0 },
     { title: "Total Active Team", value: 0 },
-    { title: "Currently Expired", value: new Date(user.packageExpireDate) < new Date() ? 1 : 0 },
+    {
+      title: "Currently Expired",
+      value: new Date(user.packageExpireDate) < new Date() ? 1 : 0,
+    },
     { title: "Total Voucher", value: 0 },
     { title: "Previous Month Pv", value: 0 },
-    { title: "Current Month Pv", value: user.TargetPV?.reduce((sum, pv) => sum + (pv.currentMonthPV || 0), 0) || 0 },
+    {
+      title: "Current Month Pv",
+      value:
+        user.TargetPV?.reduce((sum, pv) => sum + (pv.currentMonthPV || 0), 0) ||
+        0,
+    },
     { title: "Monthly down sale pv", value: 0 },
     { title: "Total Team Sale Pv", value: 0 },
     { title: "Total Team Member", value: user.referralTree?.length || 0 },
@@ -339,10 +349,9 @@ const generateUserSummary = (user) => {
   ];
 };
 
-
 const userAgregateData = async (req, res) => {
   try {
-    const {id} = req.params; // or req.body.id
+    const { id } = req.params; // or req.body.id
     const user = await User.findById(id);
 
     if (!user) {
@@ -358,7 +367,6 @@ const userAgregateData = async (req, res) => {
       email: user.email,
       summary,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error", error: err.message });
