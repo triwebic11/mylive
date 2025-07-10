@@ -7,6 +7,8 @@ const PackageRequestSchema = new mongoose.Schema({
   phone: String,
   packageName: String,
   packagePrice: String,
+  GenerationLevel: { type: Number, default: 0 },
+  MegaGenerationLevel: { type: Number, default: 0 },
   status: { type: String, default: "pending" }, // pending, approved, rejected
   createdAt: { type: Date, default: Date.now },
 });

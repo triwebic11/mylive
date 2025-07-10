@@ -331,14 +331,18 @@ const generateUserSummary = (user) => {
     { title: "Withdrawable Balance", value: withdrawableBalance },
     { title: "Total Withdraw", value: totalWithdraw },
     { title: "Repurchase Commission", value: repurchaseCommission },
-    { title: "Total TDS", value: totalTDS }
+    { title: "Total TDS", value: totalTDS },
+    { title: "Car Fund", value: 0 },
+    { title: "Special Fund", value: 0 },
+    { title: "Tour Fund", value: 0 },
+    { title: "Home Fund", value: 0 },
   ];
 };
 
 
 const userAgregateData = async (req, res) => {
   try {
-    const id = req.params.id; // or req.body.id
+    const {id} = req.params; // or req.body.id
     const user = await User.findById(id);
 
     if (!user) {

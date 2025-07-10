@@ -28,9 +28,11 @@ export default function PackageUpdate() {
       name: user?.name,
       email: user?.email,
       phone: user?.phone,
-      packageName: plan.name,
-      packagePrice: plan.price,
-      PackagePV: plan.PV,
+      packageName: plan?.name,
+      packagePrice: plan?.price,
+      MegaGenerationLevel: plan?.MegaGenerationLevel,
+      GenerationLevel: plan?.GenerationLevel,
+      PackagePV: plan?.PV,
     };
 
     try {
@@ -62,48 +64,65 @@ export default function PackageUpdate() {
 
       {/* Cards */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {packages?.map((plan, index) => (
-          <div
-            key={index}
-            className={`rounded-xl ${plan.border} shadow-sm flex flex-col justify-between items-center py-8 transition duration-300 hover:bg-orange-100 hover:shadow-2xl`}
-          >
-            <h1
-              className={`text-2xl font-bold text-black bg-orange-100  mb-4 px-4 py-2 w-full`}
-            >
-              {plan.name}
-            </h1>
+        {packages?.map((plan, index) => {
+          const getColorByIndex = () => {
+            if (plan?.name === "Friend") return "bg-red-300";
+            if (plan?.name === "Family") return "bg-purple-300";
 
-            <p className="text-start p-4">{plan?.description}</p>
-            <h1
-              className={`text-xl font-bold ${
-                plan?.name === "Platinum" && "bg-blue-300"
-              } ${plan?.name === "Regular" && "bg-green-300"} ${
-                plan?.name === "Gold" && "bg-red-300"
-              } ${
-                plan?.name === "Silver" && "bg-purple-300"
-              } mb-4 px-4 py-2 rounded-3xl`}
+            // Fallback to index-based color
+            if (index === 0) return "bg-blue-300";
+            if (index === 1) return "bg-green-300";
+            if (index === 2) return "bg-yellow-300";
+            if (index === 3) return "bg-blue-300";
+            return "bg-gray-300"; // Default color
+          };
+
+          return (
+            <div
+              key={index}
+              className={`rounded-xl ${plan.border} shadow-sm flex flex-col justify-between items-center py-8 transition duration-300 hover:bg-orange-100 hover:shadow-2xl`}
             >
-              {plan.price}
-            </h1>
-            <ul className="text-left text-gray-700 text-sm space-y-2 flex-1">
-              {plan.features.map((feature, i) => (
-                <li
-                  key={i}
-                  className="flex text-base px-4 gap-2 items-start justify-start"
-                >
-                  <GoPackage className="text-orange-400 font-semibold text-xl w-[10%] " />{" "}
-                  <p className="w-[90%]">{feature}</p>
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={() => handleAddPackage(plan)}
-              className="mt-6 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-semibold"
-            >
-              Buy Now
-            </button>
-          </div>
-        ))}
+              <h1 className="text-2xl font-bold text-black bg-orange-100 mb-4 px-4 py-2 w-full">
+                {plan.name}
+              </h1>
+
+              <p className="text-start p-4">{plan?.description}</p>
+
+              <h1
+                className={`text-xl font-bold ${getColorByIndex()} mb-4 px-4 py-2 rounded-3xl`}
+              >
+                {plan.price}
+              </h1>
+
+              <ul className="text-left text-gray-700 text-sm space-y-2 flex-1">
+                {plan.features.map((feature, i) => (
+                  <li
+                    key={i}
+                    className="flex text-base px-4 gap-2 items-start justify-start"
+                  >
+                    <GoPackage className="text-orange-400 font-semibold text-xl w-[10%]" />
+                    <p className="w-[90%]">{feature}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <li
+                className="flex text-base px-4 gap-2 items-start justify-start"
+              >
+                <GoPackage className="text-orange-400 font-semibold text-xl w-[10%]" />
+                
+              </li>
+
+              <button
+                onClick={() => handleAddPackage(plan)}
+                className="mt-6 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-semibold"
+              >
+                Buy Now
+              </button>
+            </div>
+          );
+        })}
+
       </div>
     </div>
   );

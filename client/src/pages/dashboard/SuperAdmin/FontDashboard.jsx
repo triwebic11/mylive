@@ -58,31 +58,6 @@ const FontDashboard = () => {
   const [data] = useUserById();
   const { user } = useAuth();
   const userId = user?.user?._id || "";
-  const stats = [
-    { title: "Total Refer", value: 0 },
-    { title: "Total Free Team", value: 0 },
-    { title: "Total Active Team", value: 0 },
-    { title: "Currently Expired", value: 0 },
-    { title: "Total Voucher", value: 0 },
-    { title: "Previous Month Pv", value: 0 },
-    { title: "Current Month Pv", value: 0 },
-    { title: "Monthly down sale pv", value: 0 },
-    { title: "Total Team Sale Pv", value: 0 },
-    { title: "Total Team Member", value: 0 },
-    { title: "Current Purchase Amount", value: 0 },
-    { title: "Total Purchase Amount", value: 0 },
-    { title: "Total Purchase Pv", value: 0 },
-    { title: "Refer Commission", value: 0 },
-    { title: "Generation Commission", value: 0 },
-    { title: "Mega Commission", value: 0 },
-    { title: "Repurchase Sponsor Bonus", value: 0 },
-    { title: "Special Fund", value: 0 },
-    { title: "Withdrawable Balance", value: 0 },
-    { title: "Total Withdraw", value: 0 },
-    { title: "Repurchase Commission", value: 0 },
-    { title: "Total TDS", value: 0 },
-  ];
-
   const fundStats = [
     { title: "Car Fund", value: 0 },
     { title: "Special Fund", value: 0 },
@@ -94,6 +69,8 @@ const FontDashboard = () => {
 
   const axiosPublic = useAxiosPublic()
 
+  console.log(data)
+
   const { data: agregate, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['agregate', data?._id],
     queryFn: async () => {
@@ -101,18 +78,9 @@ const FontDashboard = () => {
       return res.data;
     },
   });
-  console.log('agretateee', agregate)
+  // console.log('agretateee',agregate)
 
-  useEffect(() => {
-    const updateDuration = () => {
-      const isLargeScreen = window.innerWidth >= 768;
-      setDuration(isLargeScreen ? "25s" : "15s");
-    };
 
-    updateDuration();
-    window.addEventListener("resize", updateDuration);
-    return () => window.removeEventListener("resize", updateDuration);
-  }, []);
 
   const {
     data: orders,
@@ -138,45 +106,29 @@ const FontDashboard = () => {
     (order) => order?.status === 'pending'
   );
 
-  console.log(userProductsArry)
+  // console.log(userProductsArry)
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">
       <h2 className="p-2 text-xl font-semibold">Dashboard</h2>
-      <div className="relative w-full overflow-hidden py-2 flex items-center">
-        {/* Inline keyframes only once */}
-        <style>
-          {`
-          @keyframes slideNoticeText {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-          }
-        `}
-        </style>
-
-        {/* Static Notice Label */}
-        <div className="p-2 font-bold text-xl text-black whitespace-nowrap">
+      {/* Notice Marquee */}
+      <div className="relative w-full bg-white shadow rounded-2xl mb-6 flex items-center overflow-hidden h-12">
+        {/* Label */}
+        <div className="px-4 font-bold text-base text-black whitespace-nowrap">
           Notice:
         </div>
-
-        {/* Scrolling Text */}
-        <div className="flex-1 overflow-hidden">
-          <div
-            className="whitespace-nowrap font-bold text-xl text-black md:text-base"
-            style={{
-              animation: `slideNoticeText ${duration} linear infinite`,
-            }}
-          >
-            Welcome to SHS Lira Enterprise Ltd.
-          </div>
+        {/* Animated Text */}
+        <div className="flex-1 overflow-hidden text-red-500 font-semibold text-sm md:text-base">
+          <marquee>প্রতি শনিবার ও রবিবার আপনারা টাকা উইথড্র দিতে পারবেন এবং প্রতি বুধবার টাকা আপনার একাউন্ট এ চলে যাবে । কোন সমস্যা দেখা দিলে অবশ্যই সাপোর্ট এ যোগাযোগ করুন</marquee>
         </div>
       </div>
+
       <TopSlider />
 
-      {/* <p>Name: {data?.name}</p>
-            <p>Role: {data?.role}</p>
+      <p>Name: {data?.name}</p>
+            {/* <p>Role: {data?.role}</p> */}
             <p>Phone: {data?.phone}</p>
-            <p>Package: {data?.package}</p> */}
+            {/* <p>Package: {data?.package}</p> */}
 
       <header className="mb-6">
         {/* <h1 className="hidden md:inline-flex md:text-center lg:text-center text-2xl font-bold  text-purple-800">
