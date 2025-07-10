@@ -72,6 +72,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [rightSideBar, setRightSideBar] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [data] = useUserById();
   const { role } = useRole();
@@ -114,11 +115,27 @@ const Dashboard = () => {
             <img src={logo} alt="Logo" className="w-24" />
           </Link>
           <button
-            onClick={handleSidebarToggle}
+            onClick={() => setRightSideBar(!setRightSideBar)}
             className="px-4 text-lg font-bold flex items-center"
           >
             {user?.user?.name} <div className="rotate-180 text-2xl px-3">^</div>
           </button>
+          {rightSideBar && (
+            <div className="fixed flex flex-col top-10 right-12 bg-white shadow-lg px-4 py-6">
+              <Link
+                to="/dashboard/profile"
+                className="bg-blue-100 px-2 font-bold py-2 rounded-lg hover:bg-gray-200 duration-300 mt-4"
+              >
+                Profile
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-blue-100 px-2 font-bold py-2 rounded-lg hover:bg-gray-200 duration-300 mt-4"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
