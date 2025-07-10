@@ -32,7 +32,7 @@ exports.updatePackages = async (req, res) => {
 
     res.json({
       message: 'Package updated successfully',
-      product: updatedProduct,
+      package: updatedProduct,
     });
   } catch (error) {
     console.error('Patch update failed:', error);
