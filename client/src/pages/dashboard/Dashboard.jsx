@@ -74,6 +74,7 @@ const Dashboard = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [rightSideBar, setRightSideBar] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const [data] = useUserById();
   const { role } = useRole();
   const { user } = useAuth();
@@ -105,38 +106,43 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
       {/* Mobile Top Navbar */}
-      <div className="md:hidden w-full bg-white shadow-md fixed top-0 left-0 z-40 px-4 py-3 flex justify-around items-center h-16">
+      <div className="md:hidden w-full bg-white shadow-md fixed top-0 left-0 z-40 px-4 py-3 flex justify-between items-center h-16">
         <button onClick={handleSidebarToggle} aria-label="Toggle Menu">
           {sidebarOpen ? <IoClose size={24} /> : <MdMenu size={24} />}
         </button>
-
-        <div className="flex justify-between items-center">
-          <Link to="/">
+        {/* // Riyad Babu aikhane kaj koren// Riyad Babu aikhane kaj */}
+        <div className="flex justify-end items-center gap-4 relative">
+          {/* Logo */}
+          <Link to="">
             <img src={logo} alt="Logo" className="w-24" />
           </Link>
+
+          {/* Username Button */}
           <button
-            onClick={() => setRightSideBar(!setRightSideBar)}
-            className="px-4 text-lg font-bold flex items-center"
+            onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
+            className="flex items-center gap-2 px-4 py-2 font-semibold text-lg bg-white hover:bg-gray-100 rounded-md transition duration-300"
           >
-            {user?.user?.name} <div className="rotate-180 text-2xl px-3">^</div>
+            {user?.user?.name}
+            <span className="rotate-180 text-xl"></span>
           </button>
-          {rightSideBar && (
-            <div className="fixed flex flex-col top-10 right-12 bg-white shadow-lg px-4 py-6">
-              <Link
-                to="/dashboard/profile"
-                className="bg-blue-100 px-2 font-bold py-2 rounded-lg hover:bg-gray-200 duration-300 mt-4"
-              >
-                Profile
-              </Link>
+
+          {/* Dropdown Sidebar */}
+          {rightSidebarOpen && (
+            <div className="absolute top-16 right-0 w-28 bg-white shadow-lg z-50 p-4 rounded-md ">
+              <div className="text-center text-black font-semibold hover:text-purple-700 mb-2">
+                <Link to="/dashboard/profile">Profile</Link>
+              </div>
               <button
                 onClick={handleLogout}
-                className="bg-blue-100 px-2 font-bold py-2 rounded-lg hover:bg-gray-200 duration-300 mt-4"
+                className="w-full px-4 py-2 font-semibold  hover:text-purple-700 rounded-md  transition duration-300"
               >
                 Logout
               </button>
             </div>
           )}
         </div>
+
+        {/* // Riyad Babu aikhane kaj koren// Riyad Babu aikhane kaj */}
       </div>
 
       {/* Mobile Sidebar Menu (scrollable) */}
@@ -202,7 +208,7 @@ const Dashboard = () => {
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:block fixed top-0 left-0 inset-y-0 w-64 bg-white px-4 py-6 overflow-y-auto z-40 shadow">
-        <Link to="/" className="block mb-6">
+        <Link to="" className="block mb-6">
           <img src={logo} alt="Logo" className="w-32" />
         </Link>
 
