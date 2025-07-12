@@ -29,7 +29,7 @@ const OurProducts = () => {
 
                             {/* Centered Text */}
                             <div className="absolute inset-0 z-10 flex items-center justify-center text-white text-xl font-semibold">
-                                <p className='bg-orange-400 py-1 px-4 rounded-md'>Buy</p>
+                                <p className='bg-purple-800 py-1 px-4 rounded-md'>Buy Now</p>
                             </div>
 
                             {/* Top Border */}

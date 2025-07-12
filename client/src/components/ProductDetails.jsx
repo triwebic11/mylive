@@ -101,6 +101,7 @@ const ProductDetails = () => {
           alt="Product"
           className="w-full object-contain mb-4"
         />
+        <p className="text-2xl font-semibold">Product Name: {product?.name}</p>
         <p className="text-2xl font-semibold">Price: {product?.price}</p>
         <p
           className="text-lg"
