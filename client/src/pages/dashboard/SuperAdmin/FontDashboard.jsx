@@ -31,57 +31,67 @@ const DashboardCard = ({ title, value }) => (
 
 
 const TopSlider = () => {
-  const images = [banner1, banner2];
+  const images = [banner1, banner2, banner2, banner1,];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+      setCurrentIndex((prevIndex) => (prevIndex + 2) % images.length);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
+  const getVisibleImages = () => {
+    const secondIndex = (currentIndex + 1) % images.length;
+    return [images[currentIndex], images[secondIndex]];
+  };
+
   return (
     <div className="w-full overflow-hidden bg-white shadow rounded-2xl mb-6">
-      <div className="flex justify-center items-center p-4">
-        <img
-          src={images[currentIndex]}
-          alt={`Slider ${currentIndex + 1}`}
-          className="w-[500px] h-32 object-contain mx-auto transition-all duration-500"
-        />
+      <div className="flex justify-center items-center gap-4 p-4">
+        {getVisibleImages().map((img, index) => (
+          <img
+            key={`${img}-${index}-${currentIndex}`}
+            src={img}
+            alt={`Slider ${currentIndex + index + 1}`}
+            className="w-[300px] md:w-[400px] md:h-40 h-32 object-contain transition-all duration-500"
+          />
+        ))}
       </div>
     </div>
   );
 };
 
+
+
 const FontDashboard = () => {
   const [data] = useUserById();
   const { user } = useAuth();
-  const userId = user?.user?._id || ""; // Ensure userId is defined, fallback to empty string
-  // const stats = [
-  //   { title: "Total Refer", value: 0 },
-  //   { title: "Total Free Team", value: 0 },
-  //   { title: "Total Active Team", value: 0 },
-  //   { title: "Currently Expired", value: 0 },
-  //   { title: "Total Voucher", value: 0 },
-  //   { title: "Previous Month Pv", value: 0 },
-  //   { title: "Current Month Pv", value: 0 },
-  //   { title: "Monthly down sale pv", value: 0 },
-  //   { title: "Total Team Sale Pv", value: 0 },
-  //   { title: "Total Team Member", value: 0 },
-  //   { title: "Current Purchase Amount", value: 0 },
-  //   { title: "Total Purchase Amount", value: 0 },
-  //   { title: "Total Purchase Pv", value: 0 },
-  //   { title: "Refer Commission", value: 0 },
-  //   { title: "Generation Commission", value: 0 },
-  //   { title: "Mega Commission", value: 0 },
-  //   { title: "Repurchase Sponsor Bonus", value: 0 },
-  //   { title: "Special Fund", value: 0 },
-  //   { title: "Withdrawable Balance", value: 0 },
-  //   { title: "Total Withdraw", value: 0 },
-  //   { title: "Repurchase Commission", value: 0 },
-  //   { title: "Total TDS", value: 0 },
-  // ];
+  const userId = user?.user?._id || "";
+  const stats = [
+    { title: "Total Refer", value: 0 },
+    { title: "Total Free Team", value: 0 },
+    { title: "Total Active Team", value: 0 },
+    { title: "Currently Expired", value: 0 },
+    { title: "Total Voucher", value: 0 },
+    { title: "Previous Month Pv", value: 0 },
+    { title: "Current Month Pv", value: 0 },
+    { title: "Monthly down sale pv", value: 0 },
+    { title: "Total Team Sale Pv", value: 0 },
+    { title: "Total Team Member", value: 0 },
+    { title: "Current Purchase Amount", value: 0 },
+    { title: "Total Purchase Amount", value: 0 },
+    { title: "Total Purchase Pv", value: 0 },
+    { title: "Refer Commission", value: 0 },
+    { title: "Generation Commission", value: 0 },
+    { title: "Mega Commission", value: 0 },
+    { title: "Repurchase Sponsor Bonus", value: 0 },
+    { title: "Special Fund", value: 0 },
+    { title: "Withdrawable Balance", value: 0 },
+    { title: "Total Withdraw", value: 0 },
+    { title: "Repurchase Commission", value: 0 },
+    { title: "Total TDS", value: 0 },
+  ];
 
   const fundStats = [
     { title: "Car Fund", value: 0 },
@@ -100,8 +110,8 @@ const FontDashboard = () => {
       const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
       return res.data;
     },
-});
-// console.log('agretateee',agregate)
+  });
+  console.log('agretateee', agregate)
 
   useEffect(() => {
     const updateDuration = () => {
@@ -138,7 +148,7 @@ const FontDashboard = () => {
     (order) => order?.status === 'pending'
   );
 
-  // console.log(userProductsArry)
+  console.log(userProductsArry)
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">

@@ -1,6 +1,7 @@
 const PackageRequest = require("../models/PackageRequest");
 const User = require("../models/User");
 const distributeCommission = require("../utils/distributeReferralCommission.js");
+const Packages = require("../models/PackagesModel.js");
 
 // ➤ Send request to admin
 exports.createPackageRequest = async (req, res) => {
@@ -27,10 +28,8 @@ exports.getAllRequests = async (req, res) => {
   }
 };
 
-// ➤ Approve a request (admin)
 exports.approveRequest = async (req, res) => {
   try {
-    // 1. Approve the request
     const request = await PackageRequest.findByIdAndUpdate(
       req.params.id,
       { status: "approved" },
@@ -41,18 +40,27 @@ exports.approveRequest = async (req, res) => {
       return res.status(404).json({ message: "Request not found." });
     }
 
-    // 2. Update user's package and expiry date (30 days from now)
+    console.log("✅ Approved Request:", request);
+
     const user = await User.findById(request.userId);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    user.package = request.packageName; // assuming this field exists
-    user.packageExpireDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
-    await user.save();
+    const pkg = await Packages.findOne({ name: request.packageName });
+    console.log("🎁 Matched Package:", pkg);
+    await User.findByIdAndUpdate(user?._id, {
+      package: request.packageName,
+      GenerationLevel: request.GenerationLevel ?? pkg?.GenerationLevel,
+      MegaGenerationLevel: request.MegaGenerationLevel ?? pkg?.MegaGenerationLevel,
+      packageExpireDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    });
 
-    res.json({ message: "Package request approved and user updated." });
+
+    res.json({ message: "✅ Package request approved and user updated." });
+
   } catch (err) {
+    console.error("❌ Approval Error:", err);
     res.status(500).json({ message: "Approval failed.", error: err.message });
   }
 };

@@ -63,46 +63,47 @@ const registerUser = async (req, res) => {
     //   }
     // }
 
-  // ধরলাম newUser হচ্ছে যিনি register করলেন
-if (referralTree.length > 0) {
-  for (let i = 0; i < referralTree.length; i++) {
-    const uplineId = referralTree[i];
-    if (!uplineId) break;
+    // ধরলাম newUser হচ্ছে যিনি register করলেন
+    if (referralTree.length > 0) {
+      for (let i = 0; i < referralTree.length; i++) {
+        const uplineId = referralTree[i];
+        if (!uplineId) break;
 
-    // উল্টা করে প্রত্যেক upline user এর প্যাকেজ বের করো
-    const packageReq = await PackageRequest.findOne({ userId: uplineId });
-    const userPackage = packageReq?.packageName;
+        // উল্টা করে প্রত্যেক upline user এর প্যাকেজ বের করো
+        const packageReq = await PackageRequest.findOne({ userId: uplineId });
+        const userPackage = packageReq?.packageName;
+        console.log("packageReq", packageReq);
+        const packageSettings = {
+          "Business Relation": { generations: 10, startPoint: 1000 },
+          "Business Relative": { generations: 7, startPoint: 700 },
+          Family: { generations: 5, startPoint: 500 },
+          Friend: { generations: 3, startPoint: 300 },
+        };
 
-    const packageSettings = {
-      "Business Relation": { generations: 10, startPoint: 1000 },
-      "Business Relative": { generations: 7, startPoint: 700 },
-      Family: { generations: 5, startPoint: 500 },
-      Friend: { generations: 3, startPoint: 300 },
-    };
+        const settings = packageSettings[userPackage];
 
-    const settings = packageSettings[userPackage];
+        if (!settings) {
+          console.log("Invalid package or no package for upline:", uplineId);
+          continue;
+        }
 
-    if (!settings) {
-      console.log("Invalid package or no package for upline:", uplineId);
-      continue;
+        const { generations, startPoint } = settings;
+
+        // এখন দেখো, এই upline user এর জন্য newUser কততম generation
+        if (i < generations) {
+          const point = startPoint - i * 100;
+          if (point <= 0) break;
+
+          await User.findByIdAndUpdate(uplineId, {
+            $inc: { points: point },
+          });
+
+          console.log(
+            `Upline ${uplineId} got ${point} points from generation ${i + 1}`
+          );
+        }
+      }
     }
-
-    const { generations, startPoint } = settings;
-
-    // এখন দেখো, এই upline user এর জন্য newUser কততম generation
-    if (i < generations) {
-      const point = startPoint - i * 100;
-      if (point <= 0) break;
-
-      await User.findByIdAndUpdate(uplineId, {
-        $inc: { points: point },
-      });
-
-      console.log(`Upline ${uplineId} got ${point} points from generation ${i + 1}`);
-    }
-  }
-}
-
 
     res.status(201).json({
       message: "User registered successfully",
@@ -341,12 +342,16 @@ const generateUserSummary = (user) => {
     { title: "Total Withdraw", value: totalWithdraw },
     { title: "Repurchase Commission", value: repurchaseCommission },
     { title: "Total TDS", value: totalTDS },
+    { title: "Car Fund", value: 0 },
+    { title: "Special Fund", value: 0 },
+    { title: "Tour Fund", value: 0 },
+    { title: "Home Fund", value: 0 },
   ];
 };
 
 const userAgregateData = async (req, res) => {
   try {
-    const id = req.params.id; // or req.body.id
+    const { id } = req.params; // or req.body.id
     const user = await User.findById(id);
 
     if (!user) {

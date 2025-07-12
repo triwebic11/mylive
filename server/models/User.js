@@ -156,10 +156,17 @@ const userSchema = new mongoose.Schema(
     phone: String,
     password: String,
     referralCode: String,
+    referredBy: String,
     referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
     userStatus: String,
-    GenerationLevel: { type: Number, default: 0 },
-    MegaGenerationLevel: { type: Number, default: 0 },
+    GenerationLevel: {
+      type: Number,
+      default: 0,
+    },
+    MegaGenerationLevel: {
+      type: Number,
+      default: 0,
+    },
     TargetPV: [Number],
     Position: String,
 
@@ -213,6 +220,7 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    strict: false,
   }
 );
 

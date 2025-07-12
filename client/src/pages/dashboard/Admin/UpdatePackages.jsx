@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import usePackages from '../../../Hooks/usePackages';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import Swal from 'sweetalert2';
 
 const UpdatePackages = () => {
   const [selectedPackage, setSelectedPackage] = useState(null);
@@ -21,6 +22,8 @@ const UpdatePackages = () => {
       price: '',
       PV: '',
       description: '',
+      GenerationLevel: 0,
+MegaGenerationLevel: 0,
       features: ['']
     }
   });
@@ -43,9 +46,12 @@ const UpdatePackages = () => {
   // Submit update
   const onSubmit = async (data) => {
     try {
+
       const res = await axiosSecure.patch(`/packages/${selectedPackage?._id}`, data);
-      alert('Updated successfully!');
-      console.log(res.data.message);
+      console.log(res.data)
+      if(res?.data?.message === "Package updated successfully"){
+        Swal.fire('Package updated successfully')
+      }
       setSelectedPackage(null);
     } catch (err) {
       console.error(err);
