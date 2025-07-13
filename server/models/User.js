@@ -149,80 +149,63 @@
 
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema(
-  {
-    name: String,
-    email: String,
-    phone: String,
-    password: String,
-    referralCode: String,
-    referredBy: String,
-    referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
-    userStatus: String,
-    GenerationLevel: {
-      type: Number,
-      default: 0,
-    },
-    MegaGenerationLevel: {
-      type: Number,
-      default: 0,
-    },
-    TargetPV: [Number],
-    Position: String,
+const entrySchema = new mongoose.Schema({
+  fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  name: String,
+  email: String,
+  sector: String,
+  product: String,
+  pointReceived: Number,
+  pointGiven: Number,
+  type: String,
+  date: Date,
+});
 
-    referralTree: [String],
-    points: {
-      type: Number,
-      default: 0,
-    },
-    role: {
-      type: String,
-      default: "user",
-    },
-    package: {
-      type: String,
-      default: "Normal",
-    },
-    //   frontImage: {
-    //   type: String,
-    //   required: true,
-    // },
-    // backImage: {
-    //   type: String,
-    //   required: true,
-    // },
-    PackagePV: String,
-    AllEntry: {
-      incoming: [
-        {
-          fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-          name: String,
-          sector: String,
-          email: String,
-          pointReceived: Number,
-          product: String,
-          type: String,          // Added type for filtering (e.g. "self-purchase")
-          date: Date,
-        },
-      ],
-      outgoing: [
-        {
-          toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-          name: String,
-          sector: String,
-          email: String,
-          pointGiven: Number,
-          product: String,
-          date: Date,
-        },
-      ],
-    },
+
+
+const userSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  name: String,
+  email: String,
+  phone: String,
+  password: String,
+  referralCode: String,
+  referredBy: String,
+  referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
+  userStatus: String,
+  GenerationLevel: {
+    type: Number,
+    default: 0,
   },
-  {
-    timestamps: true,
-    strict: false,
-  }
-);
+  MegaGenerationLevel: {
+    type: Number,
+    default: 0,
+  },
+  TargetPV: [Number],
+  Position: String,
+
+  referralTree: [String],
+  points: {
+    type: Number,
+    default: 0,
+  },
+  role: {
+    type: String,
+    default: "user",
+  },
+  package: {
+    type: String,
+    default: "Normal",
+  },
+
+  PackagePV: String,
+  points: { type: Number, default: 0 },
+  AllEntry: {
+    incoming: [entrySchema],
+    outgoing: [entrySchema],
+  },
+}, { timestamps: true });
 
 
 module.exports = mongoose.model("User", userSchema);

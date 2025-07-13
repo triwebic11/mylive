@@ -112,7 +112,7 @@ const Dashboard = () => {
         {/* // Riyad Babu aikhane kaj koren// Riyad Babu aikhane kaj */}
         <div className="flex justify-end items-center gap-4 relative">
           {/* Logo */}
-          <Link to="">
+          <Link to="/">
             <img src={logo} alt="Logo" className="w-24" />
           </Link>
 
@@ -206,7 +206,7 @@ const Dashboard = () => {
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:block fixed top-0 left-0 inset-y-0 w-64 bg-white px-4 py-6 overflow-y-auto z-40 shadow">
-        <Link to="" className="block mb-6">
+        <Link to="/" className="block mb-6">
           <img src={logo} alt="Logo" className="w-32" />
         </Link>
 
