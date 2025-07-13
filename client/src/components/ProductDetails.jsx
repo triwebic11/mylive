@@ -10,6 +10,7 @@ import useAxiosPublic from "../Hooks/useAxiosPublic";
 import useUserById from "../Hooks/useUserById";
 import { useState } from "react";
 import useAuth from "../Hooks/useAuth";
+import { useEffect } from "react";
 
 const ProductDetails = () => {
   const { user } = useAuth();
@@ -93,6 +94,10 @@ const ProductDetails = () => {
     );
   }
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <div className="max-w-7xl pt-32 mx-auto p-6 md:flex gap-8">
       <div className="md:w-[60%]">
@@ -101,6 +106,7 @@ const ProductDetails = () => {
           alt="Product"
           className="w-full object-contain mb-4"
         />
+        <p className="text-2xl font-semibold">Product Name: {product?.name}</p>
         <p className="text-2xl font-semibold">Price: {product?.price}</p>
         <p
           className="text-lg"

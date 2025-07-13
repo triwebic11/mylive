@@ -19,6 +19,7 @@ import odoc from "./odoc.jpg";
 import logo from "./logo.jpg";
 import banner1 from "./banner1.jpg";
 import banner2 from "./banner2.jpg";
+import newBanner from "./newBanner.jpeg";
 
 export {
   onion,
@@ -41,4 +42,5 @@ export {
   DIT,
   banner1,
   banner2,
+  newBanner,
 };

@@ -10,6 +10,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const userId = user?.user?._id;
   const referralCode = user?.user?.referralCode || {};
+  console.log("Referral code: ", referralCode);
   console.log("User data: ", user);
 
   const referralLink = `https://shslira.com/register?ref=${referralCode}`;

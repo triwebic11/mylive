@@ -38,7 +38,6 @@ app.use("/api/conversion-rate", require("./routes/conversionRoutes"));
 app.use("/api/package-requests", packageRequestRoutes);
 app.use("/api/withdraw-requests", withdrawRoutes);
 app.use("/api/kyc", kycRoutes);
-
 // app.use("/api/uploads", require("./routes/uploadRoute"));
 
 // cron.schedule("* * * * *", async () => {

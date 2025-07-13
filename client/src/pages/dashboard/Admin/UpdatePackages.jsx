@@ -1,36 +1,32 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
-import usePackages from '../../../Hooks/usePackages';
-import useAxiosSecure from '../../../Hooks/useAxiosSecure';
-import Swal from 'sweetalert2';
+import React, { useState, useEffect } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import usePackages from "../../../Hooks/usePackages";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const UpdatePackages = () => {
   const [selectedPackage, setSelectedPackage] = useState(null);
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   const [packages, isLoading, isError, error, refetch] = usePackages(); // Custom hook to fetch packages
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-  } = useForm({
+  const { register, handleSubmit, reset, control } = useForm({
     defaultValues: {
-      name: '',
-      price: '',
-      PV: '',
-      description: '',
+      name: "",
+      price: "",
+      PV: "",
+      decreasePV: "",
+      description: "",
       GenerationLevel: 0,
-MegaGenerationLevel: 0,
-      features: ['']
-    }
+      MegaGenerationLevel: 0,
+      features: [""],
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'features'
+    name: "features",
   });
 
   // When package is selected, fill the form
@@ -38,7 +34,10 @@ MegaGenerationLevel: 0,
     if (selectedPackage) {
       reset({
         ...selectedPackage,
-        features: selectedPackage.features.length ? selectedPackage.features : ['']
+        features: selectedPackage.features.length
+          ? selectedPackage.features
+          : [""],
+        decreasePV: selectedPackage.decreasePV || "",
       });
     }
   }, [selectedPackage, reset]);
@@ -46,16 +45,18 @@ MegaGenerationLevel: 0,
   // Submit update
   const onSubmit = async (data) => {
     try {
-
-      const res = await axiosSecure.patch(`/packages/${selectedPackage?._id}`, data);
-      console.log(res.data)
-      if(res?.data?.message === "Package updated successfully"){
-        Swal.fire('Package updated successfully')
+      const res = await axiosSecure.patch(
+        `/packages/${selectedPackage?._id}`,
+        data
+      );
+      console.log(res.data);
+      if (res?.data?.message === "Package updated successfully") {
+        Swal.fire("Package updated successfully");
       }
       setSelectedPackage(null);
     } catch (err) {
       console.error(err);
-      alert('Failed to update package');
+      alert("Failed to update package");
     }
   };
 
@@ -69,6 +70,7 @@ MegaGenerationLevel: 0,
             <th className="p-2 border">Name</th>
             <th className="p-2 border">Price</th>
             <th className="p-2 border">PV</th>
+            <th className="p-1 border">Dercrease PV</th>
             <th className="p-2 border">Actions</th>
           </tr>
         </thead>
@@ -78,6 +80,7 @@ MegaGenerationLevel: 0,
               <td className="p-2 border">{pkg.name}</td>
               <td className="p-2 border">{pkg.price}</td>
               <td className="p-2 border">{pkg.PV}</td>
+              <td className="p-1 border text-center">{pkg.decreasePV}</td>
               <td className="p-2 border">
                 <div className="flex justify-center">
                   <button
@@ -96,34 +99,70 @@ MegaGenerationLevel: 0,
       {selectedPackage && (
         <div className="fixed inset-0 bg-transparent bg-opacity-50  flex items-center justify-center z-50">
           <div className="bg-white border border-gray-500 shadow-2xl p-6 rounded-lg w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Update Package - {selectedPackage.name}</h2>
+            <h2 className="text-xl font-bold mb-4">
+              Update Package - {selectedPackage.name}
+            </h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <label className="block font-medium">Name</label>
-                <input {...register('name')} className="w-full border p-2 rounded" />
+                <input
+                  {...register("name")}
+                  className="w-full border p-2 rounded"
+                />
               </div>
 
               <div>
                 <label className="block font-medium">Price</label>
-                <input {...register('price')} className="w-full border p-2 rounded" />
+                <input
+                  {...register("price")}
+                  className="w-full border p-2 rounded"
+                />
               </div>
 
               <div>
                 <label className="block font-medium">PV</label>
-                <input type='number' {...register('PV')} className="w-full border p-2 rounded" />
+                <input
+                  type="number"
+                  {...register("PV")}
+                  className="w-full border p-2 rounded"
+                />
               </div>
               <div>
-                <label className="block font-medium">Generation Commission Level</label>
-                <input type='number' {...register('GenerationLevel')} className="w-full border p-2 rounded" />
+                <label className="block font-medium">Decrease PV</label>
+                <input
+                  type="number"
+                  {...register("decreasePV")}
+                  className="w-full border p-2 rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block font-medium">
+                  Generation Commission Level
+                </label>
+                <input
+                  type="number"
+                  {...register("GenerationLevel")}
+                  className="w-full border p-2 rounded"
+                />
               </div>
               <div>
-                <label className="block font-medium">Mega Generation Commission Level </label>
-                <input type='number' {...register('MegaGenerationLevel')} className="w-full border p-2 rounded" />
+                <label className="block font-medium">
+                  Mega Generation Commission Level{" "}
+                </label>
+                <input
+                  type="number"
+                  {...register("MegaGenerationLevel")}
+                  className="w-full border p-2 rounded"
+                />
               </div>
 
               <div>
                 <label className="block font-medium">Description</label>
-                <textarea {...register('description')} className="w-full border p-2 rounded" />
+                <textarea
+                  {...register("description")}
+                  className="w-full border p-2 rounded"
+                />
               </div>
 
               <div>
@@ -145,7 +184,7 @@ MegaGenerationLevel: 0,
                 ))}
                 <button
                   type="button"
-                  onClick={() => append('')}
+                  onClick={() => append("")}
                   className="text-blue-600 text-sm"
                 >
                   + Add Feature

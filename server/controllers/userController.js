@@ -1,9 +1,8 @@
 const User = require("../models/User");
 const PackageRequest = require("../models/PackageRequest");
+const PackagesModel = require("../models/PackagesModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
-
 
 // Referral Code Generator
 const generateReferralCode = async () => {
@@ -54,54 +53,94 @@ const registerUser = async (req, res) => {
     });
 
     // Reward system – Add points to 10 uplines
-    if (referralTree.length > 0) {
-      for (let i = 0; i < referralTree.length; i = 10) {
-        const uplineId = referralTree[i];
-        const point = 100 - i;
-
-        await User.findByIdAndUpdate(uplineId, {
-          $inc: { points: point },
-        });
-      }
-    }
-
     // if (referralTree.length > 0) {
-    //   // DB থেকে package খুঁজে বের করো
-    //   const packageReq = await PackageRequest.findOne({ userId: newUser._id });
-    //   const userPackage = packageReq?.packageName;
-    //   console.log("User Package:", userPackage);
+    //   for (let i = 0; i < referralTree.length; i = 10) {
+    //     const uplineId = referralTree[i];
+    //     const point = 100 - i;
 
-    // Generation ও point সেটিংস
-    //   const packageSettings = {
-    //     "Business Relation": { generations: 10, startPoint: 1000 },
-    //     "Business Relative": { generations: 7, startPoint: 700 },
-    //     Family: { generations: 5, startPoint: 500 },
-    //     Friend: { generations: 3, startPoint: 300 },
-    //   };
-
-    //   const settings = packageSettings[userPackage];
-
-    //   if (settings) {
-    //     const { generations, startPoint } = settings;
-
-    //     for (let i = 0; i < generations; i++) {
-    //       const uplineId = referralTree[i];
-    //       if (!uplineId) break;
-
-    //       const point = startPoint - i * 100;
-    //       if (point <= 0) break;
-
-    //       await User.findByIdAndUpdate(uplineId, {
-    //         $inc: { points: point },
-    //       });
-    //     }
-    //   } else {
-    //     console.log(
-    //       "Invalid package or no package found for user:",
-    //       newUser._id
-    //     );
+    //     await User.findByIdAndUpdate(uplineId, {
+    //       $inc: { points: point },
+    //     });
     //   }
     // }
+
+    // ধরলাম newUser হচ্ছে যিনি register করলেন
+    if (referralTree.length > 0) {
+      // STEP 1: নতুন user এর package info বের করো
+      const childPackageReq = await PackageRequest.findOne({
+        userId: newUser._id,
+      });
+      const childPackageName = childPackageReq?.packageName;
+
+      const childPackageModel = await PackagesModel.findOne({
+        name: childPackageName,
+      });
+      const childStartPoint = childPackageModel?.PV;
+      const childDecreasePV = childPackageModel?.decreasePV || 100;
+
+      if (!childStartPoint) {
+        console.log("❌ Child user's package PV not found");
+        return;
+      }
+
+      // STEP 2: Loop through all uplines
+      for (let i = 0; i < referralTree.length; i++) {
+        const uplineId = referralTree[i];
+        if (!uplineId) break;
+
+        // STEP 3: প্রতিটি upline user এর package details বের করো
+        const uplinePackageReq = await PackageRequest.findOne({
+          userId: uplineId,
+        });
+        const uplinePackageName = uplinePackageReq?.packageName;
+
+        const uplinePackageModel = await PackagesModel.findOne({
+          name: uplinePackageName,
+        });
+        const uplineGenerations = (() => {
+          switch (uplinePackageName) {
+            case "Business Relation":
+              return 10;
+            case "Business Relative":
+              return 7;
+            case "Family":
+              return 5;
+            case "Friend":
+              return 3;
+            default:
+              return 0;
+          }
+        })();
+
+        if (!uplineGenerations) {
+          console.log(`⛔ Invalid or missing package for upline: ${uplineId}`);
+          continue;
+        }
+
+        // STEP 4: Check if this upline is eligible for this generation
+        if (i < uplineGenerations) {
+          const point = childStartPoint - i * childDecreasePV;
+
+          if (point > 0) {
+            await User.findByIdAndUpdate(uplineId, {
+              $inc: { points: point },
+            });
+
+            console.log(
+              `✅ Upline ${uplineId} got ${point} points from generation ${
+                i + 1
+              } based on child package`
+            );
+          } else {
+            console.log(`⚠️ Point is 0 or less for upline ${uplineId}`);
+          }
+        } else {
+          console.log(
+            `⛔ Upline ${uplineId} not eligible for generation ${i + 1}`
+          );
+        }
+      }
+    }
 
     res.status(201).json({
       message: "User registered successfully",
@@ -294,7 +333,7 @@ const generateUserSummary = (user) => {
 
   const getSumBySector = (sectorName) => {
     return outgoing
-      .filter(entry => entry.sector === sectorName)
+      .filter((entry) => entry.sector === sectorName)
       .reduce((sum, entry) => sum + (entry.pointGiven || 0), 0);
   };
 
@@ -313,10 +352,18 @@ const generateUserSummary = (user) => {
     { title: "Total Refer", value: user.referralTree?.length || 0 },
     { title: "Total Free Team", value: 0 },
     { title: "Total Active Team", value: 0 },
-    { title: "Currently Expired", value: new Date(user.packageExpireDate) < new Date() ? 1 : 0 },
+    {
+      title: "Currently Expired",
+      value: new Date(user.packageExpireDate) < new Date() ? 1 : 0,
+    },
     { title: "Total Voucher", value: 0 },
     { title: "Previous Month Pv", value: 0 },
-    { title: "Current Month Pv", value: user.TargetPV?.reduce((sum, pv) => sum + (pv.currentMonthPV || 0), 0) || 0 },
+    {
+      title: "Current Month Pv",
+      value:
+        user.TargetPV?.reduce((sum, pv) => sum + (pv.currentMonthPV || 0), 0) ||
+        0,
+    },
     { title: "Monthly down sale pv", value: 0 },
     { title: "Total Team Sale Pv", value: 0 },
     { title: "Total Team Member", value: user.referralTree?.length || 0 },
@@ -339,10 +386,9 @@ const generateUserSummary = (user) => {
   ];
 };
 
-
 const userAgregateData = async (req, res) => {
   try {
-    const {id} = req.params; // or req.body.id
+    const { id } = req.params; // or req.body.id
     const user = await User.findById(id);
 
     if (!user) {
@@ -358,69 +404,11 @@ const userAgregateData = async (req, res) => {
       email: user.email,
       summary,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error", error: err.message });
   }
 };
-
-// KYC Image Submit Controller
-// const submitKycImages = async (req, res) => {
-//   try {
-//     const { frontImage, backImage, userId } = req.body;
-
-//     if (!frontImage || !backImage) {
-//       return res.status(400).json({ message: "Both images are required." });
-//     }
-
-//     // Update logged-in user's front and back image
-//     const updatedUser = await User.findByIdAndUpdate(
-//       userId || req.user._id, // Use userId from request or from authenticated user
-//       {
-//         frontImage,
-//         backImage,
-//       },
-//       { new: true }
-//     );
-
-//     if (!updatedUser) {
-//       return res.status(404).json({ message: "User not found." });
-//     }
-
-//     res.status(200).json({
-//       message: "KYC images submitted successfully.",
-//       user: {
-//         _id: updatedUser._id,
-//         frontImage: updatedUser.frontImage,
-//         backImage: updatedUser.backImage,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("KYC Submission Error:", error);
-//     res.status(500).json({ message: "Internal server error." });
-//   }
-// };
-
-// const getUserKycById = async (req, res) => {
-//   try {
-//     const userId = req.params.id;
-
-//     const user = await User.findById(userId).select("frontImage backImage");
-
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found." });
-//     }
-
-//     res.status(200).json({
-//       frontImage: user.frontImage,
-//       backImage: user.backImage,
-//     });
-//   } catch (error) {
-//     console.error("KYC fetch error:", error);
-//     res.status(500).json({ message: "Internal server error." });
-//   }
-// };
 
 module.exports = {
   registerUser,
@@ -434,282 +422,4 @@ module.exports = {
   updatProfileInfo,
   updateUserRole,
   userAgregateData,
-  // submitKycImages,
-  // getUserKycById,
 };
-
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
-// const User = require("../models/User");
-
-// // ➤ Helper to generate a short refer ID
-// const generateReferId = (name) => {
-//   const random = Math.floor(100 + Math.random() * 900);
-//   return name.slice(0, 3).toUpperCase() + random;
-// };
-
-// // ➤ Helper to generate a user ID
-// const generateUserId = () => {
-//   return "USR" + Math.floor(1000 + Math.random() * 9000);
-// };
-
-// // 🔁 Recursively update referral data up to 20 generations
-// const updateReferralTree = async (userId, referrerId, generation = 1) => {
-//   if (!referrerId || generation > 20) return;
-
-//   const referrer = await User.findById(referrerId);
-//   if (!referrer) return;
-
-//   // Push this referral info to the referrer's referData array
-//   referrer.referData.push({
-//     generation,
-//     referredUser: userId,
-//   });
-
-//   await referrer.save();
-
-//   // Recurse to next generation if the referrer also has a referrer
-//   if (referrer.referredBy) {
-//     await updateReferralTree(userId, referrer.referredBy, generation + 1);
-//   }
-// };
-
-// // 🔐 Register a user
-// const registerUser = async (req, res) => {
-//   try {
-//     const {
-//       phone,
-//       name,
-//       password,
-//       referrerId,
-//       role = "user",
-//       ...otherFields
-//     } = req.body;
-
-//     const existing = await User.findOne({ phone });
-//     if (existing) {
-//       return res.status(400).json({ message: "Phone Number already exists" });
-//     }
-
-//     const hashed = await bcrypt.hash(password, 10);
-
-//     // Generate unique referral code
-//     const generateReferralCode = async () => {
-//       let code;
-//       let isUnique = false;
-//       while (!isUnique) {
-//         code = Math.random().toString(36).substring(2, 10).toUpperCase();
-//         const existingCode = await User.findOne({ referralCode: code });
-//         if (!existingCode) isUnique = true;
-//       }
-//       return code;
-//     };
-
-//     const referralCode = await generateReferralCode();
-
-//     // Handle referrer logic
-//     let referredBy = null;
-
-//     if (referrerId && referrerId.trim() !== "") {
-//       const referrer = await User.findOne({ referralCode: referrerId });
-//       if (referrer) {
-//         referredBy = referrer._id;
-//       }
-//     }
-
-//     // Create user object
-//     const newUser = new User({
-//       phone,
-//       name,
-//       password: hashed,
-//       role,
-//       referralCode,
-//       referredBy,
-//       ...otherFields,
-
-//       userId: generateUserId(),
-//       referId: generateReferId(name),
-//       package: "Friend",
-//       packagePV: 1000,
-//       packageAmount: 2000,
-//       accountStatus: "",
-//       totalPV: 0,
-//       totalAmount: 0,
-//       referData: [],
-//       allEntries: [],
-//     });
-
-//     await newUser.save();
-
-//     // ➤ Update 20-generation referral tree
-//     if (referredBy) {
-//       await updateReferralTree(newUser._id, referredBy);
-//     }
-
-//     // Create JWT token
-//     const token = jwt.sign(
-//       { id: newUser._id, phone: newUser.phone, role: newUser.role },
-//       process.env.JWT_SECRET || "your_jwt_secret_key",
-//       { expiresIn: "20d" }
-//     );
-
-//     res.status(201).json({
-//       message: "User registered successfully",
-//       user: newUser,
-//       token,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Server error", error: err.message });
-//   }
-// };
-
-// // 🔑 Login user
-// const loginUser = async (req, res) => {
-//   try {
-//     const { phone, password } = req.body;
-
-//     const user = await User.findOne({ phone });
-//     if (!user) {
-//       return res.status(401).json({ message: "User not found" });
-//     }
-
-//     const match = await bcrypt.compare(password, user.password);
-//     if (!match) {
-//       return res.status(401).json({ message: "Incorrect password" });
-//     }
-
-//     const token = jwt.sign(
-//       { id: user._id, phone: user.phone, role: user.role },
-//       process.env.JWT_SECRET || "your_jwt_secret_key",
-//       { expiresIn: "7d" }
-//     );
-
-//     res.status(201).json({
-//       message: "User registered successfully",
-//       user: user,
-//       token,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Server error", error: err.message });
-//   }
-// };
-
-// const getMyReferrals = async (req, res) => {
-//   try {
-//     const userId = req.params.userId;
-
-//     const user = await User.findById(userId).populate({
-//       path: "referData.referredUser",
-//       select: "name phone referralCode",
-//     });
-
-//     if (!user) return res.status(404).json({ message: "User not found" });
-
-//     res.status(200).json({
-//       referrals: user.referData,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Failed to fetch referrals" });
-//   }
-// };
-
-// // 👥 Get all users
-// const getUsers = async (req, res) => {
-//   try {
-//     const users = await User.find({}, { password: 0, __v: 0 });
-//     res.status(200).json(users);
-//   } catch (err) {
-//     res.status(500).json({ message: "Failed to fetch users" });
-//   }
-// };
-
-// // users: full user list (from DB or JSON)
-// async function getReferralTree(referId, users, level = 1) {
-//   const direct = users.filter((user) => user.referredBy === referId);
-
-//   let tree = [];
-
-//   for (const user of direct) {
-//     tree.push({
-//       ...user,
-//       level,
-//     });
-
-//     const children = await getReferralTree(user.referId, users, level + 1);
-//     tree = tree.concat(children);
-//   }
-
-//   return tree;
-// }
-
-// // get user by refer id
-
-// // router.get("/referrals/:referId", async (req, res) => {
-// //   try {
-// //     const { referId } = req.params;
-
-// //     // Find all users whose referredBy matches this referId
-// //     const referrals = await User.find({ referredBy: referId });
-
-// //     res.status(200).json({
-// //       success: true,
-// //       message: `Found ${referrals.length} referrals`,
-// //       referrals,
-// //     });
-// //   } catch (error) {
-// //     console.error("Error fetching referrals:", error);
-// //     res.status(500).json({ success: false, message: "Server error", error: error.message });
-// //   }
-// // });
-
-// const getdatafromReferId = async (req, res) => {
-//   try {
-//     const { referId } = req.params;
-//     const users = await User.find();
-
-//     const downlineTree = await getReferralTree(referId, users);
-//     res.status(200).json({
-//       message: `Found ${downlineTree.length} downlines`,
-//       data: downlineTree,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ message: "Server error", error: err.message });
-//   }
-// };
-
-// //All users list
-
-// const getMyAllReferrals = async (req, res) => {
-//   try {
-//     const users = await User.find();
-
-//     res.status(200).json(users);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// //getReferralTreeDetails
-
-// const getReferralTreeDetails = async (req, res) => {
-//   try {
-//     const { ids } = req.body;
-
-//     const users = await User.find({ _id: { $in: ids } }).select(
-//       "_id name email"
-//     );
-
-//     // preserve original order
-//     const orderedUsers = ids.map((id) =>
-//       users.find((u) => u._id.toString() === id)
-//     );
-
-//     res.status(200).json(orderedUsers);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-// module.exports = { registerUser, loginUser, getUsers, getdatafromReferId,getMyAllReferrals, getMyReferrals, getReferralTreeDetails };
