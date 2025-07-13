@@ -256,12 +256,12 @@ const FontDashboard = () => {
         ))}
       </div>
 
-      <h2 className="text-xl font-bold mt-10 mb-4 text-purple-700">Fund</h2>
+      {/* <h2 className="text-xl font-bold mt-10 mb-4 text-purple-700">Fund</h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {fundStats.map((stat, idx) => (
           <DashboardCard key={idx} title={stat.title} value={stat.value} />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

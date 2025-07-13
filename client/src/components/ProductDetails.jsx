@@ -132,6 +132,7 @@ const ProductDetails = () => {
             <label className="block font-medium">Email Address</label>
             <input
               type="email"
+              value={data?.email}
               {...register("email", { required: "Email is required" })}
               className="w-full border px-3 py-2 rounded"
             />
@@ -144,6 +145,7 @@ const ProductDetails = () => {
             <label className="block font-medium">Phone Number</label>
             <input
               type="text"
+               value={data?.phone}
               {...register("phone", { required: "Phone number is required" })}
               className="w-full border px-3 py-2 rounded"
             />

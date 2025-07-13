@@ -82,7 +82,7 @@ async function handleSmartConsistencyBonus(buyer, currentPV, product) {
 
   // শুধুমাত্র ProductPurchase ও repurchase ধরে PV হিসাব করব
   const purchaseEntries = entries.filter(e =>
-    ["ProductPurchase", "repurchase"].includes(e.sector)
+    ['self-purchase', 'self-after-referral', "ProductPurchase", "repurchase"].includes(e.sector)
   );
 
   let consistencyStreak = 0;
