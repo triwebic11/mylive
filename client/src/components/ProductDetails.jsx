@@ -10,6 +10,7 @@ import useAxiosPublic from "../Hooks/useAxiosPublic";
 import useUserById from "../Hooks/useUserById";
 import { useState } from "react";
 import useAuth from "../Hooks/useAuth";
+import { useEffect } from "react";
 
 const ProductDetails = () => {
   const { user } = useAuth();
@@ -92,6 +93,10 @@ const ProductDetails = () => {
       <div className="text-center py-10 text-red-600">Product not found!</div>
     );
   }
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <div className="max-w-7xl pt-32 mx-auto p-6 md:flex gap-8">
