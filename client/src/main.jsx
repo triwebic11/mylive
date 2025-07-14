@@ -56,14 +56,12 @@ import Support from "./pages/dashboard/user/Support.jsx";
 import SocialLink from "./pages/SocialLink.jsx";
 import AdminKycList from "./components/AdminKycList.jsx";
 import OurProducts from "./components/OurProducts.jsx";
-import useRole from "./Hooks/useRole.jsx";
+
 import DspRoute from "./Routes/DspRoute.jsx";
 import AllOrders from "./pages/dashboard/DSP/AllOrders.jsx";
 import DspOrder from "./pages/dashboard/DSP/DspOrder.jsx";
 import DspProfile from "./pages/dashboard/DSP/DspProfile.jsx";
-import MyDspOrder from "./pages/dashboard/DSP/MyDspOrder.jsx";
-
-const { role } = useRole();
+import MyDspOrders from "./pages/dashboard/DSP/MyDspOrders.jsx";
 
 const queryClients = new QueryClient();
 
@@ -103,12 +101,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path:
-      role === "admin"
-        ? "dashboard/allUsers"
-        : role === "dsp"
-        ? "dashboard/allOrders"
-        : "dashboard",
+    path: "dashboard",
     element: <Dashboard />,
     children: [
       { index: true, element: <FontDashboard /> },
@@ -274,11 +267,21 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/dashboard/allOrders",
+        path: "/dashboard/myOrders",
         element: (
           <PrivetRouter>
             <DspRoute>
-              <MyDspOrder />
+              <MyDspOrders />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/kyc",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <Kyc />
             </DspRoute>
           </PrivetRouter>
         ),

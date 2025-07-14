@@ -1,7 +1,260 @@
-import React from "react";
+// import React from "react";
 
-const AllOrders = () => {
-  return <div>AllOrders</div>;
+// const AllOrders = () => {
+//   return <div>AllOrders</div>;
+// };
+
+// export default AllOrders;
+
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import Swal from "sweetalert2";
+
+const Orders = () => {
+  const [searchId, setSearchId] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [status, setStatus] = useState("");
+  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
+  const [disabled, setDisabled] = useState(false);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+
+  const {
+    data: orders,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/cashonDelivery/all`);
+        return Array.isArray(res.data) ? [...res.data].reverse() : [];
+      } catch (err) {
+        console.error("Error fetching cash on delivery:", err);
+        throw err;
+      }
+    },
+  });
+
+  console.log("orderssssssss-----", orders);
+
+  const handleUpdateStatus = async (id) => {
+    Swal.fire({
+      title: "Are you sure to shipped?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, update it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await axiosSecure.patch(`/cashonDelivery/${id}`, {
+          status: "shipped",
+        });
+        console.log(response);
+        if (response.status === 200) {
+          Swal.fire({
+            icon: "success",
+            title: "Order Updated",
+            text: "This order has been shipped successfully",
+            timer: 2000,
+          });
+          refetch();
+          setDisabled(true);
+        }
+      }
+    });
+  };
+
+  const parseCustomDate = (dateStr) => {
+    if (!dateStr || typeof dateStr !== "string") return null; // avoid errors
+    const cleaned = dateStr.replace(/(\d+)(st|nd|rd|th)/, "$1");
+    return new Date(cleaned);
+  };
+
+  const handleFilter = () => {
+    let filtered = orders || [];
+
+    // Filter by order ID
+    if (searchId) {
+      filtered = filtered.filter((order) =>
+        order?.address.toLowerCase().includes(searchId.toLowerCase())
+      );
+    }
+
+    // Filter by status
+    if (status) {
+      filtered = filtered.filter((order) => order.status === status);
+    }
+
+    // Filter by date range
+    if (fromDate || toDate) {
+      filtered = filtered.filter((order) => {
+        const orderDate = parseCustomDate(order.orderTime);
+        const from = fromDate ? new Date(fromDate) : null;
+        const to = toDate ? new Date(toDate) : null;
+
+        return (!from || orderDate >= from) && (!to || orderDate <= to);
+      });
+    }
+
+    setFilteredOrders(filtered);
+  };
+
+  return (
+    <div className="p-6  w-full m-auto ">
+      <h1 className="text-3xl font-bold mb-6 text-center">Orders</h1>
+
+      {/* Filter Section */}
+      <div className="flex flex-wrap gap-4 mb-6 items-end">
+        <input
+          type="text"
+          placeholder="Search by user Address"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          className="border border-gray-300 px-3 py-2 rounded-md w-48"
+        />
+        <input
+          type="date"
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
+          className="border border-gray-300 px-3 py-2 rounded-md"
+        />
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          className="border border-gray-300 px-3 py-2 rounded-md w-40"
+        >
+          <option value="">Status</option>
+          <option value="pending">Pending</option>
+          <option value="shipped">Shipped</option>
+        </select>
+
+        <button
+          onClick={handleFilter}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Filter
+        </button>
+      </div>
+
+      {/* Table Section */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
+          <thead>
+            <tr className="bg-gray-200 text-gray-700 text-sm text-left">
+              <th className="px-4 py-2">Serial Number </th>
+              <th className="px-4 py-2">Product Image </th>
+              <th className="px-4 py-2">Price</th>
+              <th className="px-4 py-2">Purchased On</th>
+              <th className="px-4 py-2">Buyer Details</th>
+              <th className="px-4 py-2">Address</th>
+              <th className="px-4 py-2">Status</th>
+              <th className="px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(filteredOrders.length > 0 ? filteredOrders : orders)?.map(
+              (order, idx) => (
+                <tr
+                  key={order.id}
+                  className="border-t border-gray-200 hover:bg-gray-50 text-sm"
+                >
+                  <td className="px-4 py-2">{idx + 1}</td>
+                  <td className="px-4 py-2">
+                    <img src={order?.product.image} alt="" className="w-20" />
+                  </td>
+                  <td className="px-4 py-2">{order?.product.totalPrice}</td>
+
+                  <td className="px-4 py-2">{order?.orderTime}</td>
+
+                  <td className="px-4 py-2">
+                    <p>{order?.name}</p>
+                    <p>{order?.phone}</p>
+                  </td>
+                  <td className="px-4 py-2">
+                    <p>{order?.address}</p>{" "}
+                  </td>
+                  <td
+                    className={`px-4 py-2 font-bold text-center ${
+                      order?.status === "pending" &&
+                      "text-red-500 bg-red-200 rounded-md"
+                    } ${order?.status === "shipped" && "text-green-500"}`}
+                  >
+                    {order?.status}
+                  </td>
+
+                  <td className="px-4 py-2 flex gap-2">
+                    <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+                      View
+                    </button>
+                    {order?.status === "shipped" ? (
+                      <button className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600">
+                        Ship
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleUpdateStatus(order._id)}
+                        className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                      >
+                        Ship
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
-export default AllOrders;
+export default Orders;
+
+// const orders = [
+//   {
+//     id: "#000000028",
+//     date: "2017-04-12 10:29:28",
+//     billTo: "Supplier Demo",
+//     shipTo: "Supplier Demo",
+//     subtotal: 45.0,
+//     income: 40.5,
+//     status: "Pending",
+//   },
+//   {
+//     id: "#000000027",
+//     date: "2017-03-31 11:50:22",
+//     billTo: "Veronica Costello",
+//     shipTo: "Veronica Costello",
+//     subtotal: 120.0,
+//     income: 108.0,
+//     status: "Complete",
+//   },
+//   {
+//     id: "#000000026",
+//     date: "2017-03-31 11:35:41",
+//     billTo: "Veronica Costello",
+//     shipTo: "Veronica Costello",
+//     subtotal: 122.0,
+//     income: 109.8,
+//     status: "Complete",
+//   },
+//   {
+//     id: "#000000025",
+//     date: "2017-03-31 11:33:01",
+//     billTo: "Veronica Costello",
+//     shipTo: "Veronica Costello",
+//     subtotal: 20.0,
+//     income: 18.0,
+//     status: "Complete",
+//   },
+// ];

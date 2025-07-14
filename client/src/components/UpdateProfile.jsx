@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 
-const UpdateProfileInfo = ({ user }) => {
-  const userId = user?.user._id;
+const UpdateProfileInfo = () => {
+  const axiosSecure = useAxiosSecure();
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const userId = storedUser?.user?._id;
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -16,35 +19,36 @@ const UpdateProfileInfo = ({ user }) => {
   });
 
   const [loading, setLoading] = useState(false);
-  const axiosSecure = useAxiosSecure()
 
-  // 🔄 Load profile info from backend
-  useEffect(() => {
+  // 🔄 Fetch latest user data from DB
+  const fetchUser = async () => {
     if (!userId) return;
-    setLoading(true);
 
-    axiosSecure
-      .get(`/users/${userId}`)
-      .then((res) => {
-        if (res.data) {
-          const user = res.data;
-          setForm({
-            name: user.name || "",
-            email: user.email || "",
-            phone: user.phone || "",
-            dob: user.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
-            division: user.division || "",
-            city: user.city || "",
-            postcode: user.postcode || "",
-            address: user.address || "",
-          });
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to load user info:", err);
-      })
-      .finally(() => setLoading(false));
-  }, [axiosSecure, userId]);
+    setLoading(true);
+    try {
+      const res = await axiosSecure.get(`/users/${userId}`);
+      const user = res.data;
+
+      setForm({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        dob: user.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
+        division: user.division || "",
+        city: user.city || "",
+        postcode: user.postcode || "",
+        address: user.address || "",
+      });
+    } catch (err) {
+      console.error("Error fetching user:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -52,20 +56,25 @@ const UpdateProfileInfo = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userId) return alert("User not found");
+    if (!userId) return Swal.fire("Error", "User not found", "error");
 
     try {
       await axiosSecure.put(`/users/${userId}`, form);
 
       Swal.fire("✅ Success", "Profile updated successfully!", "success");
 
-      // ✅ Update localStorage
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+      // Update localStorage
       const updatedUser = {
         ...storedUser,
-        user: { ...storedUser.user, ...form },
+        user: {
+          ...storedUser.user,
+          ...form,
+        },
       };
       localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      // Re-fetch to refresh UI with saved data
+      fetchUser();
     } catch (err) {
       Swal.fire(
         "❌ Error",
@@ -88,8 +97,8 @@ const UpdateProfileInfo = ({ user }) => {
         {/* Fields */}
         {[
           { label: "Full Name", name: "name" },
-          { label: "Email", name: "email" }, // ✅ ঠিক করা
-          { label: "Phone", name: "phone" }, // ✅ ঠিক করা
+          { label: "Email", name: "email" },
+          { label: "Phone", name: "phone" },
           { label: "Date of Birth", name: "dob", type: "date" },
           { label: "Division", name: "division", type: "select" },
           { label: "City", name: "city" },
