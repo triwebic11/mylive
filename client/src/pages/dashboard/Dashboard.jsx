@@ -44,6 +44,13 @@ const dashboardArry = [
   { title: "Update Password", link: "/dashboard/update-password" },
 ];
 
+const DspDashboard = [
+  { title: "Profile", link: "/dashboard/dspprofile" },
+  { title: "All Orders", link: "/dashboard/allOrders" },
+  { title: "Order Now", link: "/dashboard/orderNow" },
+  { title: "My Order", link: "/dashboard/myOrders" },
+];
+
 const adminDashboardArry = [
   { title: "All Users", link: "/dashboard/allUsers" },
   { title: "All Package Requester", link: "/dashboard/allPackageRequestUser" },
@@ -101,7 +108,13 @@ const Dashboard = () => {
 
   const closeSidebar = () => setSidebarOpen(false);
 
-  const menuArray = role === "admin" ? adminDashboardArry : dashboardArry;
+  // const menuArray = role === "admin" ? adminDashboardArry : dashboardArry;
+  const newMenuArray =
+    role === "admin"
+      ? adminDashboardArry
+      : role === "dsp"
+      ? DspDashboard
+      : dashboardArry;
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
@@ -151,8 +164,11 @@ const Dashboard = () => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } w-[60%] px-4 py-6 overflow-y-auto`}
       >
+        <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
+          {role?.toUpperCase()} Dashboard
+        </h1>
         <nav className="flex flex-col gap-2">
-          {menuArray.map((item, index) => (
+          {newMenuArray.map((item, index) => (
             <div key={index}>
               <div
                 className="flex justify-between items-center font-semibold py-2 px-2 hover:bg-gray-100 rounded cursor-pointer"
@@ -211,9 +227,11 @@ const Dashboard = () => {
         <Link to="/" className="block mb-6">
           <img src={logo} alt="Logo" className="w-32" />
         </Link>
-
+        <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
+          {role?.toUpperCase()} Dashboard
+        </h1>
         <nav className="flex flex-col gap-2">
-          {menuArray.map((item, index) => (
+          {newMenuArray.map((item, index) => (
             <div key={index} className="bg-blue-100 rounded-lg">
               <div
                 className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"

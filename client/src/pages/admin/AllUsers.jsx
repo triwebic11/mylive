@@ -4,7 +4,6 @@ import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Pagination from "../../components/Pagination";
 import Swal from "sweetalert2";
 
-
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -69,13 +68,11 @@ const AllUsers = () => {
         // Also update filtered users based on current filter/search
         filterUsersByRoleAndSearch(roleFilter, searchTerm);
         Swal.fire({
-              icon: "success",
-              title: "Role updated",
-              text: "Role updated successfully!",
-              confirmButtonColor: "#3085d6",
-            });
-
-        
+          icon: "success",
+          title: "Role updated",
+          text: "Role updated successfully!",
+          confirmButtonColor: "#3085d6",
+        });
       } else {
         alert("Role update failed. Try again.");
       }
@@ -136,6 +133,7 @@ const AllUsers = () => {
             <option value="all">All</option>
             <option value="admin">Admin</option>
             <option value="user">User</option>
+            <option value="dsp">DSP</option>
           </select>
         </div>
       </div>
@@ -166,7 +164,9 @@ const AllUsers = () => {
                   <td className="border px-4 py-2">{user.email}</td>
                   <td
                     className={`border border-black px-4 py-2 font-medium ${
-                      userStatus === "Active" ? "text-green-600" : "text-red-600"
+                      userStatus === "Active"
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
                     {userStatus}
@@ -180,11 +180,14 @@ const AllUsers = () => {
                       className={`rounded px-2 py-1 font-medium ${
                         user.role === "admin"
                           ? "text-green-600 font-semibold"
-                          : "text-black"
+                          : user.role === "dsp"
+                          ? "text-blue-900"
+                          : "text-gray-700"
                       }`}
                     >
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
+                      <option value="dsp">DSP</option>
                     </select>
                   </td>
                   <td className="border px-4 py-2">

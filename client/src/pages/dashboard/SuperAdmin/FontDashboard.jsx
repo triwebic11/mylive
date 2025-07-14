@@ -4,7 +4,7 @@ import { banner1, banner2 } from "../../../assets";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 import useAuth from "../../../Hooks/useAuth";
 
-import { FaArrowRight } from "react-icons/fa"; // 
+import { FaArrowRight } from "react-icons/fa"; //
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 
@@ -28,10 +28,8 @@ const DashboardCard = ({ title, value }) => (
   </div>
 );
 
-
-
 const TopSlider = () => {
-  const images = [banner1, banner2, banner2, banner1,];
+  const images = [banner1, banner2, banner2, banner1];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -61,8 +59,6 @@ const TopSlider = () => {
     </div>
   );
 };
-
-
 
 const FontDashboard = () => {
   const [data] = useUserById();
@@ -101,17 +97,22 @@ const FontDashboard = () => {
   ];
   const [duration, setDuration] = useState("15s");
 
+  const axiosPublic = useAxiosPublic();
 
-  const axiosPublic = useAxiosPublic()
-
-  const { data: agregate, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['agregate', data?._id],
+  const {
+    data: agregate,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["agregate", data?._id],
     queryFn: async () => {
       const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
       return res.data;
     },
   });
-  console.log('agretateee', agregate)
+  console.log("agretateee", agregate);
 
   useEffect(() => {
     const updateDuration = () => {
@@ -124,9 +125,7 @@ const FontDashboard = () => {
     return () => window.removeEventListener("resize", updateDuration);
   }, []);
 
-  const {
-    data: orders,
-  } = useQuery({
+  const { data: orders } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       try {
@@ -142,13 +141,13 @@ const FontDashboard = () => {
     (order) => order?.userId === data?._id
   );
   const shippedProductsArry = userProductsArry?.filter(
-    (order) => order?.status === 'shipped'
+    (order) => order?.status === "shipped"
   );
   const pendingProductsArry = userProductsArry?.filter(
-    (order) => order?.status === 'pending'
+    (order) => order?.status === "pending"
   );
 
-  console.log(userProductsArry)
+  console.log(userProductsArry);
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">
@@ -172,12 +171,13 @@ const FontDashboard = () => {
         {/* Scrolling Text */}
         <div className="flex-1 overflow-hidden">
           <div
-            className="whitespace-nowrap font-bold text-xl text-black md:text-base"
+            className="whitespace-nowrap w-xl  font-bold text-xl text-black md:text-base"
             style={{
               animation: `slideNoticeText ${duration} linear infinite`,
             }}
           >
-            Welcome to SHS Lira Enterprise Ltd.
+            SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে সনিবার
+            ও রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন
           </div>
         </div>
       </div>
@@ -230,18 +230,26 @@ const FontDashboard = () => {
           {/* Order Card */}
           <div className="md:w-1/2">
             <div className="bg-white shadow-black/80 shadow-sm rounded-md p-2 text-center text-sm h-28  ">
-              <h3 className="text-purple-700 font-bold text-base mb-2">Order</h3>
+              <h3 className="text-purple-700 font-bold text-base mb-2">
+                Order
+              </h3>
               <div className="flex justify-between items-center">
                 <div className="flex-1">
-                  <p className="font-bold text-gray-900">{userProductsArry?.length}</p>
+                  <p className="font-bold text-gray-900">
+                    {userProductsArry?.length}
+                  </p>
                   <p className="text-gray-700">Total</p>
                 </div>
                 <div className="flex-1 border-l">
-                  <p className="font-bold text-gray-900">{shippedProductsArry?.length}</p>
+                  <p className="font-bold text-gray-900">
+                    {shippedProductsArry?.length}
+                  </p>
                   <p className="text-gray-700">Approved</p>
                 </div>
                 <div className="flex-1 border-l">
-                  <p className="font-bold text-gray-900">{pendingProductsArry?.length}</p>
+                  <p className="font-bold text-gray-900">
+                    {pendingProductsArry?.length}
+                  </p>
                   <p className="text-gray-700">Pending</p>
                 </div>
               </div>

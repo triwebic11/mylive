@@ -100,18 +100,20 @@ const ProductDetails = () => {
 
   return (
     <div className="max-w-7xl pt-32 mx-auto p-6 md:flex gap-8">
-      <div className="md:w-[60%]">
+      <div className="md:w-[60%] ">
         <img
           src={product?.image}
           alt="Product"
           className="w-full object-contain mb-4"
         />
-        <p className="text-2xl font-semibold">Product Name: {product?.name}</p>
-        <p className="text-2xl font-semibold">Price: {product?.price}</p>
-        <p
-          className="text-lg"
-          dangerouslySetInnerHTML={{ __html: product?.details }}
-        ></p>
+        <div className="ml-5">
+          <p className="text-xl font-semibold">Product Name: {product?.name}</p>
+          <p className="text-xl font-semibold">Price: {product?.price}</p>
+          <p
+            className="text-lg"
+            dangerouslySetInnerHTML={{ __html: product?.details }}
+          ></p>
+        </div>
       </div>
 
       <div className="bg-white md:w-[40%] shadow-md p-6 rounded-md">
@@ -145,7 +147,7 @@ const ProductDetails = () => {
             <label className="block font-medium">Phone Number</label>
             <input
               type="text"
-               value={data?.phone}
+              value={data?.phone}
               {...register("phone", { required: "Phone number is required" })}
               className="w-full border px-3 py-2 rounded"
             />
