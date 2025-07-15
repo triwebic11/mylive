@@ -3,6 +3,7 @@ const PackageRequest = require("../models/PackageRequest");
 const PackagesModel = require("../models/PackagesModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 // Referral Code Generator
 const generateReferralCode = async () => {
@@ -127,8 +128,7 @@ const registerUser = async (req, res) => {
             });
 
             console.log(
-              `✅ Upline ${uplineId} got ${point} points from generation ${
-                i + 1
+              `✅ Upline ${uplineId} got ${point} points from generation ${i + 1
               } based on child package`
             );
           } else {
@@ -328,13 +328,15 @@ const updateUserRole = async (req, res) => {
 };
 
 // Optional utility to generate summary from user
-const generateUserSummary = (user) => {
-  const outgoing = user.AllEntry?.outgoing || [];
+const generateUserSummary = (user, referredUsers = []) => {
+  console.log("Generating summary...");
+
+  const incoming = user.AllEntry?.incoming || [];
 
   const getSumBySector = (sectorName) => {
-    return outgoing
+    return incoming
       .filter((entry) => entry.sector === sectorName)
-      .reduce((sum, entry) => sum + (entry.pointGiven || 0), 0);
+      .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
   };
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
@@ -343,59 +345,132 @@ const generateUserSummary = (user) => {
   const megaCommission = getSumBySector("MegaCommission");
   const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
   const repurchaseCommission = getSumBySector("RepurchaseCommission");
-  const specialFund = getSumBySector("SpecialFund");
+  const specialFund = getSumBySector("Special Fund");
   const withdrawableBalance = getSumBySector("Withdrawable");
   const totalWithdraw = getSumBySector("Withdraw");
   const totalTDS = getSumBySector("TDS");
+  const carFund = getSumBySector("Car Fund");
+  const tourFund = getSumBySector("Travel Fund");
+  const homeFund = getSumBySector("House fund");
+  const lifetimeBonus = getSumBySector("All life fund");
+  const totalTeamSalePv = referredUsers.reduce((total, referredUser) => {
+    const referredIncoming = referredUser.AllEntry?.incoming || [];
+    return total + getSumBySector(referredIncoming, "ProductPurchase");
+  }, 0);
+
+  // ✅ Active & Free Team count
+  const currentDate = new Date();
+  const totalActiveTeam = referredUsers.filter(rUser =>
+    rUser.packageExpireDate && new Date(rUser.packageExpireDate) > currentDate
+  ).length;
+
+  const totalFreeTeam = referredUsers.length - totalActiveTeam;
+
+  // ✅ Filter incoming for previous month PV
+  const currentMonth = currentDate.getMonth();
+  const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1; // If Jan, then Dec (11)
+  const currentYear = currentDate.getFullYear();
+  const previousMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+  const previousMonthPv = incoming
+    .filter(entry => {
+      const date = new Date(entry.date);
+      return (
+        date.getMonth() === previousMonth &&
+        date.getFullYear() === previousMonthYear
+      );
+    })
+    .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+
+  // ✅ Current Month PV
+  const currentMonthPv = incoming
+    .filter(entry => {
+      const date = new Date(entry.date);
+      return (
+        date.getMonth() === currentMonth &&
+        date.getFullYear() === currentYear
+      );
+    })
+    .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+
+  const monthlyDownSalePv = previousMonthPv - currentMonthPv;
+  const getSumAmountBySector = (sectorName) => {
+    return incoming
+      .filter((entry) => entry.sector === sectorName)
+      .reduce((sum, entry) => sum + (entry.amount || 0), 0);
+  };
+  const totalPurchaseAmount = getSumAmountBySector("ProductPurchase");
+
+  const getSumPointBySectorInLastNDays = (sectorName, days) => {
+    const dateLimit = new Date();
+    dateLimit.setDate(dateLimit.getDate() - days);
+
+    return incoming
+      .filter((entry) =>
+        entry.sector === sectorName && new Date(entry.date) >= dateLimit
+      )
+      .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+  };
+
+  const currentPurchaseAmount = getSumPointBySectorInLastNDays("ProductPurchase", 10);
+
 
   return [
     { title: "Total Refer", value: user.referralTree?.length || 0 },
-    { title: "Total Free Team", value: 0 },
-    { title: "Total Active Team", value: 0 },
+    { title: "Total Free Team", value: totalFreeTeam },
+    { title: "Total Active Team", value: totalActiveTeam },
     {
       title: "Currently Expired",
       value: new Date(user.packageExpireDate) < new Date() ? 1 : 0,
     },
     { title: "Total Voucher", value: 0 },
-    { title: "Previous Month Pv", value: 0 },
+    { title: "Previous Month Pv", value: previousMonthPv },
     {
       title: "Current Month Pv",
-      value:
-        user.TargetPV?.reduce((sum, pv) => sum + (pv.currentMonthPV || 0), 0) ||
-        0,
+      value: currentMonthPv,
     },
-    { title: "Monthly down sale pv", value: 0 },
-    { title: "Total Team Sale Pv", value: 0 },
+    { title: "Monthly down sale pv", value: previousMonthPv >= currentMonthPv && monthlyDownSalePv },
+    { title: "Total Team Sale Pv", value: totalTeamSalePv },
     { title: "Total Team Member", value: user.referralTree?.length || 0 },
-    { title: "Current Purchase Amount", value: 0 },
-    { title: "Total Purchase Amount", value: 0 },
+    { title: "Current Purchase Amount", value: currentPurchaseAmount },
+    { title: "Total Purchase Amount", value: totalPurchaseAmount },
     { title: "Total Purchase Pv", value: productPurchasePoints },
     { title: "Refer Commission", value: referCommission },
     { title: "Generation Commission", value: generationCommission },
     { title: "Mega Commission", value: megaCommission },
     { title: "Repurchase Sponsor Bonus", value: repurchaseSponsorBonus },
-    { title: "Special Fund", value: specialFund },
+    { title: "Repurchase Commission", value: repurchaseCommission },
     { title: "Withdrawable Balance", value: withdrawableBalance },
     { title: "Total Withdraw", value: totalWithdraw },
-    { title: "Repurchase Commission", value: repurchaseCommission },
     { title: "Total TDS", value: totalTDS },
-    { title: "Car Fund", value: 0 },
-    { title: "Special Fund", value: 0 },
-    { title: "Tour Fund", value: 0 },
-    { title: "Home Fund", value: 0 },
+    { title: "Special Fund", value: specialFund },
+    { title: "Car Fund", value: carFund },
+    { title: "Tour Fund", value: tourFund },
+    { title: "Home Fund", value: homeFund },
+    { title: "Lifetime Bonus", value: lifetimeBonus },
   ];
 };
 
+
+
 const userAgregateData = async (req, res) => {
   try {
-    const { id } = req.params; // or req.body.id
+    const { id } = req.params;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid or missing user ID" });
+    }
+
     const user = await User.findById(id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    // Fetch referred users based on referralTree
+    const referredUsers = await User.find({
+      _id: { $in: user.referralTree || [] }
+    });
 
-    const summary = generateUserSummary(user);
+    const summary = generateUserSummary(user, referredUsers);
 
     res.status(200).json({
       success: true,
