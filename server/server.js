@@ -6,7 +6,8 @@ const connectDB = require("./config/db");
 require("dotenv").config();
 const cron = require("node-cron");
 const {
-  processMonthlyLevelCommissions,
+  // processMonthlyLevelCommissions,
+  processMonthlyUserRankAndFunds
 } = require("./utils/fullMonthlyLevelCommissionProcessor");
 const accountInfoRoutes = require("./routes/accountInfoRoutes");
 const withdrawRoutes = require("./routes/withdrawRequests");
@@ -44,7 +45,7 @@ app.use("/api/dsp", require("./routes/dspRoutes"));
 
 // cron.schedule("* * * * *", async () => {
 //   console.log("📆 Monthly commission running from server.js...");
-//   await processMonthlyLevelCommissions();
+//   await processMonthlyUserRankAndFunds();
 // });
 
 // Root route

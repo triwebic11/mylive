@@ -64,37 +64,7 @@ const FontDashboard = () => {
   const [data] = useUserById();
   const { user } = useAuth();
   const userId = user?.user?._id || "";
-  const stats = [
-    { title: "Total Refer", value: 0 },
-    { title: "Total Free Team", value: 0 },
-    { title: "Total Active Team", value: 0 },
-    { title: "Currently Expired", value: 0 },
-    { title: "Total Voucher", value: 0 },
-    { title: "Previous Month Pv", value: 0 },
-    { title: "Current Month Pv", value: 0 },
-    { title: "Monthly down sale pv", value: 0 },
-    { title: "Total Team Sale Pv", value: 0 },
-    { title: "Total Team Member", value: 0 },
-    { title: "Current Purchase Amount", value: 0 },
-    { title: "Total Purchase Amount", value: 0 },
-    { title: "Total Purchase Pv", value: 0 },
-    { title: "Refer Commission", value: 0 },
-    { title: "Generation Commission", value: 0 },
-    { title: "Mega Commission", value: 0 },
-    { title: "Repurchase Sponsor Bonus", value: 0 },
-    { title: "Special Fund", value: 0 },
-    { title: "Withdrawable Balance", value: 0 },
-    { title: "Total Withdraw", value: 0 },
-    { title: "Repurchase Commission", value: 0 },
-    { title: "Total TDS", value: 0 },
-  ];
-
-  const fundStats = [
-    { title: "Car Fund", value: 0 },
-    { title: "Special Fund", value: 0 },
-    { title: "Tour Fund", value: 0 },
-    { title: "Home Fund", value: 0 },
-  ];
+ 
   const [duration, setDuration] = useState("15s");
 
   const axiosPublic = useAxiosPublic();
@@ -169,17 +139,11 @@ const FontDashboard = () => {
         </div>
 
         {/* Scrolling Text */}
-        <div className="flex-1 overflow-hidden">
-          <div
-            className="whitespace-nowrap w-xl  font-bold text-xl text-black md:text-base"
-            style={{
-              animation: `slideNoticeText ${duration} linear infinite`,
-            }}
-          >
+        {/* <marquee>sdfsdfsdfsdfsdfsdfsdf</marquee> */}
+        <marquee className="flex-1 overflow-hidden font-semibold">
             SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে সনিবার
             ও রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন
-          </div>
-        </div>
+        </marquee>
       </div>
       <TopSlider />
 
@@ -221,7 +185,7 @@ const FontDashboard = () => {
                 <p className="text-gray-700">Package</p>
               </div>
               <div className="flex-1 border-l">
-                <p className="font-bold text-gray-800">None</p>
+                <p className="font-bold text-gray-800">{data?.Position}</p>
                 <p className="text-gray-700">Rank</p>
               </div>
             </div>
