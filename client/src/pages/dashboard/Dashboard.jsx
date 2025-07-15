@@ -54,6 +54,7 @@ const DspDashboard = [
 
 const adminDashboardArry = [
   { title: "All Users", link: "/dashboard/allUsers" },
+  { title: "All DSP Orders", link: "/dashboard/allDspOrders"},
   { title: "All Package Requester", link: "/dashboard/allPackageRequestUser" },
   { title: "All Withdrawal", link: "/dashboard/allWithdrawals" },
   { title: "Balance Conversion", link: "/dashboard/balanceConversion" },
