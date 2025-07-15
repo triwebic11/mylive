@@ -46,7 +46,7 @@ const dashboardArry = [
 
 const DspDashboard = [
   { title: "Profile", link: "/dashboard/dspprofile" },
-  { title: "All Orders", link: "/dashboard/allOrders" },
+  { title: "All User's Orders", link: "/dashboard/allOrders" },
   { title: "Order Now", link: "/dashboard/dspOrder" },
   { title: "My Order", link: "/dashboard/myOrders" },
   { title: "Kyc", link: "/dashboard/kyc" },
