@@ -53,6 +53,7 @@ const DspDashboard = [
 ];
 
 const adminDashboardArry = [
+   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
   { title: "All Users", link: "/dashboard/allUsers" },
   { title: "All DSP Orders", link: "/dashboard/allDspOrders" },
   { title: "All Package Requester", link: "/dashboard/allPackageRequestUser" },

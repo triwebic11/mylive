@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import useAgregate from "../../../Hooks/useAgregate";
+import useUserById from "../../../Hooks/useUserById";
 
 const StatementRow = ({ label, value, bold = false }) => (
     <div
@@ -36,6 +38,15 @@ export default function CommissionStatement({
     const todayStr = new Date().toISOString().split("T")[0];
     const [startDate, setStartDate] = useState(todayStr);
     const [endDate, setEndDate] = useState(todayStr);
+    const [data] = useUserById()
+    const [agregate,
+        isLoading,
+        isError,
+        error,
+        refetch] = useAgregate()
+        console.log("agreeeee", agregate)
+
+        const total = agregate?.summary.reduce((sum, item) => sum + item.value, 0);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -99,18 +110,17 @@ export default function CommissionStatement({
 
                 {/* Name & Rank */}
                 <div className="flex flex-col md:flex-row md:justify-between text-sm md:text-base">
-                    <span>Name: {statementData.name}</span>
-                    <span>Rank: {statementData.rank}</span>
+                    <span>Name: {data?.name}</span>
                 </div>
 
                 {/* Statement Table */}
                 <div>
                     <h3 className="font-semibold mb-2">Head</h3>
 
-                    {statementData.items.map((row) => (
+                    {agregate?.summary?.map((row) => (
                         <StatementRow
-                            key={row.label}
-                            label={row.label}
+                            key={row.title}
+                            label={row.title}
                             value={row.value}
                         />
                     ))}
@@ -120,18 +130,12 @@ export default function CommissionStatement({
 
                     <StatementRow
                         label="Total Commission"
-                        value={statementData.totalCommission}
+                        value={total}
                         bold
                     />
-                    <StatementRow label="TDS" value={statementData.tds} />
 
                     {/* Divider */}
                     <div className="border-t mt-4"></div>
-
-                    <StatementRow
-                        label={<span className="font-semibold">Net Payable</span>}
-                        value={<span className="font-semibold">{statementData.netPayable}</span>}
-                    />
                 </div>
             </div>
         </section>

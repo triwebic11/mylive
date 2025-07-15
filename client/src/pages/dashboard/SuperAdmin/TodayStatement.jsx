@@ -1,4 +1,8 @@
 import React from "react";
+import useAgregate from "../../../Hooks/useAgregate";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import useUserById from "../../../Hooks/useUserById";
+import { useQuery } from "@tanstack/react-query";
 
 const Row = ({ label, value }) => (
     <div className="flex items-center py-1 text-white">
@@ -8,16 +12,26 @@ const Row = ({ label, value }) => (
     </div>
 );
 
-export default function TodayStatement({
-    data = {
-        idActive: 0,
-        generationCommission: 0,
-        refCommission: 0,
-        megaGenerationCommission: 0,
-        repurchaseSponsorCommission: 0,
-        repurchaseValidity: "8d 23h 35m 41s",
+export default function TodayStatement() {
+    const axiosPublic = useAxiosPublic()
+    const [data] = useUserById()
+
+
+   
+  const {
+    data: agregate,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["agregate", data?._id],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
+      return res.data;
     },
-}) {
+  });
+  console.log("agretateee", agregate?.summary);
     return (
         <section className="w-full flex justify-center pt-10 pb-16 px-4 md:px-0">
             <div className="w-full max-w-md">
@@ -28,21 +42,13 @@ export default function TodayStatement({
 
                 {/* Card */}
                 <div className="rounded bg-teal-700 shadow-lg p-6">
-                    <Row label="ID Active" value={data.idActive} />
-                    <Row
-                        label="Generation Commission"
-                        value={data.generationCommission.toFixed(2)}
-                    />
-                    <Row label="Ref Commission" value={data.refCommission.toFixed(2)} />
-                    <Row
-                        label="Mega Generation Commission"
-                        value={data.megaGenerationCommission.toFixed(2)}
-                    />
-                    <Row
-                        label="Repurchase Sponsor Commission"
-                        value={data.repurchaseSponsorCommission.toFixed(2)}
-                    />
-                    <Row label="Repurchase Validity" value={data.repurchaseValidity} />
+                    {
+                        agregate?.summary?.map((item, idx)=>{
+                           return <Row label={item?.title} value={item.value} />
+                            
+                        })
+                    }
+                    
                 </div>
             </div>
         </section>

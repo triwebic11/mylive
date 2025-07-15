@@ -70,14 +70,18 @@ export default function ReferralLevelBadge({ userId }) {
     >
       <h1 className="text-xl font-bold mb-1 flex items-center gap-2">
         <span className="text-2xl">{current.emoji}</span>
-        Package: {userPackage.packageName}
+        Package: {userId.package}
       </h1>
       <h2 className="text-base sm:text-lg font-medium">
-        Referral Level:{" "}
+        Generation Level:{" "}
         <span className="font-bold">
-          {typeof current.level === "string"
-            ? current.level
-            : `${current.level} Generation`}
+           {userId.GenerationLevel} Generation
+        </span>
+      </h2>
+      <h2 className="text-base sm:text-lg font-medium">
+        Mega Generation Level:{" "}
+        <span className="font-bold">
+           {userId.MegaGenerationLevel} Generation
         </span>
       </h2>
     </div>
