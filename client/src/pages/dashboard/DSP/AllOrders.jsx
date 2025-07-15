@@ -152,6 +152,7 @@ const Orders = () => {
             <tr className="bg-gray-200 text-gray-700 text-sm text-left">
               <th className="px-4 py-2">Serial Number </th>
               <th className="px-4 py-2">Product Image </th>
+              <th className="px-4 py-2">Product Id</th>
               <th className="px-4 py-2">Price</th>
               <th className="px-4 py-2">Purchased On</th>
               <th className="px-4 py-2">Buyer Details</th>
@@ -171,7 +172,8 @@ const Orders = () => {
                   <td className="px-4 py-2">
                     <img src={order?.product.image} alt="" className="w-20" />
                   </td>
-                  <td className="px-4 py-2">{order?.product.totalPrice}</td>
+                  <td className="px-4 py-2">{order?.productId}</td>
+                  <td className="px-4 py-2">{order?.totalPrice}</td>
 
                   <td className="px-4 py-2">{order?.orderTime}</td>
 

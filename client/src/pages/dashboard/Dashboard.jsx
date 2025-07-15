@@ -54,7 +54,7 @@ const DspDashboard = [
 
 const adminDashboardArry = [
   { title: "All Users", link: "/dashboard/allUsers" },
-  { title: "All DSP Orders", link: "/dashboard/allDspOrders"},
+  { title: "All DSP Orders", link: "/dashboard/allDspOrders" },
   { title: "All Package Requester", link: "/dashboard/allPackageRequestUser" },
   { title: "All Withdrawal", link: "/dashboard/allWithdrawals" },
   { title: "Balance Conversion", link: "/dashboard/balanceConversion" },
@@ -115,8 +115,8 @@ const Dashboard = () => {
     role === "admin"
       ? adminDashboardArry
       : role === "dsp"
-        ? DspDashboard
-        : dashboardArry;
+      ? DspDashboard
+      : dashboardArry;
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
@@ -162,8 +162,9 @@ const Dashboard = () => {
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
           {role?.toUpperCase()} Dashboard
@@ -233,62 +234,67 @@ const Dashboard = () => {
         </h1>
         <nav className="flex flex-col gap-2">
           {newMenuArray.map((item, index) => (
-  <div key={index} className="hover:border-b hover:border-b-blue-500 rounded-lg">
-    {item.submenu ? (
-      <div
-        onClick={() => toggleDropdown(index)}
-        className="flex items-center justify-between px-3 py-2 font-bold text-lg duration-300 rounded-lg cursor-pointer hover:bg-gray-200"
-      >
-        <div className="flex items-center gap-2">
-          {item.icon && <span>{item.icon}</span>}
-          <span>{item.title}</span>
-        </div>
-        <span>
-          {openDropdown === index ? (
-            <IoChevronUp size={20} />
-          ) : (
-            <IoChevronDown size={20} />
-          )}
-        </span>
-      </div>
-    ) : (
-      <NavLink
-        to={item.link}
-        className={({ isActive }) =>
-          `flex items-center justify-between px-3 py-2 font-bold text-lg duration-300 rounded-lg cursor-pointer ${
-            isActive ? 'border-b-2 border-blue-500 bg-gray-100' : 'hover:bg-gray-200'
-          }`
-        }
-      >
-        <div className="flex items-center gap-2">
-          {item.icon && <span>{item.icon}</span>}
-          <span>{item.title}</span>
-        </div>
-      </NavLink>
-    )}
-
-    {item.submenu && openDropdown === index && (
-      <ul className="ml-4 flex flex-col gap-1 py-2">
-        {item.submenu.map((subItem, subIndex) => (
-          <li
-            key={subIndex}
-            className="text-base hover:border-b-2 hover:border-b-blue-500 duration-300 rounded-lg px-2 py-1"
-          >
-            <NavLink
-              to={subItem.link}
-              className={({ isActive }) =>
-                isActive ? 'text-blue-500 font-semibold' : ''
-              }
-              end
+            <div
+              key={index}
+              className="hover:border-b hover:border-b-blue-500 rounded-lg"
             >
-              {subItem.title}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
-))}
+              {item.submenu ? (
+                <div
+                  onClick={() => toggleDropdown(index)}
+                  className="flex items-center justify-between px-3 py-2 font-bold text-lg duration-300 rounded-lg cursor-pointer hover:bg-gray-200"
+                >
+                  <div className="flex items-center gap-2">
+                    {item.icon && <span>{item.icon}</span>}
+                    <span>{item.title}</span>
+                  </div>
+                  <span>
+                    {openDropdown === index ? (
+                      <IoChevronUp size={20} />
+                    ) : (
+                      <IoChevronDown size={20} />
+                    )}
+                  </span>
+                </div>
+              ) : (
+                <NavLink
+                  to={item.link}
+                  className={({ isActive }) =>
+                    `flex items-center justify-between px-3 py-2 font-bold text-lg duration-300 rounded-lg cursor-pointer ${
+                      isActive
+                        ? "border-b-2 border-blue-500 bg-gray-100"
+                        : "hover:bg-gray-200"
+                    }`
+                  }
+                >
+                  <div className="flex items-center gap-2">
+                    {item.icon && <span>{item.icon}</span>}
+                    <span>{item.title}</span>
+                  </div>
+                </NavLink>
+              )}
+
+              {item.submenu && openDropdown === index && (
+                <ul className="ml-4 flex flex-col gap-1 py-2">
+                  {item.submenu.map((subItem, subIndex) => (
+                    <li
+                      key={subIndex}
+                      className="text-base hover:border-b-2 hover:border-b-blue-500 duration-300 rounded-lg px-2 py-1"
+                    >
+                      <NavLink
+                        to={subItem.link}
+                        className={({ isActive }) =>
+                          isActive ? "text-blue-500 font-semibold" : ""
+                        }
+                        end
+                      >
+                        {subItem.title}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
 
           <button
             onClick={handleLogout}

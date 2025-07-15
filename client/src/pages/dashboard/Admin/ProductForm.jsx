@@ -219,7 +219,7 @@ const ProductForm = ({
         <label className="block mb-1 font-semibold">Product Id</label>
         <input
           type="number"
-          {...register("Product Id", { required: true })}
+          {...register("productId", { required: true })}
           className="w-full border p-2 rounded"
         />
       </div>

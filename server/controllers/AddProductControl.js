@@ -4,9 +4,9 @@ const Product = require("../models/AddProduct");
 // Create Product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, image, details, price, pointValue } = req.body;
+    const { name, image, details, price, pointValue, productId } = req.body;
 
-    if (!name || !image || !details || !price || !pointValue) {
+    if (!name || !image || !details || !price || !pointValue || !productId) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -16,6 +16,7 @@ exports.createProduct = async (req, res) => {
       details,
       price,
       pointValue,
+      productId,
     });
 
     await newProduct.save();
@@ -47,16 +48,16 @@ exports.updateProduct = async (req, res) => {
     });
 
     if (!updatedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
     res.json({
-      message: 'Product updated successfully',
+      message: "Product updated successfully",
       product: updatedProduct,
     });
   } catch (error) {
-    console.error('Patch update failed:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error("Patch update failed:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -67,12 +68,12 @@ exports.deleteProduct = async (req, res) => {
     const deleted = await Product.findByIdAndDelete(id);
 
     if (!deleted) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    res.json({ message: 'Product deleted successfully', product: deleted });
+    res.json({ message: "Product deleted successfully", product: deleted });
   } catch (error) {
-    console.error('Delete error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error("Delete error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
