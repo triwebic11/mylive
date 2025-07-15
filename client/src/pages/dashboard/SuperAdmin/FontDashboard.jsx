@@ -140,17 +140,10 @@ const FontDashboard = () => {
 
         {/* Scrolling Text */}
         {/* <marquee>sdfsdfsdfsdfsdfsdfsdf</marquee> */}
-        <div className="flex-1 overflow-hidden">
-          <div
-            className="whitespace-nowrap w-xl  font-bold text-xl text-black md:text-base"
-            style={{
-              animation: `slideNoticeText ${duration} linear infinite`,
-            }}
-          >
+        <marquee className="flex-1 overflow-hidden font-semibold">
             SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে সনিবার
             ও রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন
-          </div>
-        </div>
+        </marquee>
       </div>
       <TopSlider />
 
