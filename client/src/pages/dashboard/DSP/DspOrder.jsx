@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
-import axios from "axios";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 const DspOrder = () => {
   const { user } = useAuth(); // get name, phone from logged-in user
+  const axiosSecure = useAxiosSecure();
   console.log("DSP user - ", user);
   const [form, setForm] = useState({
     name: user?.user?.name || "",
@@ -23,9 +23,15 @@ const DspOrder = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const orderData = { ...form, dspUser: user._id };
-    const res = await useAxiosSecure.post("/api/orders", orderData);
-    alert("Order Created!");
-    setForm({ ...form, productId: "", quantity: 1 });
+
+    try {
+      await axiosSecure.post("/dsp", orderData); // ✅ use secure
+      alert("✅ Order placed successfully!");
+      setForm({ ...form, productId: "", quantity: 1 });
+    } catch (error) {
+      console.error(error);
+      alert("❌ Failed to place order.");
+    }
   };
 
   return (
