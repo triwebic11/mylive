@@ -63,6 +63,7 @@ import DspOrder from "./pages/dashboard/DSP/DspOrder.jsx";
 import DspProfile from "./pages/dashboard/DSP/DspProfile.jsx";
 import MyDspOrders from "./pages/dashboard/DSP/MyDspOrders.jsx";
 import DspAllOrders from "./pages/dashboard/Admin/DspAllOrders.jsx";
+import MyOrders from "./pages/dashboard/user/MyOrder.jsx";
 
 const queryClients = new QueryClient();
 
@@ -105,9 +106,18 @@ const router = createBrowserRouter([
     path: "dashboard",
     element: <Dashboard />,
     children: [
-      { index: true, element: <FontDashboard /> },
+      // { index: true, element: <FontDashboard /> },
       {
         path: "/dashboard/leaderboard",
+        index: true,
+        element: (
+          <PrivetRouter>
+            <FontDashboard />
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/leaderboardAdmin",
         index: true,
         element: (
           <PrivetRouter>
@@ -424,7 +434,7 @@ const router = createBrowserRouter([
         element: (
           <PrivetRouter>
             <UserRoute>
-              <Voucher />
+              <MyOrders />
             </UserRoute>
           </PrivetRouter>
         ),

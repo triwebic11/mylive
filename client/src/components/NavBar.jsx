@@ -4,6 +4,7 @@ import logo from "../assets/logo.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAuth from "../Hooks/useAuth";
+import useRole from "../Hooks/useRole";
 
 const menuItems = [
   { label: "Home", path: "/" },
@@ -37,6 +38,9 @@ function NavBar() {
   const [isProductsOpen, setProductsOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(null);
+  const { role, isLoading } = useRole()
+
+  console.log("rooooooooooooole", role)
 
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
@@ -111,8 +115,12 @@ function NavBar() {
           {/* Auth Buttons */}
           {user ? (
             <>
-              <Link to="/dashboard" className="hover:text-blue-600">
-                Dashboard
+               <Link
+                to={role === "admin" ? "/dashboard/leaderboardAdmin" : "/dashboard/leaderboard"}
+                className="block py-1 text-sm"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {role === "admin" ? "Dashboard" : "Dashboard"}
               </Link>
               <button onClick={handleLogout} className="hover:text-blue-600">
                 Logout
@@ -207,13 +215,16 @@ function NavBar() {
         <div className="pt-3 border-t mt-2">
           {user ? (
             <>
+
               <Link
-                to="/dashboard"
+                to={role === "admin" ? "/dashboard/leaderboardAdmin" : "/dashboard/leaderboard"}
                 className="block py-1 text-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Dashboard
+                {role === "admin" ? "Dashboard" : "userDashboard"}
               </Link>
+
+
               <button
                 onClick={() => {
                   handleLogout();

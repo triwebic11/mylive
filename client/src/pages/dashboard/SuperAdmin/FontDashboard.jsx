@@ -161,7 +161,7 @@ const FontDashboard = () => {
         </p> */}
       </header>
 
-      <ReferralLevelBadge userId={userId} />
+      <ReferralLevelBadge userId={data} />
       <div className="w-full mx-auto p-2 space-y-4">
         {/* Header Bar */}
         <div className="bg-pink-600 text-white flex justify-between items-center px-4 py-2 rounded-md">
