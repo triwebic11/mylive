@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { logo } from "../../assets";
 import { MdOutlineShoppingBag, MdMenu } from "react-icons/md";
 import { CiHome } from "react-icons/ci";
@@ -38,7 +38,7 @@ const dashboardArry = [
   { title: "Voucher", link: "/dashboard/voucher" },
   { title: "Withdraw", link: "/dashboard/withdraw" },
   { title: "My Order", link: "/dashboard/my-order" },
-  { title: "Package Update", link: "/dashboard" },
+  // { title: "Package Update", link: "/dashboard" },
   { title: "Support", link: "/dashboard/support" },
   { title: "Kyc", link: "/dashboard/kyc" },
   { title: "Update Password", link: "/dashboard/update-password" },
@@ -115,8 +115,8 @@ const Dashboard = () => {
     role === "admin"
       ? adminDashboardArry
       : role === "dsp"
-      ? DspDashboard
-      : dashboardArry;
+        ? DspDashboard
+        : dashboardArry;
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
@@ -162,9 +162,8 @@ const Dashboard = () => {
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
           {role?.toUpperCase()} Dashboard
@@ -173,7 +172,7 @@ const Dashboard = () => {
           {newMenuArray.map((item, index) => (
             <div key={index}>
               <div
-                className="flex justify-between items-center font-semibold py-2 px-2 hover:bg-gray-100 rounded cursor-pointer"
+                className="flex justify-between items-center font-semibold py-2 px-2 hover: rounded cursor-pointer"
                 onClick={() =>
                   item.submenu
                     ? toggleDropdown(index)
@@ -229,46 +228,67 @@ const Dashboard = () => {
         <Link to="/" className="block mb-6">
           <img src={logo} alt="Logo" className="w-32" />
         </Link>
-        <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
+        <h1 className="text-center py-2  border-blue-500 rounded-lg mb-2 shadow-md">
           {role?.toUpperCase()} Dashboard
         </h1>
         <nav className="flex flex-col gap-2">
           {newMenuArray.map((item, index) => (
-            <div key={index} className="bg-blue-100 rounded-lg">
-              <div
-                className="flex items-center justify-between px-3 py-2 font-bold text-lg hover:bg-gray-200 duration-300 rounded-lg cursor-pointer"
-                onClick={() =>
-                  item.submenu ? toggleDropdown(index) : navigate(item.link)
-                }
-              >
-                <div className="flex items-center gap-2">
-                  {item.icon && <span>{item.icon}</span>}
-                  <span>{item.title}</span>
-                </div>
-                {item.submenu && (
-                  <span>
-                    {openDropdown === index ? (
-                      <IoChevronUp size={20} />
-                    ) : (
-                      <IoChevronDown size={20} />
-                    )}
-                  </span>
-                )}
-              </div>
-              {item.submenu && openDropdown === index && (
-                <ul className="ml-4 flex flex-col gap-1 py-2">
-                  {item.submenu.map((subItem, subIndex) => (
-                    <li
-                      key={subIndex}
-                      className="text-base hover:bg-gray-200 duration-300 rounded-lg px-2 py-1"
-                    >
-                      <Link to={subItem.link}>{subItem.title}</Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
+  <div key={index} className="hover:border-b hover:border-b-blue-500 rounded-lg">
+    {item.submenu ? (
+      <div
+        onClick={() => toggleDropdown(index)}
+        className="flex items-center justify-between px-3 py-2 font-bold text-lg duration-300 rounded-lg cursor-pointer hover:bg-gray-200"
+      >
+        <div className="flex items-center gap-2">
+          {item.icon && <span>{item.icon}</span>}
+          <span>{item.title}</span>
+        </div>
+        <span>
+          {openDropdown === index ? (
+            <IoChevronUp size={20} />
+          ) : (
+            <IoChevronDown size={20} />
+          )}
+        </span>
+      </div>
+    ) : (
+      <NavLink
+        to={item.link}
+        className={({ isActive }) =>
+          `flex items-center justify-between px-3 py-2 font-bold text-lg duration-300 rounded-lg cursor-pointer ${
+            isActive ? 'border-b-2 border-blue-500 bg-gray-100' : 'hover:bg-gray-200'
+          }`
+        }
+      >
+        <div className="flex items-center gap-2">
+          {item.icon && <span>{item.icon}</span>}
+          <span>{item.title}</span>
+        </div>
+      </NavLink>
+    )}
+
+    {item.submenu && openDropdown === index && (
+      <ul className="ml-4 flex flex-col gap-1 py-2">
+        {item.submenu.map((subItem, subIndex) => (
+          <li
+            key={subIndex}
+            className="text-base hover:border-b-2 hover:border-b-blue-500 duration-300 rounded-lg px-2 py-1"
+          >
+            <NavLink
+              to={subItem.link}
+              className={({ isActive }) =>
+                isActive ? 'text-blue-500 font-semibold' : ''
+              }
+              end
+            >
+              {subItem.title}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+))}
 
           <button
             onClick={handleLogout}
