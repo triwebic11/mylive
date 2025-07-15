@@ -1,3 +1,11 @@
+// import React from "react";
+
+// const AllOrders = () => {
+//   return <div>AllOrders</div>;
+// };
+
+// export default AllOrders;
+
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
@@ -77,7 +85,7 @@ const Orders = () => {
     // Filter by order ID
     if (searchId) {
       filtered = filtered.filter((order) =>
-        order._id.toLowerCase().includes(searchId.toLowerCase())
+        order?.address.toLowerCase().includes(searchId.toLowerCase())
       );
     }
 
@@ -108,7 +116,7 @@ const Orders = () => {
       <div className="flex flex-wrap gap-4 mb-6 items-end">
         <input
           type="text"
-          placeholder="Autoincrement ID"
+          placeholder="Search by user Address"
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md w-48"

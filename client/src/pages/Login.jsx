@@ -61,7 +61,7 @@ const Login = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Phone Number</label>
+          <label className="block mb-1 font-medium">Phone Number / User ID</label>
           <input
             type="text"
             {...register("phone", { required: "Phone is required" })}

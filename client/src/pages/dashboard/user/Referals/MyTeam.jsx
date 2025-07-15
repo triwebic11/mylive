@@ -39,7 +39,7 @@ const Dashboard = () => {
       </div>
 
       {/* Upline Tree */}
-      <div className="bg-white shadow rounded-2xl p-6 mb-6">
+      {/* <div className="bg-white shadow rounded-2xl p-6 mb-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-3">
           📚 Referral Upline Tree
         </h3>
@@ -54,10 +54,10 @@ const Dashboard = () => {
             ))}
           </ol>
         )}
-      </div>
+      </div> */}
 
       {/* Profile Info */}
-      <div className="bg-white shadow rounded-2xl p-6">
+      {/* <div className="bg-white shadow rounded-2xl p-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-3">
           📝 Your Profile Info
         </h3>
@@ -70,7 +70,7 @@ const Dashboard = () => {
         <p className="text-sm text-gray-600">
           <strong>Referral Code:</strong> {referralCode}
         </p>
-      </div>
+      </div> */}
       <div className="bg-white shadow rounded-2xl p-6 mt-6">
         <p className="text-2xl text-green-600 font-bold">
           <BalanceConversion userId={userId} />

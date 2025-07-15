@@ -57,6 +57,12 @@ import SocialLink from "./pages/SocialLink.jsx";
 import AdminKycList from "./components/AdminKycList.jsx";
 import OurProducts from "./components/OurProducts.jsx";
 
+import DspRoute from "./Routes/DspRoute.jsx";
+import AllOrders from "./pages/dashboard/DSP/AllOrders.jsx";
+import DspOrder from "./pages/dashboard/DSP/DspOrder.jsx";
+import DspProfile from "./pages/dashboard/DSP/DspProfile.jsx";
+import MyDspOrders from "./pages/dashboard/DSP/MyDspOrders.jsx";
+
 const queryClients = new QueryClient();
 
 const Layout = () => {
@@ -95,7 +101,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/dashboard",
+    path: "dashboard",
     element: <Dashboard />,
     children: [
       { index: true, element: <FontDashboard /> },
@@ -229,6 +235,58 @@ const router = createBrowserRouter([
         ),
       },
 
+      //-------- dsp routessss--------
+      {
+        path: "/dashboard/allOrders",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <AllOrders />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/dspprofile",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <DspProfile />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/dspOrder",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <DspOrder />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/myOrders",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <MyDspOrders />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/kyc",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <Kyc />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+
       //-------- user routessss--------
       {
         path: "/dashboard/marketPlace",
@@ -240,7 +298,7 @@ const router = createBrowserRouter([
           </PrivetRouter>
         ),
       },
-        {
+      {
         path: "/dashboard/userPackages",
         element: (
           <PrivetRouter>
