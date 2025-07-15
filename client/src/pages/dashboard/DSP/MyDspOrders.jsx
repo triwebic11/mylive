@@ -5,28 +5,40 @@ import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const MyDspOrders = () => {
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const [orders, setOrders] = useState([]);
   const [filters, setFilters] = useState({ productId: "", date: "" });
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await useAxiosSecure.get(`/orders/user/${user._id}`);
+      const res = await axiosSecure.get(`/dsp/user/${user?.user?._id}`);
       setOrders(res.data);
     };
     fetch();
   }, [user]);
 
-  const filteredOrders = orders.filter(
-    (o) =>
-      o.productId.includes(filters.productId) &&
-      (filters.date === "" ||
-        new Date(o.orderDate).toISOString().slice(0, 10) === filters.date)
-  );
+  const filteredOrders = orders.filter((o) => {
+    const orderDate = new Date(o.orderDate);
+    const orderDateStr = orderDate.toISOString().slice(0, 10); // YYYY-MM-DD
+    const orderMonthStr = `${orderDate.getFullYear()}-${String(
+      orderDate.getMonth() + 1
+    ).padStart(2, "0")}`; // YYYY-MM
+
+    const filter = filters.date;
+    const type = filters.dateType || "month"; // default to month
+
+    const dateMatch =
+      filter === "" ||
+      (type === "day" && orderDateStr === filter) ||
+      (type === "month" && orderMonthStr === filter);
+
+    return o.productId.includes(filters.productId) && dateMatch;
+  });
 
   return (
     <div className="p-6 bg-white rounded-2xl shadow-lg">
       <h2 className="text-2xl font-semibold text-gray-800 mb-5 border-b pb-2">
-        📦 My Orders
+        My Orders
       </h2>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -36,12 +48,22 @@ const MyDspOrders = () => {
           onChange={(e) =>
             setFilters({ ...filters, productId: e.target.value })
           }
-          className="input input-bordered w-full sm:w-1/2"
+          className="input border border-gray-800 rounded-lg  w-full sm:w-1/3 p-1"
         />
+
+        <select
+          className="input border border-gray-800 rounded-lg w-full sm:w-1/3 p-1"
+          onChange={(e) => setFilters({ ...filters, dateType: e.target.value })}
+          value={filters.dateType}
+        >
+          <option value="day">Filter by Day</option>
+          <option value="month">Filter by Month</option>
+        </select>
+
         <input
-          type="date"
+          type={filters.dateType === "day" ? "date" : "month"}
           onChange={(e) => setFilters({ ...filters, date: e.target.value })}
-          className="input input-bordered w-full sm:w-1/2"
+          className="input border border-gray-800 rounded-lg w-full sm:w-1/3 p-1"
         />
       </div>
 
@@ -49,10 +71,10 @@ const MyDspOrders = () => {
         <table className="table w-full border border-gray-200">
           <thead>
             <tr className="bg-gray-100 text-gray-700 text-sm">
-              <th className="px-4 py-3 text-left border-b">📦 Product</th>
-              <th className="px-4 py-3 text-left border-b">🔢 Qty</th>
-              <th className="px-4 py-3 text-left border-b">📋 Status</th>
-              <th className="px-4 py-3 text-left border-b">📅 Date</th>
+              <th className="px-4 py-3 text-left border-b"> Product ID</th>
+              <th className="px-4 py-3 text-left border-b">Qty</th>
+              <th className="px-4 py-3 text-left border-b">Status</th>
+              <th className="px-4 py-3 text-left border-b">Date</th>
             </tr>
           </thead>
           <tbody>

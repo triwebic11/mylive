@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import Swal from "sweetalert2";
 
 const DspOrder = () => {
   const { user } = useAuth(); // get name, phone from logged-in user
@@ -10,7 +10,7 @@ const DspOrder = () => {
   console.log("DSP user - ", user);
   const [form, setForm] = useState({
     name: user?.user?.name || "",
-    phone: user?.user?.email || "",
+    phone: user?.user?.phone || "",
     productId: "",
     quantity: 1,
   });
@@ -22,11 +22,16 @@ const DspOrder = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const orderData = { ...form, dspUser: user._id };
+    const orderData = { ...form, dspUser: user?.user?._id };
 
     try {
       await axiosSecure.post("/dsp", orderData); // ✅ use secure
-      alert("✅ Order placed successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Your Order Successful",
+        showConfirmButton: false,
+        timer: 1000,
+      });
       setForm({ ...form, productId: "", quantity: 1 });
     } catch (error) {
       console.error(error);
@@ -62,7 +67,7 @@ const DspOrder = () => {
         <input
           name="phone"
           value={form.phone}
-          disabled
+          onChange={handleChange}
           className="w-full mt-1 px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
