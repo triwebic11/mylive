@@ -1,21 +1,22 @@
 import React from "react";
 import useUserById from "../../../../Hooks/useUserById";
+import moment from 'moment';
 
 const Transactions = () => {
   const [data] = useUserById()
- 
-  const totalOutgoingPoints = data?.AllEntry?.incoming?.reduce(
-  (sum, entry) => sum + (entry?.pointGiven || 0),
-  0
-);
- const wallets = [
-    { name: "PV Wallet", amount: totalOutgoingPoints || "0.00" },
-    { name: "Commission Wallet", amount: "0.00" },
-    { name: "Travel Fund Wallet", amount: "0.00" },
-    { name: "Car Fund Wallet", amount: "0.00" },
-    { name: "Purchase Wallet", amount: "0.00" },
-  ];
-  
+
+  //   const totalOutgoingPoints = data?.AllEntry?.incoming?.reduce(
+  //   (sum, entry) => sum + (entry?.pointGiven || 0),
+  //   0
+  // );
+  //  const wallets = [
+  //     { name: "PV Wallet", amount: totalOutgoingPoints || "0.00" },
+  //     { name: "Commission Wallet", amount: "0.00" },
+  //     { name: "Travel Fund Wallet", amount: "0.00" },
+  //     { name: "Car Fund Wallet", amount: "0.00" },
+  //     { name: "Purchase Wallet", amount: "0.00" },
+  //   ];
+
 
   // console.log('dataaaaaaaa',data?.AllEntry?.outgoing)
 
@@ -26,44 +27,52 @@ const Transactions = () => {
       </h2>
 
       <div className="wallet-summary">
-        {wallets.map((wallet, idx) => (
-          <div key={idx} className="wallet-box">
-            <h4>{wallet.name}</h4>
-            <p>{wallet.amount}</p>
-          </div>
-        ))}
+
+        <div className="wallet-box">
+          <h4>Total Points</h4>
+          <p>{data?.points}</p>
+        </div>
+
       </div>
 
       <div className="transaction-list">
         <h1 className="bg-blue-500 text-white p-2 rounded-md">Your All Points</h1>
         {
           data?.AllEntry?.incoming?.length == 0 && <>
-          
-         <p> Not Entrys</p>
-          </> 
+
+            <p> Not Entrys</p>
+          </>
         }
-        {data?.AllEntry?.incoming?.map((item, idx) => (
-          <div key={idx} className="transaction">
-            
-            <div className="left">
-              <img
-                src="https://img.icons8.com/color/48/000000/download.png"
-                alt="icon"
-                className=""
-              />
-              <div className="details">
-                <p>Sector : {item?.sector || 'Not Define'}</p>
-                <p>Point : {item?.pointGiven || 0} </p>
-                <p>Name : {item?.name || 0} </p>
+        {[...(data?.AllEntry?.incoming || [])]
+          .reverse()
+          .map((item, idx) => (
+            <div key={idx} className="transaction">
+
+              <div className="left">
+              
+                <img
+                  src="https://img.icons8.com/color/48/000000/download.png"
+                  alt="icon"
+                  className=""
+                />
+        
+
+                <div className="details">
+                  <p>Sector : {item?.sector || 'Not Define'}</p>
+                  <p>Point : {item?.pointReceived || 0} </p>
+                  <p>Name : {item?.name || 0} </p>
+                  <p>Date : {moment(item?.date).local().format('MMMM Do YYYY, h:mm A')} </p>
+                </div>
               </div>
+              {/* <div className="amount">{item?.amount}</div> */}
             </div>
-            {/* <div className="amount">{item?.amount}</div> */}
-          </div>
-        ))}
+          ))}
       </div>
       <div className="transaction-list">
         <h1 className="bg-blue-500 text-white p-2 rounded-md">All Outgoing Point</h1>
-        {data?.AllEntry?.outgoing?.map((item, idx) => (
+        {[...(data?.AllEntry?.outgoing || [])]
+          .reverse()
+          .map((item, idx) => (
           <div key={idx} className="transaction">
             <div className="left">
               <img
@@ -75,6 +84,7 @@ const Transactions = () => {
                 <p>Sector : {item?.sector || 'Not Define'}</p>
                 <p>Point : {item?.pointGiven || 0} </p>
                 <p>Name : {item?.name || 0} </p>
+                <p>Date : {moment(item?.date).local().format('MMMM Do YYYY, h:mm A')} </p>
               </div>
             </div>
             {/* <div className="amount">{item?.amount}</div> */}

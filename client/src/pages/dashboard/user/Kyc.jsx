@@ -5,6 +5,8 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAuth from "../../../Hooks/useAuth";
 import useKycStatus from "../../../components/useKycStatus";
+import useRole from "../../../Hooks/useRole";
+
 // Cloudinary credentials
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dlmbqhvnm/image/upload";
 const UPLOAD_PRESET = "SHSLIRA";
@@ -17,6 +19,7 @@ const Kyc = () => {
   const [backImage, setBackImage] = useState("");
   const axiosSecure = useAxiosSecure();
   const kycStatus = useKycStatus();
+  const role = useRole();
   console.log("your kyc status - ", kycStatus); // Custom hook to get KYC status
 
   // Front image upload handler
@@ -73,7 +76,11 @@ const Kyc = () => {
 
   return (
     <>
-      <div className="px-6 py-4">
+      <div
+        className={`px-6 py-4 ${
+          role === "dsp" ? "bg-purple-600 text-white" : ""
+        }`}
+      >
         <h1 className="text-2xl font-bold text-center mb-4">KYC Status</h1>
         <div className="flex justify-center">
           {kycStatus === "verified" ? (

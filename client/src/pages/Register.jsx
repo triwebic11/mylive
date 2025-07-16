@@ -59,7 +59,7 @@ const Register = () => {
 
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
-        _id: res.data.userId,
+        // _id: res.data.userId,
       };
       localStorage.setItem("user", JSON.stringify(userData));
       setUserReferralCode(res.data.referralCode);
@@ -95,7 +95,7 @@ const Register = () => {
         className="w-full max-w-3xl bg-white p-6 rounded-md shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4"
       >
         <div>
-          <label>Full Name*</label>
+          <label>Full Name / User ID*</label>
           <input
             name="name"
             value={form.name}

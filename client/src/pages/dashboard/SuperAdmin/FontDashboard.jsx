@@ -3,7 +3,8 @@ import useUserById from "../../../Hooks/useUserById";
 import { banner1, banner2 } from "../../../assets";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 import useAuth from "../../../Hooks/useAuth";
-import { FaArrowRight } from "react-icons/fa"; // 
+
+import { FaArrowRight } from "react-icons/fa"; //
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 
@@ -27,10 +28,8 @@ const DashboardCard = ({ title, value }) => (
   </div>
 );
 
-
-
 const TopSlider = () => {
-  const images = [banner1, banner2, banner2, banner1,];
+  const images = [banner1, banner2, banner2, banner1];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -61,56 +60,29 @@ const TopSlider = () => {
   );
 };
 
-
-
 const FontDashboard = () => {
   const [data] = useUserById();
   const { user } = useAuth();
   const userId = user?.user?._id || "";
-  const stats = [
-    { title: "Total Refer", value: 0 },
-    { title: "Total Free Team", value: 0 },
-    { title: "Total Active Team", value: 0 },
-    { title: "Currently Expired", value: 0 },
-    { title: "Total Voucher", value: 0 },
-    { title: "Previous Month Pv", value: 0 },
-    { title: "Current Month Pv", value: 0 },
-    { title: "Monthly down sale pv", value: 0 },
-    { title: "Total Team Sale Pv", value: 0 },
-    { title: "Total Team Member", value: 0 },
-    { title: "Current Purchase Amount", value: 0 },
-    { title: "Total Purchase Amount", value: 0 },
-    { title: "Total Purchase Pv", value: 0 },
-    { title: "Refer Commission", value: 0 },
-    { title: "Generation Commission", value: 0 },
-    { title: "Mega Commission", value: 0 },
-    { title: "Repurchase Sponsor Bonus", value: 0 },
-    { title: "Special Fund", value: 0 },
-    { title: "Withdrawable Balance", value: 0 },
-    { title: "Total Withdraw", value: 0 },
-    { title: "Repurchase Commission", value: 0 },
-    { title: "Total TDS", value: 0 },
-  ];
 
-  const fundStats = [
-    { title: "Car Fund", value: 0 },
-    { title: "Special Fund", value: 0 },
-    { title: "Tour Fund", value: 0 },
-    { title: "Home Fund", value: 0 },
-  ];
   const [duration, setDuration] = useState("15s");
 
+  const axiosPublic = useAxiosPublic();
 
-  const axiosPublic = useAxiosPublic()
-
-  const { data: agregate, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['agregate', data?._id],
+  const {
+    data: agregate,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["agregate", data?._id],
     queryFn: async () => {
       const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
       return res.data;
     },
   });
-  console.log('agretateee', agregate)
+  console.log("agretateee", agregate);
 
   useEffect(() => {
     const updateDuration = () => {
@@ -123,9 +95,7 @@ const FontDashboard = () => {
     return () => window.removeEventListener("resize", updateDuration);
   }, []);
 
-  const {
-    data: orders,
-  } = useQuery({
+  const { data: orders } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       try {
@@ -141,13 +111,13 @@ const FontDashboard = () => {
     (order) => order?.userId === data?._id
   );
   const shippedProductsArry = userProductsArry?.filter(
-    (order) => order?.status === 'shipped'
+    (order) => order?.status === "shipped"
   );
   const pendingProductsArry = userProductsArry?.filter(
-    (order) => order?.status === 'pending'
+    (order) => order?.status === "pending"
   );
 
-  console.log(userProductsArry)
+  console.log(userProductsArry);
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">
@@ -169,16 +139,11 @@ const FontDashboard = () => {
         </div>
 
         {/* Scrolling Text */}
-        <div className="flex-1 overflow-hidden">
-          <div
-            className="whitespace-nowrap font-bold text-xl text-black md:text-base"
-            style={{
-              animation: `slideNoticeText ${duration} linear infinite`,
-            }}
-          >
-            Welcome to SHS Lira Enterprise Ltd.
-          </div>
-        </div>
+        {/* <marquee>sdfsdfsdfsdfsdfsdfsdf</marquee> */}
+        <marquee className="flex-1 overflow-hidden font-semibold text-pink-600">
+          SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে সনিবার
+          ও রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন
+        </marquee>
       </div>
       <TopSlider />
 
@@ -196,7 +161,7 @@ const FontDashboard = () => {
         </p> */}
       </header>
 
-      <ReferralLevelBadge userId={userId} />
+      <ReferralLevelBadge userId={data} />
       <div className="w-full mx-auto p-2 space-y-4">
         {/* Header Bar */}
         <div className="bg-pink-600 text-white flex justify-between items-center px-4 py-2 rounded-md">
@@ -220,7 +185,7 @@ const FontDashboard = () => {
                 <p className="text-gray-700">Package</p>
               </div>
               <div className="flex-1 border-l">
-                <p className="font-bold text-gray-800">None</p>
+                <p className="font-bold text-gray-800">{data?.Position}</p>
                 <p className="text-gray-700">Rank</p>
               </div>
             </div>
@@ -229,18 +194,26 @@ const FontDashboard = () => {
           {/* Order Card */}
           <div className="md:w-1/2">
             <div className="bg-white shadow-black/80 shadow-sm rounded-md p-2 text-center text-sm h-28  ">
-              <h3 className="text-purple-700 font-bold text-base mb-2">Order</h3>
+              <h3 className="text-purple-700 font-bold text-base mb-2">
+                Order
+              </h3>
               <div className="flex justify-between items-center">
                 <div className="flex-1">
-                  <p className="font-bold text-gray-900">{userProductsArry?.length}</p>
+                  <p className="font-bold text-gray-900">
+                    {userProductsArry?.length}
+                  </p>
                   <p className="text-gray-700">Total</p>
                 </div>
                 <div className="flex-1 border-l">
-                  <p className="font-bold text-gray-900">{shippedProductsArry?.length}</p>
+                  <p className="font-bold text-gray-900">
+                    {shippedProductsArry?.length}
+                  </p>
                   <p className="text-gray-700">Approved</p>
                 </div>
                 <div className="flex-1 border-l">
-                  <p className="font-bold text-gray-900">{pendingProductsArry?.length}</p>
+                  <p className="font-bold text-gray-900">
+                    {pendingProductsArry?.length}
+                  </p>
                   <p className="text-gray-700">Pending</p>
                 </div>
               </div>
@@ -255,12 +228,12 @@ const FontDashboard = () => {
         ))}
       </div>
 
-      <h2 className="text-xl font-bold mt-10 mb-4 text-purple-700">Fund</h2>
+      {/* <h2 className="text-xl font-bold mt-10 mb-4 text-purple-700">Fund</h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {fundStats.map((stat, idx) => (
           <DashboardCard key={idx} title={stat.title} value={stat.value} />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

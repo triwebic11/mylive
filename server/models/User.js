@@ -149,8 +149,25 @@
 
 const mongoose = require("mongoose");
 
+const entrySchema = new mongoose.Schema(
+  {
+    fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    name: String,
+    email: String,
+    sector: String,
+    product: String,
+    pointReceived: Number,
+    pointGiven: Number,
+    type: String,
+    date: Date,
+  },
+  { _id: true }
+);
+
 const userSchema = new mongoose.Schema(
   {
+    // _id: new mongoose.Types.ObjectId(),
     name: String,
     email: String,
     phone: String,
@@ -169,6 +186,7 @@ const userSchema = new mongoose.Schema(
     },
     TargetPV: [Number],
     Position: String,
+    withdraw: Number,
 
     referralTree: [String],
     points: {
@@ -183,47 +201,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Normal",
     },
-    //   frontImage: {
-    //   type: String,
-    //   required: true,
-    // },
-    // backImage: {
-    //   type: String,
-    //   required: true,
-    // },
+
     PackagePV: String,
+    points: { type: Number, default: 0 },
     AllEntry: {
-      incoming: [
-        {
-          fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-          name: String,
-          sector: String,
-          email: String,
-          pointReceived: Number,
-          product: String,
-          type: String,          // Added type for filtering (e.g. "self-purchase")
-          date: Date,
-        },
-      ],
-      outgoing: [
-        {
-          toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-          name: String,
-          sector: String,
-          email: String,
-          pointGiven: Number,
-          product: String,
-          date: Date,
-        },
-      ],
+      incoming: [entrySchema],
+      outgoing: [entrySchema],
     },
   },
-  {
-    timestamps: true,
-    strict: false,
-  }
+  { timestamps: true }
 );
 
-
 module.exports = mongoose.model("User", userSchema);
-
