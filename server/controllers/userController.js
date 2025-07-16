@@ -17,19 +17,158 @@ const generateReferralCode = async () => {
 };
 
 // Registration Controller
+// const registerUser = async (req, res) => {
+//   try {
+//     const { name, phone, email, password, referralCode } = req.body;
+
+//     const existingUser = await User.findOne({ phone });
+//     if (existingUser)
+//       return res.status(400).json({ message: "User already exists" });
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const newReferralCode = await generateReferralCode();
+
+//     let referralTree = [];
+
+//     if (referralCode) {
+//       const parent = await User.findOne({ referralCode });
+
+//       if (!parent) {
+//         return res.status(400).json({ message: "Invalid referral code" });
+//       }
+
+//       referralTree = [
+//         parent._id.toString(),
+//         ...parent.referralTree.slice(0, 9),
+//       ];
+//     }
+
+//     const newUser = await User.create({
+//       name,
+//       email,
+//       phone,
+//       password: hashedPassword,
+//       referralCode: newReferralCode,
+//       referredBy: referralCode || null,
+//       referralTree,
+//     });
+
+//     // Reward system – Add points to 10 uplines
+//     // if (referralTree.length > 0) {
+//     //   for (let i = 0; i < referralTree.length; i = 10) {
+//     //     const uplineId = referralTree[i];
+//     //     const point = 100 - i;
+
+//     //     await User.findByIdAndUpdate(uplineId, {
+//     //       $inc: { points: point },
+//     //     });
+//     //   }
+//     // }
+
+//     // ধরলাম newUser হচ্ছে যিনি register করলেন
+//     if (referralTree.length > 0) {
+//       // STEP 1: নতুন user এর package info বের করো
+//       const childPackageReq = await PackageRequest.findOne({
+//         userId: newUser._id,
+//       });
+//       const childPackageName = childPackageReq?.packageName;
+
+//       const childPackageModel = await PackagesModel.findOne({
+//         name: childPackageName,
+//       });
+//       const childStartPoint = childPackageModel?.PV;
+//       const childDecreasePV = childPackageModel?.decreasePV || 100;
+
+//       if (!childStartPoint) {
+//         console.log("❌ Child user's package PV not found");
+//         return;
+//       }
+
+//       // STEP 2: Loop through all uplines
+//       for (let i = 0; i < referralTree.length; i++) {
+//         const uplineId = referralTree[i];
+//         if (!uplineId) break;
+
+//         // STEP 3: প্রতিটি upline user এর package details বের করো
+//         const uplinePackageReq = await PackageRequest.findOne({
+//           userId: uplineId,
+//         });
+//         const uplinePackageName = uplinePackageReq?.packageName;
+
+//         const uplinePackageModel = await PackagesModel.findOne({
+//           name: uplinePackageName,
+//         });
+//         const uplineGenerations = (() => {
+//           switch (uplinePackageName) {
+//             case "Business Relation":
+//               return 10;
+//             case "Business Relative":
+//               return 7;
+//             case "Family":
+//               return 5;
+//             case "Friend":
+//               return 3;
+//             default:
+//               return 0;
+//           }
+//         })();
+
+//         if (!uplineGenerations) {
+//           console.log(`⛔ Invalid or missing package for upline: ${uplineId}`);
+//           continue;
+//         }
+
+//         // STEP 4: Check if this upline is eligible for this generation
+//         if (i < uplineGenerations) {
+//           const point = childStartPoint - i * childDecreasePV;
+
+//           if (point > 0) {
+//             await User.findByIdAndUpdate(uplineId, {
+//               $inc: { points: point },
+//             });
+
+//             console.log(
+//               `✅ Upline ${uplineId} got ${point} points from generation ${i + 1
+//               } based on child package`
+//             );
+//           } else {
+//             console.log(`⚠️ Point is 0 or less for upline ${uplineId}`);
+//           }
+//         } else {
+//           console.log(
+//             `⛔ Upline ${uplineId} not eligible for generation ${i + 1}`
+//           );
+//         }
+//       }
+//     }
+
+//     res.status(201).json({
+//       message: "User registered successfully",
+//       userId: newUser._id,
+//       referralCode: newReferralCode,
+//       referralTree,
+//       points: newUser.points,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 const registerUser = async (req, res) => {
   try {
     const { name, phone, email, password, referralCode } = req.body;
 
+    // 1️⃣ Check if user already exists
     const existingUser = await User.findOne({ phone });
-    if (existingUser)
+    if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
+    }
 
+    // 2️⃣ Hash password and generate referral code
     const hashedPassword = await bcrypt.hash(password, 10);
     const newReferralCode = await generateReferralCode();
 
+    // 3️⃣ Handle referral tree
     let referralTree = [];
-
     if (referralCode) {
       const parent = await User.findOne({ referralCode });
 
@@ -43,6 +182,7 @@ const registerUser = async (req, res) => {
       ];
     }
 
+    // 4️⃣ Create new user
     const newUser = await User.create({
       name,
       email,
@@ -53,95 +193,74 @@ const registerUser = async (req, res) => {
       referralTree,
     });
 
-    // Reward system – Add points to 10 uplines
-    // if (referralTree.length > 0) {
-    //   for (let i = 0; i < referralTree.length; i = 10) {
-    //     const uplineId = referralTree[i];
-    //     const point = 100 - i;
+    // 5️⃣ ✅ Assign default package (optional but recommended)
+    await PackageRequest.create({
+      userId: newUser._id,
+      packageName: "Friend", // Default package
+    });
 
-    //     await User.findByIdAndUpdate(uplineId, {
-    //       $inc: { points: point },
-    //     });
-    //   }
-    // }
-
-    // ধরলাম newUser হচ্ছে যিনি register করলেন
-    if (referralTree.length > 0) {
-      // STEP 1: নতুন user এর package info বের করো
+    // 6️⃣ Try point distribution if referral tree exists
+    try {
       const childPackageReq = await PackageRequest.findOne({
         userId: newUser._id,
       });
-      const childPackageName = childPackageReq?.packageName;
 
+      const childPackageName = childPackageReq?.packageName;
       const childPackageModel = await PackagesModel.findOne({
         name: childPackageName,
       });
+
       const childStartPoint = childPackageModel?.PV;
       const childDecreasePV = childPackageModel?.decreasePV || 100;
 
       if (!childStartPoint) {
         console.log("❌ Child user's package PV not found");
-        return;
-      }
+      } else {
+        for (let i = 0; i < referralTree.length; i++) {
+          const uplineId = referralTree[i];
+          if (!uplineId) break;
 
-      // STEP 2: Loop through all uplines
-      for (let i = 0; i < referralTree.length; i++) {
-        const uplineId = referralTree[i];
-        if (!uplineId) break;
+          const uplinePackageReq = await PackageRequest.findOne({
+            userId: uplineId,
+          });
+          const uplinePackageName = uplinePackageReq?.packageName;
 
-        // STEP 3: প্রতিটি upline user এর package details বের করো
-        const uplinePackageReq = await PackageRequest.findOne({
-          userId: uplineId,
-        });
-        const uplinePackageName = uplinePackageReq?.packageName;
+          const uplineGenerations = (() => {
+            switch (uplinePackageName) {
+              case "Business Relation":
+                return 10;
+              case "Business Relative":
+                return 7;
+              case "Family":
+                return 5;
+              case "Friend":
+                return 3;
+              default:
+                return 0;
+            }
+          })();
 
-        const uplinePackageModel = await PackagesModel.findOne({
-          name: uplinePackageName,
-        });
-        const uplineGenerations = (() => {
-          switch (uplinePackageName) {
-            case "Business Relation":
-              return 10;
-            case "Business Relative":
-              return 7;
-            case "Family":
-              return 5;
-            case "Friend":
-              return 3;
-            default:
-              return 0;
+          if (i < uplineGenerations) {
+            const point = childStartPoint - i * childDecreasePV;
+            if (point > 0) {
+              await User.findByIdAndUpdate(uplineId, {
+                $inc: { points: point },
+              });
+
+              console.log(
+                `✅ Upline ${uplineId} got ${point} points from generation ${
+                  i + 1
+                } based on child package`
+              );
+            }
           }
-        })();
-
-        if (!uplineGenerations) {
-          console.log(`⛔ Invalid or missing package for upline: ${uplineId}`);
-          continue;
-        }
-
-        // STEP 4: Check if this upline is eligible for this generation
-        if (i < uplineGenerations) {
-          const point = childStartPoint - i * childDecreasePV;
-
-          if (point > 0) {
-            await User.findByIdAndUpdate(uplineId, {
-              $inc: { points: point },
-            });
-
-            console.log(
-              `✅ Upline ${uplineId} got ${point} points from generation ${i + 1
-              } based on child package`
-            );
-          } else {
-            console.log(`⚠️ Point is 0 or less for upline ${uplineId}`);
-          }
-        } else {
-          console.log(
-            `⛔ Upline ${uplineId} not eligible for generation ${i + 1}`
-          );
         }
       }
+    } catch (bonusErr) {
+      console.log("🎯 Bonus distribution error:", bonusErr.message);
     }
 
+    // 7️⃣ Respond to frontend
     res.status(201).json({
       message: "User registered successfully",
       userId: newUser._id,
@@ -150,6 +269,7 @@ const registerUser = async (req, res) => {
       points: newUser.points,
     });
   } catch (error) {
+    console.error("❌ Registration error:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -360,8 +480,9 @@ const generateUserSummary = (user, referredUsers = []) => {
 
   // ✅ Active & Free Team count
   const currentDate = new Date();
-  const totalActiveTeam = referredUsers.filter(rUser =>
-    rUser.packageExpireDate && new Date(rUser.packageExpireDate) > currentDate
+  const totalActiveTeam = referredUsers.filter(
+    (rUser) =>
+      rUser.packageExpireDate && new Date(rUser.packageExpireDate) > currentDate
   ).length;
 
   const totalFreeTeam = referredUsers.length - totalActiveTeam;
@@ -372,7 +493,7 @@ const generateUserSummary = (user, referredUsers = []) => {
   const currentYear = currentDate.getFullYear();
   const previousMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
   const previousMonthPv = incoming
-    .filter(entry => {
+    .filter((entry) => {
       const date = new Date(entry.date);
       return (
         date.getMonth() === previousMonth &&
@@ -383,11 +504,10 @@ const generateUserSummary = (user, referredUsers = []) => {
 
   // ✅ Current Month PV
   const currentMonthPv = incoming
-    .filter(entry => {
+    .filter((entry) => {
       const date = new Date(entry.date);
       return (
-        date.getMonth() === currentMonth &&
-        date.getFullYear() === currentYear
+        date.getMonth() === currentMonth && date.getFullYear() === currentYear
       );
     })
     .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
@@ -405,14 +525,17 @@ const generateUserSummary = (user, referredUsers = []) => {
     dateLimit.setDate(dateLimit.getDate() - days);
 
     return incoming
-      .filter((entry) =>
-        entry.sector === sectorName && new Date(entry.date) >= dateLimit
+      .filter(
+        (entry) =>
+          entry.sector === sectorName && new Date(entry.date) >= dateLimit
       )
       .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
   };
 
-  const currentPurchaseAmount = getSumPointBySectorInLastNDays("ProductPurchase", 10);
-
+  const currentPurchaseAmount = getSumPointBySectorInLastNDays(
+    "ProductPurchase",
+    10
+  );
 
   return [
     { title: "Total Refer", value: user.referralTree?.length || 0 },
@@ -428,7 +551,10 @@ const generateUserSummary = (user, referredUsers = []) => {
       title: "Current Month Pv",
       value: currentMonthPv,
     },
-    { title: "Monthly down sale pv", value: previousMonthPv >= currentMonthPv && monthlyDownSalePv },
+    {
+      title: "Monthly down sale pv",
+      value: previousMonthPv >= currentMonthPv && monthlyDownSalePv,
+    },
     { title: "Total Team Sale Pv", value: totalTeamSalePv },
     { title: "Total Team Member", value: user.referralTree?.length || 0 },
     { title: "Current Purchase Amount", value: currentPurchaseAmount },
@@ -450,8 +576,6 @@ const generateUserSummary = (user, referredUsers = []) => {
   ];
 };
 
-
-
 const userAgregateData = async (req, res) => {
   try {
     const { id } = req.params;
@@ -467,7 +591,7 @@ const userAgregateData = async (req, res) => {
     }
     // Fetch referred users based on referralTree
     const referredUsers = await User.find({
-      _id: { $in: user.referralTree || [] }
+      _id: { $in: user.referralTree || [] },
     });
 
     const summary = generateUserSummary(user, referredUsers);

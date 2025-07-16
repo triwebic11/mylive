@@ -149,65 +149,67 @@
 
 const mongoose = require("mongoose");
 
-const entrySchema = new mongoose.Schema({
-  fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  name: String,
-  email: String,
-  sector: String,
-  product: String,
-  pointReceived: Number,
-  pointGiven: Number,
-  type: String,
-  date: Date,
-});
-
-
-
-const userSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
-  name: String,
-  email: String,
-  phone: String,
-  password: String,
-  referralCode: String,
-  referredBy: String,
-  referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
-  userStatus: String,
-  GenerationLevel: {
-    type: Number,
-    default: 0,
-  },
-  MegaGenerationLevel: {
-    type: Number,
-    default: 0,
-  },
-  TargetPV: [Number],
-  Position: String,
-  withdraw: Number,
-
-  referralTree: [String],
-  points: {
-    type: Number,
-    default: 0,
-  },
-  role: {
+const entrySchema = new mongoose.Schema(
+  {
+    fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    name: String,
+    email: String,
+    sector: String,
+    product: String,
+    pointReceived: Number,
+    pointGiven: Number,
     type: String,
-    default: "user",
+    date: Date,
   },
-  package: {
-    type: String,
-    default: "Normal",
-  },
+  { _id: true }
+);
 
-  PackagePV: String,
-  points: { type: Number, default: 0 },
-  AllEntry: {
-    incoming: [entrySchema],
-    outgoing: [entrySchema],
-  },
-}, { timestamps: true });
+const userSchema = new mongoose.Schema(
+  {
+    // _id: new mongoose.Types.ObjectId(),
+    name: String,
+    email: String,
+    phone: String,
+    password: String,
+    referralCode: String,
+    referredBy: String,
+    referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
+    userStatus: String,
+    GenerationLevel: {
+      type: Number,
+      default: 0,
+    },
+    MegaGenerationLevel: {
+      type: Number,
+      default: 0,
+    },
+    TargetPV: [Number],
+    Position: String,
+    withdraw: Number,
 
+    referralTree: [String],
+    points: {
+      type: Number,
+      default: 0,
+    },
+    role: {
+      type: String,
+      default: "user",
+    },
+    package: {
+      type: String,
+      default: "Normal",
+    },
+
+    PackagePV: String,
+    points: { type: Number, default: 0 },
+    AllEntry: {
+      incoming: [entrySchema],
+      outgoing: [entrySchema],
+    },
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("User", userSchema);
-
