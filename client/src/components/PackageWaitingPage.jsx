@@ -4,18 +4,10 @@ import useAuth from "../Hooks/useAuth";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const PackageWaitingPage = () => {
-<<<<<<< HEAD
-  const { user } = useAuth();
-  const { setUserPackage } = useAuth(); // Assuming you have a method to set user package
-  console.log("User data from useAuth in waiting page: ", user);
-  const userId = user?.user?._id;
-  console.log("your user id is-", userId);
-=======
   const { setUserPackage } = useAuth();
->>>>>>> dba2997c713a792fa7c5882c5adb57b2f6109fd1
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
-   const storedid = localStorage.getItem("userId")
+  const storedid = localStorage.getItem("userId");
 
   useEffect(() => {
     const checkApproval = async () => {
