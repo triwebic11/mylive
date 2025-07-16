@@ -209,7 +209,7 @@ const userSchema = new mongoose.Schema(
       outgoing: [entrySchema],
     },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 );
 
 module.exports = mongoose.model("User", userSchema);

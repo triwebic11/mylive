@@ -13,11 +13,10 @@ import useRole from "../../../Hooks/useRole";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
-  console.log("User Id from package update page = ", user?._id);
-  const userId = user?.user?._id;
-  const userName = user?.user?.name;
-  const userEmail = user?.user?.email;
-  const userPhone = user?.user?.phone;
+  const userId =  localStorage.getItem("userId")
+  const userName = user?.name;
+  const userEmail = user?.email;
+  const userPhone = user?.phone;
   const { role } = useRole();
   console.log("User Role from package update page = ", role);
 

@@ -36,8 +36,12 @@ const AdminPackageRequests = () => {
   // Approve handler
   const handleApprove = async (id) => {
     try {
-      await axiosSecure.patch(`/package-requests/approve/${id}`);
-      Swal.fire("Approved!", "Package activated for user.", "success");
+      const res = await axiosSecure.patch(`/package-requests/approve/${id}`);
+      console.log(res.data)
+      // if(res.data.dsdsd === ""){
+        
+      //   Swal.fire("Approved!", "Package activated for user.", "success");
+      // }
 
       // Update local state
       setRequests((prev) =>
