@@ -5,7 +5,10 @@ import helth from "./helth-care.png";
 import googlePlay from "./google-play.jpg";
 import appStore from "./app-store.jpg";
 import paymentMethod from "./payment-methods.png";
-
+import soap from "./soap.jpg";
+import neamSoap from "./neamSoap.jpg";
+import detargent from "./detergent.jpg";
+import cleaner from "./cleaner.jpg";
 import chairman from "./chairman.jpg";
 import managingDir from "./Sagar-MD.jpg";
 import dirMar from "./dm.jpg";
@@ -43,4 +46,8 @@ export {
   banner1,
   banner2,
   newBanner,
+  soap,
+  neamSoap,
+  detargent,
+  cleaner,
 };

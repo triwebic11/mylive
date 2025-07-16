@@ -5,14 +5,17 @@ import useAuth from "./useAuth";
 const useUserById = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
+   const storedid = localStorage.getItem("userId")
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["user", user?.user?._id],
-    enabled: !!user?.user?._id,
+    queryKey: ["user", storedid],
+    enabled: !!storedid,
     queryFn: async () => {
-      const response = await axiosPublic.get(`/users/${user?.user?._id}`);
+      const response = await axiosPublic.get(`/users/${storedid}`);
       return response.data;
     },
   });
+
+ 
 
   console.log("useUserById dataaaaaaa:", data);
 

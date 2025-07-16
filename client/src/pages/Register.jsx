@@ -59,7 +59,7 @@ const Register = () => {
 
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
-        _id: res.data.userId,
+        // _id: res.data.userId,
       };
       localStorage.setItem("user", JSON.stringify(userData));
       setUserReferralCode(res.data.referralCode);

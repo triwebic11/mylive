@@ -4,27 +4,23 @@ import useAuth from "../Hooks/useAuth";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const PackageWaitingPage = () => {
-  const { user } = useAuth();
-  const { setUserPackage } = useAuth(); // Assuming you have a method to set user package
-  console.log("User data from useAuth in waiting page: ", user);
-  const userId = user?._id;
-  console.log("your user id is-", userId);
+  const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+   const storedid = localStorage.getItem("userId")
 
   useEffect(() => {
     const checkApproval = async () => {
       try {
-        const res = await axiosSecure.get(`/package-requests/${userId}`);
-        const status = res?.data?.status;
+        const res = await axiosSecure.get(`/package-requests/${storedid}`);
+        const status = res?.data[0];
 
-        console.log("your status is : ", status);
-        console.log("User package request data: ", res?.data);
+        // console.log("your status is : ", status);
+        // console.log("User package request data: ", res?.data);
         localStorage.setItem("userPackage", JSON.stringify(res.data));
         setUserPackage(res.data);
 
-        if (status === "approved") {
-          // ✅ Redirect user to login if approved
+        if (status?.status === "approved") {
           navigate("/login");
         }
       } catch (err) {
@@ -35,7 +31,7 @@ const PackageWaitingPage = () => {
     // Check every 3 seconds
     const interval = setInterval(checkApproval, 3000);
     return () => clearInterval(interval);
-  }, [navigate, userId, setUserPackage, axiosSecure]);
+  }, [navigate, setUserPackage, axiosSecure, storedid]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

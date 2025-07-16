@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useEffect } from "react";
 import { GoPackage } from "react-icons/go";
 
 import DashboardHeadings from "../../../components/DashboardHeadings";
 import usePackages from "../../../Hooks/usePackages";
 import Swal from "sweetalert2";
+import useRole from "../../../Hooks/useRole";
 
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../Hooks/useAuth";
@@ -12,22 +13,39 @@ import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
+  const userId =  localStorage.getItem("userId")
+  const userName = user?.name;
+  const userEmail = user?.email;
+  const userPhone = user?.phone;
+  const { role } = useRole();
+  console.log("User Role from package update page = ", role);
 
   console.log("User Info from package update page = ", user);
   const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
-  console.log(packages)
+  console.log(packages);
   const axiosSecure = useAxiosSecure();
 
   // console.log("user package compo----", data);
+  useEffect(() => {
+    if (role === "dsp") {
+      Swal.fire({
+        icon: "warning",
+        title: "Access Denied",
+        text: "You are a DSP user. You can't purchase a package.",
+      }).then(() => {
+        navigate("/login");
+      });
+    }
+  }, [role, navigate]);
 
   const handleAddPackage = async (plan) => {
     const userData = {
-      userId: user?._id,
-      name: user?.name,
-      email: user?.email,
-      phone: user?.phone,
+      userId: userId,
+      name: userName,
+      email: userEmail,
+      phone: userPhone,
       packageName: plan?.name,
       packagePrice: plan?.price,
       MegaGenerationLevel: plan?.MegaGenerationLevel,
@@ -106,11 +124,8 @@ export default function PackageUpdate() {
                 ))}
               </ul>
 
-              <li
-                className="flex text-base px-4 gap-2 items-start justify-start"
-              >
+              <li className="flex text-base px-4 gap-2 items-start justify-start">
                 <GoPackage className="text-orange-400 font-semibold text-xl w-[10%]" />
-                
               </li>
 
               <button
@@ -122,7 +137,6 @@ export default function PackageUpdate() {
             </div>
           );
         })}
-
       </div>
     </div>
   );
