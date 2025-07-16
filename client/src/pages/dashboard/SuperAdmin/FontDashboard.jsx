@@ -3,7 +3,6 @@ import useUserById from "../../../Hooks/useUserById";
 import { banner1, banner2 } from "../../../assets";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 import useAuth from "../../../Hooks/useAuth";
-
 import { FaArrowRight } from "react-icons/fa"; // 
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
