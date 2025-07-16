@@ -7,7 +7,7 @@ const PackageWaitingPage = () => {
   const { user } = useAuth();
   const { setUserPackage } = useAuth(); // Assuming you have a method to set user package
   console.log("User data from useAuth in waiting page: ", user);
-  const userId = user?._id;
+  const userId = user?.user?._id;
   console.log("your user id is-", userId);
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();

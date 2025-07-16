@@ -5,14 +5,15 @@ import { GoPackage } from "react-icons/go";
 import DashboardHeadings from "../../../components/DashboardHeadings";
 import usePackages from "../../../Hooks/usePackages";
 import Swal from "sweetalert2";
-import useRole from "../../../Hooks/useRole";
 
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useRole from "../../../Hooks/useRole";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
+  console.log("User Id from package update page = ", user?._id);
   const userId = user?.user?._id;
   const userName = user?.user?.name;
   const userEmail = user?.user?.email;

@@ -1,11 +1,12 @@
-import useUserById from './useUserById';
+import useUserById from "./useUserById";
 
 const useRole = () => {
-    const [data, isLoading] = useUserById();
+  const [data, isLoading] = useUserById();
 
-    const role = data?.role;
+  const role = data?.role;
+  console.log("User Role from useRole hook = ", role);
 
-    return { role, isLoading };
+  return { role, isLoading };
 };
 
 export default useRole;
