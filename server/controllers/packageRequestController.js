@@ -114,8 +114,9 @@ exports.approveRequest = async (req, res) => {
 exports.getUserRequest = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const request = await PackageRequest.findOne({ userId });
-    res.json(request);
+
+    const requests = await PackageRequest.find({ userId }).sort({ createdAt: -1 });
+    res.json(requests);
   } catch (err) {
     res
       .status(500)
