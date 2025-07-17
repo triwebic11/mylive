@@ -301,9 +301,7 @@ const router = createBrowserRouter([
         path: "/dashboard/kyc",
         element: (
           <PrivetRouter>
-            <DspRoute>
-              <Kyc />
-            </DspRoute>
+            <Kyc />
           </PrivetRouter>
         ),
       },
@@ -443,9 +441,7 @@ const router = createBrowserRouter([
         path: "/dashboard/kyc",
         element: (
           <PrivetRouter>
-            <UserRoute>
-              <Kyc />
-            </UserRoute>
+            <Kyc />
           </PrivetRouter>
         ),
       },

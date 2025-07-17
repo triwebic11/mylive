@@ -216,7 +216,6 @@ const Register = () => {
             name="referralCode"
             value={form.referralCode}
             onChange={handleChange}
-            required
             placeholder="Referral Code "
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           />

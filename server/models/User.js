@@ -149,24 +149,6 @@
 
 const mongoose = require("mongoose");
 
-<<<<<<< HEAD
-const entrySchema = new mongoose.Schema({
-  fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  name: String,
-  email: String,
-  sector: String,
-  product: String,
-  pointReceived: Number,
-  pointGiven: Number,
-  type: String,
-  date: Date,
-});
-
-const userSchema = new mongoose.Schema(
-  {
-    // _id: mongoose.Schema.Types.ObjectId,
-=======
 const entrySchema = new mongoose.Schema(
   {
     fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -186,7 +168,6 @@ const entrySchema = new mongoose.Schema(
 const userSchema = new mongoose.Schema(
   {
     // _id: new mongoose.Types.ObjectId(),
->>>>>>> 16e47d709882da26a9375355645afe62467dbcb1
     name: String,
     email: String,
     phone: String,
@@ -228,11 +209,7 @@ const userSchema = new mongoose.Schema(
       outgoing: [entrySchema],
     },
   },
-<<<<<<< HEAD
-  { timestamps: true }
-=======
   { timestamps: true, strict: false }
->>>>>>> 16e47d709882da26a9375355645afe62467dbcb1
 );
 
 module.exports = mongoose.model("User", userSchema);
