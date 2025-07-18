@@ -87,10 +87,10 @@ const DspAllOrders = () => {
       </div>
 
       {/* ✅ Table Section */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border border-gray-200 text-sm">
+      <div className="overflow-x-auto ">
+        <table className="min-w-full max-h-[700px] overflow-y-scroll table-auto border border-gray-200 text-sm">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
-            <tr>
+            <tr className="border-b">
               <th className="px-4 py-3 border-b text-left">Name</th>
               <th className="px-4 py-3 border-b text-left">Phone</th>
               <th className="px-4 py-3 border-b text-left">Product</th>

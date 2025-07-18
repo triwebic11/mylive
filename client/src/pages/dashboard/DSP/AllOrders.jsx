@@ -106,9 +106,9 @@ const Orders = () => {
 
   return (
     <div className="p-6  w-full m-auto ">
-      <h1 className="text-3xl font-bold mb-6 text-center">Orders</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center  overflow-x-hidden">Orders</h1>
 
-      <div className="flex flex-wrap gap-4 mb-6 items-end">
+      <div className="flex flex-wrap  gap-4 mb-6 items-end  top-24  right-0  bg-white z-10">
         <input
           type="text"
           placeholder="Search by Address"
@@ -148,7 +148,7 @@ const Orders = () => {
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
-          <thead>
+          <thead className="">
             <tr className="bg-gray-200 text-gray-700 text-sm text-left">
               <th className="px-4 py-2">Serial Number </th>
               <th className="px-4 py-2">Product Image </th>
