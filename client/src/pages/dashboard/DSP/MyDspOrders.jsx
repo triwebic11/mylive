@@ -66,7 +66,7 @@ const MyDspOrders = () => {
           className="input border border-gray-800 rounded-lg w-full sm:w-1/3 p-1"
         />
       </div>
-
+          <h1 className="font-semibold my-1">Total Orders: {filteredOrders?.length}</h1>
       <div className="overflow-x-auto">
         <table className="table w-full border border-gray-200">
           <thead>

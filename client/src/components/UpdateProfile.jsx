@@ -11,11 +11,16 @@ const UpdateProfileInfo = () => {
     name: "",
     email: "",
     phone: "",
+    nid: "",
     dob: "",
     division: "",
     city: "",
     postcode: "",
     address: "",
+    noname: "",
+    norelation: "",
+    nodob: "",
+    nophone: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -33,11 +38,18 @@ const UpdateProfileInfo = () => {
         name: user.name || "",
         email: user.email || "",
         phone: user.phone || "",
+        nid: user.nid || "",
         dob: user.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
         division: user.division || "",
         city: user.city || "",
         postcode: user.postcode || "",
         address: user.address || "",
+        noname: user.noname || "",
+        norelation: user.norelation || "",
+        nodob: user.nodob
+          ? new Date(user.nodob).toISOString().split("T")[0]
+          : "",
+        nophone: user.nophone || "",
       });
     } catch (err) {
       console.error("Error fetching user:", err);
@@ -99,11 +111,16 @@ const UpdateProfileInfo = () => {
           { label: "Full Name", name: "name" },
           { label: "Email", name: "email" },
           { label: "Phone", name: "phone" },
+          { label: "NID No", name: "nid" },
           { label: "Date of Birth", name: "dob", type: "date" },
           { label: "Division", name: "division", type: "select" },
           { label: "City", name: "city" },
           { label: "Post Code", name: "postcode" },
           { label: "Address", name: "address", colSpan: 2 },
+          { label: "Nominee Name", name: "noname" },
+          { label: "Nominee Relation", name: "norelation" },
+          { label: "Nominee Date of Birth", name: "nodob", type: "date" },
+          { label: "Nominee Phone", name: "nophone" },
         ].map(({ label, name, type = "text", colSpan }) => (
           <div key={name} className={colSpan === 2 ? "md:col-span-2" : ""}>
             <label className="block text-sm font-medium">{label}</label>

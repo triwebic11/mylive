@@ -175,6 +175,7 @@ const CreateDspOrder = () => {
         <h3 className="text-xl font-semibold mb-4 text-gray-700">
           Search Orders
         </h3>
+        <h1 className="font-semibold my-1">Total Orders: {filteredOrders.length}</h1>
         <div className="grid md:grid-cols-3 gap-3 mb-4">
           <input
             type="text"
