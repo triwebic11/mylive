@@ -157,7 +157,7 @@ const AllUsers = () => {
           </thead>
           <tbody>
             {currentUsers.length > 0 ? (
-              currentUsers.map((user) => (
+              currentUsers?.map((user) => (
                 <tr key={user._id} className="text-center">
                   <td className="border px-4 py-2">{user.name}</td>
                   <td className="border px-4 py-2">{user.phone}</td>

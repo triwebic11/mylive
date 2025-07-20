@@ -27,7 +27,7 @@ export default function PackageUpdate() {
   console.log(packages);
   const axiosSecure = useAxiosSecure();
 
-  // console.log("user package compo----", data);
+  console.log("user roooooooole----", role);
   useEffect(() => {
     if (role === "dsp") {
       Swal.fire({
