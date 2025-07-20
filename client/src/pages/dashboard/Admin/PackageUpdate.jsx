@@ -5,15 +5,18 @@ import { GoPackage } from "react-icons/go";
 import DashboardHeadings from "../../../components/DashboardHeadings";
 import usePackages from "../../../Hooks/usePackages";
 import Swal from "sweetalert2";
-import useRole from "../../../Hooks/useRole";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useRole from "../../../Hooks/useRole";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
-  const userId =  localStorage.getItem("userId")
+
+  console.log("User from package update page = ", user);
+  console.log("User role from package update page = ", user?.role);
+  const userId = localStorage.getItem("userId");
   const userName = user?.name;
   const userEmail = user?.email;
   const userPhone = user?.phone;
@@ -27,18 +30,20 @@ export default function PackageUpdate() {
   console.log(packages);
   const axiosSecure = useAxiosSecure();
 
-  console.log("user roooooooole----", role);
-  useEffect(() => {
-    if (role === "dsp") {
-      Swal.fire({
-        icon: "warning",
-        title: "Access Denied",
-        text: "You are a DSP user. You can't purchase a package.",
-      }).then(() => {
-        navigate("/login");
-      });
-    }
-  }, [role, navigate]);
+  // console.log("user package compo----", data);
+  console.log("user role from package update page = ", role);
+
+  // useEffect(() => {
+  //   if (role === "dsp") {
+  //     Swal.fire({
+  //       icon: "warning",
+  //       title: "Access Denied",
+  //       text: "You are a DSP user. You can't purchase a package.",
+  //     }).then(() => {
+  //       navigate("/login");
+  //     });
+  //   }
+  // }, [role, navigate]);
 
   const handleAddPackage = async (plan) => {
     const userData = {
@@ -79,7 +84,17 @@ export default function PackageUpdate() {
         Each package comes with unique features and benefits to help you
         maximize your earnings.
       </p>
-
+      <br />
+      <h1 className="font-bold text-xl">
+        If you are a DSP User skip this part -
+      </h1>
+      <Link
+        to="/login"
+        className="px-10 py-1 border border-amber-600 inline-block rounded-lg hover:bg-amber-800 duration-300 hover:text-white"
+      >
+        {" "}
+        Skip{" "}
+      </Link>
       {/* Cards */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {packages?.map((plan, index) => {

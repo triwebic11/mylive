@@ -1,27 +1,20 @@
-// import React from "react";
-
-// const AllOrders = () => {
-//   return <div>AllOrders</div>;
-// };
-
-// export default AllOrders;
-
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 
 const Orders = () => {
-  const [searchId, setSearchId] = useState("");
+  const [searchAddress, setSearchAddress] = useState("");
+  const [searchProductId, setSearchProductId] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [status, setStatus] = useState("");
+  const [filteredOrders, setFilteredOrders] = useState([]);
+
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
-  const [disabled, setDisabled] = useState(false);
-  const [filteredOrders, setFilteredOrders] = useState([]);
 
   const {
     data: orders,
@@ -42,7 +35,47 @@ const Orders = () => {
     },
   });
 
-  console.log("orderssssssss-----", orders);
+  const parseCustomDate = (dateStr) => {
+    if (!dateStr || typeof dateStr !== "string") return null;
+    const cleaned = dateStr.replace(/(\d+)(st|nd|rd|th)/, "$1");
+    return new Date(cleaned);
+  };
+
+  useEffect(() => {
+    if (!orders) return;
+    let filtered = orders;
+
+    if (searchAddress) {
+      filtered = filtered.filter((order) =>
+        order?.address?.toLowerCase().includes(searchAddress.toLowerCase())
+      );
+    }
+
+    if (searchProductId) {
+      filtered = filtered.filter((order) =>
+        order?.productId
+          ?.toString()
+          .toLowerCase()
+          .includes(searchProductId.toLowerCase())
+      );
+    }
+
+    if (status) {
+      filtered = filtered.filter((order) => order.status === status);
+    }
+
+    if (fromDate || toDate) {
+      filtered = filtered.filter((order) => {
+        const orderDate = parseCustomDate(order.orderTime);
+        const from = fromDate ? new Date(fromDate) : null;
+        const to = toDate ? new Date(toDate) : null;
+
+        return (!from || orderDate >= from) && (!to || orderDate <= to);
+      });
+    }
+
+    setFilteredOrders(filtered);
+  }, [searchAddress, searchProductId, fromDate, toDate, status, orders]);
 
   const handleUpdateStatus = async (id) => {
     Swal.fire({
@@ -58,7 +91,6 @@ const Orders = () => {
         const response = await axiosSecure.patch(`/cashonDelivery/${id}`, {
           status: "shipped",
         });
-        console.log(response);
         if (response.status === 200) {
           Swal.fire({
             icon: "success",
@@ -67,64 +99,40 @@ const Orders = () => {
             timer: 2000,
           });
           refetch();
-          setDisabled(true);
         }
       }
     });
   };
 
-  const parseCustomDate = (dateStr) => {
-    if (!dateStr || typeof dateStr !== "string") return null; // avoid errors
-    const cleaned = dateStr.replace(/(\d+)(st|nd|rd|th)/, "$1");
-    return new Date(cleaned);
-  };
-
-  const handleFilter = () => {
-    let filtered = orders || [];
-
-    // Filter by order ID
-    if (searchId) {
-      filtered = filtered.filter((order) =>
-        order?.address.toLowerCase().includes(searchId.toLowerCase())
-      );
-    }
-
-    // Filter by status
-    if (status) {
-      filtered = filtered.filter((order) => order.status === status);
-    }
-
-    // Filter by date range
-    if (fromDate || toDate) {
-      filtered = filtered.filter((order) => {
-        const orderDate = parseCustomDate(order.orderTime);
-        const from = fromDate ? new Date(fromDate) : null;
-        const to = toDate ? new Date(toDate) : null;
-
-        return (!from || orderDate >= from) && (!to || orderDate <= to);
-      });
-    }
-
-    setFilteredOrders(filtered);
-  };
-
   return (
     <div className="p-6  w-full m-auto ">
-      <h1 className="text-3xl font-bold mb-6 text-center">Orders</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center  overflow-x-hidden">Orders</h1>
 
-      {/* Filter Section */}
-      <div className="flex flex-wrap gap-4 mb-6 items-end">
+      <div className="flex flex-wrap  gap-4 mb-6 items-end  top-24  right-0  bg-white z-10">
         <input
           type="text"
-          placeholder="Search by user Address"
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
+          placeholder="Search by Address"
+          value={searchAddress}
+          onChange={(e) => setSearchAddress(e.target.value)}
+          className="border border-gray-300 px-3 py-2 rounded-md w-48"
+        />
+        <input
+          type="text"
+          placeholder="Search by Product ID"
+          value={searchProductId}
+          onChange={(e) => setSearchProductId(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md w-48"
         />
         <input
           type="date"
           value={fromDate}
           onChange={(e) => setFromDate(e.target.value)}
+          className="border border-gray-300 px-3 py-2 rounded-md"
+        />
+        <input
+          type="date"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md"
         />
         <select
@@ -136,19 +144,11 @@ const Orders = () => {
           <option value="pending">Pending</option>
           <option value="shipped">Shipped</option>
         </select>
-
-        <button
-          onClick={handleFilter}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Filter
-        </button>
       </div>
 
-      {/* Table Section */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
-          <thead>
+          <thead className="">
             <tr className="bg-gray-200 text-gray-700 text-sm text-left">
               <th className="px-4 py-2">Serial Number </th>
               <th className="px-4 py-2">Product Image </th>
@@ -174,15 +174,13 @@ const Orders = () => {
                   </td>
                   <td className="px-4 py-2">{order?.productId}</td>
                   <td className="px-4 py-2">{order?.totalPrice}</td>
-
                   <td className="px-4 py-2">{order?.orderTime}</td>
-
                   <td className="px-4 py-2">
                     <p>{order?.name}</p>
                     <p>{order?.phone}</p>
                   </td>
                   <td className="px-4 py-2">
-                    <p>{order?.address}</p>{" "}
+                    <p>{order?.address}</p>
                   </td>
                   <td
                     className={`px-4 py-2 font-bold text-center ${
@@ -192,7 +190,6 @@ const Orders = () => {
                   >
                     {order?.status}
                   </td>
-
                   <td className="px-4 py-2 flex gap-2">
                     <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
                       View
@@ -221,42 +218,3 @@ const Orders = () => {
 };
 
 export default Orders;
-
-// const orders = [
-//   {
-//     id: "#000000028",
-//     date: "2017-04-12 10:29:28",
-//     billTo: "Supplier Demo",
-//     shipTo: "Supplier Demo",
-//     subtotal: 45.0,
-//     income: 40.5,
-//     status: "Pending",
-//   },
-//   {
-//     id: "#000000027",
-//     date: "2017-03-31 11:50:22",
-//     billTo: "Veronica Costello",
-//     shipTo: "Veronica Costello",
-//     subtotal: 120.0,
-//     income: 108.0,
-//     status: "Complete",
-//   },
-//   {
-//     id: "#000000026",
-//     date: "2017-03-31 11:35:41",
-//     billTo: "Veronica Costello",
-//     shipTo: "Veronica Costello",
-//     subtotal: 122.0,
-//     income: 109.8,
-//     status: "Complete",
-//   },
-//   {
-//     id: "#000000025",
-//     date: "2017-03-31 11:33:01",
-//     billTo: "Veronica Costello",
-//     shipTo: "Veronica Costello",
-//     subtotal: 20.0,
-//     income: 18.0,
-//     status: "Complete",
-//   },
-// ];

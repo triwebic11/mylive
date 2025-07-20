@@ -108,14 +108,34 @@ const UserDetails = () => {
               </td>
               <td className="px-6 py-3">{user.referralCode}</td>
             </tr>
-            {/* Uncomment below line if you want to show referral tree in string form */}
-            {/* <tr>
-        <td className="px-6 py-3 font-medium text-gray-600">Referral Tree</td>
-        <td className="px-6 py-3">{user.referralTree?.join(" > ")}</td>
-      </tr> */}
+
             <tr className="hover:shadow-md shadow-gray-300">
               <td className="px-6 py-3 font-medium text-gray-600">Address</td>
               <td className="px-6 py-3">{user.address || "N/A"}</td>
+            </tr>
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">
+                Nominee Name
+              </td>
+              <td className="px-6 py-3">{user.noname || "N/A"}</td>
+            </tr>
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">
+                Nominee Relation
+              </td>
+              <td className="px-6 py-3">{user.norelation || "N/A"}</td>
+            </tr>
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">
+                Nominee Date of Birth
+              </td>
+              <td className="px-6 py-3">{user.nodob || "N/A"}</td>
+            </tr>
+            <tr className="hover:shadow-md shadow-gray-300">
+              <td className="px-6 py-3 font-medium text-gray-600">
+                Nominee Phone
+              </td>
+              <td className="px-6 py-3">{user.nophone || "N/A"}</td>
             </tr>
           </tbody>
         </table>

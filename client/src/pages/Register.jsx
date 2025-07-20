@@ -14,6 +14,7 @@ const Register = () => {
     name: "",
     email: "",
     phone: "",
+    nid: "",
     dob: "",
     division: "",
     city: "",
@@ -50,6 +51,7 @@ const Register = () => {
         name: form.name,
         email: form.email,
         phone: form.phone,
+        nid: form.nid,
         dob: form.dob,
         division: form.division,
         city: form.city,
@@ -125,6 +127,18 @@ const Register = () => {
             name="phone"
             type="text"
             value={form.phone}
+            onChange={handleChange}
+            required
+            placeholder="Phone Number"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
+        <div>
+          <label>NID Number*</label>
+          <input
+            name="phone"
+            type="text"
+            value={form.nid}
             onChange={handleChange}
             required
             placeholder="Phone Number"
@@ -216,7 +230,6 @@ const Register = () => {
             name="referralCode"
             value={form.referralCode}
             onChange={handleChange}
-            required
             placeholder="Referral Code "
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           />

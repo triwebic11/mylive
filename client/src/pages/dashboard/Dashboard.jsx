@@ -37,6 +37,8 @@ const dashboardArry = [
   { title: "My Consistency", link: "/dashboard/my-consistency" },
   { title: "Voucher", link: "/dashboard/voucher" },
   { title: "Withdraw", link: "/dashboard/withdraw" },
+  { title: "Order Now", link: "/dashboard/ordertodsp" },
+
   { title: "My Order", link: "/dashboard/my-order" },
   // { title: "Package Update", link: "/dashboard" },
   { title: "Support", link: "/dashboard/support" },
@@ -48,13 +50,15 @@ const DspDashboard = [
   { title: "Profile", link: "/dashboard/dspprofile" },
   { title: "All User's Orders", link: "/dashboard/allOrders" },
   { title: "Order Now", link: "/dashboard/dspOrder" },
+  { title: "Aproved Orders", link: "/dashboard/myAprovedOrders" },
   { title: "My Order", link: "/dashboard/myOrders" },
   { title: "Kyc", link: "/dashboard/kyc" },
 ];
 
 const adminDashboardArry = [
-   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
+  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
   { title: "All Users", link: "/dashboard/allUsers" },
+  { title: "Order for DSP", link: "/dashboard/createOrder" },
   { title: "All DSP Orders", link: "/dashboard/allDspOrders" },
   { title: "All Package Requester", link: "/dashboard/allPackageRequestUser" },
   { title: "All Withdrawal", link: "/dashboard/allWithdrawals" },

@@ -7,7 +7,7 @@ require("dotenv").config();
 const cron = require("node-cron");
 const {
   // processMonthlyLevelCommissions,
-  processMonthlyUserRankAndFunds
+  processMonthlyUserRankAndFunds,
 } = require("./utils/fullMonthlyLevelCommissionProcessor");
 const accountInfoRoutes = require("./routes/accountInfoRoutes");
 const withdrawRoutes = require("./routes/withdrawRequests");
@@ -40,6 +40,7 @@ app.use("/api/package-requests", packageRequestRoutes);
 app.use("/api/withdraw-requests", withdrawRoutes);
 app.use("/api/kyc", kycRoutes);
 app.use("/api/dsp", require("./routes/dspRoutes"));
+app.use("/api/admin-orders", require("./routes/adminOrderRoute"));
 
 // app.use("/api/uploads", require("./routes/uploadRoute"));
 

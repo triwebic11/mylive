@@ -7,7 +7,7 @@ const PackageWaitingPage = () => {
   const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
-   const storedid = localStorage.getItem("userId")
+  const storedid = localStorage.getItem("userId");
 
   useEffect(() => {
     const checkApproval = async () => {
