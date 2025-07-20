@@ -11,7 +11,7 @@ const OrderAproved = () => {
 
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-  const dspPhone = user?.user?.email || user?.user?.phone || "";
+  const dspPhone = user?.user?.phone || user?.user?.email || "";
 
   useEffect(() => {
     if (dspPhone) {
@@ -36,7 +36,9 @@ const OrderAproved = () => {
       <h2 className="text-2xl font-bold text-orange-600 mb-6 text-center">
         Approved Orders
       </h2>
-      <h1 className="font-semibold my-1">Total Orders: {filteredOrders?.length}</h1>
+      <h1 className="font-semibold my-1">
+        Total Orders: {filteredOrders?.length}
+      </h1>
       {/* Filter Section */}
       <div className="mb-6 grid md:grid-cols-2 gap-4">
         <input

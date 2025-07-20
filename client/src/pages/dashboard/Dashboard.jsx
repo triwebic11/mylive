@@ -37,6 +37,8 @@ const dashboardArry = [
   { title: "My Consistency", link: "/dashboard/my-consistency" },
   { title: "Voucher", link: "/dashboard/voucher" },
   { title: "Withdraw", link: "/dashboard/withdraw" },
+  { title: "Order Now", link: "/dashboard/ordertodsp" },
+
   { title: "My Order", link: "/dashboard/my-order" },
   // { title: "Package Update", link: "/dashboard" },
   { title: "Support", link: "/dashboard/support" },
@@ -54,7 +56,7 @@ const DspDashboard = [
 ];
 
 const adminDashboardArry = [
-   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
+  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
   { title: "All Users", link: "/dashboard/allUsers" },
   { title: "Order for DSP", link: "/dashboard/createOrder" },
   { title: "All DSP Orders", link: "/dashboard/allDspOrders" },
@@ -90,7 +92,7 @@ const Dashboard = () => {
   const [data] = useUserById();
   const { role } = useRole();
   const { user } = useAuth();
- 
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);

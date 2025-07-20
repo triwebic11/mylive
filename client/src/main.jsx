@@ -66,6 +66,7 @@ import DspAllOrders from "./pages/dashboard/Admin/DspAllOrders.jsx";
 import MyOrders from "./pages/dashboard/user/MyOrder.jsx";
 import CreateDspOrder from "./pages/dashboard/Admin/CreateDspOrder.jsx";
 import OrderAproved from "./pages/dashboard/DSP/OrderAproved.jsx";
+import OrderToDsp from "./pages/dashboard/user/OrderToDsp.jsx";
 
 const queryClients = new QueryClient();
 
@@ -435,6 +436,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <UserRoute>
               <Withdraw />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/ordertodsp",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <OrderToDsp />
             </UserRoute>
           </PrivetRouter>
         ),
