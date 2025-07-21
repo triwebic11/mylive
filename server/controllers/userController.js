@@ -427,11 +427,15 @@ const updateUserRole = async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
+  console.log("idddddddddddddddddd", id)
+
   try {
     const updatedRole = await User.findByIdAndUpdate(id, updates, {
       new: true,
       runValidators: true,
     });
+
+    console.log(updatedRole)
 
     if (!updatedRole) {
       return res.status(404).json({ message: "Role not found" });
@@ -439,7 +443,7 @@ const updateUserRole = async (req, res) => {
 
     res.json({
       message: "Role updated successfully",
-      product: updatedRole,
+      user: updatedRole,
     });
   } catch (error) {
     console.error("Patch update failed:", error);
