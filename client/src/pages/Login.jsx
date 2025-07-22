@@ -92,7 +92,12 @@ const Login = () => {
         >
           Login
         </button>
-        <Link to="/forgot-password" className="px-2 py-1 mt-2 inline-block border border-blue-300 hover:bg-blue-500 duration-300 hover:text-white rounded-lg">Forget password</Link>
+        <Link
+          to="/forgot-password"
+          className="text-blue-600 underline block text-center mt-4 hover:opacity-80 duration-200"
+        >
+          Forgot Password?
+        </Link>
 
         <p className="mt-4 text-sm text-center">
           Don’t have an account?{" "}

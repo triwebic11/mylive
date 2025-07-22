@@ -69,6 +69,7 @@ import OrderAproved from "./pages/dashboard/DSP/OrderAproved.jsx";
 import OrderToDsp from "./pages/dashboard/user/OrderToDsp.jsx";
 import CreateUserOrder from "./pages/dashboard/DSP/CreateUserOrder.jsx";
 import ForgotPassword from "./components/ForgotPassword.jsx";
+import ResetPassword from "./components/ResetPassword.jsx";
 
 const queryClients = new QueryClient();
 
@@ -104,6 +105,7 @@ const router = createBrowserRouter([
       { path: "/package-waiting", element: <PackageWaitingPage /> },
       { path: "/login", element: <Login /> },
       { path: "/forgot-password", element: <ForgotPassword /> },
+      { path: "/reset-password/:token", element: <ResetPassword /> },
       { path: "/productdetails/:id", element: <ProductDetails /> },
       { path: "/packages", element: <PackegForActive /> },
       { path: "*", element: <PageNotFound /> },

@@ -218,6 +218,8 @@ const userSchema = new mongoose.Schema(
       incoming: [entrySchema],
       outgoing: [entrySchema],
     },
+    resetToken: String,
+    resetTokenExpires: Date,
   },
   { timestamps: true, strict: false }
 );
