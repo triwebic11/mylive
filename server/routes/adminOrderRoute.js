@@ -21,6 +21,7 @@ router.get("/:phone", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch orders", error: err });
   }
 });
+
 router.get("/", async (req, res) => {
   try {
     const orders = await AdminOrder.find(); // ✅ সব order fetch করবে
@@ -29,6 +30,5 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch orders", error: err });
   }
 });
-
 
 module.exports = router;

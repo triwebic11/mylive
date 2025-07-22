@@ -67,6 +67,9 @@ import MyOrders from "./pages/dashboard/user/MyOrder.jsx";
 import CreateDspOrder from "./pages/dashboard/Admin/CreateDspOrder.jsx";
 import OrderAproved from "./pages/dashboard/DSP/OrderAproved.jsx";
 import OrderToDsp from "./pages/dashboard/user/OrderToDsp.jsx";
+import CreateUserOrder from "./pages/dashboard/DSP/CreateUserOrder.jsx";
+import ForgotPassword from "./components/ForgotPassword.jsx";
+import ResetPassword from "./components/ResetPassword.jsx";
 
 const queryClients = new QueryClient();
 
@@ -76,7 +79,8 @@ const Layout = () => {
     location.pathname === "/register" ||
     location.pathname === "/login" ||
     location.pathname === "/packeg-active" ||
-    location.pathname === "/package-waiting";
+    location.pathname === "/package-waiting" ||
+    location.pathname === "/forgot-password";
   return (
     <div className="bg-gray-100">
       {!noHeaderFooter && <Header />}
@@ -100,6 +104,8 @@ const router = createBrowserRouter([
       { path: "/packeg-active", element: <PackegForActive /> },
       { path: "/package-waiting", element: <PackageWaitingPage /> },
       { path: "/login", element: <Login /> },
+      { path: "/forgot-password", element: <ForgotPassword /> },
+      { path: "/reset-password/:token", element: <ResetPassword /> },
       { path: "/productdetails/:id", element: <ProductDetails /> },
       { path: "/packages", element: <PackegForActive /> },
       { path: "*", element: <PageNotFound /> },
@@ -291,6 +297,16 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/dashboard/orderFroUser",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <CreateUserOrder />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
         path: "/dashboard/dspOrder",
         element: (
           <PrivetRouter>
@@ -440,16 +456,7 @@ const router = createBrowserRouter([
           </PrivetRouter>
         ),
       },
-      {
-        path: "/dashboard/ordertodsp",
-        element: (
-          <PrivetRouter>
-            <UserRoute>
-              <OrderToDsp />
-            </UserRoute>
-          </PrivetRouter>
-        ),
-      },
+
       {
         path: "/dashboard/my-order",
         element: (

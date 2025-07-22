@@ -3,6 +3,7 @@ import useAuth from "../../../Hooks/useAuth";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
+import OrderAprovedByDsp from "./OrderAprovedByDsp";
 const MyOrders = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
@@ -60,10 +61,13 @@ const MyOrders = () => {
 
   return (
     <div className="pt-20 max-w-5xl mx-auto px-4">
-      <h2 className="text-2xl font-bold mb-6">
+      {/* <h2 className="text-2xl font-bold mb-6">
         My Orders- {userProductsArry?.length}
-      </h2>
-      {orders?.length === 0 ? (
+      </h2> */}
+      <div>
+        <OrderAprovedByDsp />
+      </div>
+      {/* {orders?.length === 0 ? (
         <p className="text-center text-gray-500">No orders found.</p>
       ) : (
         <div className="overflow-x-auto p-4">
@@ -116,7 +120,7 @@ const MyOrders = () => {
             </tbody>
           </table>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

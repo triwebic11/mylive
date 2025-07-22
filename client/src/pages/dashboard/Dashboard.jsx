@@ -37,7 +37,6 @@ const dashboardArry = [
   { title: "My Consistency", link: "/dashboard/my-consistency" },
   { title: "Voucher", link: "/dashboard/voucher" },
   { title: "Withdraw", link: "/dashboard/withdraw" },
-  { title: "Order Now", link: "/dashboard/ordertodsp" },
 
   { title: "My Order", link: "/dashboard/my-order" },
   // { title: "Package Update", link: "/dashboard" },
@@ -50,6 +49,7 @@ const DspDashboard = [
   { title: "Profile", link: "/dashboard/dspprofile" },
   { title: "All User's Orders", link: "/dashboard/allOrders" },
   { title: "Order Now", link: "/dashboard/dspOrder" },
+  { title: "Order For User", link: "/dashboard/orderFroUser" },
   { title: "Aproved Orders", link: "/dashboard/myAprovedOrders" },
   { title: "My Order", link: "/dashboard/myOrders" },
   { title: "Kyc", link: "/dashboard/kyc" },
