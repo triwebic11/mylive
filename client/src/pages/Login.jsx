@@ -61,7 +61,9 @@ const Login = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Phone Number / User ID</label>
+          <label className="block mb-1 font-medium">
+            Phone Number / User ID
+          </label>
           <input
             type="text"
             {...register("phone", { required: "Phone is required" })}
@@ -90,6 +92,7 @@ const Login = () => {
         >
           Login
         </button>
+        <Link to="/forgot-password" className="px-2 py-1 mt-2 inline-block border border-blue-300 hover:bg-blue-500 duration-300 hover:text-white rounded-lg">Forget password</Link>
 
         <p className="mt-4 text-sm text-center">
           Don’t have an account?{" "}
