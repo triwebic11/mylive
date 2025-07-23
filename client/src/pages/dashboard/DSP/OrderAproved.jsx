@@ -75,6 +75,10 @@ const OrderAproved = () => {
                     <strong className="text-gray-700">Date:</strong>{" "}
                     {order.date?.slice(0, 10)}
                   </p>
+                  <p>
+                    <strong className="font-semibold">Phone: </strong>{" "}
+                    {order?.dspPhone}
+                  </p>
                   <p className="text-blue-600 font-semibold">
                     Grand Total: ৳{order.grandTotal || "0"}
                   </p>
