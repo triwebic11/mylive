@@ -8,7 +8,7 @@ import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
 import KycDisplay from "../../../components/KycDisplay";
 const Profile = () => {
   const { user, setUser } = useAuth();
-  const userId = user?.user?._id || ""; // Ensure userId is defined, fallback to empty string
+  const userId = user?.user?._id || user?._id || ""; // Ensure userId is defined, fallback to empty string
   console.log("User data from useAuth: ", user);
   // Extract user data from useAuth, fallback to empty object
   // Ensure user is defined, fallback to empty object

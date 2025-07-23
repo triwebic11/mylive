@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 
 // Forgot Password
 router.post("/forgot-password", async (req, res) => {
-  const { phone } = req.body;
+  const { email } = req.body;
 
   const user = await User.findOne({ email });
   if (!user) return res.status(404).json({ message: "User not found" });
@@ -32,9 +32,15 @@ router.post("/forgot-password", async (req, res) => {
     },
   });
 
+  const receiverEmail = user?.email || user?.user?.email;
+
+if (!receiverEmail) {
+  return res.status(400).json({ message: "No email found for this user." });
+}
+
   await transporter.sendMail({
     from: '"My App" <shslira@gmail.com>',
-    to: user.email, // Email তোমার DB তে থাকতে হবে
+    to: receiverEmail, // Email তোমার DB তে থাকতে হবে
     subject: "Reset your password",
     html: `<p>Click <a href="${resetLink}">here</a> to reset your password</p>`,
   });

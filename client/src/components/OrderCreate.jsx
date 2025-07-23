@@ -1,112 +1,100 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
+import Swal from "sweetalert2";
+import useProducts from "../Hooks/useProducts";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
-
-const OrderCreate = ({ title, userId }) => {
+import useAuth from "../Hooks/useAuth";
+const OrderCreate = () => {
   const axiosSecure = useAxiosSecure();
-  const [dspPhone, setDspPhone] = useState("");
-  const [products, setProducts] = useState([
-    { productId: "", productRate: "", quantity: 1 },
+  const { user } = useAuth();
+
+  const [products, isLoading, isError, error] = useProducts();
+
+  const [scndProducts, setScndProducts] = useState([
+    { productId: "", productRate: "", name: "", pointValue: "", quantity: 1 },
   ]);
-  const [orders, setOrders] = useState([]);
-  const [search, setSearch] = useState({
-    phone: "",
-    productId: "",
-    date: "",
-  });
+  const [dspPhone, setDspPhone] = useState("");
+  const [order, setOrder] = useState(null);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  // ✅ fetch product list
 
-  const fetchOrders = async () => {
-    try {
-      const url = userId ? `/admin-orders/${userId}` : "/admin-orders";
-      const res = await axiosSecure.get(url);
-      setOrders(res.data);
-    } catch (error) {
-      console.error("Failed to fetch orders", error);
-    }
-  };
-
-  const handleAddProduct = () => {
-    setProducts([...products, { productId: "", productRate: "", quantity: 1 }]);
-  };
-
+  // ✅ handle form value changes
   const handleProductChange = (index, field, value) => {
-    const updated = products.map((p, i) =>
-      i === index ? { ...p, [field]: value } : p
-    );
-    setProducts(updated);
+    const updated = [...scndProducts];
+    updated[index][field] = value;
+    setScndProducts(updated);
   };
 
+  // ✅ add new product row
+  const addProductField = () => {
+    setScndProducts([
+      ...scndProducts,
+      { productId: "", productRate: "", name: "", pointValue: "", quantity: 1 },
+    ]);
+  };
+
+  // ✅ remove row
+  const removeProductField = (index) => {
+    const updated = scndProducts.filter((_, i) => i !== index);
+    setScndProducts(updated);
+  };
+
+  // ✅ calculate grand total
+  const calculateGrandTotal = () => {
+    return scndProducts.reduce((acc, p) => {
+      const subtotal =
+        (parseFloat(p.productRate) || 0) * (parseInt(p.quantity) || 0);
+      return acc + subtotal;
+    }, 0);
+  };
+
+  // ✅ form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Calculate subtotal for each product
-    const productsWithSubtotal = products.map((p) => {
-      const rate = parseFloat(p.productRate) || 0;
-      const qty = parseInt(p.quantity) || 0;
-      const subtotal = rate * qty;
-      return { ...p, subtotal };
-    });
-
-    const grandTotal = productsWithSubtotal.reduce(
-      (acc, curr) => acc + curr.subtotal,
-      0
-    );
+    const scndProductsWithSubtotal = scndProducts?.map((p) => ({
+      ...p,
+      subtotal: (parseFloat(p.productRate) || 0) * (parseInt(p.quantity) || 0),
+    }));
 
     const orderData = {
-      userId: userId,
+      userId: user?._id || user?.user?._id,
       dspPhone,
-      products: productsWithSubtotal,
-      grandTotal,
+      products: scndProductsWithSubtotal,
+      grandTotal: calculateGrandTotal(),
       date: new Date().toISOString(),
     };
 
-    await axiosSecure.post("/admin-orders", orderData);
-    fetchOrders();
-    setDspPhone("");
-    setProducts([{ productId: "", productRate: "", quantity: 1 }]);
+    try {
+      const res = await axiosSecure.post("/admin-orders", orderData);
+      if (res.data._id) {
+        setOrder(res.data);
+        Swal.fire("Success", "Order created!", "success");
+      }
+    } catch (error) {
+      console.error("Order creation failed", error);
+      Swal.fire("Error", "Failed to create order", "error");
+    }
   };
 
-  const filteredOrders = orders.filter((order) => {
-    return (
-      order.dspPhone.toLowerCase().includes(search.phone.toLowerCase()) &&
-      order.products.some((p) =>
-        p.productId.toLowerCase().includes(search.productId.toLowerCase())
-      ) &&
-      (!search.date || order.date.includes(search.date))
-    );
-  });
-
-  const grandTotal = products.reduce((acc, curr) => {
-    const rate = parseFloat(curr.productRate) || 0;
-    const qty = parseInt(curr.quantity) || 0;
-    return acc + rate * qty;
-  }, 0);
-
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center text-orange-700">
-        {title}
-      </h2>
-
-      {/* Order Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-white shadow-xl p-6 rounded-2xl border border-orange-400"
-      >
+    <div className="max-w-4xl mx-auto px-4 py-6">
+      <h2 className="text-xl font-bold mb-4">Create DSP Order</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
-          placeholder="DSP User Phone"
           value={dspPhone}
           onChange={(e) => setDspPhone(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-orange-400"
+          placeholder="Enter DSP Phone"
+          className="w-full px-4 py-2 border rounded"
           required
         />
 
-        {products.map((product, index) => {
+        {scndProducts?.map((product, index) => {
+          const matchedProduct = products?.find(
+            (p) => p.productId.toString() === product.productId.toString()
+          );
+
           const subtotal =
             (parseFloat(product.productRate) || 0) *
             (parseInt(product.quantity) || 0);
@@ -114,140 +102,126 @@ const OrderCreate = ({ title, userId }) => {
           return (
             <div
               key={index}
-              className="grid md:grid-cols-4 gap-3 items-center bg-gray-50 p-3 rounded-lg"
+              className="grid md:grid-cols-5 gap-3 items-center bg-gray-100 p-3 rounded-lg"
             >
-              <input
-                type="text"
-                placeholder="Product ID"
-                value={product.productId}
-                onChange={(e) =>
-                  handleProductChange(index, "productId", e.target.value)
-                }
-                className="px-3 py-2 border rounded-lg w-full"
-                required
-              />
+              {/* Product Selector */}
+              <div className="col-span-2">
+                <input
+                  list="product-options"
+                  value={product.productId}
+                  onChange={(e) => {
+                    const selectedId = e.target.value;
+                    handleProductChange(index, "productId", selectedId);
 
+                    const selected = products.find(
+                      (p) => p.productId.toString() === selectedId
+                    );
+
+                    if (selected) {
+                      handleProductChange(index, "productRate", selected.price);
+                      handleProductChange(
+                        index,
+                        "pointValue",
+                        selected.pointValue
+                      );
+                    }
+                  }}
+                  placeholder="Select Product"
+                  className="w-full border px-3 py-2 rounded"
+                  required
+                />
+                <datalist id="product-options">
+                  {products?.map((p) => (
+                    <option key={p._id} value={p.productId}>
+                      {p.productId} - {p.name}
+                    </option>
+                  ))}
+                </datalist>
+              </div>
+
+              {/* Rate */}
               <input
-                type="text"
-                placeholder="Product Rate"
+                type="number"
                 value={product.productRate}
                 onChange={(e) =>
                   handleProductChange(index, "productRate", e.target.value)
                 }
-                className="px-3 py-2 border rounded-lg w-full"
+                className="px-2 py-2 border rounded w-full"
+                placeholder="Rate"
                 required
               />
 
+              {/* Quantity */}
               <input
                 type="number"
-                placeholder="Quantity"
                 value={product.quantity}
                 onChange={(e) =>
                   handleProductChange(index, "quantity", e.target.value)
                 }
-                className="px-3 py-2 border rounded-lg w-full"
+                className="px-2 py-2 border rounded w-full"
+                placeholder="Qty"
                 required
               />
 
-              <div className="text-green-600 font-semibold">
+              {/* Summary */}
+              <div className="text-sm text-gray-700">
                 Subtotal: ৳{subtotal}
+                {matchedProduct && (
+                  <>
+                    <div>Name: {matchedProduct.name}</div>
+                    <div>PV: {matchedProduct.pointValue}</div>
+                  </>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeProductField(index)}
+                  className="text-red-600 text-xs mt-1 underline"
+                >
+                  Remove
+                </button>
               </div>
             </div>
           );
         })}
 
-        <div className="text-right text-xl font-bold text-blue-800">
-          Grand Total: ৳{grandTotal}
+        <button
+          type="button"
+          onClick={addProductField}
+          className="text-blue-600 font-semibold"
+        >
+          + Add More Product
+        </button>
+
+        <div className="font-bold text-lg text-right">
+          Grand Total: ৳{calculateGrandTotal()}
         </div>
 
         <button
-          type="button"
-          onClick={handleAddProduct}
-          className="bg-gray-200 hover:bg-gray-300 text-sm px-4 py-2 rounded-lg border border-gray-400"
-        >
-          + Add Product
-        </button>
-
-        <button
           type="submit"
-          className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg"
+          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
         >
           Submit Order
         </button>
       </form>
 
-      {/* Search Filter */}
-      <div className="mt-10">
-        <h3 className="text-xl font-semibold mb-4 text-gray-700">
-          Search Orders
-        </h3>
-        <h1 className="font-semibold my-1">
-          Total Orders: {filteredOrders.length}
-        </h1>
-        <div className="grid md:grid-cols-3 gap-3 mb-4">
-          <input
-            type="text"
-            placeholder="Filter by DSP Phone"
-            value={search.phone}
-            onChange={(e) => setSearch({ ...search, phone: e.target.value })}
-            className="px-3 py-2 border rounded-lg w-full"
-          />
-          <input
-            type="text"
-            placeholder="Filter by Product ID"
-            value={search.productId}
-            onChange={(e) =>
-              setSearch({ ...search, productId: e.target.value })
-            }
-            className="px-3 py-2 border rounded-lg w-full"
-          />
-          <input
-            type="date"
-            value={search.date}
-            onChange={(e) => setSearch({ ...search, date: e.target.value })}
-            className="px-3 py-2 border rounded-lg w-full"
-          />
-        </div>
-
-        {/* Order List */}
-        <div className="h-80 overflow-y-scroll bg-gray-100 p-4 rounded-2xl border border-gray-300">
-          {filteredOrders
-            .slice()
-            .reverse()
-            .map((order) => (
-              <div
-                key={order._id}
-                className="mb-4 bg-white p-4 rounded-lg shadow border border-gray-200"
-              >
-                <div className="flex justify-between items-center mb-2">
-                  <p>
-                    <strong className="text-gray-700">DSP:</strong>{" "}
-                    {order.dspPhone}
-                  </p>
-                  <p>
-                    <strong className="text-gray-700">Date:</strong>{" "}
-                    {order.date?.slice(0, 10)}
-                  </p>
-                </div>
-                <ul className="list-disc ml-5 space-y-1 text-sm">
-                  {order.products.map((p, i) => (
-                    <li key={i}>
-                      Product: <strong>{p.productId}</strong> | Qty:{" "}
-                      {p.quantity} | Rate: {p.productRate} |
-                      <span className="text-green-700 font-semibold">
-                        {" "}
-                        Subtotal: ৳{p.subtotal}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="text-right mt-2 text-blue-600 font-bold">
-                  Grand Total: ৳{order.grandTotal}
-                </div>
-              </div>
+      {/* ✅ Order Summary */}
+      {order && (
+        <div className="mt-8 border-t pt-4">
+          <h3 className="text-xl font-semibold mb-2">Order Summary</h3>
+          <p>DSP: {order.dspPhone}</p>
+          <ul className="text-sm list-disc ml-5">
+            {order.products?.map((p, i) => (
+              <li key={i}>
+                Product ID: {p.productId} | Qty: {p.quantity} | Rate: ৳
+                {p.productRate} | PV: {p.pointValue} | Subtotal: ৳{p.subtotal}
+              </li>
             ))}
+          </ul>
+          <div className="text-right font-bold mt-2">
+            Total: ৳{order.grandTotal}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
