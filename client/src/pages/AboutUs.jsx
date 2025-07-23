@@ -38,6 +38,7 @@
 // export default AboutUs;
 import React from "react";
 import { FaWhatsapp } from "react-icons/fa";
+import { company1, company2, company3, company4 } from "../assets";
 
 const AboutUs = () => {
     return (
@@ -129,6 +130,41 @@ const AboutUs = () => {
                         >
                             <FaWhatsapp className="mr-2 text-xl" /> 01750873763
                         </a>
+                    </div>
+                </div>
+                <div className="text-center bg-white rounded-2xl shadow-2xl p-6 my-10">
+
+                    <div className="max-w-6xl mx-auto text-center">
+                        <h2 className="text-3xl font-bold mb-8 text-indigo-600">About Our Company </h2>
+                        <p className="text-gray-600 mb-10 max-w-3xl mx-auto">
+                            Our company is officially registered and certified by the government authorities.
+                            We proudly hold all necessary licenses and certifications to operate legally and
+                            professionally. Transparency, compliance, and trust are the foundation of our services.
+                        </p>
+
+                        {/* Image Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <img
+                                src={company1}
+                                alt="Company Office 1"
+                                className="w-full h-84 object-cover rounded-xl shadow-md"
+                            />
+                            <img
+                                src={company4}
+                                alt="Company Office 2"
+                                className="w-full h-84 object-cover rounded-xl shadow-md"
+                            />
+                            <img
+                                src={company3}
+                                alt="Company Team 1"
+                                className="w-full h-84 object-cover rounded-xl shadow-md"
+                            />
+                            <img
+                                src={company2}
+                                alt="Company Team 2"
+                                className="w-full h-84 object-cover rounded-xl shadow-md"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

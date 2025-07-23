@@ -23,6 +23,10 @@ import logo from "./logo.jpg";
 import banner1 from "./banner1.jpg";
 import banner2 from "./banner2.jpg";
 import newBanner from "./newBanner.jpeg";
+import company1 from "./company-1.jpg";
+import company2 from "./company-2.jpg";
+import company3 from "./company-3.jpg";
+import company4 from "./company-4.jpg";
 
 export {
   onion,
@@ -50,4 +54,8 @@ export {
   neamSoap,
   detargent,
   cleaner,
+  company1,
+  company2,
+  company3,
+  company4,
 };
