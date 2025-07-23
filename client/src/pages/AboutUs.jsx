@@ -136,34 +136,42 @@ const AboutUs = () => {
 
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl font-bold mb-8 text-indigo-600">About Our Company </h2>
-                        <p className="text-gray-600 mb-10 max-w-3xl mx-auto">
+                        <p className="text-gray-800 font-medium mb-10 max-w-3xl text-md mx-auto">
                             Our company is officially registered and certified by the government authorities.
                             We proudly hold all necessary licenses and certifications to operate legally and
                             professionally. Transparency, compliance, and trust are the foundation of our services.
                         </p>
 
                         {/* Image Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <img
-                                src={company1}
-                                alt="Company Office 1"
-                                className="w-full h-84 object-cover rounded-xl shadow-md"
-                            />
-                            <img
-                                src={company4}
-                                alt="Company Office 2"
-                                className="w-full h-84 object-cover rounded-xl shadow-md"
-                            />
-                            <img
-                                src={company3}
-                                alt="Company Team 1"
-                                className="w-full h-84 object-cover rounded-xl shadow-md"
-                            />
-                            <img
-                                src={company2}
-                                alt="Company Team 2"
-                                className="w-full h-84 object-cover rounded-xl shadow-md"
-                            />
+                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <a href={company1} target="_blank" rel="noopener noreferrer">
+                                <img to="blank"
+                                    src={company1}
+                                    alt="Company Office 1"
+                                    className="w-full h-84 object-cover hover:scale-110 duration-500 cursor-pointer rounded-xl shadow-md"
+                                />
+                            </a>
+                            <a href={company4} target="_blank" rel="noopener noreferrer">
+                                <img
+                                    src={company4}
+                                    alt="Company Office 2"
+                                    className="w-full h-84 object-cover hover:scale-110 duration-500 cursor-pointer  rounded-xl shadow-md"
+                                />
+                            </a>
+                            <a href={company3} target="_blank" rel="noopener noreferrer">
+                                <img
+                                    src={company3}
+                                    alt="Company Team 1"
+                                    className="w-full h-84 object-cover  hover:scale-110 duration-500 cursor-pointer rounded-xl shadow-md"
+                                />
+                            </a>
+                            <a href={company2} target="_blank" rel="noopener noreferrer">
+                                <img target="blank"
+                                    src={company2}
+                                    alt="Company Team 2"
+                                    className="w-full h-84 object-cover hover:scale-110 duration-500 cursor-pointer rounded-xl shadow-md"
+                                />
+                            </a>
                         </div>
                     </div>
                 </div>

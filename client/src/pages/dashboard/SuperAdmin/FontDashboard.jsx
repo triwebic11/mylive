@@ -141,8 +141,8 @@ const FontDashboard = () => {
         {/* Scrolling Text */}
         {/* <marquee>sdfsdfsdfsdfsdfsdfsdf</marquee> */}
         <marquee className="flex-1 overflow-hidden font-semibold text-pink-600">
-          SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে সনিবার
-          ও রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন
+          SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে শনিবার
+          ও রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন |
         </marquee>
       </div>
       <TopSlider />
