@@ -7,6 +7,7 @@ const productSchema = new mongoose.Schema({
   pointValue: Number,
   quantity: Number,
   subtotal: Number, // ✅ Add this
+  subPoint: Number, // ✅ Add this
 });
 
 const adminOrderSchema = new mongoose.Schema({
@@ -18,6 +19,7 @@ const adminOrderSchema = new mongoose.Schema({
   dspPhone: String,
   products: [productSchema],
   grandTotal: Number, // ✅ Add this
+  grandPoint: Number, // ✅ Add this
   date: {
     type: String,
     default: new Date().toISOString(),

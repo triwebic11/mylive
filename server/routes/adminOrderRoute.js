@@ -6,13 +6,14 @@ const AdminOrder = require("../models/AdminOrder");
 // server/routes/adminOrders.js
 router.post("/", async (req, res) => {
   try {
-    const { userId, dspPhone, products, grandTotal } = req.body;
+    const { userId, dspPhone, products, grandTotal, grandPoint } = req.body;
 
     const newOrder = new AdminOrder({
       userId,
       dspPhone,
       products,
       grandTotal,
+      grandPoint,
       date: new Date().toISOString(),
     });
 

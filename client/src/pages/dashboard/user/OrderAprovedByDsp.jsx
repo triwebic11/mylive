@@ -82,6 +82,9 @@ const OrderAprovedByDsp = () => {
                   <p className="text-blue-600 font-semibold">
                     Grand Total: ৳{order.grandTotal || "0"}
                   </p>
+                  <p className="text-blue-600 font-semibold">
+                    Grand Point: ৳{order.grandPoint || "0"}
+                  </p>
                 </div>
 
                 <ul className="list-disc ml-5 space-y-1 text-sm">
@@ -91,6 +94,9 @@ const OrderAprovedByDsp = () => {
                       {p.quantity} | Rate: {p.productRate} | BV:{p.pointValue} |
                       <span className="text-green-700 font-semibold">
                         Subtotal: ৳{p.subtotal || 0}
+                      </span>
+                      <span className="text-green-700 font-semibold">
+                        SubPoint: ৳{p.subPoint || 0}
                       </span>
                     </li>
                   ))}
