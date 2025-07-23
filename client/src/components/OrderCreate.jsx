@@ -215,7 +215,7 @@ const OrderCreate = ({ title }) => {
                   {matchedProduct && (
                     <>
                       <p>Name: {matchedProduct.name}</p>
-                      <p>PV: {matchedProduct.pointValue}</p>
+                      <p>BV: {matchedProduct.pointValue}</p>
                     </>
                   )}
                   <button
