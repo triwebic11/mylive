@@ -16,7 +16,7 @@ const OrderAproved = () => {
   useEffect(() => {
     if (dspPhone) {
       axiosSecure
-        .get(`/admin-orders/${dspPhone}`)
+        .get(`/admin-orders/by-phone/${dspPhone}`)
         .then((res) => setOrders(res.data))
         .catch((err) => console.error("Error loading orders", err));
     }
@@ -83,8 +83,12 @@ const OrderAproved = () => {
                 <ul className="list-disc ml-5 space-y-1 text-sm">
                   {order.products.map((p, i) => (
                     <li key={i}>
-                      Product: <strong>{p.productId}</strong> | Qty:{" "}
-                      {p.quantity} | Rate: {p.productRate} |{" "}
+                      Product:{" "}
+                      <strong>
+                        {p.productId}-{p.name}
+                      </strong>{" "}
+                      | Qty: {p.quantity} | BV : {p.pointValue} | Rate:{" "}
+                      {p.productRate} |{" "}
                       <span className="text-green-700 font-semibold">
                         Subtotal: ৳{p.subtotal || 0}
                       </span>
