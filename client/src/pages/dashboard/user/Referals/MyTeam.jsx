@@ -9,7 +9,7 @@ import useAuth from "../../../../Hooks/useAuth";
 const Dashboard = () => {
   const { user } = useAuth();
   const userId = user?.user?._id;
-  const referralCode = user?.user?.referralCode || {};
+  const referralCode = user?.user?.referralCode || "";
   console.log("Referral code: ", referralCode);
   console.log("User data: ", user);
 
