@@ -26,6 +26,28 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+
+    // ✅ New Fields
+    repurchaseFreeProduct: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    consistencyFreeProduct: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    advanceConsistency: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    addConsistencyFreeProduct: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
   },
   { timestamps: true }
 );
