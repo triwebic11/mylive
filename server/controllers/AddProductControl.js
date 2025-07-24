@@ -2,12 +2,30 @@
 const Product = require("../models/AddProduct");
 
 // Create Product
+// controllers/productController.js
+const Product = require("../models/AddProduct");
+
+// Create Product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, image, details, price, pointValue, productId } = req.body;
+    const {
+      name,
+      image,
+      details,
+      price,
+      pointValue,
+      productId,
+      repurchaseFreeProduct = "No",
+      consistencyFreeProduct = "No",
+      advanceConsistency = "No",
+      addConsistencyFreeProduct = "No",
+    } = req.body;
 
+    // Validation
     if (!name || !image || !details || !price || !pointValue || !productId) {
-      return res.status(400).json({ message: "All fields are required." });
+      return res
+        .status(400)
+        .json({ message: "All required fields must be filled." });
     }
 
     const newProduct = new Product({
@@ -17,9 +35,14 @@ exports.createProduct = async (req, res) => {
       price,
       pointValue,
       productId,
+      repurchaseFreeProduct,
+      consistencyFreeProduct,
+      advanceConsistency,
+      addConsistencyFreeProduct,
     });
 
     await newProduct.save();
+
     res.status(201).json({ message: "Product created", product: newProduct });
   } catch (err) {
     console.error("Create Product Error:", err);

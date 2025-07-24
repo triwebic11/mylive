@@ -75,6 +75,12 @@ const AddProduct = () => {
   const [details, setDetails] = useState("");
   const [imageUrls, setImageUrls] = useState([]);
   const axiosSecure = useAxiosSecure();
+  const [productOptions, setProductOptions] = useState({
+    repurchaseFreeProduct: "",
+    consistencyFreeProduct: "",
+    advanceConsistency: "",
+    addConsistencyFreeProduct: "",
+  });
 
   // ✅ Tiptap Editor
   const editor = useEditor({
@@ -114,6 +120,14 @@ const AddProduct = () => {
     }
   };
 
+  const handleOptionChange = (e) => {
+    const { name, value } = e.target;
+    setProductOptions((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const onSubmit = async (data) => {
     const payload = {
       name: data.name,
@@ -122,6 +136,7 @@ const AddProduct = () => {
       price: data.price,
       pointValue: data.pointValue,
       productId: data.productId || " ",
+      ...productOptions, // Include the new 4 fields here
     };
 
     console.log("Form Data:", payload);
@@ -248,10 +263,18 @@ const AddProduct = () => {
 
         {/* Price */}
         <div>
-          <label className="block mb-1 font-semibold">Price (TK)</label>
+          <label className="block mb-1 font-semibold">DP(TK)</label>
           <input
             type="number"
             {...register("price", { required: true })}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">MRP(TK)</label>
+          <input
+            type="number"
+            {...register("mrpPrice", { required: true })}
             className="w-full border p-2 rounded"
           />
         </div>
@@ -273,6 +296,79 @@ const AddProduct = () => {
             {...register("productId", { required: true })}
             className="w-full border p-2 rounded"
           />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Repurchase Free Product */}
+          <div>
+            <label className="block mb-1 font-semibold">
+              Repurchase Free Product
+            </label>
+            <select
+              name="repurchaseFreeProduct"
+              value={productOptions.repurchaseFreeProduct}
+              onChange={handleOptionChange}
+              className="w-full border p-2 rounded"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          {/* Consistency Free Product */}
+          <div>
+            <label className="block mb-1 font-semibold">
+              Consistency Free Product
+            </label>
+            <select
+              name="consistencyFreeProduct"
+              value={productOptions.consistencyFreeProduct}
+              onChange={handleOptionChange}
+              className="w-full border p-2 rounded"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          {/* Advance Consistency */}
+          <div>
+            <label className="block mb-1 font-semibold">
+              Advance Consistency
+            </label>
+            <select
+              name="advanceConsistency"
+              value={productOptions.advanceConsistency}
+              onChange={handleOptionChange}
+              className="w-full border p-2 rounded"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          {/* Add Consistency Free Product */}
+          <div>
+            <label className="block mb-1 font-semibold">
+              Add Consistency Free Product
+            </label>
+            <select
+              name="addConsistencyFreeProduct"
+              value={productOptions.addConsistencyFreeProduct}
+              onChange={handleOptionChange}
+              className="w-full border p-2 rounded"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
         </div>
 
         {/* Submit */}
