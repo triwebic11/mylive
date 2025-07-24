@@ -15,6 +15,7 @@ const {
   userAgregateData,
   submitKycImages,
   getUserKycById,
+  getReferralTreeById,
 } = require("../controllers/userController");
 
 router.post("/register", registerUser);
@@ -22,6 +23,8 @@ router.post("/login", loginUser);
 router.get("/my-referrals/:refCode", getMyReferrals);
 router.get("/my-referrals/", getMyAllReferrals);
 router.post("/referral-tree", getReferralTreeDetails);
+router.get("/referral-tree/:userId", getReferralTreeById);
+
 router.put("/update-password/:userId", updateUserPassword);
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);

@@ -426,6 +426,7 @@ const router = createBrowserRouter([
           </PrivetRouter>
         ),
       },
+
       {
         path: "/dashboard/today-statement",
         element: (

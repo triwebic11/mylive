@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAuth from "../../../Hooks/useAuth";
+
 
 const OrderAprovedByDsp = () => {
   const [orders, setOrders] = useState([]);
@@ -12,11 +13,12 @@ const OrderAprovedByDsp = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const dspPhone = user?.user?.phone || user?.user?.email || "";
+  const pdfRef = useRef(); // PDF reference
 
   useEffect(() => {
     if (dspPhone) {
       axiosSecure
-        .get(`/admin-orders/${dspPhone}`)
+        .get(`/admin-orders/by-phone/${dspPhone}`)
         .then((res) => setOrders(res.data))
         .catch((err) => console.error("Error loading orders", err));
     }
@@ -31,14 +33,50 @@ const OrderAprovedByDsp = () => {
     );
   });
 
+  const handleDownloadPDF = async () => {
+    console.log("PDF GENERATION STARTED");
+
+    const html2pdf = (await import("html2pdf.js")).default;
+    const element = pdfRef.current;
+
+    if (!element) {
+      console.error("PDF element is missing");
+      return;
+    }
+
+    const opt = {
+      margin: 0.5,
+      filename: `OrdersByDSP_${new Date().toISOString().slice(0, 10)}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    };
+
+    html2pdf().from(element).set(opt).save();
+  };
+
+
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold text-orange-600 mb-6 text-center">
         Approved Orders
       </h2>
-      <h1 className="font-semibold my-1">
-        Total Orders: {filteredOrders?.length}
-      </h1>
+
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="font-semibold">
+          Total Orders: {filteredOrders?.length}
+        </h1>
+        {filteredOrders.length > 0 && (
+          <button
+            onClick={handleDownloadPDF}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Download PDF
+          </button>
+        )}
+      </div>
+
       {/* Filter Section */}
       <div className="mb-6 grid md:grid-cols-2 gap-4">
         <input
@@ -61,7 +99,10 @@ const OrderAprovedByDsp = () => {
       {filteredOrders.length === 0 ? (
         <p className="text-center text-gray-600">No orders found.</p>
       ) : (
-        <div className="space-y-4 max-h-[450px] overflow-y-auto bg-gray-50 p-4 rounded-xl border border-gray-300">
+        <div
+          ref={pdfRef}
+          className="space-y-4 max-h-[450px] overflow-y-auto bg-gray-50 p-4 rounded-xl border border-gray-300"
+        >
           {filteredOrders
             .slice()
             .reverse()
@@ -70,13 +111,20 @@ const OrderAprovedByDsp = () => {
                 key={order._id}
                 className="bg-white p-4 rounded-lg shadow-md border border-gray-200"
               >
-                <div className="flex justify-between items-center mb-2">
+                <div className="flex justify-between items-center mb-2 flex-wrap gap-2">
                   <p>
                     <strong className="text-gray-700">Date:</strong>{" "}
                     {order.date?.slice(0, 10)}
                   </p>
+                  <p>
+                    <strong className="font-semibold">Phone:</strong>{" "}
+                    {order?.dspPhone}
+                  </p>
                   <p className="text-blue-600 font-semibold">
                     Grand Total: ৳{order.grandTotal || "0"}
+                  </p>
+                  <p className="text-blue-600 font-semibold">
+                    Grand Point: {order.grandPoint || "0"}
                   </p>
                 </div>
 
@@ -84,9 +132,13 @@ const OrderAprovedByDsp = () => {
                   {order.products.map((p, i) => (
                     <li key={i}>
                       Product: <strong>{p.productId}</strong> | Qty:{" "}
-                      {p.quantity} | Rate: {p.productRate} |{" "}
+                      {p.quantity} | Rate: {p.productRate} | BV: {p.pointValue}{" "}
+                      |{" "}
                       <span className="text-green-700 font-semibold">
-                        Subtotal: ৳{p.subtotal || 0}
+                        Subtotal: ৳{p.subtotal || 0} |
+                      </span>{" "}
+                      <span className="text-green-700 font-semibold">
+                        SubPoint: {p.subPoint || 0}
                       </span>
                     </li>
                   ))}

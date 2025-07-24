@@ -1,7 +1,6 @@
 // src/pages/ForgotPassword.jsx
 
 import { useState } from "react";
-
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const ForgotPassword = () => {

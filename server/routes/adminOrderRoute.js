@@ -6,13 +6,14 @@ const AdminOrder = require("../models/AdminOrder");
 // server/routes/adminOrders.js
 router.post("/", async (req, res) => {
   try {
-    const { userId, dspPhone, products, grandTotal } = req.body;
+    const { userId, dspPhone, products, grandTotal, grandPoint } = req.body;
 
     const newOrder = new AdminOrder({
       userId,
       dspPhone,
       products,
       grandTotal,
+      grandPoint,
       date: new Date().toISOString(),
     });
 
@@ -24,9 +25,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-
-// 👉 GET: Fetch orders by DSP phone number
-router.get("/:phone", async (req, res) => {
+// ✅ GET: Fetch by DSP phone
+router.get("/by-phone/:phone", async (req, res) => {
   try {
     const orders = await AdminOrder.find({ dspPhone: req.params.phone });
     res.json(orders);
@@ -34,10 +34,11 @@ router.get("/:phone", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch orders", error: err });
   }
 });
-// 👉 GET: Fetch all orders or by user ID
-router.get("/:_id", async (req, res) => {
+
+// ✅ GET: Fetch by userId
+router.get("/by-user/:userId", async (req, res) => {
   try {
-    const orders = await AdminOrder.find({ userId: req.params._id }); // 🔄 _id → userId
+    const orders = await AdminOrder.find({ userId: req.params.userId });
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch orders", error: err });

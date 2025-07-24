@@ -155,7 +155,7 @@ const generateReferralCode = async () => {
 // };
 const registerUser = async (req, res) => {
   try {
-    const { name, phone, email, password, referralCode } = req.body;
+    const { name, phone, email, password, referralCode,placementBy } = req.body;
 
     // 1️⃣ Check if user already exists
     const existingUser = await User.findOne({ phone });
@@ -191,6 +191,7 @@ const registerUser = async (req, res) => {
       referralCode: newReferralCode,
       referredBy: referralCode || null,
       referralTree,
+      placementBy, // Include placement ID
     });
 
     // 5️⃣ ✅ Assign default package (optional but recommended)
@@ -265,6 +266,7 @@ const registerUser = async (req, res) => {
       message: "User registered successfully",
       userId: newUser._id,
       referralCode: newReferralCode,
+      placementBy,
       referralTree,
       points: newUser.points,
     });
@@ -612,6 +614,53 @@ const userAgregateData = async (req, res) => {
     res.status(500).json({ message: "Server Error", error: err.message });
   }
 };
+async function buildTree(userId) {
+  console.log("Building tree for user:", userId);
+  const user = await User.findById(userId);
+  if (!user) return null;
+
+  console.log("Building tree for user:", user.name);
+
+  // 🔍 Find users who have this user's referral code in either placementBy or referredBy
+  const children = await User.find({
+    $or: [
+      { placementBy: user.referralCode },
+      { referredBy: user.referralCode },
+    ]
+  });
+
+  console.log("Children found:", children.length);
+
+  // Recursively build tree for all children
+  const childrenTrees = await Promise.all(
+    children.map(child => buildTree(child._id))
+  );
+
+  return {
+    name: user.name,
+    _id: user._id,
+    referralCode: user.referralCode,
+    referredBy: user.referredBy,
+    placementBy: user.placementBy,
+    left: childrenTrees[0] || null,
+    right: childrenTrees[1] || null,
+    // children: childrenTrees, // 🌲 full array of children
+  };
+}
+
+const getReferralTreeById = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const tree = await buildTree(userId);
+    console.log("Referral Tree for:", userId);
+    res.json(tree);
+  } catch (err) {
+    console.error("Tree build error:", err);
+    res.status(500).json({ error: "Failed to fetch referral tree" });
+  }
+};
+
+
 
 module.exports = {
   registerUser,
@@ -625,4 +674,5 @@ module.exports = {
   updatProfileInfo,
   updateUserRole,
   userAgregateData,
+  getReferralTreeById
 };

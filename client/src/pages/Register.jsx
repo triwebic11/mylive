@@ -22,7 +22,10 @@ const Register = () => {
     address: "",
     password: "",
     referralCode: "",
+    placementBy: "", // New field for placement ID
   });
+
+  console.log("Register form state:", form);
 
   // ✅ Set referral code from URL if available
   useEffect(() => {
@@ -37,7 +40,6 @@ const Register = () => {
   const [userReferralCode, setUserReferralCode] = useState("");
   const [referralTree, setReferralTree] = useState([]);
   const [registeredUser, setRegisteredUser] = useState(null);
-  const [activePackeg, setActivePackeg] = useState("unactive");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -58,7 +60,7 @@ const Register = () => {
         postcode: form.postcode,
         address: form.address,
         password: form.password,
-
+        placementBy: form.placementBy, // Include placement ID
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
         // _id: res.data.userId,
@@ -136,7 +138,7 @@ const Register = () => {
         <div>
           <label>NID Number*</label>
           <input
-            name="phone"
+            name="nid"
             type="text"
             value={form.nid}
             onChange={handleChange}
@@ -237,6 +239,9 @@ const Register = () => {
         <div className="lg:col-span-2">
           <label>Placement ID</label>
           <input
+          name="placementBy"
+          value={form.placementBy}
+          onChange={handleChange}
             placeholder="Placement Id (optional)"
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           />
