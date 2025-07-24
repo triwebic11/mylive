@@ -33,27 +33,27 @@ const OrderAprovedByDsp = () => {
     );
   });
 
-const handleDownloadPDF = async () => {
-  console.log("PDF GENERATION STARTED");
+  const handleDownloadPDF = async () => {
+    console.log("PDF GENERATION STARTED");
 
-  const html2pdf = (await import("html2pdf.js")).default;
-  const element = pdfRef.current;
+    const html2pdf = (await import("html2pdf.js")).default;
+    const element = pdfRef.current;
 
-  if (!element) {
-    console.error("PDF element is missing");
-    return;
-  }
+    if (!element) {
+      console.error("PDF element is missing");
+      return;
+    }
 
-  const opt = {
-    margin: 0.5,
-    filename: `OrdersByDSP_${new Date().toISOString().slice(0, 10)}.pdf`,
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    const opt = {
+      margin: 0.5,
+      filename: `OrdersByDSP_${new Date().toISOString().slice(0, 10)}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    };
+
+    html2pdf().from(element).set(opt).save();
   };
-
-  html2pdf().from(element).set(opt).save();
-};
 
 
 
