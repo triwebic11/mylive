@@ -228,6 +228,16 @@ const OrderCreate = ({ title }) => {
                                 selected.pointValue
                               );
                               handleProductChange(index, "name", selected.name);
+                              hadleProductChange(
+                                index,
+                                "isConsistencyFree",
+                                selected.isConsistencyFree
+                              );
+                              handleProductChange(
+                                index,
+                                "isRepurchaseFree",
+                                selected.isRepurchaseFree
+                              );
                             }
                           }}
                           placeholder="Enter Product ID"
@@ -359,7 +369,7 @@ const OrderCreate = ({ title }) => {
                             {product.isRepurchaseFree ? "Yes" : "No"}
                           </td>
                           <td className="px-4 py-2 text-center">
-                            {product.isConsistencyFree  ? "Yes" : "No"}
+                            {product.isConsistencyFree ? "Yes" : "No"}
                           </td>
                         </tr>
                       </tbody>

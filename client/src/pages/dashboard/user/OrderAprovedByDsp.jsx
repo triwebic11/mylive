@@ -54,8 +54,6 @@ const OrderAprovedByDsp = () => {
     html2pdf().from(element).set(opt).save();
   };
 
-
-
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold text-orange-600 mb-6 text-center">
@@ -100,71 +98,86 @@ const OrderAprovedByDsp = () => {
       ) : (
         <div
           ref={pdfRef}
-          className="space-y-4 max-h-[500px] overflow-y-auto bg-white p-4 rounded-xl border border-gray-300"
+          className="space-y-4 max-h-[500px] overflow-y-auto bg-gray-50 p-4 rounded-xl border border-gray-300"
         >
-          {/* Table header for desktop */}
-          <div className="hidden md:grid grid-cols-6 bg-gray-100 px-4 py-2 font-semibold text-gray-700 rounded-md text-sm">
-            <div>Date</div>
-            <div>Phone</div>
-            <div>Product ID</div>
-            <div>Qty / Rate</div>
-            <div>Points</div>
-            <div className="text-right">Totals</div>
-          </div>
-
           {filteredOrders
             .slice()
             .reverse()
             .map((order) => (
               <div
                 key={order._id}
-                className="border-b border-gray-200 pb-4 mb-4 md:grid md:grid-cols-6 md:items-start gap-4 bg-white md:px-4"
+                className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition duration-300"
               >
-                {/* Date */}
-                <div className="text-sm">
-                  <p className="md:hidden text-gray-500 font-semibold">Date</p>
-                  <p>{order.date?.slice(0, 10)}</p>
-                </div>
-
-                {/* Phone */}
-                <div className="text-sm">
-                  <p className="md:hidden text-gray-500 font-semibold">Phone</p>
-                  <p>{order.dspPhone}</p>
-                </div>
-
-                {/* Products */}
-                <div className="text-sm col-span-2 space-y-2">
-                  {order.products.map((p, i) => (
-                    <div key={i}>
-                      <p className="font-medium text-gray-700">{p.productId}</p>
-                      <p className="text-xs text-gray-500">
-                        Qty: {p.quantity} × {p.productRate}৳
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Points */}
-                <div className="text-sm space-y-2">
-                  {order.products.map((p, i) => (
-                    <div key={i} className="text-xs">
-                      <p>BV: {p.pointValue}</p>
-                      <p>SubPoint: {p.subPoint || 0}</p>
-                      <p>SubDiscount: {p.subDiscount || 0}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Totals */}
-                <div className="text-sm text-right">
-                  <p className="text-blue-700 font-semibold">
-                    ৳ {order.grandTotal || 0}
+                {/* Part 1: Date and Phone */}
+                <div className="flex flex-wrap justify-between items-center mb-4 bg-blue-50 p-2 rounded-md">
+                  <p className="text-sm font-medium text-gray-700">
+                    📅 Date:{" "}
+                    <span className="font-semibold">
+                      {order.date?.slice(0, 10)}
+                    </span>
                   </p>
-                  <p className="text-blue-700 font-semibold">
-                    Points: {order.grandPoint || 0}
+                  <p className="text-sm font-medium text-gray-700">
+                    📞 Phone:{" "}
+                    <span className="font-semibold">{order?.dspPhone}</span>
                   </p>
-                  <p className="text-blue-700 font-semibold">
-                    Discount: {order.grandDiscount || 0}
+                </div>
+
+                {/* Product Info Section */}
+                <div className="bg-gray-100 p-3 rounded-md mb-3">
+                  <h3 className="font-semibold text-gray-800 mb-2">
+                    🛒 Product Details:
+                  </h3>
+
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm border border-gray-300 rounded-md">
+                      <thead className="bg-gray-200 text-gray-700">
+                        <tr>
+                          <th className="py-1 px-2 border">Product</th>
+                          <th className="py-1 px-2 border">Qty</th>
+                          <th className="py-1 px-2 border">BV</th>
+                          <th className="py-1 px-2 border">Rate (৳)</th>
+                          <th className="py-1 px-2 border">Subtotal (৳)</th>
+                          <th className="py-1 px-2 border">SubPoint</th>
+                          <th className="py-1 px-2 border">SubDiscount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {order.products.map((p, i) => (
+                          <tr key={i} className="text-center text-gray-800">
+                            <td className="py-1 px-2 border font-semibold">
+                              {p.productId}-{p.name}
+                            </td>
+                            <td className="py-1 px-2 border">{p.quantity}</td>
+                            <td className="py-1 px-2 border">{p.pointValue}</td>
+                            <td className="py-1 px-2 border">
+                              ৳{p.productRate}
+                            </td>
+                            <td className="py-1 px-2 border">
+                              ৳{p.subtotal || 0}
+                            </td>
+                            <td className="py-1 px-2 border">
+                              {p.subPoint || 0}
+                            </td>
+                            <td className="py-1 px-2 border">
+                              {p.subDiscount || 0}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Part 3: Grand Totals */}
+                <div className="flex flex-wrap justify-between bg-green-50 p-2 rounded-md text-sm font-medium text-gray-800">
+                  <p className="text-blue-700">
+                    💰 Grand Total: ৳{order.grandTotal || "0"}
+                  </p>
+                  <p className="text-blue-700">
+                    🎯 Grand Point: {order.grandPoint || "0"}
+                  </p>
+                  <p className="text-blue-700">
+                    🏷️ Grand Discount: {order.grandDiscount || "0"}
                   </p>
                 </div>
               </div>
