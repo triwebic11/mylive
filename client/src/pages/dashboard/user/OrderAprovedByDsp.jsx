@@ -14,6 +14,8 @@ const OrderAprovedByDsp = () => {
   const dspPhone = user?.user?.phone || user?.user?.email || "";
   const pdfRef = useRef(); // PDF reference
 
+  console.log("Allllll orderssssssss", orders);
+
   useEffect(() => {
     if (dspPhone) {
       axiosSecure
@@ -139,6 +141,12 @@ const OrderAprovedByDsp = () => {
                           <th className="py-1 px-2 border">Subtotal (৳)</th>
                           <th className="py-1 px-2 border">SubPoint</th>
                           <th className="py-1 px-2 border">SubDiscount</th>
+                          <th className="py-1 px-2 border">
+                            Repurchase Free Products
+                          </th>
+                          <th className="py-1 px-2 border">
+                            Consistency Free Products
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -160,6 +168,12 @@ const OrderAprovedByDsp = () => {
                             </td>
                             <td className="py-1 px-2 border">
                               {p.subDiscount || 0}
+                            </td>
+                            <td className="py-1 px-2 border">
+                              {p.isRepurchaseFree ? "Yes" : "No"}
+                            </td>
+                            <td className="py-1 px-2 border">
+                              {p.isConsistencyFree ? "Yes" : "No"}
                             </td>
                           </tr>
                         ))}
