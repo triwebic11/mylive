@@ -184,6 +184,7 @@ const userSchema = new mongoose.Schema(
     nophone: String,
     referralCode: String,
     referredBy: String,
+    placementBy: String,
     referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
     userStatus: String,
     GenerationLevel: {

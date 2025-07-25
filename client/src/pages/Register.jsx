@@ -4,11 +4,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Dashboard from "./dashboard/Dashboard.jsx";
 import useAuth from "../Hooks/useAuth.jsx";
 import useAxiosPublic from "../Hooks/useAxiosPublic.jsx";
-import { logo } from "../assets/index.js"; // Assuming you have a logo image
+import { logo } from "../assets/index.js";
+import { Eye, EyeOff } from "lucide-react";
+
 const Register = () => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ for query params
+  const location = useLocation();
 
   const [form, setForm] = useState({
     name: "",
@@ -22,9 +24,15 @@ const Register = () => {
     address: "",
     password: "",
     referralCode: "",
+    placementBy: "",
   });
 
-  // ✅ Set referral code from URL if available
+  const [showPassword, setShowPassword] = useState(false);
+  const axiosPublic = useAxiosPublic();
+  const [userReferralCode, setUserReferralCode] = useState("");
+  const [referralTree, setReferralTree] = useState([]);
+  const [registeredUser, setRegisteredUser] = useState(null);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const refCode = params.get("ref");
@@ -32,12 +40,6 @@ const Register = () => {
       setForm((prev) => ({ ...prev, referralCode: refCode }));
     }
   }, [location.search]);
-
-  const axiosPublic = useAxiosPublic();
-  const [userReferralCode, setUserReferralCode] = useState("");
-  const [referralTree, setReferralTree] = useState([]);
-  const [registeredUser, setRegisteredUser] = useState(null);
-  const [activePackeg, setActivePackeg] = useState("unactive");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -48,20 +50,9 @@ const Register = () => {
     try {
       const res = await axiosPublic.post("/users/register", form);
       const userData = {
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        nid: form.nid,
-        dob: form.dob,
-        division: form.division,
-        city: form.city,
-        postcode: form.postcode,
-        address: form.address,
-        password: form.password,
-
+        ...form,
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
-        // _id: res.data.userId,
       };
       localStorage.setItem("user", JSON.stringify(userData));
       setUserReferralCode(res.data.referralCode);
@@ -76,14 +67,13 @@ const Register = () => {
         timer: 1500,
       });
 
-      navigate("/packeg-active", {
-        state: { user: userData },
-      });
+      navigate("/packeg-active", { state: { user: userData } });
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
       console.log("register err - ", err);
     }
   };
+
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 rounded-5xl px-4 py-5">
       <div>
@@ -96,6 +86,7 @@ const Register = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-3xl bg-white p-6 rounded-md shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4"
       >
+        {/* Other input fields */}
         <div>
           <label>Full Name / User ID*</label>
           <input
@@ -133,15 +124,16 @@ const Register = () => {
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           />
         </div>
+
         <div>
           <label>NID Number*</label>
           <input
-            name="phone"
+            name="nid"
             type="text"
             value={form.nid}
             onChange={handleChange}
             required
-            placeholder="Phone Number"
+            placeholder="NID Number"
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           />
         </div>
@@ -178,17 +170,24 @@ const Register = () => {
           </select>
         </div>
 
-        <div>
+
+        <div className="relative">
           <label>Enter a new password</label>
           <input
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={form.password}
             onChange={handleChange}
             required
             placeholder="Password"
-            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+            className="w-full border border-gray-300 px-3 py-2 pr-10 rounded-md mt-1"
           />
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-9 text-gray-600 cursor-pointer hover:text-gray-800"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </span>
         </div>
 
         <div>
@@ -237,6 +236,9 @@ const Register = () => {
         <div className="lg:col-span-2">
           <label>Placement ID</label>
           <input
+            name="placementBy"
+            value={form.placementBy}
+            onChange={handleChange}
             placeholder="Placement Id (optional)"
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           />
@@ -249,13 +251,6 @@ const Register = () => {
           >
             Register
           </button>
-
-          {/* <Link
-            to="/login"
-            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition mx-2"
-          >
-            Login
-          </Link> */}
         </div>
       </form>
 

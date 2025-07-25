@@ -24,6 +24,7 @@
 //                 <p className="mb-4">
 //                     Founded on the principles of trust, transparency, and integrity, SHS Lira Manufacturing & Marketing Ltd has rapidly grown to become a leading name in direct selling. We offer a diverse portfolio of products ranging from health and wellness to personal care, catering to the varied needs of our customers. Our commitment to excellence drives us to continually innovate and bring the best products to the market.
 
+
 //                 </p>
 
 //                 <p>
@@ -43,14 +44,10 @@ const AboutUs = () => {
   return (
     <section className="bg-gray-100 min-h-screen py-12 mt-8 px-6 md:px-16 lg:px-24">
       <div className=" p-8 md:p-12 max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-indigo-700 mb-10  pb-4">
-          About Us – SHS Enterprise Ltd
-        </h1>
+        <h1 className="text-4xl font-bold text-center text-indigo-700 mb-10  pb-4">About Us – SHS Enterprise Ltd</h1>
 
         <div className="mb-10 bg-white rounded-2xl shadow-xl p-10">
-          <h2 className="text-3xl font-bold mb-8 text-indigo-600">
-            Businesses operated here at our SHS Enterprise Ltd
-          </h2>
+          <h2 className="text-3xl font-bold mb-8 text-indigo-600">Businesses operated here at our SHS Enterprise  Ltd</h2>
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 list-disc list-inside text-gray-700">
             <li>S H S Lira Building Construction and Development Ltd.</li>
             <li>S H S Lira Printing and Packaging</li>
@@ -61,9 +58,7 @@ const AboutUs = () => {
         </div>
 
         <div className="mb-10 bg-white rounded-2xl shadow-xl p-10">
-          <h2 className="text-3xl font-bold mb-8 text-indigo-600">
-            Organizations
-          </h2>
+          <h2 className="text-3xl font-bold mb-8 text-indigo-600">Organizations</h2>
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-disc list-inside text-gray-700">
             <li>S H S Lira (BD) Ltd.</li>
             <li>S H S Lira Ayan Publications Ltd.</li>
@@ -73,68 +68,36 @@ const AboutUs = () => {
             <li>S H S Lira Agro Ltd.</li>
             <li>S H S Lira ICT Academy Ltd.</li>
             <li>S H S Lira Publications Ltd.</li>
-            <li>
-              S H S Lira Motor Bike, AutoCharger, and Machinery Services Ltd.
-            </li>
+            <li>S H S Lira Motor  Bike, AutoCharger, and Machinery  Services Ltd.</li>
             <li>S H S Lira Laundry & Drywall Ltd.</li>
             <li>S H S Lira Digital TelusLtd.</li>
             <li>S H S Lira Tour (Local) Ltd.</li>
             <li>S H S Lira Event Management and Communication Ltd.</li>
-            <li>
-              S H S Lira Services Technology, Electric, Electronics,Mechanical
-              Ltd.
-            </li>
+            <li>S H S Lira Services Technology, Electric, Electronics,Mechanical Ltd.</li>
             <li>S H S Lira Digital Courier Services Ltd.</li>
             <li>S H S Lira Transportation Services Ltd.</li>
             <li>S H S Lira Restaurant and Food Services Ltd.</li>
             <li>S H S Lira Fisheries and Dairy Farm Services Ltd.</li>
             <li>S H S Lira Showroom Product Services Ltd.</li>
             <li>S H S Lira Online Market Place Services Ltd.</li>
-            <li>
-              S H S Lira Product Production, Manufacturing and Marketing Ltd.
-            </li>
+            <li>S H S Lira Product Production, Manufacturing and Marketing Ltd.</li>
           </ul>
         </div>
 
         <div className="mb-10 bg-white rounded-2xl shadow-xl p-10">
-          <h2 className="text-3xl font-bold mb-8 text-indigo-600">
-            Investment Information
-          </h2>
+          <h2 className="text-3xl font-bold mb-8 text-indigo-600">Investment Information</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
-            You can invest in our business institutions in various ways. The
-            profit you make with your invested money will be shared
-            proportionally according to the terms of the agreement. You can
-            invest starting from 1,00000 to one lakh taka up to crores of taka.
+            You can invest in our business institutions in various ways. The profit you make with your invested money will be shared proportionally according to the terms of the agreement. You can invest starting from 1,00000 to one lakh taka up to crores of taka.
           </p>
-          <h3 className="text-2xl font-bold mb-8 text-indigo-600">
-            Advantages:
-          </h3>
+          <h3 className="text-2xl font-bold mb-8 text-indigo-600">Advantages:</h3>
           <ul className="list-disc list-inside space-y-1 text-gray-700">
             <li>You can understand all our business activities in advance.</li>
-            <li>
-              You can invest after seeing everything and understanding it by
-              coming to our office.
-            </li>
-            <li>
-              You get the opportunity to earn profit from interest-free and
-              halal business.
-            </li>
-            <li>
-              Since all our investment sectors will be clearly explained to you,
-              there is no opportunity for haram profit.
-            </li>
-            <li>
-              According to the past investment record, the profit rate is higher
-              than the Islamic banking profit rate, by the grace of Allah.
-            </li>
-            <li>
-              Since you can come directly to our office, you will get the
-              opportunity to understand us better.
-            </li>
-            <li>
-              You get the transaction agreement/proof according to the Sunnah,
-              i.e. stamps and checks, so you are also very sure about security.
-            </li>
+            <li>You can invest after seeing everything and understanding it by coming to our office.</li>
+            <li>You get the opportunity to earn profit from interest-free and halal business.</li>
+            <li>Since all our investment sectors will be clearly explained to you, there is no opportunity for haram profit.</li>
+            <li>According to the past investment record, the profit rate is higher than the Islamic banking profit rate, by the grace of Allah.</li>
+            <li>Since you can come directly to our office, you will get the opportunity to understand us better.</li>
+            <li>You get the transaction agreement/proof according to the Sunnah, i.e. stamps and checks, so you are also very sure about security.</li>
           </ul>
         </div>
 
@@ -143,22 +106,13 @@ const AboutUs = () => {
           <ul className="list-disc list-inside space-y-1 text-gray-700">
             <li>Must be done for at least 5 years</li>
             <li>You will be paid profit every day/monthly.</li>
-            <li>
-              3 stamps of 100 taka for security and all rules and regulations
-              will be followed if necessary.
-            </li>
-            <li>
-              For now, investment can be made for a maximum of 3 years. That is,
-              we will make a contract for a maximum of 5 years. Later, if our
-              policy matches with you, the contract can be increased.
-            </li>
+            <li>3 stamps of 100 taka for security and all rules and regulations will be followed if necessary.</li>
+            <li>For now, investment can be made for a maximum of 3 years. That is, we will make a contract for a maximum of 5 years. Later, if our policy matches with you, the contract can be increased.</li>
           </ul>
         </div>
 
         <div className="text-center bg-white rounded-2xl shadow-2xl p-6">
-          <h2 className="text-xl font-semibold mb-2 text-indigo-700">
-            📞 Contact
-          </h2>
+          <h2 className="text-xl font-semibold mb-2 text-indigo-700">📞 Contact</h2>
           <div className="flex flex-col items-center space-y-2 text-lg">
             <a
               href="https://wa.me/8801713784136"
@@ -179,40 +133,45 @@ const AboutUs = () => {
           </div>
         </div>
         <div className="text-center bg-white rounded-2xl shadow-2xl p-6 my-10">
+
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-8 text-indigo-600">
-              About Our Company{" "}
-            </h2>
-            <p className="text-gray-600 mb-10 max-w-3xl mx-auto">
-              Our company is officially registered and certified by the
-              government authorities. We proudly hold all necessary licenses and
-              certifications to operate legally and professionally.
-              Transparency, compliance, and trust are the foundation of our
-              services.
+            <h2 className="text-3xl font-bold mb-8 text-indigo-600">About Our Company </h2>
+            <p className="text-gray-800 font-medium mb-10 max-w-3xl text-md mx-auto">
+              Our company is officially registered and certified by the government authorities.
+              We proudly hold all necessary licenses and certifications to operate legally and
+              professionally. Transparency, compliance, and trust are the foundation of our services.
             </p>
 
             {/* Image Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <img
-                src={company1}
-                alt="Company Office 1"
-                className="w-full h-84 object-cover rounded-xl shadow-md hover:scale-200 duration-300"
-              />
-              <img
-                src={company4}
-                alt="Company Office 2"
-                className="w-full h-84 object-cover rounded-xl shadow-md hover:scale-200 duration-300"
-              />
-              <img
-                src={company3}
-                alt="Company Team 1"
-                className="w-full h-84 object-cover rounded-xl shadow-md hover:scale-200 duration-300"
-              />
-              <img
-                src={company2}
-                alt="Company Team 2"
-                className="w-full h-84 object-cover rounded-xl shadow-md hover:scale-200 duration-300"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <a href={company1} target="_blank" rel="noopener noreferrer">
+                <img to="blank"
+                  src={company1}
+                  alt="Company Office 1"
+                  className="w-full h-84 object-cover hover:scale-110 duration-500 cursor-pointer rounded-xl shadow-md"
+                />
+              </a>
+              <a href={company4} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={company4}
+                  alt="Company Office 2"
+                  className="w-full h-84 object-cover hover:scale-110 duration-500 cursor-pointer  rounded-xl shadow-md"
+                />
+              </a>
+              <a href={company3} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={company3}
+                  alt="Company Team 1"
+                  className="w-full h-84 object-cover  hover:scale-110 duration-500 cursor-pointer rounded-xl shadow-md"
+                />
+              </a>
+              <a href={company2} target="_blank" rel="noopener noreferrer">
+                <img target="blank"
+                  src={company2}
+                  alt="Company Team 2"
+                  className="w-full h-84 object-cover hover:scale-110 duration-500 cursor-pointer rounded-xl shadow-md"
+                />
+              </a>
             </div>
           </div>
         </div>

@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
-import { logo } from "../assets/index.js"; // Assuming you have a logo image
+import { logo } from "../assets/index.js";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const {
@@ -15,6 +16,8 @@ const Login = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(AuthContext);
   const axiosPublic = useAxiosPublic();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data) => {
     try {
@@ -32,7 +35,7 @@ const Login = () => {
         timer: 1500,
       });
 
-      navigate("/dashboard"); // redirect to dashboard or home
+      navigate("/dashboard");
       localStorage.setItem("userId", res.data.user._id);
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -74,13 +77,20 @@ const Login = () => {
           )}
         </div>
 
-        <div className="mb-6">
+        {/* 🔒 Password with show/hide toggle */}
+        <div className="mb-6 relative">
           <label className="block mb-1 font-medium">Password</label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             {...register("password", { required: "Password is required" })}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
+            className="w-full px-3 py-2 border border-gray-300 rounded pr-10"
           />
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-9 cursor-pointer text-gray-600 hover:text-gray-800"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </span>
           {errors.password && (
             <p className="text-red-500 text-sm">{errors.password.message}</p>
           )}
