@@ -123,7 +123,6 @@ const OrderCreate = ({ title }) => {
     try {
       // const res = await axiosSecure.post("/admin-orders", orderData);
 
-
       console.log(`ordersssss`, orderData);
       // if (res.data._id) {
       //   setOrder(res.data);
@@ -358,7 +357,7 @@ const OrderCreate = ({ title }) => {
                       </tr>
                     </tbody>
                   </table>
-                  <div>
+                  <div className="flex justify-between mt-3 px-3">
                     <table>
                       <thead>
                         <th className="px-4 py-2 my-2 md:my-0">
@@ -379,6 +378,15 @@ const OrderCreate = ({ title }) => {
                         </tr>
                       </tbody>
                     </table>
+                    {subtotal >= 5000 && (
+                      <div className="font-semibold text-lg">
+                        {" "}
+                        Advance Consistency:{" "}
+                        <span className="font-bold text-green-900 mr-3">
+                          Yes
+                        </span>{" "}
+                      </div>
+                    )}
                   </div>
                 </div>
 
