@@ -18,6 +18,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    mrpPrice: {
+      type: Number,
+      required: true,
+    },
     pointValue: {
       type: Number,
       required: true,
@@ -27,27 +31,10 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
-    // ✅ New Fields
-    repurchaseFreeProduct: {
-      type: String,
-      enum: ["Yes", "No"],
-      default: "No",
-    },
-    consistencyFreeProduct: {
-      type: String,
-      enum: ["Yes", "No"],
-      default: "No",
-    },
-    advanceConsistency: {
-      type: String,
-      enum: ["Yes", "No"],
-      default: "No",
-    },
-    addConsistencyFreeProduct: {
-      type: String,
-      enum: ["Yes", "No"],
-      default: "No",
-    },
+    isRepurchaseFree: { type: Boolean, default: false },
+    isConsistencyFree: { type: Boolean, default: false },
+    // isAdvanceConsistency: { type: Boolean, default: false },
+    // isAddConsistencyFree: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

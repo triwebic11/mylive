@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import useProducts from "../../../Hooks/useProducts";
 import ProductForm from "./ProductForm";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const AllProducts = () => {
   const [products, isLoading, isError, error, refetch] = useProducts();
@@ -11,6 +12,7 @@ const AllProducts = () => {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    mrpPrice: "",
     pointValue: "",
     productId: "",
     details: "",
@@ -21,9 +23,12 @@ const AllProducts = () => {
     setFormData({
       name: product.name,
       price: product.price,
+      mrpPrice: product.mrpPrice,
       pointValue: product.pointValue,
       productId: product.productId,
       details: product.details,
+      isRepurchaseFree: product.isRepurchaseFree || false,
+      isConsistencyFree: product.isConsistencyFree || false,
     });
   };
 
@@ -32,6 +37,7 @@ const AllProducts = () => {
     setFormData({
       name: "",
       price: "",
+      mrpPrice: "",
       pointValue: "",
       productId: "",
       details: "",
@@ -49,6 +55,12 @@ const AllProducts = () => {
 
       refetch();
       setSelectedProduct(null); // Close modal
+      Swal.fire({
+        icon: "success",
+        title: "Product Updated",
+        text: "Product update successfully!",
+        showConfirmButton: true,
+      });
     } catch (err) {
       console.error("Update failed", err);
     }
@@ -77,6 +89,7 @@ const AllProducts = () => {
               <th className="px-4 py-2 border">Image</th>
               <th className="px-4 py-2 border">Details</th>
               <th className="px-4 py-2 border">Price</th>
+              <th className="px-4 py-2 border">MRP Price</th>
               <th className="px-4 py-2 border">Point Value</th>
               <th className="px-4 py-2 border">Product Id</th>
               <th className="px-4 py-2 border">Created At</th>
@@ -95,6 +108,7 @@ const AllProducts = () => {
                   dangerouslySetInnerHTML={{ __html: product.details }}
                 />
                 <td className="px-4 py-2 border">{product.price} TK</td>
+                <td className="px-4 py-2 border">{product.mrpPrice} TK</td>
                 <td className="px-4 py-2 border">{product.pointValue}</td>
                 <td className="px-4 py-2 border">{product.productId}</td>
                 <td className="px-4 py-2 border">

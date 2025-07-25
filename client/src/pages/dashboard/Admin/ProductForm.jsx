@@ -47,13 +47,19 @@ const ProductForm = ({
   onSubmit,
   buttonText = "Add Product",
 }) => {
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       name: defaultValues.name || "",
       price: defaultValues.price || "",
+      mrpPrice: defaultValues.mrpPrice || "",
       pointValue: defaultValues.pointValue || "",
       productId: defaultValues.productId || "",
+      isRepurchaseFree: defaultValues.isRepurchaseFree || false,
+      isConsistencyFree: defaultValues.isConsistencyFree || false,
+      // isAdvanceConsistency: defaultValues.isAdvanceConsistency || false,
+      // isAddConsistencyFree: defaultValues.isAddConsistencyFree || false,
     },
+    shouldUnregister: false, // ✅ এটি দিয়ে checkbox values track থাকবে
   });
 
   const [imageUrls, setImageUrls] = useState(defaultValues.image || []);
@@ -78,8 +84,13 @@ const ProductForm = ({
     reset({
       name: defaultValues.name || "",
       price: defaultValues.price || "",
+      mrpPrice: defaultValues.mrpPrice || "",
       pointValue: defaultValues.pointValue || "",
       productId: defaultValues.productId || "",
+      isRepurchaseFree: !!defaultValues.isRepurchaseFree,
+      isConsistencyFree: !!defaultValues.isConsistencyFree,
+      // isAdvanceConsistency: !!defaultValues.isAdvanceConsistency,
+      // isAddConsistencyFree: !!defaultValues.isAddConsistencyFree,
     });
     setDetails(defaultValues.details || "");
     setImageUrls(defaultValues.image || []);
@@ -108,6 +119,8 @@ const ProductForm = ({
       ...data,
       details,
       image: imageUrls,
+      purchaseFreeProduct: data.isRepurchaseFree ? "Yes" : "No",
+      consistencyFreeProduct: data.isConsistencyFree ? "Yes" : "No",
     });
   };
 
@@ -199,10 +212,18 @@ const ProductForm = ({
       </div>
 
       <div>
-        <label className="block mb-1 font-semibold">Price (TK)</label>
+        <label className="block mb-1 font-semibold">DP Price (TK)</label>
         <input
           type="number"
           {...register("price", { required: true })}
+          className="w-full border p-2 rounded"
+        />
+      </div>
+      <div>
+        <label className="block mb-1 font-semibold">MRP Price(TK)</label>
+        <input
+          type="number"
+          {...register("mrpPrice", { required: true })}
           className="w-full border p-2 rounded"
         />
       </div>
@@ -222,6 +243,40 @@ const ProductForm = ({
           {...register("productId", { required: true })}
           className="w-full border p-2 rounded"
         />
+      </div>
+      <div className="space-y-2">
+        <label className="block">
+          <input
+            type="checkbox"
+            {...register("isRepurchaseFree")}
+            className="mr-2"
+          />
+          Repurchase Free Product
+        </label>
+        <label className="block">
+          <input
+            type="checkbox"
+            {...register("isConsistencyFree")}
+            className="mr-2"
+          />
+          Consistency Free Product
+        </label>
+        {/* <label className="block">
+          <input
+            type="checkbox"
+            {...register("isAdvanceConsistency")}
+            className="mr-2"
+          />
+          Advance Consistency
+        </label>
+        <label className="block">
+          <input
+            type="checkbox"
+            {...register("isAddConsistencyFree")}
+            className="mr-2"
+          />
+          Add Consistency Free
+        </label> */}
       </div>
 
       <button
