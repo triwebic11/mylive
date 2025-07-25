@@ -231,7 +231,7 @@ const OrderCreate = ({ title }) => {
                                 selected.pointValue
                               );
                               handleProductChange(index, "name", selected.name);
-                              hadleProductChange(
+                              handleProductChange(
                                 index,
                                 "isConsistencyFree",
                                 selected.isConsistencyFree
