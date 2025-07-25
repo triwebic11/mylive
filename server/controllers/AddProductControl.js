@@ -3,7 +3,7 @@ const Product = require("../models/AddProduct");
 
 // Create Product
 // controllers/productController.js
-const Product = require("../models/AddProduct");
+// const Product = require("../models/AddProduct");
 
 // Create Product
 exports.createProduct = async (req, res) => {
