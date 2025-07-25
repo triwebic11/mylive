@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAuth from "../../../Hooks/useAuth";
 
-
 const OrderAprovedByDsp = () => {
   const [orders, setOrders] = useState([]);
   const [search, setSearch] = useState({
@@ -33,29 +32,27 @@ const OrderAprovedByDsp = () => {
     );
   });
 
-const handleDownloadPDF = async () => {
-  console.log("PDF GENERATION STARTED");
+  const handleDownloadPDF = async () => {
+    console.log("PDF GENERATION STARTED");
 
-  const html2pdf = (await import("html2pdf.js")).default;
-  const element = pdfRef.current;
+    const html2pdf = (await import("html2pdf.js")).default;
+    const element = pdfRef.current;
 
-  if (!element) {
-    console.error("PDF element is missing");
-    return;
-  }
+    if (!element) {
+      console.error("PDF element is missing");
+      return;
+    }
 
-  const opt = {
-    margin: 0.5,
-    filename: `OrdersByDSP_${new Date().toISOString().slice(0, 10)}.pdf`,
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    const opt = {
+      margin: 0.5,
+      filename: `OrdersByDSP_${new Date().toISOString().slice(0, 10)}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    };
+
+    html2pdf().from(element).set(opt).save();
   };
-
-  html2pdf().from(element).set(opt).save();
-};
-
-
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -101,48 +98,73 @@ const handleDownloadPDF = async () => {
       ) : (
         <div
           ref={pdfRef}
-          className="space-y-4 max-h-[450px] overflow-y-auto bg-gray-50 p-4 rounded-xl border border-gray-300"
+          className="space-y-4 max-h-[500px] overflow-y-auto bg-white p-4 rounded-xl border border-gray-300"
         >
+          {/* Table header for desktop */}
+          <div className="hidden md:grid grid-cols-6 bg-gray-100 px-4 py-2 font-semibold text-gray-700 rounded-md text-sm">
+            <div>Date</div>
+            <div>Phone</div>
+            <div>Product ID</div>
+            <div>Qty / Rate</div>
+            <div>Points</div>
+            <div className="text-right">Totals</div>
+          </div>
+
           {filteredOrders
             .slice()
             .reverse()
             .map((order) => (
               <div
                 key={order._id}
-                className="bg-white p-4 rounded-lg shadow-md border border-gray-200"
+                className="border-b border-gray-200 pb-4 mb-4 md:grid md:grid-cols-6 md:items-start gap-4 bg-white md:px-4"
               >
-                <div className="flex justify-between items-center mb-2 flex-wrap gap-2">
-                  <p>
-                    <strong className="text-gray-700">Date:</strong>{" "}
-                    {order.date?.slice(0, 10)}
-                  </p>
-                  <p>
-                    <strong className="font-semibold">Phone:</strong>{" "}
-                    {order?.dspPhone}
-                  </p>
-                  <p className="text-blue-600 font-semibold">
-                    Grand Total: ৳{order.grandTotal || "0"}
-                  </p>
-                  <p className="text-blue-600 font-semibold">
-                    Grand Point: {order.grandPoint || "0"}
-                  </p>
+                {/* Date */}
+                <div className="text-sm">
+                  <p className="md:hidden text-gray-500 font-semibold">Date</p>
+                  <p>{order.date?.slice(0, 10)}</p>
                 </div>
 
-                <ul className="list-disc ml-5 space-y-1 text-sm">
+                {/* Phone */}
+                <div className="text-sm">
+                  <p className="md:hidden text-gray-500 font-semibold">Phone</p>
+                  <p>{order.dspPhone}</p>
+                </div>
+
+                {/* Products */}
+                <div className="text-sm col-span-2 space-y-2">
                   {order.products.map((p, i) => (
-                    <li key={i}>
-                      Product: <strong>{p.productId}</strong> | Qty:{" "}
-                      {p.quantity} | Rate: {p.productRate} | BV: {p.pointValue}{" "}
-                      |{" "}
-                      <span className="text-green-700 font-semibold">
-                        Subtotal: ৳{p.subtotal || 0} |
-                      </span>{" "}
-                      <span className="text-green-700 font-semibold">
-                        SubPoint: {p.subPoint || 0}
-                      </span>
-                    </li>
+                    <div key={i}>
+                      <p className="font-medium text-gray-700">{p.productId}</p>
+                      <p className="text-xs text-gray-500">
+                        Qty: {p.quantity} × {p.productRate}৳
+                      </p>
+                    </div>
                   ))}
-                </ul>
+                </div>
+
+                {/* Points */}
+                <div className="text-sm space-y-2">
+                  {order.products.map((p, i) => (
+                    <div key={i} className="text-xs">
+                      <p>BV: {p.pointValue}</p>
+                      <p>SubPoint: {p.subPoint || 0}</p>
+                      <p>SubDiscount: {p.subDiscount || 0}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Totals */}
+                <div className="text-sm text-right">
+                  <p className="text-blue-700 font-semibold">
+                    ৳ {order.grandTotal || 0}
+                  </p>
+                  <p className="text-blue-700 font-semibold">
+                    Points: {order.grandPoint || 0}
+                  </p>
+                  <p className="text-blue-700 font-semibold">
+                    Discount: {order.grandDiscount || 0}
+                  </p>
+                </div>
               </div>
             ))}
         </div>

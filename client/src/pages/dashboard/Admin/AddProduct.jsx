@@ -16,6 +16,7 @@ import { Mark, mergeAttributes } from "@tiptap/core";
 import { FaBold, FaFont, FaItalic } from "react-icons/fa6";
 import { CiCircleList } from "react-icons/ci";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 // Cloudinary
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dlmbqhvnm/image/upload";
@@ -76,10 +77,10 @@ const AddProduct = () => {
   const [imageUrls, setImageUrls] = useState([]);
   const axiosSecure = useAxiosSecure();
   const [productOptions, setProductOptions] = useState({
-    repurchaseFreeProduct: "",
-    consistencyFreeProduct: "",
-    advanceConsistency: "",
-    addConsistencyFreeProduct: "",
+    isRepurchaseFree: false,
+    isConsistencyFree: false,
+    // advanceConsistency: "",
+    // addConsistencyFreeProduct: "",
   });
 
   // ✅ Tiptap Editor
@@ -134,6 +135,7 @@ const AddProduct = () => {
       image: imageUrls,
       details: details,
       price: data.price,
+      mrpPrice: data.mrpPrice,
       pointValue: data.pointValue,
       productId: data.productId || " ",
       ...productOptions, // Include the new 4 fields here
@@ -143,7 +145,13 @@ const AddProduct = () => {
 
     try {
       await axiosSecure.post("/products/product", payload); // Replace with your actual API
-      alert("Product added successfully!");
+      
+      Swal.fire({
+        icon: "success",
+        title: "Product Added",
+        text: "Product added successfully!",
+        showConfirmButton: true,
+      });
     } catch (error) {
       console.error("Submit Error:", error);
     }
@@ -299,43 +307,36 @@ const AddProduct = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Repurchase Free Product */}
-          <div>
-            <label className="block mb-1 font-semibold">
-              Repurchase Free Product
+          {/* Repurchase Free Product */}
+          <div className="form-control mb-4">
+            <label className="label cursor-pointer justify-start gap-3">
+              <input
+                type="checkbox"
+                {...register("isRepurchaseFree")}
+                className="toggle toggle-success mr-1 text-2xl"
+              />
+              <span className="label-text font-semibold">
+                Repurchase Free Product
+              </span>
             </label>
-            <select
-              name="repurchaseFreeProduct"
-              value={productOptions.repurchaseFreeProduct}
-              onChange={handleOptionChange}
-              className="w-full border p-2 rounded"
-              required
-            >
-              <option value="">Select</option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
           </div>
 
           {/* Consistency Free Product */}
-          <div>
-            <label className="block mb-1 font-semibold">
-              Consistency Free Product
+          <div className="form-control mb-4">
+            <label className="label cursor-pointer justify-start gap-3">
+              <input
+                type="checkbox"
+                {...register("isConsistencyFree")}
+                className="toggle toggle-success mr-1"
+              />
+              <span className="label-text font-semibold">
+                Consistency Free Product
+              </span>
             </label>
-            <select
-              name="consistencyFreeProduct"
-              value={productOptions.consistencyFreeProduct}
-              onChange={handleOptionChange}
-              className="w-full border p-2 rounded"
-              required
-            >
-              <option value="">Select</option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
           </div>
 
           {/* Advance Consistency */}
-          <div>
+          {/* <div>
             <label className="block mb-1 font-semibold">
               Advance Consistency
             </label>
@@ -353,7 +354,7 @@ const AddProduct = () => {
           </div>
 
           {/* Add Consistency Free Product */}
-          <div>
+          {/* <div>
             <label className="block mb-1 font-semibold">
               Add Consistency Free Product
             </label>
@@ -368,7 +369,7 @@ const AddProduct = () => {
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
-          </div>
+          </div>  */}
         </div>
 
         {/* Submit */}

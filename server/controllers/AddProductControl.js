@@ -2,8 +2,6 @@
 const Product = require("../models/AddProduct");
 
 // Create Product
-// controllers/productController.js
-const Product = require("../models/AddProduct");
 
 // Create Product
 exports.createProduct = async (req, res) => {
@@ -13,16 +11,26 @@ exports.createProduct = async (req, res) => {
       image,
       details,
       price,
+      mrpPrice,
       pointValue,
       productId,
-      repurchaseFreeProduct = "No",
-      consistencyFreeProduct = "No",
-      advanceConsistency = "No",
-      addConsistencyFreeProduct = "No",
+      isRepurchaseFree = false,
+      isConsistencyFree = false,
+
+      // advanceConsistency = "No",
+      // addConsistencyFreeProduct = "No",
     } = req.body;
 
     // Validation
-    if (!name || !image || !details || !price || !pointValue || !productId) {
+    if (
+      !name ||
+      !image ||
+      !details ||
+      !price ||
+      !mrpPrice ||
+      !pointValue ||
+      !productId
+    ) {
       return res
         .status(400)
         .json({ message: "All required fields must be filled." });
@@ -33,12 +41,13 @@ exports.createProduct = async (req, res) => {
       image,
       details,
       price,
+      mrpPrice,
       pointValue,
       productId,
-      repurchaseFreeProduct,
-      consistencyFreeProduct,
-      advanceConsistency,
-      addConsistencyFreeProduct,
+      isRepurchaseFree,
+      isConsistencyFree,
+      // advanceConsistency,
+      // addConsistencyFreeProduct,
     });
 
     await newProduct.save();
