@@ -34,26 +34,58 @@ const OrderAprovedByDsp = () => {
     );
   });
 
+  const preprocessStyles = () => {
+    const elements = document.querySelectorAll("*");
+    elements.forEach((el) => {
+      const computedStyle = window.getComputedStyle(el);
+      const propsToCheck = [
+        "backgroundColor",
+        "color",
+        "borderColor",
+        "boxShadow",
+      ];
+
+      propsToCheck.forEach((prop) => {
+        if (computedStyle[prop] && computedStyle[prop].includes("oklch")) {
+          if (prop === "backgroundColor" || prop === "color") {
+            el.style[prop] = prop === "backgroundColor" ? "#ffffff" : "#000000";
+          } else {
+            el.style[prop] = "transparent";
+          }
+        }
+      });
+    });
+  };
+
   const handleDownloadPDF = async () => {
     console.log("PDF GENERATION STARTED");
 
-    const html2pdf = (await import("html2pdf.js")).default;
-    const element = pdfRef.current;
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+      const element = pdfRef.current;
 
-    if (!element) {
-      console.error("PDF element is missing");
-      return;
+      if (!element) {
+        console.error("PDF element is missing");
+        return;
+      }
+
+      // Optional: Clean up weird styles
+      preprocessStyles();
+
+      setTimeout(() => {
+        const opt = {
+          margin: 0.5,
+          filename: `OrdersByDSP_${new Date().toISOString().slice(0, 10)}.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+        };
+
+        html2pdf().set(opt).from(element).save();
+      }, 1000); // give 1 second to render content
+    } catch (error) {
+      console.error("Failed to generate PDF", error);
     }
-
-    const opt = {
-      margin: 0.5,
-      filename: `OrdersByDSP_${new Date().toISOString().slice(0, 10)}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-    };
-
-    html2pdf().from(element).set(opt).save();
   };
 
   return (
@@ -69,7 +101,7 @@ const OrderAprovedByDsp = () => {
         {filteredOrders.length > 0 && (
           <button
             onClick={handleDownloadPDF}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className=" bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             Download PDF
           </button>
@@ -100,7 +132,7 @@ const OrderAprovedByDsp = () => {
       ) : (
         <div
           ref={pdfRef}
-          className="space-y-4 max-h-[500px] overflow-y-auto bg-gray-50 p-4 rounded-xl border border-gray-300"
+          className="space-y-4 bg-white p-4 rounded-xl border border-gray-300"
         >
           {filteredOrders
             .slice()
@@ -111,7 +143,7 @@ const OrderAprovedByDsp = () => {
                 className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition duration-300"
               >
                 {/* Part 1: Date and Phone */}
-                <div className="flex flex-wrap justify-between items-center mb-4 bg-blue-50 p-2 rounded-md">
+                <div className=" flex flex-wrap justify-between items-center mb-4 bg-blue-50 p-2 rounded-md">
                   <p className="text-sm font-medium text-gray-700">
                     📅 Date:{" "}
                     <span className="font-semibold">
@@ -138,13 +170,13 @@ const OrderAprovedByDsp = () => {
                           <th className="py-1 px-2 border">Qty</th>
                           <th className="py-1 px-2 border">BV</th>
                           <th className="py-1 px-2 border">Rate (৳)</th>
-                          <th className="py-1 px-2 border">Subtotal (৳)</th>
-                          <th className="py-1 px-2 border">SubPoint</th>
-                          <th className="py-1 px-2 border">SubDiscount</th>
-                          <th className="py-1 px-2 border">
+                          <th className="py-1 px-1 border">Subtotal (৳)</th>
+                          <th className="py-1 px-1 border">SubPoint</th>
+                          <th className="py-1 px-1 border">SubDiscount</th>
+                          <th className="py-1 border">
                             Repurchase Free Products
                           </th>
-                          <th className="py-1 px-2 border">
+                          <th className="py-1 border">
                             Consistency Free Products
                           </th>
                         </tr>
@@ -163,16 +195,16 @@ const OrderAprovedByDsp = () => {
                             <td className="py-1 px-2 border">
                               ৳{p.subtotal || 0}
                             </td>
-                            <td className="py-1 px-2 border">
+                            <td className="py-1 px-1 border">
                               {p.subPoint || 0}
                             </td>
-                            <td className="py-1 px-2 border">
+                            <td className="py-1 px-1 border">
                               {p.subDiscount || 0}
                             </td>
-                            <td className="py-1 px-2 border">
+                            <td className="py-1 border">
                               {p.isRepurchaseFree ? "Yes" : "No"}
                             </td>
-                            <td className="py-1 px-2 border">
+                            <td className="py-1 border">
                               {p.isConsistencyFree ? "Yes" : "No"}
                             </td>
                           </tr>
