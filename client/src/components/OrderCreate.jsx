@@ -121,11 +121,14 @@ const OrderCreate = ({ title }) => {
     };
 
     try {
-      const res = await axiosSecure.post("/admin-orders", orderData);
-      if (res.data._id) {
-        setOrder(res.data);
-        Swal.fire("✅ Success", "Order created!", "success");
-      }
+      // const res = await axiosSecure.post("/admin-orders", orderData);
+
+
+      console.log(`ordersssss`, orderData);
+      // if (res.data._id) {
+      //   setOrder(res.data);
+      //   Swal.fire("✅ Success", "Order created!", "success");
+      // }
     } catch (err) {
       console.error("Order creation failed", err);
       Swal.fire("❌ Error", "Failed to create order", "error");
