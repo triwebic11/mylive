@@ -639,6 +639,8 @@ async function buildTree(userId) {
   return {
     name: user.name,
     _id: user._id,
+    Position: user.Position,
+    phone: user?.phone,
     referralCode: user.referralCode,
     referredBy: user.referredBy,
     placementBy: user.placementBy,

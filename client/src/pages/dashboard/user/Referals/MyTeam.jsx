@@ -56,7 +56,7 @@ const Dashboard = () => {
               Code: {node.referralCode}
             </div>
             <div style={{ fontSize: "12px", color: "gray" }}>
-              Number: {node.number}
+              Number: {node.phone}
             </div>
           </StyledNode>
         }

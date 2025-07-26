@@ -5,8 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import OrderAprovedByDsp from "./OrderAprovedByDsp";
 const MyOrders = () => {
-  const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  // const { user } = useAuth();
+  // const axiosPublic = useAxiosPublic();
   // const [orders, setOrders] = useState([]);
 
   // useEffect(() => {
@@ -25,39 +25,39 @@ const MyOrders = () => {
   //   fetchOrders();
   // }, [user]);
 
-  const {
-    data: orders,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["orders"],
-    queryFn: async () => {
-      try {
-        const res = await axiosPublic.get(`/cashonDelivery/all`);
-        return Array.isArray(res.data) ? [...res.data].reverse() : [];
-      } catch (err) {
-        console.error("Error fetching cash on delivery:", err);
-        throw err;
-      }
-    },
-  });
-  console.log("user id from my order", orders);
-  const userProductsArry = orders?.filter(
-    (order) => order.userId === user?.user?._id
-  );
+  // const {
+  //   data: orders,
+  //   isLoading,
+  //   isError,
+  //   error,
+  //   refetch,
+  // } = useQuery({
+  //   queryKey: ["orders"],
+  //   queryFn: async () => {
+  //     try {
+  //       const res = await axiosPublic.get(`/cashonDelivery/all`);
+  //       return Array.isArray(res.data) ? [...res.data].reverse() : [];
+  //     } catch (err) {
+  //       console.error("Error fetching cash on delivery:", err);
+  //       throw err;
+  //     }
+  //   },
+  // });
+  // console.log("user id from my order", orders);
+  // const userProductsArry = orders?.filter(
+  //   (order) => order.userId === user?.user?._id
+  // );
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (isError) {
-    return <div>Error: {error.message}</div>;
-  }
-  if (!userProductsArry || userProductsArry.length === 0) {
-    return <div>No orders found for this user.</div>;
-  }
-  console.log("userArry", userProductsArry);
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
+  // if (isError) {
+  //   return <div>Error: {error.message}</div>;
+  // // }
+  // if (!userProductsArry || userProductsArry.length === 0) {
+  //   return <div>No orders found for this user.</div>;
+  // }
+  // console.log("userArry", userProductsArry);
 
   return (
     <div className="pt-20 max-w-5xl mx-auto px-4">

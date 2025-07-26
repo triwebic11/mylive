@@ -3,14 +3,17 @@ import Swal from "sweetalert2";
 import useProducts from "../Hooks/useProducts";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useAuth from "../Hooks/useAuth";
+import { useLocation } from "react-router-dom";
 
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const location = useLocation();
+  console.log("Current Location:", location);
 
   const [products] = useProducts();
   const [allProducts, setAllProducts] = useState([]);
-  const [showOffer, setShowOffer] = useState([]);
+  // const [showOffer, setShowOffer] = useState([]);
   const [scndProducts, setScndProducts] = useState([
     {
       productId: "",
@@ -121,14 +124,15 @@ const OrderCreate = ({ title }) => {
     };
 
     try {
-      // const res = await axiosSecure.post("/admin-orders", orderData);
+      const res = await axiosSecure.post("/admin-orders", orderData);
 
 
-      console.log(`ordersssss`, orderData);
-      // if (res.data._id) {
-      //   setOrder(res.data);
-      //   Swal.fire("✅ Success", "Order created!", "success");
-      // }
+      console.log(`orders ------- `, orderData);
+      console.log("Order created:", res.data);
+      if (res.data._id) {
+        setOrder(res.data);
+        Swal.fire("✅ Success", "Order created!", "success");
+      }
     } catch (err) {
       console.error("Order creation failed", err);
       Swal.fire("❌ Error", "Failed to create order", "error");
@@ -171,7 +175,7 @@ const OrderCreate = ({ title }) => {
           type="text"
           value={dspPhone}
           onChange={(e) => setDspPhone(e.target.value)}
-          placeholder="Enter DSP Phone"
+          placeholder="Enter Phone Number"
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
           required
         />
@@ -287,6 +291,7 @@ const OrderCreate = ({ title }) => {
                               e.target.value
                             )
                           }
+                          readOnly
                           className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="MRP"
                           required
