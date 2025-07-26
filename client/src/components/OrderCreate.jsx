@@ -275,6 +275,7 @@ const OrderCreate = ({ title }) => {
                           className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="Discount Price"
                           required
+                          readOnly
                         />
                       </td>
 
@@ -295,6 +296,7 @@ const OrderCreate = ({ title }) => {
                           className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="MRP"
                           required
+                          readOnly
                         />
                       </td>
 
@@ -361,7 +363,7 @@ const OrderCreate = ({ title }) => {
                       </tr>
                     </tbody>
                   </table>
-                  <div>
+                  <div className="flex justify-between mt-3 px-3">
                     <table>
                       <thead>
                         <th className="px-4 py-2 my-2 md:my-0">
@@ -382,6 +384,15 @@ const OrderCreate = ({ title }) => {
                         </tr>
                       </tbody>
                     </table>
+                    {subtotal >= 5000 && (
+                      <div className="font-semibold text-lg">
+                        {" "}
+                        Advance Consistency:{" "}
+                        <span className="font-bold text-green-900 mr-3">
+                          Yes
+                        </span>{" "}
+                      </div>
+                    )}
                   </div>
                 </div>
 

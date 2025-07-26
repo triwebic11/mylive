@@ -80,7 +80,8 @@ const Layout = () => {
     location.pathname === "/login" ||
     location.pathname === "/packeg-active" ||
     location.pathname === "/package-waiting" ||
-    location.pathname === "/forgot-password";
+    location.pathname === "/forgot-password" ||
+    location.pathname.includes("/reset-password");
   return (
     <div className="bg-gray-100">
       {!noHeaderFooter && <Header />}

@@ -7,6 +7,80 @@ import useAxiosPublic from "../Hooks/useAxiosPublic.jsx";
 import { logo } from "../assets/index.js";
 import { Eye, EyeOff } from "lucide-react";
 
+// ✅ Division wise Districts
+const districtData = {
+  Dhaka: [
+    "Dhaka",
+    "Gazipur",
+    "Kishoreganj",
+    "Manikganj",
+    "Munshiganj",
+    "Narayanganj",
+    "Narsingdi",
+    "Tangail",
+    "Faridpur",
+    "Gopalganj",
+    "Madaripur",
+    "Rajbari",
+    "Shariatpur",
+  ],
+  Chattagram: [
+    "Chattogram",
+    "Cox's Bazar",
+    "Bandarban",
+    "Khagrachhari",
+    "Rangamati",
+    "Brahmanbaria",
+    "Cumilla",
+    "Chandpur",
+    "Feni",
+    "Lakshmipur",
+    "Noakhali",
+  ],
+  Rajshahi: [
+    "Rajshahi",
+    "Bogra",
+    "Joypurhat",
+    "Naogaon",
+    "Natore",
+    "Chapainawabganj",
+    "Pabna",
+    "Sirajganj",
+  ],
+  Rangpur: [
+    "Rangpur",
+    "Dinajpur",
+    "Gaibandha",
+    "Kurigram",
+    "Lalmonirhat",
+    "Nilphamari",
+    "Panchagarh",
+    "Thakurgaon",
+  ],
+  Mymensingh: ["Mymensingh", "Jamalpur", "Netrokona", "Sherpur"],
+  Sylhet: ["Sylhet", "Habiganj", "Moulvibazar", "Sunamganj"],
+  Barishal: [
+    "Barishal",
+    "Barguna",
+    "Bhola",
+    "Jhalokathi",
+    "Patuakhali",
+    "Pirojpur",
+  ],
+  Khulna: [
+    "Khulna",
+    "Bagerhat",
+    "Chuadanga",
+    "Jashore",
+    "Jhenaidah",
+    "Kushtia",
+    "Magura",
+    "Meherpur",
+    "Narail",
+    "Satkhira",
+  ],
+};
+
 const Register = () => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
@@ -27,6 +101,7 @@ const Register = () => {
     placementBy: "",
   });
 
+  const [districts, setDistricts] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const axiosPublic = useAxiosPublic();
   const [userReferralCode, setUserReferralCode] = useState("");
@@ -43,6 +118,12 @@ const Register = () => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleDivisionChange = (e) => {
+    const selectedDivision = e.target.value;
+    setForm({ ...form, division: selectedDivision, city: "" });
+    setDistricts(districtData[selectedDivision] || []);
   };
 
   const handleSubmit = async (e) => {
@@ -86,7 +167,6 @@ const Register = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-3xl bg-white p-6 rounded-md shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4"
       >
-        {/* Other input fields */}
         <div>
           <label>Full Name / User ID*</label>
           <input
@@ -155,21 +235,47 @@ const Register = () => {
           <select
             name="division"
             value={form.division}
-            onChange={handleChange}
+            onChange={handleDivisionChange}
             required
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           >
             <option value="">Select Division</option>
-            <option value="Dhaka">Dhaka</option>
-            <option value="Chattagram">Chattagram</option>
-            <option value="Rajshahi">Rajshahi</option>
-            <option value="Rangpur">Rangpur</option>
-            <option value="Mymensingh">Mymensingh</option>
-            <option value="Sylhet">Sylhet</option>
-            <option value="Barishal">Barishal</option>
+            {Object.keys(districtData).map((division) => (
+              <option key={division} value={division}>
+                {division}
+              </option>
+            ))}
           </select>
         </div>
 
+        <div>
+          <label>District / City</label>
+          <select
+            name="city"
+            value={form.city}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          >
+            <option value="">Select District</option>
+            {districts.map((district) => (
+              <option key={district} value={district}>
+                {district}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label>Post Code</label>
+          <input
+            name="postcode"
+            value={form.postcode}
+            onChange={handleChange}
+            placeholder="Post Code"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
+          />
+        </div>
 
         <div className="relative">
           <label>Enter a new password</label>
@@ -188,28 +294,6 @@ const Register = () => {
           >
             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </span>
-        </div>
-
-        <div>
-          <label>City</label>
-          <input
-            name="city"
-            value={form.city}
-            onChange={handleChange}
-            placeholder="City"
-            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
-          />
-        </div>
-
-        <div>
-          <label>Post Code</label>
-          <input
-            name="postcode"
-            value={form.postcode}
-            onChange={handleChange}
-            placeholder="Post Code"
-            className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
-          />
         </div>
 
         <div className="lg:col-span-2">
@@ -233,6 +317,7 @@ const Register = () => {
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           />
         </div>
+
         <div className="lg:col-span-2">
           <label>Placement ID</label>
           <input
