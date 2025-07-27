@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema({
   productId: String,
   productRate: Number,
+  mrpRate: Number,
   name: String, // ✅ Add this
   pointValue: Number,
   quantity: Number,

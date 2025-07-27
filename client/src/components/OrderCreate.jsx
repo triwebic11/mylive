@@ -505,7 +505,8 @@ const OrderCreate = ({ title }) => {
                     <th className="px-4 py-2">Product</th>
                     <th className="px-4 py-2">Qty</th>
                     <th className="px-4 py-2">BV</th>
-                    <th className="px-4 py-2">Rate</th>
+                    <th className="px-4 py-2">DP</th>
+                    <th className="px-4 py-2">MRP</th>
                     <th className="px-4 py-2">Subtotal (৳)</th>
                     <th className="px-4 py-2">SubPoint</th>
                     <th className="px-4 py-2">SubDiscount (৳)</th>
@@ -526,6 +527,7 @@ const OrderCreate = ({ title }) => {
                       <td className="px-4 py-2">{p.quantity}</td>
                       <td className="px-4 py-2">{p.pointValue}</td>
                       <td className="px-4 py-2">৳{p.productRate}</td>
+                      <td className="px-4 py-2">৳{p.mrpRate}</td>
                       <td className="px-4 py-2 text-blue-700 font-semibold">
                         ৳{p.subtotal || 0}
                       </td>
