@@ -4,7 +4,7 @@ import useAxiosSecure from "../Hooks/useAxiosSecure";
 const MyReferral = ({ referralCode }) => {
   const [referrals, setReferrals] = useState([]);
   const axiosSecure = useAxiosSecure()
-  console.log("Your referrals is = ", referrals);
+  // console.log("Your referrals is = ", referrals);
 
   useEffect(() => {
     if (referralCode) {

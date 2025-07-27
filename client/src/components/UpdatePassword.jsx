@@ -4,7 +4,7 @@ import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const UpdatePassword = ({ user }) => {
   const userId = user?.user?._id;
-  console.log("User ID from UpdatePassword component:", userId);
+  // console.log("User ID from UpdatePassword component:", userId);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

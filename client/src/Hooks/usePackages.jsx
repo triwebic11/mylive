@@ -13,7 +13,7 @@ const usePackages = () => {
     },
 });
 
-    //  console.log("Products data:", products);
+    //  // console.log("Products data:", products);
 
    
     return [packages, isLoading, isError, error, refetch]

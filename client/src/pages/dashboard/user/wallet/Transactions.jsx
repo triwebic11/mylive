@@ -18,7 +18,7 @@ const Transactions = () => {
   //   ];
 
 
-  // console.log('dataaaaaaaa',data?.AllEntry?.outgoing)
+  // // console.log('dataaaaaaaa',data?.AllEntry?.outgoing)
 
   return (
     <div className="mx-auto w-full max-w-6xl ">

@@ -14,24 +14,24 @@ import useRole from "../../../Hooks/useRole";
 export default function PackageUpdate() {
   const { user } = useAuth();
 
-  console.log("User from package update page = ", user);
-  console.log("User role from package update page = ", user?.role);
+  // console.log("User from package update page = ", user);
+  // console.log("User role from package update page = ", user?.role);
   const userId = localStorage.getItem("userId");
   const userName = user?.name;
   const userEmail = user?.email;
   const userPhone = user?.phone;
   const { role } = useRole();
-  console.log("User Role from package update page = ", role);
+  // console.log("User Role from package update page = ", role);
 
-  console.log("User Info from package update page = ", user);
+  // console.log("User Info from package update page = ", user);
   const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
-  console.log(packages);
+  // console.log(packages);
   const axiosSecure = useAxiosSecure();
 
-  // console.log("user package compo----", data);
-  console.log("user role from package update page = ", role);
+  // // console.log("user package compo----", data);
+  // console.log("user role from package update page = ", role);
 
   // useEffect(() => {
   //   if (role === "dsp") {

@@ -72,7 +72,7 @@ const registerUser = async (req, res) => {
         // উল্টা করে প্রত্যেক upline user এর প্যাকেজ বের করো
         const packageReq = await PackageRequest.findOne({ userId: uplineId });
         const userPackage = packageReq?.packageName;
-        console.log("packageReq", packageReq);
+        // console.log("packageReq", packageReq);
         const packageSettings = {
           "Business Relation": { generations: 10, startPoint: 1000 },
           "Business Relative": { generations: 7, startPoint: 700 },
@@ -83,7 +83,7 @@ const registerUser = async (req, res) => {
         const settings = packageSettings[userPackage];
 
         if (!settings) {
-          console.log("Invalid package or no package for upline:", uplineId);
+          // console.log("Invalid package or no package for upline:", uplineId);
           continue;
         }
 
@@ -98,7 +98,7 @@ const registerUser = async (req, res) => {
             $inc: { points: point },
           });
 
-          console.log(
+          // console.log(
             `Upline ${uplineId} got ${point} points from generation ${i + 1}`
           );
         }

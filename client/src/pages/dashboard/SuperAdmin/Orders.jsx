@@ -34,7 +34,7 @@ const Orders = () => {
     },
   });
 
-  console.log("orderssssssss-----", orders);
+  // console.log("orderssssssss-----", orders);
 
   const handleUpdateStatus = async (id) => {
     Swal.fire({
@@ -50,7 +50,7 @@ const Orders = () => {
         const response = await axiosSecure.patch(`/cashonDelivery/${id}`, {
           status: "shipped",
         });
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
           Swal.fire({
             icon: "success",

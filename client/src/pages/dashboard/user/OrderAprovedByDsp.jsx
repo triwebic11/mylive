@@ -14,7 +14,7 @@ const OrderAprovedByDsp = () => {
   const dspPhone = user?.user?.phone || user?.user?.email || "";
   const pdfRef = useRef(); // PDF reference
 
-  console.log("Allllll orderssssssss", orders);
+  // console.log("Allllll orderssssssss", orders);
 
   useEffect(() => {
     if (dspPhone) {
@@ -58,7 +58,7 @@ const OrderAprovedByDsp = () => {
   };
 
   const handleDownloadPDF = async () => {
-    console.log("PDF GENERATION STARTED");
+    // console.log("PDF GENERATION STARTED");
 
     try {
       const html2pdf = (await import("html2pdf.js")).default;

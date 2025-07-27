@@ -6,7 +6,7 @@ import Button from "./Button";
 import CountUp from "react-countup";
 const ListOfDistributors = () => {
   const [number, setNumber] = useState(0);
-  console.log(number);
+  // console.log(number);
   return (
     <div>
       <Container className="-translate-y-10 hover:-translate-y-4 duration-500">

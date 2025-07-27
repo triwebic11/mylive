@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 const DspOrder = () => {
   const { user } = useAuth(); // get name, phone from logged-in user
   const axiosSecure = useAxiosSecure();
-  console.log("DSP user - ", user);
+  // console.log("DSP user - ", user);
   const [form, setForm] = useState({
     name: user?.user?.name || "",
     phone: user?.user?.phone || "",
@@ -18,7 +18,7 @@ const DspOrder = () => {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  console.log("DST Form - ", form);
+  // console.log("DST Form - ", form);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

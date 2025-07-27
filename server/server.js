@@ -74,13 +74,13 @@ app.get('/api/db-stats', async (req, res) => {
 // app.use("/api/uploads", require("./routes/uploadRoute"));
 
 // cron.schedule("* * * * *", async () => {
-//   console.log("📆 Monthly commission running from server.js...");
+//   // console.log("📆 Monthly commission running from server.js...");
 //   await processMonthlyUserRankAndFunds();
 // });
 
 // Root route
 app.get("/", (req, res) => {
-  console.log("server is running");
+  // console.log("server is running");
   res.send("API is running...");
 });
 
@@ -89,12 +89,12 @@ io.on("connection", (socket) => {
   console.log("🟢 New client connected:", socket.id);
 
   socket.on("conversionRateUpdated", ({ pointToTaka }) => {
-    console.log("🌀 New rate broadcast:", pointToTaka);
+    // console.log("🌀 New rate broadcast:", pointToTaka);
     io.emit("conversionRateChanged", { pointToTaka });
   });
 
   socket.on("disconnect", () => {
-    console.log("🔴 Client disconnected:", socket.id);
+    // console.log("🔴 Client disconnected:", socket.id);
   });
 });
 

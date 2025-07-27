@@ -7,11 +7,11 @@ import useAuth from "../../../Hooks/useAuth";
 const AdminPackageRequests = () => {
   const { user } = useAuth();
   const userId = user?.user?._id;
-  console.log("user id from admin page request = ", userId);
+  // console.log("user id from admin page request = ", userId);
   const [requests, setRequests] = useState([]);
   const axiosSecure = useAxiosSecure();
 
-  console.log(requests)
+  // console.log(requests)
 
   // Fetch all requests from backend
   useEffect(() => {
@@ -19,7 +19,7 @@ const AdminPackageRequests = () => {
       .get("/package-requests")
       .then((res) => {
         const data = res.data;
-        console.log("your data form admin request aprove: ", data);
+        // console.log("your data form admin request aprove: ", data);
         if (Array.isArray(data)) {
           setRequests(data);
         } else {
@@ -37,7 +37,7 @@ const AdminPackageRequests = () => {
   const handleApprove = async (id) => {
     try {
       const res = await axiosSecure.patch(`/package-requests/approve/${id}`);
-      console.log(res.data)
+      // console.log(res.data)
       // if(res.data.dsdsd === ""){
         
       //   Swal.fire("Approved!", "Package activated for user.", "success");

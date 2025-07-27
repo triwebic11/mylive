@@ -44,14 +44,14 @@ export default function CommissionStatement({
         isError,
         error,
         refetch] = useAgregate()
-        console.log("agreeeee", agregate)
+        // console.log("agreeeee", agregate)
 
         const total = agregate?.summary.reduce((sum, item) => sum + item.value, 0);
 
     const handleSearch = (e) => {
         e.preventDefault();
         // TODO: fetch new data using startDate & endDate
-        console.log("Search clicked", { startDate, endDate });
+        // console.log("Search clicked", { startDate, endDate });
     };
 
     return (

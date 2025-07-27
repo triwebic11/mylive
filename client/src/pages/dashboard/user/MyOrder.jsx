@@ -43,7 +43,7 @@ const MyOrders = () => {
   //     }
   //   },
   // });
-  // console.log("user id from my order", orders);
+  // // console.log("user id from my order", orders);
   // const userProductsArry = orders?.filter(
   //   (order) => order.userId === user?.user?._id
   // );
@@ -57,7 +57,7 @@ const MyOrders = () => {
   // if (!userProductsArry || userProductsArry.length === 0) {
   //   return <div>No orders found for this user.</div>;
   // }
-  // console.log("userArry", userProductsArry);
+  // // console.log("userArry", userProductsArry);
 
   return (
     <div className="pt-20 max-w-5xl mx-auto px-4">

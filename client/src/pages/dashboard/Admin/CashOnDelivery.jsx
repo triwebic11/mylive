@@ -37,7 +37,7 @@ const CashOnDelivery = () => {
             return;
         }
         alert("Order placed successfully via Cash on Delivery!");
-        console.log({ cartItems, ...form });
+        // console.log({ cartItems, ...form });
     };
 
     return (

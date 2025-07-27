@@ -10,7 +10,7 @@ const AdminKycList = () => {
     try {
       const res = await axiosSecure.get("/kyc");
       setKycList(res.data);
-      console.log("KYC List:", res.data);
+      // console.log("KYC List:", res.data);
     } catch (err) {
       console.error("Failed to fetch KYC list", err);
     }

@@ -30,7 +30,7 @@ const MyConsistency = () => {
 const incomingEntries = data?.AllEntry.incoming;
 const pointsByMonth = last4MonthsPoints(incomingEntries);
 
-console.log("my consistancy",pointsByMonth);
+// console.log("my consistancy",pointsByMonth);
 
     return (
         <div className="min-h-screen bg-gray-50 px-4 py-6">

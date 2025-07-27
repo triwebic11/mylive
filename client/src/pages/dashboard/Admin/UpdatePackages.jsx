@@ -49,7 +49,7 @@ const UpdatePackages = () => {
         `/packages/${selectedPackage?._id}`,
         data
       );
-      console.log(res.data);
+      // console.log(res.data);
       if (res?.data?.message === "Package updated successfully") {
         Swal.fire("Package updated successfully");
       }

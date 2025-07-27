@@ -15,8 +15,8 @@ const PackageWaitingPage = () => {
         const res = await axiosSecure.get(`/package-requests/${storedid}`);
         const status = res?.data[0];
 
-        // console.log("your status is : ", status);
-        // console.log("User package request data: ", res?.data);
+        // // console.log("your status is : ", status);
+        // // console.log("User package request data: ", res?.data);
         localStorage.setItem("userPackage", JSON.stringify(res.data));
         setUserPackage(res.data);
 

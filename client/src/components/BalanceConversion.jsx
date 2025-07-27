@@ -40,19 +40,19 @@ const BalanceConversion = ({ userId }) => {
   // ✅ Listen to real-time updates
   useEffect(() => {
     socket.on("connect", () => {
-      console.log("🟢 Socket connected:", socket.id);
+      // console.log("🟢 Socket connected:", socket.id);
     });
 
     socket.on("balance-updated", ({ userId: targetId, newPoints }) => {
       if (targetId === userId) {
         setPoint(newPoints);
-        console.log("🎯 Points updated via socket:", newPoints);
+        // console.log("🎯 Points updated via socket:", newPoints);
       }
     });
 
     socket.on("conversionRateChanged", ({ pointToTaka }) => {
       setRate(pointToTaka);
-      console.log("💸 Conversion rate updated:", pointToTaka);
+      // console.log("💸 Conversion rate updated:", pointToTaka);
     });
 
     return () => {

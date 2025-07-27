@@ -6,7 +6,7 @@ const useAgregate = () => {
 
     const axiosPublic = useAxiosPublic()
     const [data] = useUserById()
-    console.log('dataaaaaaaaaaa',data)
+    // console.log('dataaaaaaaaaaa',data)
 
     const {
         data: agregate,
@@ -23,7 +23,7 @@ const useAgregate = () => {
 
     });
 
-     console.log("Products data:", agregate);
+     // console.log("Products data:", agregate);
 
 
     return [agregate,

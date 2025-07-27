@@ -54,7 +54,7 @@ const OrderAproved = () => {
     });
   };
   const handleDownloadPDF = async () => {
-    console.log("PDF GENERATION STARTED");
+    // console.log("PDF GENERATION STARTED");
 
     try {
       const html2pdf = (await import("html2pdf.js")).default;

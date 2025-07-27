@@ -5,9 +5,9 @@ import { QRCodeCanvas } from "qrcode.react";
 const ReferLinkPage = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const user = storedUser?.user || {};
-  console.log("User data: ", user);
+  // console.log("User data: ", user);
   const referralCode = storedUser?.user?.referralCode;
-  console.log("your referral code is- ", referralCode);
+  // console.log("your referral code is- ", referralCode);
   const referLink = `https://shslira.com/register?ref=${referralCode}`;
 
   const handleCopy = () => {

@@ -5,10 +5,10 @@ import ReferralTree from "../pages/dashboard/user/Referals/ReferralTree";
 const Dashboard = ({ user }) => {
   // const storedUser = JSON.parse(localStorage.getItem("user"));
   // const user = storedUser?.user || {};
-  // console.log("User data: ", user);
+  // // console.log("User data: ", user);
   // const referralCode = storedUser?.user?.referralCode;
   const referralCode = user?.referralCode;
-  console.log("your referral code is- ", referralCode);
+  // console.log("your referral code is- ", referralCode);
 
   return (
     <div className="max-w-4xl mx-auto p-6">

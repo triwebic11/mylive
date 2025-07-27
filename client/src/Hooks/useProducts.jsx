@@ -13,7 +13,7 @@ const useProducts = () => {
     },
 });
 
-    //  console.log("Products data:", products);
+    //  // console.log("Products data:", products);
 
    
     return [products, isLoading, isError, error, refetch]

@@ -82,7 +82,7 @@ const FontDashboard = () => {
       return res.data;
     },
   });
-  console.log("agretateee", agregate);
+  // console.log("agretateee", agregate);
 
   useEffect(() => {
     const updateDuration = () => {
@@ -117,7 +117,7 @@ const FontDashboard = () => {
     (order) => order?.status === "pending"
   );
 
-  console.log(userProductsArry);
+  // console.log(userProductsArry);
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">

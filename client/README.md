@@ -5,11 +5,11 @@ const User = require("../models/User");
 
 
 async function buildTree(userId) {
-  console.log("Building tree for user:", userId);
+  // console.log("Building tree for user:", userId);
   const user = await User.findById(userId);
   if (!user) return null;
 
-  console.log("Building tree for user:", user.name);
+  // console.log("Building tree for user:", user.name);
 
   // 🔍 Find users who have this user's referral code in either placementBy or referredBy
   const children = await User.find({
@@ -19,7 +19,7 @@ async function buildTree(userId) {
     ]
   });
 
-  console.log("Children found:", children.length);
+  // console.log("Children found:", children.length);
 
   // Recursively build tree for all children
   const childrenTrees = await Promise.all(
@@ -44,7 +44,7 @@ const getReferralTreeById = async (req, res) => {
   try {
     const { userId } = req.params;
     const tree = await buildTree(userId);
-    console.log("Referral Tree for:", userId);
+    // console.log("Referral Tree for:", userId);
     res.json(tree);
   } catch (err) {
     console.error("Tree build error:", err);
@@ -57,7 +57,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   const buyer = await User.findOne({ phone: buyerphone });
   if (!buyer) return;
 
-  console.log("Distributing grand points for buyer(je product kinlo):", buyer);
+  // console.log("Distributing grand points for buyer(je product kinlo):", buyer);
 
   const tenPercent = grandPoint * 0.10;
   const thirtyPercent = grandPoint * 0.30;
@@ -79,7 +79,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   // 30% generation commission
   const maxLevel = 10; // or set dynamically from buyer if needed
   const pointPerLevel = thirtyPercent / maxLevel;
-  console.log("Max level:", maxLevel, "Point per level:", pointPerLevel);
+  // console.log("Max level:", maxLevel, "Point per level:", pointPerLevel);
 
   //   let receiversCount = 0; // ei variable diye track korbo koyjon receive korlo
 
@@ -91,7 +91,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
 
   //   if (!referrer) break;
 
-  //   console.log(`Level ${level} referrer:`, referrer.name || "None");
+  //   // console.log(`Level ${level} referrer:`, referrer.name || "None");
 
   //   if (referrer.GenerationLevel >= level) {
   //     receiversCount++; // ✅ jodi ei level e receive kore tahole count barabo
@@ -113,7 +113,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   // }
 
   // // 🔍 Ekhon console e output dao
-  // console.log(`Total ${receiversCount} referrers received generation commission from 30%`);
+  // // console.log(`Total ${receiversCount} referrers received generation commission from 30%`);
 
 
 
@@ -121,7 +121,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   // 3. 📞 20% to phone number referrer
   if (buyerphone) {
     const phoneReferrer = await User.findOne({ referralCode: buyer?.referredBy });
-    console.log("Phone referrer found:", phoneReferrer ? phoneReferrer.name : "None");
+    // console.log("Phone referrer found:", phoneReferrer ? phoneReferrer.name : "None");
     if (phoneReferrer) {
       phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
       phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
@@ -137,7 +137,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   // 20% Advance Consistency
   // const isAdvanceConsistancy = grandTotalPrice >= 5000 || grandTotalPrice <= 10000;
   // if (isAdvanceConsistancy) {
-  //   console.log("Advance Consistency condition met for buyer:", buyer.name);
+  //   // console.log("Advance Consistency condition met for buyer:", buyer.name);
   //   if (buyer) {
   //     buyer.points = (buyer.points || 0) + twentyPercent;
   //     buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
@@ -165,7 +165,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   );
 
   if (alreadyReceivedPersonalReward) {
-    console.log("Already received personal reward.");
+    // console.log("Already received personal reward.");
     buyer.points = (buyer.points || 0) + tenPercent;
     buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
     buyer.AllEntry.incoming.push({
@@ -176,7 +176,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
     });
     await buyer.save();
   } else {
-    console.log("Eligible to receive personal reward.");
+    // console.log("Eligible to receive personal reward.");
   }
 
   // 10% Commission for 4 months Consistency Purchase Product
@@ -216,7 +216,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
 // const hasContinuousPurchases = checkContinuousPurchases(buyer.AllEntry.incoming);
 
 // if (hasContinuousPurchases) {
-//   console.log("✅ User has purchased continuously for the last 4 months.");
+//   // console.log("✅ User has purchased continuously for the last 4 months.");
 //   buyer.points = (buyer.points || 0) + tenPercent;
 //     buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
 //     buyer.AllEntry.incoming.push({
@@ -227,7 +227,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
 //     });
 //     await buyer.save();
 // } else {
-//   console.log("❌ User missed at least one of the last 4 months.");
+//   // console.log("❌ User missed at least one of the last 4 months.");
 // }
 
 
@@ -263,8 +263,8 @@ router.post("/", async (req, res) => {
 
     const savedOrder = await newOrder.save();
     await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
-    console.log("userId:", savedOrder, "grandPoint:", grandPoint, "Phone:", dspPhone);
-    // console.log("Order created:", savedOrder._id);
+    // console.log("userId:", savedOrder, "grandPoint:", grandPoint, "Phone:", dspPhone);
+    // // console.log("Order created:", savedOrder._id);
 
     res.status(201).json(savedOrder);
   } catch (error) {
@@ -351,7 +351,7 @@ import Logo from "../logo/Logo";
 
 const Invoice = ({ transaction }) => {
   const pdfRef = useRef()
-  // console.log(transaction)
+  // // console.log(transaction)
   // const { deliverydata } = useContext(StateContext)
   
   const [data, setData] = useState(transaction);
