@@ -7,6 +7,7 @@ import useAuth from "../../../Hooks/useAuth";
 import { FaArrowRight } from "react-icons/fa"; //
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const DashboardCard = ({ title, value }) => (
   <div className="bg-white rounded-xl border border-gray-200 shadow-md flex justify-between items-center p-4 min-h-[100px] relative">
@@ -68,6 +69,8 @@ const FontDashboard = () => {
   const [duration, setDuration] = useState("15s");
 
   const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
+    const dspPhone = user?.user?.phone || user?.user?.email || "";
 
   const {
     data: agregate,
@@ -95,11 +98,13 @@ const FontDashboard = () => {
     return () => window.removeEventListener("resize", updateDuration);
   }, []);
 
+
+
   const { data: orders } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       try {
-        const res = await axiosPublic.get(`/cashonDelivery/all`);
+        const res = await axiosPublic.get(`/admin-orders/by-phone/${dspPhone}`);
         return Array.isArray(res.data) ? [...res.data].reverse() : [];
       } catch (err) {
         console.error("Error fetching cash on delivery:", err);
@@ -107,6 +112,7 @@ const FontDashboard = () => {
       }
     },
   });
+
   const userProductsArry = orders?.filter(
     (order) => order?.userId === data?._id
   );
@@ -200,19 +206,19 @@ const FontDashboard = () => {
               <div className="flex justify-between items-center">
                 <div className="flex-1">
                   <p className="font-bold text-gray-900">
-                    {userProductsArry?.length}
+                    {orders?.length}
                   </p>
                   <p className="text-gray-700">Total</p>
                 </div>
                 <div className="flex-1 border-l">
                   <p className="font-bold text-gray-900">
-                    {shippedProductsArry?.length}
+                    {orders?.length}
                   </p>
                   <p className="text-gray-700">Approved</p>
                 </div>
                 <div className="flex-1 border-l">
                   <p className="font-bold text-gray-900">
-                    {pendingProductsArry?.length}
+                    0
                   </p>
                   <p className="text-gray-700">Pending</p>
                 </div>

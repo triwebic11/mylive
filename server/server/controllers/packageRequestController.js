@@ -43,13 +43,24 @@ exports.approveRequest = async (req, res) => {
     // console.log("✅ Approved Request:", request);
 
     const user = await User.findById(request.userId);
+    // console.log("👤 User from request:", user);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
     const pkg = await Packages.findOne({ name: request.packageName });
-    // console.log("🎁 Matched Package:", pkg);
+
+    //  const pkg = await Packages.findOne({ name: request.packageName });
+    if (!pkg) {
+      return res.status(404).json({ message: "Package not found." });
+    }
+
+    const updatedPoints = (user.points || 0) + (pkg.PackagePV || 0);
+
+    console.log("🔄 Updated Points:", updatedPoints);
+    
     await User.findByIdAndUpdate(user?._id, {
+      points: updatedPoints,
       package: request.packageName,
       GenerationLevel: request.GenerationLevel ?? pkg?.GenerationLevel,
       MegaGenerationLevel: request.MegaGenerationLevel ?? pkg?.MegaGenerationLevel,
