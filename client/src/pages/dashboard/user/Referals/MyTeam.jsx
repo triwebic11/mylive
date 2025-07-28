@@ -21,7 +21,7 @@ const StyledNode = styled.div`
 
 
 const fetchReferralTree = async (userId) => {
-  const res = await axios.get(`http://localhost:5000/api/users/referral-tree/${userId}`);
+  const res = await axios.get(`https://apidata.shslira.com/api/users/referral-tree/${userId}`);
   return res.data;
 };
 
