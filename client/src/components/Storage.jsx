@@ -15,7 +15,7 @@ const Storage = () => {
       try {
         const response = await axiosSecure.get("/db-stats");
         setStorage(response.data);
-        console.log("Storage data fetched successfully:", response.data);
+        // console.log("Storage data fetched successfully:", response.data);
       } catch (error) {
         console.error("Error fetching storage data:", error);
       }
