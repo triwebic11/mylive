@@ -50,6 +50,7 @@ exports.approveRequest = async (req, res) => {
     const pkg = await Packages.findOne({ name: request.packageName });
     // console.log("🎁 Matched Package:", pkg);
     await User.findByIdAndUpdate(user?._id, {
+      isActivePackage: "active",
       package: request.packageName,
       GenerationLevel: request.GenerationLevel ?? pkg?.GenerationLevel,
       MegaGenerationLevel: request.MegaGenerationLevel ?? pkg?.MegaGenerationLevel,

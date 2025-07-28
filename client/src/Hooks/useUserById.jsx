@@ -17,7 +17,7 @@ const useUserById = () => {
 
  
 
-  // console.log("useUserById dataaaaaaa:", data);
+  console.log("useUserById dataaaaaaa:", data);
 
   return [data, isLoading, isError, error, refetch];
 };

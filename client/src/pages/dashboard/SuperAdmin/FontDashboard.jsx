@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useUserById from "../../../Hooks/useUserById";
 import { banner1, banner2 } from "../../../assets";
 import ReferralLevelBadge from "../../../components/ReferralLevelBadge";
@@ -8,6 +8,7 @@ import { FaArrowRight } from "react-icons/fa"; //
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import CountdownTimer from "../../../components/CountdownTimer";
 
 const DashboardCard = ({ title, value }) => (
   <div className="bg-white rounded-xl border border-gray-200 shadow-md flex justify-between items-center p-4 min-h-[100px] relative">
@@ -70,7 +71,7 @@ const FontDashboard = () => {
 
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
-    const dspPhone = user?.user?.phone || user?.user?.email || "";
+  const dspPhone = user?.user?.phone || user?.user?.email || "";
 
   const {
     data: agregate,
@@ -113,21 +114,25 @@ const FontDashboard = () => {
     },
   });
 
-  const userProductsArry = orders?.filter(
-    (order) => order?.userId === data?._id
-  );
-  const shippedProductsArry = userProductsArry?.filter(
-    (order) => order?.status === "shipped"
-  );
-  const pendingProductsArry = userProductsArry?.filter(
-    (order) => order?.status === "pending"
-  );
+  // const userProductsArry = orders?.filter(
+  //   (order) => order?.userId === data?._id
+  // );
+  // const shippedProductsArry = userProductsArry?.filter(
+  //   (order) => order?.status === "shipped"
+  // );
+  // const pendingProductsArry = userProductsArry?.filter(
+  //   (order) => order?.status === "pending"
+  // );
 
   // console.log(userProductsArry);
+
+
+
 
   return (
     <div className=" w-[100%] mx-auto  min-h-screen">
       <h2 className="p-2 text-xl font-semibold">Dashboard</h2>
+
       <div className="relative w-full overflow-hidden py-2 flex items-center">
         {/* Inline keyframes only once */}
         <style>
@@ -144,6 +149,7 @@ const FontDashboard = () => {
           Notice:
         </div>
 
+        {/* <span className="text-sm font-bold uppercase">{countdown}</span> */}
         {/* Scrolling Text */}
         {/* <marquee> </marquee> */}
         <marquee className="flex-1 overflow-hidden font-semibold text-pink-600">
@@ -167,13 +173,16 @@ const FontDashboard = () => {
         </p> */}
       </header>
 
-      <ReferralLevelBadge userId={data} />
+      <ReferralLevelBadge data={data} />
       <div className="w-full mx-auto p-2 space-y-4">
         {/* Header Bar */}
         <div className="bg-pink-600 text-white flex justify-between items-center px-4 py-2 rounded-md">
           <h2 className="text-base font-semibold">Repurchase Validity</h2>
-          <span className="text-sm font-bold uppercase">Active</span>
-        </div>
+
+          {data?.isActivePackage === "active" ? (
+            <CountdownTimer targetDate={data.packageExpireDate} />
+          ) : <span className="text-sm font-bold uppercase">EXPIRED</span>
+          }</div>
 
         {/* Cards Row */}
         <div className="md:flex md:gap-4 space-y-4 md:space-y-0">
@@ -181,8 +190,8 @@ const FontDashboard = () => {
           <div className="md:w-1/2">
             <div className="bg-white h-28 shadow-black/80 shadow-sm rounded-md p-4 flex justify-between items-center text-center text-sm">
               <div className="flex-1">
-                <div className="inline-block bg-green-300 text-green-900 font-semibold px-3 py-1 rounded-full text-xs">
-                  Active
+                <div className={`inline-block ${data?.isActivePackage === "active" ? "bg-green-300 text-green-900" : 'bg-red-300 text-red-900'} font-semibold px-3 py-1 rounded-full text-xs`}>
+                  {data?.isActivePackage}
                 </div>
                 <p className="mt-1 text-gray-700">Status</p>
               </div>

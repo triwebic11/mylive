@@ -185,6 +185,7 @@ const userSchema = new mongoose.Schema(
     referralCode: String,
     referredBy: String,
     placementBy: String,
+    isActivePackage: String,
     referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
     userStatus: String,
     GenerationLevel: {

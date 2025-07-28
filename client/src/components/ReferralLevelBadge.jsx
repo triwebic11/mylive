@@ -37,17 +37,18 @@ const packageStyles = {
   },
 };
 
-export default function ReferralLevelBadge({ userId }) {
+export default function ReferralLevelBadge({ data }) {
   const [userPackage, setUserPackage] = useState(null);
   // const { user } = useAuth();
   // const userId = user?.user?._id;
   const axiosSecure = useAxiosSecure();
+  console.log("ReferralLevelBadge data:", data);
 
   useEffect(() => {
     const fetchPackage = async () => {
-      if (!userId) return;
+      if (!data) return;
       try {
-        const res = await axiosSecure.get(`/package-requests/${userId}`);
+        const res = await axiosSecure.get(`/package-requests/${data}`);
         setUserPackage(res.data);
         localStorage.setItem("userPackage", JSON.stringify(res.data));
       } catch (err) {
@@ -56,13 +57,13 @@ export default function ReferralLevelBadge({ userId }) {
     };
 
     fetchPackage();
-  }, [axiosSecure, userId]);
+  }, [axiosSecure, data]);
 
-  if (!userPackage?.packageName)
-    return <div className="text-gray-600">Sorry, no package found.</div>;
+  // if (!data?.packageName)
+  //   return <div className="text-gray-600">Sorry, no package found.</div>;
 
   const current =
-    packageStyles[userPackage.packageName] || packageStyles["Normal"];
+    packageStyles[data?.packageName] || packageStyles["Normal"];
 
   return (
     <div
@@ -70,18 +71,18 @@ export default function ReferralLevelBadge({ userId }) {
     >
       <h1 className="text-xl font-bold mb-1 flex items-center gap-2">
         <span className="text-2xl">{current.emoji}</span>
-        Package: {userId.package}
+        Package: {data?.package || "Normal"}
       </h1>
       <h2 className="text-base sm:text-lg font-medium">
         Generation Level:{" "}
         <span className="font-bold">
-           {userId.GenerationLevel} Generation
+           {data?.GenerationLevel || 0 } Generation
         </span>
       </h2>
       <h2 className="text-base sm:text-lg font-medium">
         Mega Generation Level:{" "}
         <span className="font-bold">
-           {userId.MegaGenerationLevel} Generation
+           {data?.MegaGenerationLevel || 0 } Generation
         </span>
       </h2>
     </div>
