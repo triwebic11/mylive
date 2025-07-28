@@ -74,6 +74,7 @@ const DspDashboard = [
 
 const adminDashboardArry = [
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
+   { title: "DB Storage", icon: <CiHome />, link: "/dashboard/storage" },
   { title: "All Users", icon: <RiUserFollowLine />, link: "/dashboard/allUsers" },
   { title: "Order for DSP", icon: <TiShoppingCart />, link: "/dashboard/createOrder" },
   { title: "All DSP Orders", icon: <TiShoppingCart />, link: "/dashboard/allDspOrders" },
