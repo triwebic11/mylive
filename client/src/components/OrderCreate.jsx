@@ -3,17 +3,19 @@ import Swal from "sweetalert2";
 import useProducts from "../Hooks/useProducts";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useAuth from "../Hooks/useAuth";
-import { useLocation } from "react-router-dom";
 
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+<<<<<<< HEAD
+=======
   const location = useLocation();
   // console.log("Current Location:", location);
+>>>>>>> 7d826d40d0dbea9b7892b948fef784a9f70740f4
 
   const [products] = useProducts();
   const [allProducts, setAllProducts] = useState([]);
-  // const [showOffer, setShowOffer] = useState([]);
+  const [showOffer, setShowOffer] = useState([]);
   const [scndProducts, setScndProducts] = useState([
     {
       productId: "",
@@ -126,8 +128,12 @@ const OrderCreate = ({ title }) => {
     try {
       const res = await axiosSecure.post("/admin-orders", orderData);
 
+<<<<<<< HEAD
+      console.log(`ordersssss`, orderData);
+=======
       // console.log(`orders ------- `, orderData);
       // console.log("Order created:", res.data);
+>>>>>>> 7d826d40d0dbea9b7892b948fef784a9f70740f4
       if (res.data._id) {
         setOrder(res.data);
         Swal.fire("✅ Success", "Order created!", "success");
@@ -174,7 +180,7 @@ const OrderCreate = ({ title }) => {
           type="text"
           value={dspPhone}
           onChange={(e) => setDspPhone(e.target.value)}
-          placeholder="Enter Phone Number"
+          placeholder="Enter DSP Phone"
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
           required
         />
@@ -197,8 +203,8 @@ const OrderCreate = ({ title }) => {
                   <thead className="bg-gray-100 text-gray-900 font-semibold">
                     <tr className="flex flex-col md:flex-row justify-around ">
                       <th className="px-4 py-2 my-2 md:my-0">Product</th>
-                      <th className="px-4 py-2 my-2 md:my-0">Price (৳)</th>
-                      <th className="px-4 py-2 my-2 md:my-0">Regular Price</th>
+                      <th className="px-4 py-2 my-2 md:my-0">DP (৳)</th>
+                      <th className="px-4 py-2 my-2 md:my-0">MRP</th>
                       <th className="px-4 py-2 my-2 md:my-0">Quantity</th>
                     </tr>
                   </thead>
@@ -291,10 +297,10 @@ const OrderCreate = ({ title }) => {
                               e.target.value
                             )
                           }
-                          readOnly
                           className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="MRP"
                           required
+                          readOnly
                         />
                       </td>
 

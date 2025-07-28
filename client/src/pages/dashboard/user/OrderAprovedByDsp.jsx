@@ -162,7 +162,7 @@ const OrderAprovedByDsp = () => {
                     🛒 Product Details:
                   </h3>
 
-                  <div className="overflow-x-auto">
+                 <div className="overflow-x-auto">
                     <table className="min-w-full text-sm border border-gray-300 rounded-md">
                       <thead className="bg-gray-200 text-gray-700">
                         <tr>
