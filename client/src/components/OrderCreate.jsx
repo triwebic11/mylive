@@ -3,10 +3,13 @@ import Swal from "sweetalert2";
 import useProducts from "../Hooks/useProducts";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useAuth from "../Hooks/useAuth";
+import { useLocation } from "react-router-dom";
 
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const location = useLocation();
+  // console.log("Current Location:", location);
 
   const [products] = useProducts();
   const [allProducts, setAllProducts] = useState([]);
@@ -123,7 +126,7 @@ const OrderCreate = ({ title }) => {
     try {
       const res = await axiosSecure.post("/admin-orders", orderData);
 
-      console.log(`ordersssss`, orderData);
+      // console.log(`ordersssss`, orderData);
       if (res.data._id) {
         setOrder(res.data);
         Swal.fire("✅ Success", "Order created!", "success");
