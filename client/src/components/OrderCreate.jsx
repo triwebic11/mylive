@@ -3,15 +3,13 @@ import Swal from "sweetalert2";
 import useProducts from "../Hooks/useProducts";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useAuth from "../Hooks/useAuth";
+import { useLocation } from "react-router-dom";
 
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-<<<<<<< HEAD
-=======
   const location = useLocation();
   // console.log("Current Location:", location);
->>>>>>> 7d826d40d0dbea9b7892b948fef784a9f70740f4
 
   const [products] = useProducts();
   const [allProducts, setAllProducts] = useState([]);
