@@ -128,12 +128,7 @@ const OrderCreate = ({ title }) => {
     try {
       const res = await axiosSecure.post("/admin-orders", orderData);
 
-<<<<<<< HEAD
-      console.log(`ordersssss`, orderData);
-=======
-      // console.log(`orders ------- `, orderData);
-      // console.log("Order created:", res.data);
->>>>>>> 7d826d40d0dbea9b7892b948fef784a9f70740f4
+      // console.log(`ordersssss`, orderData);
       if (res.data._id) {
         setOrder(res.data);
         Swal.fire("✅ Success", "Order created!", "success");
