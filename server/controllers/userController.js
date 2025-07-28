@@ -575,6 +575,7 @@ const generateUserSummary = (user, referredUsers = []) => {
     { title: "Total Withdraw", value: totalWithdraw },
     { title: "Total TDS", value: totalTDS },
     { title: "Special Fund", value: specialFund },
+    { title: "Executive Officer", value: specialFund },
     { title: "Car Fund", value: carFund },
     { title: "Tour Fund", value: tourFund },
     { title: "Home Fund", value: homeFund },
