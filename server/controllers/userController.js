@@ -241,20 +241,20 @@ const registerUser = async (req, res) => {
             }
           })();
 
-          if (i < uplineGenerations) {
-            const point = childStartPoint - i * childDecreasePV;
-            if (point > 0) {
-              await User.findByIdAndUpdate(uplineId, {
-                $inc: { points: point },
-              });
+          // if (i < uplineGenerations) {
+          //   const point = childStartPoint - i * childDecreasePV;
+          //   if (point > 0) {
+          //     await User.findByIdAndUpdate(uplineId, {
+          //       $inc: { points: point },
+          //     });
 
-              console.log(
-                `✅ Upline ${uplineId} got ${point} points from generation ${
-                  i + 1
-                } based on child package`
-              );
-            }
-          }
+          //     console.log(
+          //       `✅ Upline ${uplineId} got ${point} points from generation ${
+          //         i + 1
+          //       } based on child package`
+          //     );
+          //   }
+          // }
         }
       }
     } catch (bonusErr) {
