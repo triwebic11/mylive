@@ -54,7 +54,7 @@ async function processMonthlyUserRankAndFunds() {
         const side = parseInt(downUser._id.toString().slice(-1)) % 2 === 0 ? 'left' : 'right';
         if (side === 'left') leftPV += monthlyPV;
         else rightPV += monthlyPV;
-        console.log(`📌 Downline: ${downUser.name} (Level: ${level}) | PV: ${monthlyPV} | Side: ${side}`);
+        // console.log(`📌 Downline: ${downUser.name} (Level: ${level}) | PV: ${monthlyPV} | Side: ${side}`);
       }
     }
 
@@ -66,7 +66,7 @@ async function processMonthlyUserRankAndFunds() {
       date: new Date()
     });
 
-    console.log(`\n🔎 ${rootUser.name} | LeftPV: ${leftPV}, RightPV: ${rightPV}`);
+    // console.log(`\n🔎 ${rootUser.name} | LeftPV: ${leftPV}, RightPV: ${rightPV}`);
 
     for (const pos of POSITIONS) {
       if (leftPV >= pos.PV && rightPV >= pos.PV) {
@@ -86,7 +86,7 @@ async function processMonthlyUserRankAndFunds() {
               type: 'rank-product',
               date: new Date()
             });
-            console.log(`🎉 ${rootUser.name} got Product Bonus: ${pos.benefit.value} PV for ${pos.name}`);
+            // console.log(`🎉 ${rootUser.name} got Product Bonus: ${pos.benefit.value} PV for ${pos.name}`);
           } else if (pos.benefit.type === 'fund') {
             const fundAmount = Math.floor((leftPV + rightPV) * pos.benefit.percent);
             if (!rootUser.funds) rootUser.funds = {};
@@ -101,7 +101,7 @@ async function processMonthlyUserRankAndFunds() {
               type: pos.benefit.fund,
               date: new Date()
             });
-            console.log(`🏦 ${rootUser.name} got Fund Bonus: ${fundAmount} PV to ${pos.benefit.fund}`);
+            // console.log(`🏦 ${rootUser.name} got Fund Bonus: ${fundAmount} PV to ${pos.benefit.fund}`);
           }
         }
         break;
@@ -109,10 +109,10 @@ async function processMonthlyUserRankAndFunds() {
     }
 
     await rootUser.save();
-    console.log(`✅ Updated: ${rootUser.name} (${rootUser.email})`);
+    // console.log(`✅ Updated: ${rootUser.name} (${rootUser.email})`);
   }
 
-  console.log('\n🎉 All users processed for Rank, PV & Funds.');
+  // console.log('\n🎉 All users processed for Rank, PV & Funds.');
 }
 
 module.exports = { processMonthlyUserRankAndFunds };

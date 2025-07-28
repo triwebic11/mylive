@@ -80,7 +80,7 @@ const generateReferralCode = async () => {
 //       const childDecreasePV = childPackageModel?.decreasePV || 100;
 
 //       if (!childStartPoint) {
-//         console.log("❌ Child user's package PV not found");
+//         // console.log("❌ Child user's package PV not found");
 //         return;
 //       }
 
@@ -114,7 +114,7 @@ const generateReferralCode = async () => {
 //         })();
 
 //         if (!uplineGenerations) {
-//           console.log(`⛔ Invalid or missing package for upline: ${uplineId}`);
+//           // console.log(`⛔ Invalid or missing package for upline: ${uplineId}`);
 //           continue;
 //         }
 
@@ -127,15 +127,15 @@ const generateReferralCode = async () => {
 //               $inc: { points: point },
 //             });
 
-//             console.log(
+//             // console.log(
 //               `✅ Upline ${uplineId} got ${point} points from generation ${i + 1
 //               } based on child package`
 //             );
 //           } else {
-//             console.log(`⚠️ Point is 0 or less for upline ${uplineId}`);
+//             // console.log(`⚠️ Point is 0 or less for upline ${uplineId}`);
 //           }
 //         } else {
-//           console.log(
+//           // console.log(
 //             `⛔ Upline ${uplineId} not eligible for generation ${i + 1}`
 //           );
 //         }
@@ -215,7 +215,7 @@ const registerUser = async (req, res) => {
       const childDecreasePV = childPackageModel?.decreasePV || 100;
 
       if (!childStartPoint) {
-        console.log("❌ Child user's package PV not found");
+        // console.log("❌ Child user's package PV not found");
       } else {
         for (let i = 0; i < referralTree.length; i++) {
           const uplineId = referralTree[i];
@@ -258,7 +258,7 @@ const registerUser = async (req, res) => {
         }
       }
     } catch (bonusErr) {
-      console.log("🎯 Bonus distribution error:", bonusErr.message);
+      // console.log("🎯 Bonus distribution error:", bonusErr.message);
     }
 
     // 7️⃣ Respond to frontend
@@ -429,7 +429,7 @@ const updateUserRole = async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
-  console.log("idddddddddddddddddd", id)
+  // console.log("idddddddddddddddddd", id)
 
   try {
     const updatedRole = await User.findByIdAndUpdate(id, updates, {
@@ -437,7 +437,7 @@ const updateUserRole = async (req, res) => {
       runValidators: true,
     });
 
-    console.log(updatedRole)
+    // console.log(updatedRole)
 
     if (!updatedRole) {
       return res.status(404).json({ message: "Role not found" });
@@ -455,7 +455,7 @@ const updateUserRole = async (req, res) => {
 
 // Optional utility to generate summary from user
 const generateUserSummary = (user, referredUsers = []) => {
-  console.log("Generating summary...");
+  // console.log("Generating summary...");
 
   const incoming = user.AllEntry?.incoming || [];
 
@@ -615,11 +615,11 @@ const userAgregateData = async (req, res) => {
   }
 };
 async function buildTree(userId) {
-  console.log("Building tree for user:", userId);
+  // console.log("Building tree for user:", userId);
   const user = await User.findById(userId);
   if (!user) return null;
 
-  console.log("Building tree for user:", user.name);
+  // console.log("Building tree for user:", user.name);
 
   // 🔍 Find users who have this user's referral code in either placementBy or referredBy
   const children = await User.find({
@@ -629,7 +629,7 @@ async function buildTree(userId) {
     ]
   });
 
-  console.log("Children found:", children.length);
+  // console.log("Children found:", children.length);
 
   // Recursively build tree for all children
   const childrenTrees = await Promise.all(
@@ -654,7 +654,7 @@ const getReferralTreeById = async (req, res) => {
   try {
     const { userId } = req.params;
     const tree = await buildTree(userId);
-    console.log("Referral Tree for:", userId);
+    // console.log("Referral Tree for:", userId);
     res.json(tree);
   } catch (err) {
     console.error("Tree build error:", err);

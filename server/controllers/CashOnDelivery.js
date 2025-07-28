@@ -87,8 +87,8 @@ const updatecashondelivery = async (req, res) => {
 
     const updateData = req.body;
 
-    console.log("delivery id:", id);
-    console.log("update data:", updateData);
+    // console.log("delivery id:", id);
+    // console.log("update data:", updateData);
 
     const existingOrder = await CashOnDeliveryModel.findById(id);
     if (!existingOrder) {
@@ -107,7 +107,7 @@ const updatecashondelivery = async (req, res) => {
       const { PV, product } = updatedOrder;
       const buyer = await User.findById(updatedOrder?.userId);
       if (!buyer) return res.status(404).json({ message: "Buyer not found" });
-      console.log("buyer data----------------", buyer)
+      // console.log("buyer data----------------", buyer)
 
       // Initialize AllEntry arrays if missing
       buyer.AllEntry = buyer.AllEntry || {};
@@ -118,7 +118,7 @@ const updatecashondelivery = async (req, res) => {
 
       if (buyer.referredBy) {
         const referrer = await User.findOne({ referralCode: buyer.referredBy });
-        console.log("referred data -----------", referrer)
+        // console.log("referred data -----------", referrer)
 
         if (referrer) {
           referrer.AllEntry = referrer.AllEntry || {};
@@ -153,7 +153,7 @@ const updatecashondelivery = async (req, res) => {
           // Save referrer and log
           try {
             await referrer.save();
-            console.log("Referrer saved successfully:", referrer);
+            // console.log("Referrer saved successfully:", referrer);
           } catch (err) {
             console.error("Error saving referrer:", err);
           }
@@ -188,7 +188,7 @@ const updatecashondelivery = async (req, res) => {
       // Save buyer and log
       try {
         await buyer.save();
-        console.log("Buyer saved successfully:", buyer);
+        // console.log("Buyer saved successfully:", buyer);
       } catch (err) {
         console.error("Error saving buyer:", err);
       }

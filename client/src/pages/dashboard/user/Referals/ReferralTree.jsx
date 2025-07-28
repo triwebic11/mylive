@@ -5,8 +5,8 @@ const ReferralTree = ({ referralTree }) => {
   const { userPackage } = useAuth();
   const [uplines, setUplines] = useState([]);
   const axiosSecure = useAxiosSecure();
-  console.log("upline tree data: ", uplines);
-  console.log("userPackage data: ", userPackage);
+  // console.log("upline tree data: ", uplines);
+  // console.log("userPackage data: ", userPackage);
   useEffect(() => {
     if (referralTree?.length > 0) {
       axiosSecure

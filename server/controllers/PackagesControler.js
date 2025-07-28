@@ -6,7 +6,7 @@ const Packages = require("../models/PackagesModel");
 exports.getAllPackages = async (req, res) => {
   try {
     const products = await Packages.find();
-    console.log("Fetched products:", products);
+    // console.log("Fetched products:", products);
     if (!products || products.length === 0) {
       return res.status(404).json({ message: "No products found" });
     }

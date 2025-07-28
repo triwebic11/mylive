@@ -20,7 +20,7 @@ const Kyc = () => {
   const axiosSecure = useAxiosSecure();
   const kycStatus = useKycStatus();
   const role = useRole();
-  console.log("your kyc status - ", kycStatus); // Custom hook to get KYC status
+  // console.log("your kyc status - ", kycStatus); // Custom hook to get KYC status
 
   // Front image upload handler
   const handleFrontUpload = async (file) => {

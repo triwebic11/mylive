@@ -3,25 +3,17 @@ const router = express.Router();
 const AdminOrder = require("../models/AdminOrder");
 const User = require("../models/User");
 
-
 async function buildTree(userId) {
-  console.log("Building tree for user:", userId);
   const user = await User.findById(userId);
   if (!user) return null;
 
-  console.log("Building tree for user:", user.name);
-
-  // 🔍 Find users who have this user's referral code in either placementBy or referredBy
   const children = await User.find({
     $or: [
       { placementBy: user.referralCode },
-      { referredBy: user.referralCode },
+      { referredBy: user.referralCode }
     ]
   });
 
-  console.log("Children found:", children.length);
-
-  // Recursively build tree for all children
   const childrenTrees = await Promise.all(
     children.map(child => buildTree(child._id))
   );
@@ -30,113 +22,138 @@ async function buildTree(userId) {
     name: user.name,
     _id: user._id,
     Position: user.Position,
-    phone: user?.phone,
+    phone: user.phone,
     referralCode: user.referralCode,
     referredBy: user.referredBy,
     placementBy: user.placementBy,
     left: childrenTrees[0] || null,
     right: childrenTrees[1] || null,
-    // children: childrenTrees, // 🌲 full array of children
   };
 }
 
-const getReferralTreeById = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const tree = await buildTree(userId);
-    console.log("Referral Tree for:", userId);
-    res.json(tree);
-  } catch (err) {
-    console.error("Tree build error:", err);
-    res.status(500).json({ error: "Failed to fetch referral tree" });
-  }
-};
+async function buildUplineTree(userId, depth = 0, maxDepth = 10, visited = new Set()) {
+  if (depth > maxDepth) return [];
 
-const distributeGrandPoint = async (buyerId, grandPoint, buyerphone) => {
-  // const buyer = await User.findById(buyerId);
+  const user = await User.findById(userId);
+  if (!user || visited.has(user._id.toString())) return [];
+
+  visited.add(user._id.toString());
+
+  const query = [];
+  if (user.referredBy) query.push({ referralCode: user.referredBy });
+  if (user.placementBy) query.push({ referralCode: user.placementBy });
+
+  const parent = await User.findOne({ $or: query });
+
+  const currentNode = {
+    name: user.name,
+    _id: user._id,
+    phone: user.phone,
+    referralCode: user.referralCode,
+    referredBy: user.referredBy,
+    placementBy: user.placementBy,
+    GenerationLevel: user.GenerationLevel ?? 0
+  };
+
+  if (!parent) {
+    return [currentNode];
+  }
+
+  const parentTree = await buildUplineTree(parent._id, depth + 1, maxDepth, visited);
+  return [...parentTree, currentNode];
+}
+
+const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalPrice) => {
   const buyer = await User.findOne({ phone: buyerphone });
   if (!buyer) return;
 
-  console.log("Distributing grand points for buyer(je product kinlo):", buyer);
+  const fifteenPercent = grandPoint * 0.15;
+
+  if (buyer?.role === "dsp") {
+    buyer.points = (buyer.points || 0) + fifteenPercent;
+    buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
+    buyer.AllEntry.incoming.push({
+      fromUser: buyer._id,
+      pointReceived: fifteenPercent,
+      sector: '15% dsp reward from purchase',
+      date: new Date()
+    });
+    await buyer.save();
+    return;
+  }
+
+  if (buyer?.role === "admin") return;
 
   const tenPercent = grandPoint * 0.10;
   const thirtyPercent = grandPoint * 0.30;
   const twentyPercent = grandPoint * 0.20;
 
-  // 1. ✅ Buyer gets 10%
-  buyer.points = (buyer.points || 0) + tenPercent;
-  buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
-  buyer.AllEntry.incoming.push({
-    fromUser: buyer._id,
-    pointReceived: tenPercent,
-    sector: '10% personal reward from purchase',
-    date: new Date()
-  });
-  await buyer.save();
-  // 2. 🔁 Upline 30% generation share
-  const maxLevel = 10; // or set dynamically from buyer if needed
-  const pointPerLevel = thirtyPercent / maxLevel;
-  console.log("Max level:", maxLevel, "Point per level:", pointPerLevel);
+  const alreadyReceivedPersonalReward = buyer.AllEntry?.incoming?.some(
+    (entry) => entry.sector === "10% personal reward from purchase"
+  );
 
-  let receiversCount = 0; // ei variable diye track korbo koyjon receive korlo
-
-let current = buyer;
-let level = 1;
-
-while (level <= maxLevel) {
-  const referrer = await User.findOne({ referralCode: current.referredBy });
-
-  if (!referrer) break;
-
-  console.log(`Level ${level} referrer:`, referrer.name || "None");
-
-  if (referrer.GenerationLevel >= level) {
-    receiversCount++; // ✅ jodi ei level e receive kore tahole count barabo
-
-    referrer.points = (referrer.points || 0) + pointPerLevel;
-    referrer.AllEntry = referrer.AllEntry || { incoming: [] };
-    referrer.AllEntry.incoming.push({
-      fromUser: buyerId,
-      pointReceived: pointPerLevel,
-      sector: `Level ${level} generation commission`,
+  if (alreadyReceivedPersonalReward) {
+    buyer.points = (buyer.points || 0) + tenPercent;
+    buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
+    buyer.AllEntry.incoming.push({
+      fromUser: buyer._id,
+      pointReceived: tenPercent,
+      sector: '10% personal reward from purchase',
       date: new Date()
     });
-
-    await referrer.save();
+    await buyer.save();
   }
 
-  current = referrer;
-  level++;
-}
-
-// 🔍 Ekhon console e output dao
-console.log(`Total ${receiversCount} referrers received generation commission from 30%`);
-
-
-
-
-  // 3. 📞 20% to phone number referrer
-  if (buyerphone) {
-    const phoneReferrer = await User.findOne({ referralCode: buyerphone });
+  // 20% phone referrer
+  if (buyer.referredBy) {
+    const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
     if (phoneReferrer) {
       phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
       phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
       phoneReferrer.AllEntry.incoming.push({
-        fromUserId: buyerId,
-        points: twentyPercent,
-        note: '20% phone referrer commission',
+        fromUser: buyerId,
+        pointReceived: twentyPercent,
+        sector: '20% phone referrer commission',
         date: new Date()
       });
       await phoneReferrer.save();
     }
   }
+
+  // 30% shared generation commission
+  const uplineFlat = await buildUplineTree(buyer._id);
+  const eligibleUplines = uplineFlat
+    .map((uplineUser, index) => {
+      const requiredLevel = index + 1;
+      if (uplineUser.GenerationLevel >= requiredLevel) {
+        return { ...uplineUser, level: requiredLevel };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+    console.log("Eligible Uplines:", eligibleUplines);
+
+  if (eligibleUplines.length > 0) {
+    const pointPerUpline = thirtyPercent / eligibleUplines.length;
+    for (const upline of eligibleUplines) {
+      const uplineUser = await User.findById(upline._id);
+      if (!uplineUser) continue;
+
+      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+      uplineUser.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        pointReceived: pointPerUpline,
+        sector: `Shared Generation Commission (Level ${upline.level})`,
+        date: new Date()
+      });
+      await uplineUser.save();
+    }
+  }
 };
 
-
-
-
-// 👉 POST: Admin creates an order
-// server/routes/adminOrders.js
+// Order create
 router.post("/", async (req, res) => {
   try {
     const {
@@ -159,10 +176,7 @@ router.post("/", async (req, res) => {
     });
 
     const savedOrder = await newOrder.save();
-    await distributeGrandPoint(userId, grandPoint, dspPhone);
-    console.log("userId:", savedOrder, "grandPoint:", grandPoint, "Phone:", dspPhone);
-    // console.log("Order created:", savedOrder._id);
-
+    await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
     res.status(201).json(savedOrder);
   } catch (error) {
     console.error("❌ Error creating order:", error);
@@ -170,7 +184,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ✅ GET: Fetch by DSP phone
+// Get orders by DSP phone
 router.get("/by-phone/:phone", async (req, res) => {
   try {
     const orders = await AdminOrder.find({ dspPhone: req.params.phone });
@@ -180,7 +194,7 @@ router.get("/by-phone/:phone", async (req, res) => {
   }
 });
 
-// ✅ GET: Fetch by userId
+// Get orders by user ID
 router.get("/by-user/:userId", async (req, res) => {
   try {
     const orders = await AdminOrder.find({ userId: req.params.userId });
@@ -190,9 +204,10 @@ router.get("/by-user/:userId", async (req, res) => {
   }
 });
 
+// Get all orders
 router.get("/", async (req, res) => {
   try {
-    const orders = await AdminOrder.find(); // ✅ সব order fetch করবে
+    const orders = await AdminOrder.find();
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch orders", error: err });

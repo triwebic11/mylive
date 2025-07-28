@@ -51,7 +51,7 @@ const AllProducts = () => {
         updatedData
       );
 
-      console.log(res.data);
+      // console.log(res.data);
 
       refetch();
       setSelectedProduct(null); // Close modal
@@ -70,7 +70,7 @@ const AllProducts = () => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
         const res = await axiosSecure.delete(`/products/${product._id}`);
-        console.log(res.data);
+        // console.log(res.data);
         refetch();
       } catch (err) {
         console.error("Delete failed", err);

@@ -141,7 +141,7 @@ const AddProduct = () => {
       ...productOptions, // Include the new 4 fields here
     };
 
-    console.log("Form Data:", payload);
+    // console.log("Form Data:", payload);
 
     try {
       await axiosSecure.post("/products/product", payload); // Replace with your actual API

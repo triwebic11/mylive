@@ -2,6 +2,7 @@ import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { logo } from "../../assets";
 import { MdOutlineShoppingBag, MdMenu } from "react-icons/md";
 import { CiHome } from "react-icons/ci";
+import { CgProfile } from "react-icons/cg";
 import Swal from "sweetalert2";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
@@ -9,6 +10,20 @@ import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
 import useUserById from "../../Hooks/useUserById";
 import useRole from "../../Hooks/useRole";
 import useAuth from "../../Hooks/useAuth";
+import { FaLink } from "react-icons/fa";
+import { FiPackage } from "react-icons/fi";
+import { HiOutlineWallet } from "react-icons/hi2";
+import { PiWallDuotone } from "react-icons/pi";
+import { IoCardOutline } from "react-icons/io5";
+import { HiMiniArrowsUpDown } from "react-icons/hi2";
+import { TiShoppingCart } from "react-icons/ti";
+import { MdLockOutline } from "react-icons/md";
+import { IoKeyOutline } from "react-icons/io5";
+import { MdOutlineSms } from "react-icons/md";
+import { RiUserFollowLine } from "react-icons/ri";
+import { RiMoneyDollarBoxLine } from "react-icons/ri";
+import { MdManageHistory } from "react-icons/md";
+import { MdDoneAll } from "react-icons/md";
 
 const dashboardArry = [
   {
@@ -17,10 +32,11 @@ const dashboardArry = [
     link: "/dashboard/marketPlace",
   },
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboard" },
-  { title: "Profile", link: "/dashboard/profile" },
-  { title: "Packages", link: "/dashboard/userPackages" },
+  { title: "Profile", icon: <CgProfile />, link: "/dashboard/profile" },
+  { title: "Packages", icon: <FiPackage />, link: "/dashboard/userPackages" },
   {
     title: "Referrals",
+    icon: <FaLink />,
     submenu: [
       { title: "Refer Link", link: "/dashboard/refer-link" },
       { title: "My Team", link: "/dashboard/my-team" },
@@ -30,42 +46,50 @@ const dashboardArry = [
   },
   {
     title: "Wallet Statement",
+    icon: <HiOutlineWallet />,
     submenu: [{ title: "Transactions", link: "/dashboard/transactions" }],
   },
-  { title: "Today Statement", link: "/dashboard/today-statement" },
-  { title: "C-Statement", link: "/dashboard/commission-statement" },
-  { title: "My Consistency", link: "/dashboard/my-consistency" },
-  { title: "Voucher", link: "/dashboard/voucher" },
-  { title: "Withdraw", link: "/dashboard/withdraw" },
+  { title: "Today Statement", icon: <PiWallDuotone />, link: "/dashboard/today-statement" },
+  { title: "C-Statement", icon: <PiWallDuotone />, link: "/dashboard/commission-statement" },
+  { title: "My Consistency", icon: <PiWallDuotone />, link: "/dashboard/my-consistency" },
+  { title: "Voucher", icon: <IoCardOutline />, link: "/dashboard/voucher" },
+  { title: "Withdraw", icon: <HiMiniArrowsUpDown />, link: "/dashboard/withdraw" },
 
-  { title: "My Order", link: "/dashboard/my-order" },
+  { title: "My Order", icon: <TiShoppingCart />, link: "/dashboard/my-order" },
   // { title: "Package Update", link: "/dashboard" },
-  { title: "Support", link: "/dashboard/support" },
-  { title: "Kyc", link: "/dashboard/kyc" },
-  { title: "Update Password", link: "/dashboard/update-password" },
+  { title: "Support", icon: <MdOutlineSms />, link: "/dashboard/support" },
+  { title: "Kyc", icon: <IoKeyOutline />, link: "/dashboard/kyc" },
+  { title: "Update Password", icon: <MdLockOutline />, link: "/dashboard/update-password" },
 ];
 
 const DspDashboard = [
-  { title: "Profile", link: "/dashboard/dspprofile" },
-  { title: "All User's Orders", link: "/dashboard/allOrders" },
-  { title: "Order Now", link: "/dashboard/dspOrder" },
-  { title: "Order For User", link: "/dashboard/orderFroUser" },
-  { title: "Aproved Orders", link: "/dashboard/myAprovedOrders" },
-  { title: "My Order", link: "/dashboard/myOrders" },
-  { title: "Kyc", link: "/dashboard/kyc" },
+  { title: "Profile", icon: <CgProfile />, link: "/dashboard/dspprofile" },
+  { title: "All User's Orders", icon: <RiUserFollowLine />, link: "/dashboard/allOrders" },
+  { title: "Order Now", icon: <TiShoppingCart />, link: "/dashboard/dspOrder" },
+  { title: "Order For User", icon: <TiShoppingCart />, link: "/dashboard/orderFroUser" },
+  { title: "Aproved Orders", icon: <MdDoneAll />, link: "/dashboard/myAprovedOrders" },
+  { title: "My Order", icon: <TiShoppingCart />, link: "/dashboard/myOrders" },
+  { title: "Kyc", icon: <IoKeyOutline />, link: "/dashboard/kyc" },
+    {
+    title: "Wallet Statement",
+    icon: <HiOutlineWallet />,
+    submenu: [{ title: "Transactions", link: "/dashboard/transactions" }],
+  },
 ];
 
 const adminDashboardArry = [
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
-  { title: "All Users", link: "/dashboard/allUsers" },
-  { title: "Order for DSP", link: "/dashboard/createOrder" },
-  { title: "All DSP Orders", link: "/dashboard/allDspOrders" },
-  { title: "All Package Requester", link: "/dashboard/allPackageRequestUser" },
-  { title: "All Withdrawal", link: "/dashboard/allWithdrawals" },
-  { title: "Balance Conversion", link: "/dashboard/balanceConversion" },
-  { title: "Cash On Delivery", link: "/dashboard/CashonDelivery" },
+   { title: "DB Storage", icon: <CiHome />, link: "/dashboard/storage" },
+  { title: "All Users", icon: <RiUserFollowLine />, link: "/dashboard/allUsers" },
+  { title: "Order for DSP", icon: <TiShoppingCart />, link: "/dashboard/createOrder" },
+  { title: "All DSP Orders", icon: <TiShoppingCart />, link: "/dashboard/allDspOrders" },
+  { title: "All Package Requester", icon: <FiPackage />, link: "/dashboard/allPackageRequestUser" },
+  { title: "All Withdrawal", icon: <HiMiniArrowsUpDown />, link: "/dashboard/allWithdrawals" },
+  { title: "Balance Conversion", icon: <RiMoneyDollarBoxLine />, link: "/dashboard/balanceConversion" },
+  { title: "Cash On Delivery", icon: <TiShoppingCart />, link: "/dashboard/CashonDelivery" },
   {
     title: "Manage Products",
+    icon: <MdManageHistory />,
     submenu: [
       { title: "All Products", link: "/dashboard/allProducts" },
       { title: "Add Products", link: "/dashboard/AddProduct" },
@@ -73,13 +97,14 @@ const adminDashboardArry = [
   },
   {
     title: "Manage Packages",
+    icon: <FiPackage />,
     submenu: [
       { title: "All Packages", link: "/dashboard/packages" },
       { title: "Update Packages", link: "/dashboard/updatePackages" },
     ],
   },
-  { title: "Update Password", link: "/dashboard/update-password" },
-  { title: "User KYC Verified Request", link: "/dashboard/kycVerified" },
+  { title: "Update Password", icon: <MdLockOutline />, link: "/dashboard/update-password" },
+  { title: "User KYC Verified Request", icon: <IoKeyOutline />, link: "/dashboard/kycVerified" },
 ];
 
 const Dashboard = () => {
@@ -120,8 +145,8 @@ const Dashboard = () => {
     role === "admin"
       ? adminDashboardArry
       : role === "dsp"
-      ? DspDashboard
-      : dashboardArry;
+        ? DspDashboard
+        : dashboardArry;
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
@@ -156,6 +181,7 @@ const Dashboard = () => {
                 onClick={handleLogout}
                 className="w-full px-4 py-2 font-semibold  hover:text-purple-700 rounded-md  transition duration-300"
               >
+
                 Logout
               </button>
             </div>
@@ -167,9 +193,8 @@ const Dashboard = () => {
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
           {role?.toUpperCase()} Dashboard
@@ -214,7 +239,7 @@ const Dashboard = () => {
 
           <button
             onClick={handleLogout}
-            className="w-full mt-3 bg-blue-100 px-3 py-2 rounded font-bold hover:bg-gray-200"
+            className="w-full mt-3 bg-blue-100 px-3 py-2 rounded font-semibold hover:bg-gray-200"
           >
             Logout
           </button>
@@ -246,7 +271,7 @@ const Dashboard = () => {
               {item.submenu ? (
                 <div
                   onClick={() => toggleDropdown(index)}
-                  className="flex items-center justify-between px-3 py-2 font-bold text-lg duration-300 rounded-lg cursor-pointer hover:bg-gray-200"
+                  className="flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer hover:bg-gray-200"
                 >
                   <div className="flex items-center gap-2">
                     {item.icon && <span>{item.icon}</span>}
@@ -264,10 +289,9 @@ const Dashboard = () => {
                 <NavLink
                   to={item.link}
                   className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2 font-bold text-lg duration-300 rounded-lg cursor-pointer ${
-                      isActive
-                        ? "border-b-2 border-blue-500 bg-gray-100"
-                        : "hover:bg-gray-200"
+                    `flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer ${isActive
+                      ? "border-b-2 border-blue-500 bg-gray-100"
+                      : "hover:bg-gray-200"
                     }`
                   }
                 >
@@ -303,7 +327,7 @@ const Dashboard = () => {
 
           <button
             onClick={handleLogout}
-            className="bg-blue-100 px-2 font-bold py-2 rounded-lg hover:bg-gray-200 duration-300 mt-4"
+            className="bg-blue-100 px-2 font-semibold py-2 rounded-lg hover:bg-gray-200 duration-300 mt-4"
           >
             Logout
           </button>

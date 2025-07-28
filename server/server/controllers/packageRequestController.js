@@ -40,7 +40,7 @@ exports.approveRequest = async (req, res) => {
       return res.status(404).json({ message: "Request not found." });
     }
 
-    console.log("✅ Approved Request:", request);
+    // console.log("✅ Approved Request:", request);
 
     const user = await User.findById(request.userId);
     if (!user) {
@@ -48,7 +48,7 @@ exports.approveRequest = async (req, res) => {
     }
 
     const pkg = await Packages.findOne({ name: request.packageName });
-    console.log("🎁 Matched Package:", pkg);
+    // console.log("🎁 Matched Package:", pkg);
     await User.findByIdAndUpdate(user?._id, {
       package: request.packageName,
       GenerationLevel: request.GenerationLevel ?? pkg?.GenerationLevel,

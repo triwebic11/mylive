@@ -151,7 +151,7 @@ const Register = () => {
       navigate("/packeg-active", { state: { user: userData } });
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
-      console.log("register err - ", err);
+      // console.log("register err - ", err);
     }
   };
 

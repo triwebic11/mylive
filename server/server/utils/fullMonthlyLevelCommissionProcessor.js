@@ -129,7 +129,7 @@ async function handleSmartConsistencyBonus(buyer, currentPV, product) {
       date: new Date(),
     });
 
-    console.log(`🎯 Consistency Bonus applied to ${buyer.email}`);
+    // console.log(`🎯 Consistency Bonus applied to ${buyer.email}`);
   }
 }
 // 🏁 মূল ফাংশন: মাস শেষে লেভেল কমিশন এবং Designation প্রসেস
@@ -144,8 +144,8 @@ const processMonthlyLevelCommissions = async () => {
     let leftPV = 0;
     let rightPV = 0;
 
-    console.log(`\n📌 Checking user: ${rootUser.name} (${rootUser.email})`);
-    console.log(`📊 Total downlines: ${downlines.length}`);
+    // console.log(`\n📌 Checking user: ${rootUser.name} (${rootUser.email})`);
+    // console.log(`📊 Total downlines: ${downlines.length}`);
 
     for (const { user: downUser, level } of downlines) {
       const monthlyPV = (downUser.AllEntry?.incoming || []).filter(entry => {
@@ -161,7 +161,7 @@ const processMonthlyLevelCommissions = async () => {
       if (side === "left") leftPV += monthlyPV;
       else rightPV += monthlyPV;
 
-      console.log(`  📥 Level ${level}: ${downUser.name} => ${monthlyPV} PV (${side} side)`);
+      // console.log(`  📥 Level ${level}: ${downUser.name} => ${monthlyPV} PV (${side} side)`);
 
       let commissionRate = 0;
       let type = "";
@@ -193,12 +193,12 @@ const processMonthlyLevelCommissions = async () => {
             level,
             date: new Date(),
           });
-          console.log(`    ✅ Commission added: ${commission} PV (${type})`);
+          // console.log(`    ✅ Commission added: ${commission} PV (${type})`);
         }
       }
     }
 
-    console.log(`📦 Total PV: ${totalPV}, Left: ${leftPV}, Right: ${rightPV}`);
+    // console.log(`📦 Total PV: ${totalPV}, Left: ${leftPV}, Right: ${rightPV}`);
 
     for (const pos of POSITIONS) {
       if (leftPV >= pos.PV && rightPV >= pos.PV) {
@@ -222,7 +222,7 @@ const processMonthlyLevelCommissions = async () => {
               level: 0,
               date: new Date(),
             });
-            console.log(`🎁 Product Bonus (${pos.name}): ${pos.benefit.value} PV`);
+            // console.log(`🎁 Product Bonus (${pos.name}): ${pos.benefit.value} PV`);
           } else if (pos.benefit.type === "fund") {
             const fundAmount = Math.floor(totalPV * pos.benefit.percent);
             if (!rootUser.funds) rootUser.funds = {};
@@ -240,7 +240,7 @@ const processMonthlyLevelCommissions = async () => {
               level: 0,
               date: new Date(),
             });
-            console.log(`💰 Fund Bonus (${pos.name}): ${fundAmount} PV to ${pos.benefit.fund}`);
+            // console.log(`💰 Fund Bonus (${pos.name}): ${fundAmount} PV to ${pos.benefit.fund}`);
           }
         }
         break;
@@ -250,10 +250,10 @@ const processMonthlyLevelCommissions = async () => {
     
 
     await rootUser.save();
-    console.log(`✅ Done processing: ${rootUser.email}`);
+    // console.log(`✅ Done processing: ${rootUser.email}`);
   }
 
-  console.log("\n🎉 Full monthly level-based commission & designation processed.");
+  // console.log("\n🎉 Full monthly level-based commission & designation processed.");
 };
 
 module.exports = { processMonthlyLevelCommissions };

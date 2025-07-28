@@ -1,3 +1,344 @@
+const express = require("express");
+const router = express.Router();
+const AdminOrder = require("../models/AdminOrder");
+const User = require("../models/User");
+
+
+async function buildTree(userId) {
+  // console.log("Building tree for user:", userId);
+  const user = await User.findById(userId);
+  if (!user) return null;
+
+  // console.log("Building tree for user:", user.name);
+
+  // 🔍 Find users who have this user's referral code in either placementBy or referredBy
+  const children = await User.find({
+    $or: [
+      { placementBy: user.referralCode },
+      { referredBy: user.referralCode },
+    ]
+  });
+
+  // console.log("Children found:", children.length);
+
+  // Recursively build tree for all children
+  const childrenTrees = await Promise.all(
+    children.map(child => buildTree(child._id))
+  );
+
+  return {
+    name: user.name,
+    _id: user._id,
+    Position: user.Position,
+    phone: user?.phone,
+    referralCode: user.referralCode,
+    referredBy: user.referredBy,
+    placementBy: user.placementBy,
+    left: childrenTrees[0] || null,
+    right: childrenTrees[1] || null,
+    // children: childrenTrees, // 🌲 full array of children
+  };
+}
+
+const getReferralTreeById = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const tree = await buildTree(userId);
+    // console.log("Referral Tree for:", userId);
+    res.json(tree);
+  } catch (err) {
+    console.error("Tree build error:", err);
+    res.status(500).json({ error: "Failed to fetch referral tree" });
+  }
+};
+
+const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalPrice) => {
+  // const buyer = await User.findById(buyerId);
+  const buyer = await User.findOne({ phone: buyerphone });
+  if (!buyer) return;
+
+  // console.log("Distributing grand points for buyer(je product kinlo):", buyer);
+
+  const tenPercent = grandPoint * 0.10;
+  const thirtyPercent = grandPoint * 0.30;
+  const twentyPercent = grandPoint * 0.20;
+
+  // 1. ✅ Buyer gets 10%
+  // buyer.points = (buyer.points || 0) + tenPercent;
+  // buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
+  // buyer.AllEntry.incoming.push({
+  //   fromUser: buyer._id,
+  //   pointReceived: tenPercent,
+  //   sector: '10% personal reward from purchase',
+  //   date: new Date()
+  // });
+  // await buyer.save();
+  // 2. 🔁 Upline 30% generation share
+  
+  
+  // 30% generation commission
+  const maxLevel = 10; // or set dynamically from buyer if needed
+  const pointPerLevel = thirtyPercent / maxLevel;
+  // console.log("Max level:", maxLevel, "Point per level:", pointPerLevel);
+
+  //   let receiversCount = 0; // ei variable diye track korbo koyjon receive korlo
+
+  // let current = buyer;
+  // let level = 1;
+
+  // while (level <= maxLevel) {
+  //   const referrer = await User.findOne({ referralCode: current.referredBy });
+
+  //   if (!referrer) break;
+
+  //   // console.log(`Level ${level} referrer:`, referrer.name || "None");
+
+  //   if (referrer.GenerationLevel >= level) {
+  //     receiversCount++; // ✅ jodi ei level e receive kore tahole count barabo
+
+  //     referrer.points = (referrer.points || 0) + pointPerLevel;
+  //     referrer.AllEntry = referrer.AllEntry || { incoming: [] };
+  //     referrer.AllEntry.incoming.push({
+  //       fromUser: buyerId,
+  //       pointReceived: pointPerLevel,
+  //       sector: `Level ${level} generation commission`,
+  //       date: new Date()
+  //     });
+
+  //     await referrer.save();
+  //   }
+
+  //   current = referrer;
+  //   level++;
+  // }
+
+  // // 🔍 Ekhon console e output dao
+  // // console.log(`Total ${receiversCount} referrers received generation commission from 30%`);
+
+
+
+
+  // 3. 📞 20% to phone number referrer
+  if (buyerphone) {
+    const phoneReferrer = await User.findOne({ referralCode: buyer?.referredBy });
+    // console.log("Phone referrer found:", phoneReferrer ? phoneReferrer.name : "None");
+    if (phoneReferrer) {
+      phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
+      phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
+      phoneReferrer.AllEntry.incoming.push({
+        fromUser: buyerId,
+        pointReceived: twentyPercent,
+        sector: '20% phone referrer commission',
+        date: new Date()
+      });
+      await phoneReferrer.save();
+    }
+  }
+  // 20% Advance Consistency
+  // const isAdvanceConsistancy = grandTotalPrice >= 5000 || grandTotalPrice <= 10000;
+  // if (isAdvanceConsistancy) {
+  //   // console.log("Advance Consistency condition met for buyer:", buyer.name);
+  //   if (buyer) {
+  //     buyer.points = (buyer.points || 0) + twentyPercent;
+  //     buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
+  //     buyer.AllEntry.incoming.push({
+  //       fromUser: buyer._id,
+  //       pointReceived: twentyPercent,
+  //       sector: '20% Advance Consistency commission',
+  //       date: new Date()
+  //     });
+  //     await buyer.save();
+  //   }
+  // }
+
+  // 10% repurchase bonus
+  
+  
+  // 
+  
+  
+  
+  
+  // Repurchaseer 10% bonus
+  const alreadyReceivedPersonalReward = buyer.AllEntry.incoming.some(
+    (entry) => entry.sector === "10% personal reward from purchase"
+  );
+
+  if (alreadyReceivedPersonalReward) {
+    // console.log("Already received personal reward.");
+    buyer.points = (buyer.points || 0) + tenPercent;
+    buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
+    buyer.AllEntry.incoming.push({
+      fromUser: buyer._id,
+      pointReceived: tenPercent,
+      sector: '10% personal reward from purchase',
+      date: new Date()
+    });
+    await buyer.save();
+  } else {
+    // console.log("Eligible to receive personal reward.");
+  }
+
+  // 10% Commission for 4 months Consistency Purchase Product
+// const checkContinuousPurchases = (incoming) => {
+//   const now = new Date(); // আজকের তারিখ
+//   const monthsToCheck = 4;
+//   const purchaseMonths = new Set();
+
+//   // Step 1: Filter and prepare month-year keys from incoming data
+//   incoming.forEach((entry) => {
+//     if (entry.sector === "10% personal reward from purchase") {
+//       const entryDate = new Date(entry.date);
+//       const year = entryDate.getFullYear();
+//       const month = entryDate.getMonth(); // 0-based (Jan = 0)
+//       const key = `${year}-${month}`;
+//       purchaseMonths.add(key);
+//     }
+//   });
+
+//   // Step 2: Check if each of the last 4 months is present in the set
+//   const checkDate = new Date(now.getFullYear(), now.getMonth(), 1); // start of this month
+
+//   for (let i = 1; i <= monthsToCheck; i++) {
+//     checkDate.setMonth(checkDate.getMonth() - 1); // go to previous month
+//     const year = checkDate.getFullYear();
+//     const month = checkDate.getMonth();
+//     const key = `${year}-${month}`;
+//     if (!purchaseMonths.has(key)) {
+//       return false; // missed at least one month
+//     }
+//   }
+
+//   return true; // all 4 months are present
+// };
+
+// 🔍 ব্যবহারের উদাহরণ:
+// const hasContinuousPurchases = checkContinuousPurchases(buyer.AllEntry.incoming);
+
+// if (hasContinuousPurchases) {
+//   // console.log("✅ User has purchased continuously for the last 4 months.");
+//   buyer.points = (buyer.points || 0) + tenPercent;
+//     buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
+//     buyer.AllEntry.incoming.push({
+//       fromUser: buyer._id,
+//       pointReceived: tenPercent,
+//       sector: '10% bonus for 4 months Consistancy from purchase',
+//       date: new Date()
+//     });
+//     await buyer.save();
+// } else {
+//   // console.log("❌ User missed at least one of the last 4 months.");
+// }
+
+
+
+
+};
+
+
+
+
+// 👉 POST: Admin creates an order
+// server/routes/adminOrders.js
+router.post("/", async (req, res) => {
+  try {
+    const {
+      userId,
+      dspPhone,
+      products,
+      grandTotal,
+      grandPoint,
+      grandDiscount,
+    } = req.body;
+
+    const newOrder = new AdminOrder({
+      userId,
+      dspPhone,
+      products,
+      grandTotal,
+      grandPoint,
+      grandDiscount,
+      date: new Date().toISOString(),
+    });
+
+    const savedOrder = await newOrder.save();
+    await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
+    // console.log("userId:", savedOrder, "grandPoint:", grandPoint, "Phone:", dspPhone);
+    // // console.log("Order created:", savedOrder._id);
+
+    res.status(201).json(savedOrder);
+  } catch (error) {
+    console.error("❌ Error creating order:", error);
+    res.status(500).json({ message: "Failed to create order", error });
+  }
+});
+
+// ✅ GET: Fetch by DSP phone
+router.get("/by-phone/:phone", async (req, res) => {
+  try {
+    const orders = await AdminOrder.find({ dspPhone: req.params.phone });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch orders", error: err });
+  }
+});
+
+// ✅ GET: Fetch by userId
+router.get("/by-user/:userId", async (req, res) => {
+  try {
+    const orders = await AdminOrder.find({ userId: req.params.userId });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch orders", error: err });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const orders = await AdminOrder.find(); // ✅ সব order fetch করবে
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch orders", error: err });
+  }
+});
+
+module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { useState, useEffect, useRef, useContext } from "react";
 import { FaPrint } from "react-icons/fa";
 import html2pdf from "html2pdf.js";
@@ -10,7 +351,7 @@ import Logo from "../logo/Logo";
 
 const Invoice = ({ transaction }) => {
   const pdfRef = useRef()
-  // console.log(transaction)
+  // // console.log(transaction)
   // const { deliverydata } = useContext(StateContext)
   
   const [data, setData] = useState(transaction);

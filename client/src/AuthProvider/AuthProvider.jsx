@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
   // Load user from localStorage on app load
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    console.log("stoooooooooooooooooore--", storedUser)
+    // console.log("stoooooooooooooooooore--", storedUser)
     if (storedUser && storedUser !== "undefined") {
       try {
         setUser(JSON.parse(storedUser));
@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  console.log("user localStorage -------------------", user);
+  // console.log("user localStorage -------------------", user);
 
   const authInfo = {
     loading,

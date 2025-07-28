@@ -132,7 +132,7 @@ async function handleSmartConsistencyBonus(buyer, currentPV, product) {
       date: new Date(),
     });
 
-    console.log(`🎯 Consistency Bonus applied to ${buyer.email}`);
+    // console.log(`🎯 Consistency Bonus applied to ${buyer.email}`);
   }
 }
 

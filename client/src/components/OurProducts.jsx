@@ -16,7 +16,7 @@ import Container from "./Container";
 
 const OurProducts = () => {
   const [products, isLoading, isError, error, refetch] = useProducts();
-  console.log("our products", products);
+  // console.log("our products", products);
 
   return (
     <div className="py-20 max-w-[1900px] mx-auto">

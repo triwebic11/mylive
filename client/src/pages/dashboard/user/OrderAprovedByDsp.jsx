@@ -14,7 +14,7 @@ const OrderAprovedByDsp = () => {
   const dspPhone = user?.user?.phone || user?.user?.email || "";
   const pdfRef = useRef(); // PDF reference
 
-  console.log("Allllll orderssssssss", orders);
+  // console.log("Allllll orderssssssss", orders);
 
   useEffect(() => {
     if (dspPhone) {
@@ -58,7 +58,7 @@ const OrderAprovedByDsp = () => {
   };
 
   const handleDownloadPDF = async () => {
-    console.log("PDF GENERATION STARTED");
+    // console.log("PDF GENERATION STARTED");
 
     try {
       const html2pdf = (await import("html2pdf.js")).default;
@@ -169,17 +169,13 @@ const OrderAprovedByDsp = () => {
                           <th className="py-1 px-2 border">Product</th>
                           <th className="py-1 px-2 border">Qty</th>
                           <th className="py-1 px-2 border">BV</th>
-                          <th className="py-1 px-1 border">DP (৳)</th>
-                          <th className="py-1 px-1 border">MRP (৳)</th>
+                          <th className="py-1 px-1 border">DP</th>
+                          <th className="py-1 px-1 border">MRP</th>
                           <th className="py-1 px-1 border">Subtotal (৳)</th>
                           <th className="py-1 px-1 border">SubPoint</th>
                           <th className="py-1 px-1 border">SubDiscount</th>
-                          <th className="py-1 border">
-                            RFP
-                          </th>
-                          <th className="py-1 border">
-                            CFP
-                          </th>
+                          <th className="py-1 border">RFP</th>
+                          <th className="py-1 border">CFP</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -193,9 +189,7 @@ const OrderAprovedByDsp = () => {
                             <td className="py-1 px-2 border">
                               ৳{p.productRate}
                             </td>
-                            <td className="py-1 px-2 border">
-                              ৳{p.mrpRate}
-                            </td>
+                            <td className="py-1 px-2 border">৳{p.mrpRate}</td>
                             <td className="py-1 px-1 border">
                               ৳{p.subtotal || 0}
                             </td>
@@ -205,10 +199,10 @@ const OrderAprovedByDsp = () => {
                             <td className="py-1 px-1 border">
                               {p.subDiscount || 0}
                             </td>
-                            <td className="py-1 border">
+                            <td className="py-1 px-1 border">
                               {p.isRepurchaseFree ? "Yes" : "No"}
                             </td>
-                            <td className="py-1  border">
+                            <td className="py-1 px-1  border">
                               {p.isConsistencyFree ? "Yes" : "No"}
                             </td>
                           </tr>
@@ -216,8 +210,8 @@ const OrderAprovedByDsp = () => {
                       </tbody>
                     </table>
                     <div>
-                     RFP = Repurchase Free Products <br/>
-                     CFP = Consistency Free Products
+                      RFP = Repurchase Free Products <br />
+                      CFP = Consistency Free Products
                     </div>
                   </div>
                 </div>

@@ -40,7 +40,7 @@ function NavBar() {
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const { role, isLoading } = useRole()
 
-  console.log("rooooooooooooole", role)
+  // console.log("rooooooooooooole", role)
 
   const { user, setUser } = useAuth();
   const navigate = useNavigate();

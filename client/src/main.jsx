@@ -70,6 +70,7 @@ import OrderToDsp from "./pages/dashboard/user/OrderToDsp.jsx";
 import CreateUserOrder from "./pages/dashboard/DSP/CreateUserOrder.jsx";
 import ForgotPassword from "./components/ForgotPassword.jsx";
 import ResetPassword from "./components/ResetPassword.jsx";
+import Storage from "./components/Storage.jsx";
 
 const queryClients = new QueryClient();
 
@@ -143,6 +144,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <AdminRoute>
               <Orders />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+          {
+        path: "/dashboard/storage",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <Storage />
             </AdminRoute>
           </PrivetRouter>
         ),
@@ -411,9 +422,7 @@ const router = createBrowserRouter([
         path: "/dashboard/transactions",
         element: (
           <PrivetRouter>
-            <UserRoute>
               <Transactions />
-            </UserRoute>
           </PrivetRouter>
         ),
       },
