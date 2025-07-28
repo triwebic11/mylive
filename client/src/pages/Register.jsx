@@ -206,13 +206,12 @@ const Register = () => {
         </div>
 
         <div>
-          <label>NID Number*</label>
+          <label>NID Number</label>
           <input
             name="nid"
             type="text"
             value={form.nid}
             onChange={handleChange}
-            required
             placeholder="NID Number"
             className="w-full border border-gray-300 px-3 py-2 rounded-md mt-1"
           />
