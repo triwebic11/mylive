@@ -422,9 +422,7 @@ const router = createBrowserRouter([
         path: "/dashboard/transactions",
         element: (
           <PrivetRouter>
-            <UserRoute>
               <Transactions />
-            </UserRoute>
           </PrivetRouter>
         ),
       },

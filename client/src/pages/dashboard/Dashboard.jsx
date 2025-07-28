@@ -70,6 +70,11 @@ const DspDashboard = [
   { title: "Aproved Orders", icon: <MdDoneAll />, link: "/dashboard/myAprovedOrders" },
   { title: "My Order", icon: <TiShoppingCart />, link: "/dashboard/myOrders" },
   { title: "Kyc", icon: <IoKeyOutline />, link: "/dashboard/kyc" },
+    {
+    title: "Wallet Statement",
+    icon: <HiOutlineWallet />,
+    submenu: [{ title: "Transactions", link: "/dashboard/transactions" }],
+  },
 ];
 
 const adminDashboardArry = [
