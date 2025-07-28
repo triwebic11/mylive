@@ -7,11 +7,6 @@ import useAuth from "../Hooks/useAuth";
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-<<<<<<< HEAD
-=======
-  const location = useLocation();
-  // console.log("Current Location:", location);
->>>>>>> 7d826d40d0dbea9b7892b948fef784a9f70740f4
 
   const [products] = useProducts();
   const [allProducts, setAllProducts] = useState([]);
@@ -39,7 +34,7 @@ const OrderCreate = ({ title }) => {
   const [monthFilter, setMonthFilter] = useState("");
 
   const userId = user?._id || user?.user?._id;
-  // console.log("allllll products", products);
+  console.log("allllll products", products);
   useEffect(() => {
     if (userId) {
       axiosSecure
@@ -128,12 +123,7 @@ const OrderCreate = ({ title }) => {
     try {
       const res = await axiosSecure.post("/admin-orders", orderData);
 
-<<<<<<< HEAD
       console.log(`ordersssss`, orderData);
-=======
-      // console.log(`orders ------- `, orderData);
-      // console.log("Order created:", res.data);
->>>>>>> 7d826d40d0dbea9b7892b948fef784a9f70740f4
       if (res.data._id) {
         setOrder(res.data);
         Swal.fire("✅ Success", "Order created!", "success");
