@@ -162,22 +162,23 @@ const OrderAprovedByDsp = () => {
                     🛒 Product Details:
                   </h3>
 
-                  <div className="overflow-x-auto">
+                 <div className="overflow-x-auto">
                     <table className="min-w-full text-sm border border-gray-300 rounded-md">
                       <thead className="bg-gray-200 text-gray-700">
                         <tr>
                           <th className="py-1 px-2 border">Product</th>
                           <th className="py-1 px-2 border">Qty</th>
                           <th className="py-1 px-2 border">BV</th>
-                          <th className="py-1 px-2 border">Rate (৳)</th>
+                          <th className="py-1 px-1 border">DP (৳)</th>
+                          <th className="py-1 px-1 border">MRP (৳)</th>
                           <th className="py-1 px-1 border">Subtotal (৳)</th>
                           <th className="py-1 px-1 border">SubPoint</th>
                           <th className="py-1 px-1 border">SubDiscount</th>
                           <th className="py-1 border">
-                            Repurchase Free Products
+                            RFP
                           </th>
                           <th className="py-1 border">
-                            Consistency Free Products
+                            CFP
                           </th>
                         </tr>
                       </thead>
@@ -193,6 +194,9 @@ const OrderAprovedByDsp = () => {
                               ৳{p.productRate}
                             </td>
                             <td className="py-1 px-2 border">
+                              ৳{p.mrpRate}
+                            </td>
+                            <td className="py-1 px-1 border">
                               ৳{p.subtotal || 0}
                             </td>
                             <td className="py-1 px-1 border">
@@ -204,13 +208,17 @@ const OrderAprovedByDsp = () => {
                             <td className="py-1 border">
                               {p.isRepurchaseFree ? "Yes" : "No"}
                             </td>
-                            <td className="py-1 border">
+                            <td className="py-1  border">
                               {p.isConsistencyFree ? "Yes" : "No"}
                             </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
+                    <div>
+                     RFP = Repurchase Free Products <br/>
+                     CFP = Consistency Free Products
+                    </div>
                   </div>
                 </div>
 
