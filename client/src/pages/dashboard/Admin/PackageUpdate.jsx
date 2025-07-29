@@ -147,12 +147,12 @@ export default function PackageUpdate() {
                 <GoPackage className="text-orange-400 font-semibold text-xl w-[10%]" />
               </li>
 
-              <button
+              {/* <button
                 onClick={() => handleAddPackage(plan)}
                 className="mt-6 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-semibold"
               >
                 Buy Now
-              </button>
+              </button> */}
             </div>
           );
         })}
