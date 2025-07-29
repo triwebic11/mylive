@@ -472,9 +472,7 @@ const router = createBrowserRouter([
         path: "/dashboard/withdraw",
         element: (
           <PrivetRouter>
-            <UserRoute>
-              <Withdraw />
-            </UserRoute>
+            <Withdraw />
           </PrivetRouter>
         ),
       },

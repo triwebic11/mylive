@@ -79,6 +79,7 @@ const AddProduct = () => {
   const [freeOrPaid, setFreeOrPaid] = useState(true);
   const [imageUrls, setImageUrls] = useState([]);
   const axiosSecure = useAxiosSecure();
+  const [productRole, setProductRole] = useState("");
   const [productOptions, setProductOptions] = useState({
     isRepurchaseFree: false,
     isConsistencyFree: false,
@@ -141,6 +142,9 @@ const AddProduct = () => {
       mrpPrice: data.mrpPrice,
       pointValue: data.pointValue,
       productId: data.productId || " ",
+      rfp: data.rfp || "",
+      acfp: data.acfp || "",
+      productRole: productRole,
       ...productOptions, // Include the new 4 fields here
     };
 
@@ -366,6 +370,7 @@ const AddProduct = () => {
                         Set % for repurchase free{" "}
                       </label>
                       <input
+                        {...register("rfp")}
                         placeholder="Enter percentage value"
                         className="border p-1 rounded-lg"
                       />
@@ -394,6 +399,7 @@ const AddProduct = () => {
                         Set % for Advance Consistency Free{" "}
                       </label>
                       <input
+                        {...register("acfp")}
                         placeholder="Enter percentage value"
                         className="border p-1 rounded-lg"
                       />
@@ -603,6 +609,7 @@ const AddProduct = () => {
 
             {/* Submit */}
             <button
+              onClick={() => setProductRole("free")}
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >

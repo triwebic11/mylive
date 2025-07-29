@@ -14,7 +14,7 @@ import useUserById from "../../../Hooks/useUserById";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
-  const [data] = useUserById()
+  const [data] = useUserById();
   console.log("User from package update page = ", data);
 
   // console.log("User from package update page = ", user);
@@ -67,7 +67,7 @@ export default function PackageUpdate() {
       Swal.fire("Success", "Request sent to admin.", "success");
       localStorage.setItem("userPackage", JSON.stringify(userData));
       setUserPackage(userData);
-      
+
       navigate("/package-waiting");
     } catch (err) {
       console.error(err);
@@ -80,9 +80,7 @@ export default function PackageUpdate() {
       {/* Header */}
       <DashboardHeadings
         heading={"Our Packages"}
-        smalltext={
-          "Buy Products earn points and gain a package!"
-        }
+        smalltext={"Buy Products earn points and gain a package!"}
       ></DashboardHeadings>
       <p className="text-gray-600">
         Each package comes with unique features and benefits to help you
@@ -128,7 +126,7 @@ export default function PackageUpdate() {
               <h1
                 className={`text-xl font-bold ${getColorByIndex()} mb-4 px-4 py-2 rounded-3xl`}
               >
-                {plan.price}
+                {plan.PV} BV
               </h1>
 
               <ul className="text-left text-gray-700 text-sm space-y-2 flex-1">

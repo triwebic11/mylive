@@ -102,6 +102,11 @@ const DspDashboard = [
     icon: <HiOutlineWallet />,
     submenu: [{ title: "Transactions", link: "/dashboard/transactions" }],
   },
+  {
+    title: "Withdraw",
+    icon: <HiMiniArrowsUpDown />,
+    link: "/dashboard/withdraw",
+  },
   { title: "Kyc", icon: <IoKeyOutline />, link: "/dashboard/kyc" },
 ];
 
