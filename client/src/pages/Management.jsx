@@ -16,7 +16,7 @@ const Management = () => {
           {/* Text Content */}
           <div className="flex-1 bg-white p-4 shadow-md rounded-lg">
             <p className="mb-4">
-              He is a distinguished professional with an impressive 35 years of
+              She is a distinguished professional with an impressive 10 years of
               experience as a university teacher at a government institution,
               combined with extensive expertise in the direct selling industry.
               As the Chairman of SHS Lira Enterprise LTD, he brings a unique
@@ -225,7 +225,7 @@ const Management = () => {
           {/* Text Content */}
           <div className="flex-1 bg-white p-4  shadow-md rounded-lg">
             <p className="mb-4">
-              He is a highly accomplished professional with over 10 years of
+              He is a highly accomplished professional with over 5 years of
               experience in sales, marketing, direct selling, and manufacturing.
               As the Director of Operations at SHS Lira Enterprise LTD, he plays
               a pivotal role in overseeing and optimizing the company's
