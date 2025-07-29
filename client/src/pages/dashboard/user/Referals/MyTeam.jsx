@@ -50,7 +50,7 @@ const Dashboard = () => {
     return (
       <TreeNode
         label={
-          <StyledNode $isDirectReferral={isDirectReferral}>
+          <StyledNode style={{ width: "130px", color: "gray" }}  $isDirectReferral={isDirectReferral}>
             <div>{node.name}</div>
             <div style={{ fontSize: "12px", color: "gray" }}>
               Code: {node.referralCode}
@@ -121,9 +121,9 @@ const Dashboard = () => {
       </div>
 
       {/* Referral Info */}
-      <ReferralLevelBadge userId={userId} />
+      {/* <ReferralLevelBadge userId={userId} /> */}
 
-      <div className="bg-white shadow rounded-2xl p-6 mb-6">
+      {/* <div className="bg-white shadow rounded-2xl p-6 mb-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">
           Your Referral Code:{" "}
           <span className="text-green-600">{referralCode}</span>
@@ -137,7 +137,7 @@ const Dashboard = () => {
             </a>
           </p>
         </div>
-      </div>
+      </div> */}
 
       <div className="bg-white shadow rounded-2xl p-6 mt-6">
         <p className="text-2xl text-green-600 font-bold">

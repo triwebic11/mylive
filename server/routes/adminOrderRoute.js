@@ -151,6 +151,22 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       await uplineUser.save();
     }
   }
+
+  // 10% direct commission
+    if (buyer) {
+      buyer.points = (buyer.points || 0) + tenPercent;
+      buyer.AllEntry = buyer.AllEntry || { incoming: [] };
+      buyer.AllEntry.incoming.push({
+        fromUser: buyerId,
+        pointReceived: tenPercent,
+        sector: '10% phone referrer commission',
+        date: new Date()
+      });
+      await buyer.save();
+    }
+ 
+
+
 };
 
 // Order create

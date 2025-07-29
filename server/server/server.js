@@ -41,8 +41,8 @@ app.use("/api/kyc", kycRoutes);
 // app.use("/api/uploads", require("./routes/uploadRoute"));
 
 // cron.schedule("* * * * *", async () => {
-//   // console.log("📆 Monthly commission running from server.js...");
-//   await processMonthlyLevelCommissions();
+//   console.log("📆 Monthly commission running from server.js...");
+//   // await processMonthlyLevelCommissions();
 // });
 
 // Root route
