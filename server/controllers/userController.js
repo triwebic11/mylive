@@ -155,7 +155,7 @@ const generateReferralCode = async () => {
 // };
 const registerUser = async (req, res) => {
   try {
-    const { name, phone, email, password, referralCode,placementBy } = req.body;
+    const { name, phone, email, password, referralCode, placementBy } = req.body;
 
     // 1️⃣ Check if user already exists
     const existingUser = await User.findOne({ phone });
@@ -454,31 +454,33 @@ const updateUserRole = async (req, res) => {
 };
 
 // Optional utility to generate summary from user
-const generateUserSummary = (user, referredUsers = []) => {
-  // console.log("Generating summary...");
+const generateUserSummary = async (user, referredUsers = []) => {
+  console.log("Generating summary...");
 
   const incoming = user.AllEntry?.incoming || [];
 
   const getSumBySector = (sectorName) => {
+    console.log("Calculating sum for sector:", sectorName);
+
     return incoming
       .filter((entry) => entry.sector === sectorName)
       .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
   };
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
-  const referCommission = getSumBySector("ReferCommission");
-  const generationCommission = getSumBySector("GenerationCommission");
+  const referCommission = getSumBySector("20% phone referrer commission");
+  const generationCommission = getSumBySector("Shared Generation Commission (Level 1)");
   const megaCommission = getSumBySector("MegaCommission");
   const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
-  const repurchaseCommission = getSumBySector("RepurchaseCommission");
+  const repurchaseCommission = getSumBySector("10% personal reward from purchase");
   const specialFund = getSumBySector("Special Fund");
-  const withdrawableBalance = getSumBySector("Withdrawable");
-  const totalWithdraw = getSumBySector("Withdraw");
   const totalTDS = getSumBySector("TDS");
   const carFund = getSumBySector("Car Fund");
   const tourFund = getSumBySector("Travel Fund");
   const homeFund = getSumBySector("House fund");
   const lifetimeBonus = getSumBySector("All life fund");
+
+  console.log("Referral Tree:", referredUsers);
   const totalTeamSalePv = referredUsers.reduce((total, referredUser) => {
     const referredIncoming = referredUser.AllEntry?.incoming || [];
     return total + getSumBySector(referredIncoming, "ProductPurchase");
@@ -543,13 +545,40 @@ const generateUserSummary = (user, referredUsers = []) => {
     10
   );
 
-  return [
-    { title: "Total Refer", value: user.referralTree?.length || 0 },
-    { title: "Total Free Team", value: totalFreeTeam },
-    { title: "Total Active Team", value: totalActiveTeam },
+  const points = parseFloat(user?.points) || 0;
+  const totalWithdraws = parseFloat(user?.totalwithdraw) || 0;  // note: your field is totalwithdraw, not totalWithdraw
+  const withdrawableBalance = (points - totalWithdraws).toFixed(2);
+
+  console.log("Withdrawable Balance:", withdrawableBalance);
+
+const users = await User.find().select("-password");
+const totalreferral = users.filter(u => u.referredBy === user.referralCode);
+
+console.log("Total Referral Count:", totalreferral);
+
+const totalActiveTeams = totalreferral.filter(
+  (u) => u.isActivePackage === "active"
+).length;
+const totalexpireTeams = totalreferral.filter(
+  (u) => u.isActivePackage === "expired"
+).length;
+
+console.log("Total Active Teams:", totalActiveTeams);
+console.log("Total Expired Teams:", totalexpireTeams);
+
+const tree = await buildTree(user._id);
+
+const totalPointsFromLeft = tree?.totalPointsFromLeft || 0;
+const totalPointsFromRight = tree?.totalPointsFromRight || 0;
+const totalBinaryPoints = totalPointsFromLeft + totalPointsFromRight;
+
+  return  [
+    { title: "Total Refer", value: totalreferral.length || 0 },
+    { title: "Total Free Team", value: totalreferral.length },
+    { title: "Total Active Team", value: totalActiveTeams },
     {
       title: "Currently Expired",
-      value: new Date(user.packageExpireDate) < new Date() ? 1 : 0,
+      value: totalexpireTeams,
     },
     { title: "Total Voucher", value: 0 },
     { title: "Previous Month Pv", value: previousMonthPv },
@@ -561,7 +590,7 @@ const generateUserSummary = (user, referredUsers = []) => {
       title: "Monthly down sale pv",
       value: previousMonthPv >= currentMonthPv && monthlyDownSalePv,
     },
-    { title: "Total Team Sale Pv", value: totalTeamSalePv },
+    { title: "Total Team Sale Pv", value: totalBinaryPoints },
     { title: "Total Team Member", value: user.referralTree?.length || 0 },
     { title: "Current Purchase Amount", value: currentPurchaseAmount },
     { title: "Total Purchase Amount", value: totalPurchaseAmount },
@@ -572,7 +601,7 @@ const generateUserSummary = (user, referredUsers = []) => {
     { title: "Repurchase Sponsor Bonus", value: repurchaseSponsorBonus },
     { title: "Repurchase Commission", value: repurchaseCommission },
     { title: "Withdrawable Balance", value: withdrawableBalance },
-    { title: "Total Withdraw", value: totalWithdraw },
+    { title: "Total Withdraw", value: user?.totalwithdraw },
     { title: "Total TDS", value: totalTDS },
     { title: "Special Fund", value: specialFund },
     { title: "Executive Officer", value: specialFund },
@@ -601,14 +630,15 @@ const userAgregateData = async (req, res) => {
       _id: { $in: user.referralTree || [] },
     });
 
-    const summary = generateUserSummary(user, referredUsers);
+    const summary = await generateUserSummary(user, referredUsers);
+    console.log("Summary generated:", summary);
 
     res.status(200).json({
       success: true,
       userId: user._id,
       name: user.name,
       email: user.email,
-      summary,
+     summary: summary,
     });
   } catch (err) {
     console.error(err);
@@ -616,40 +646,51 @@ const userAgregateData = async (req, res) => {
   }
 };
 async function buildTree(userId) {
-  // console.log("Building tree for user:", userId);
   const user = await User.findById(userId);
   if (!user) return null;
 
-  // console.log("Building tree for user:", user.name);
-
-  // 🔍 Find users who have this user's referral code in either placementBy or referredBy
   const children = await User.find({
     $or: [
       { placementBy: user.referralCode },
       { referredBy: user.referralCode },
-    ]
+    ],
   });
 
-  // console.log("Children found:", children.length);
-
-  // Recursively build tree for all children
   const childrenTrees = await Promise.all(
-    children.map(child => buildTree(child._id))
+    children.map((child) => buildTree(child._id))
   );
+
+  const leftChild = childrenTrees[0] || null;
+  const rightChild = childrenTrees[1] || null;
+
+  // Recursive total point calculation
+  const calculateTotalPoints = (node) => {
+    if (!node) return 0;
+    const selfPoints = node.points || 0;
+    const leftPoints = calculateTotalPoints(node.left);
+    const rightPoints = calculateTotalPoints(node.right);
+    return selfPoints + leftPoints + rightPoints;
+  };
+
+  const totalPointsFromLeft = calculateTotalPoints(leftChild);
+  const totalPointsFromRight = calculateTotalPoints(rightChild);
 
   return {
     name: user.name,
     _id: user._id,
     Position: user.Position,
-    phone: user?.phone,
+    phone: user.phone,
     referralCode: user.referralCode,
     referredBy: user.referredBy,
     placementBy: user.placementBy,
-    left: childrenTrees[0] || null,
-    right: childrenTrees[1] || null,
-    // children: childrenTrees, // 🌲 full array of children
+    points: user.points || 0,
+    left: leftChild,
+    right: rightChild,
+    totalPointsFromLeft,
+    totalPointsFromRight,
   };
 }
+
 
 const getReferralTreeById = async (req, res) => {
   try {

@@ -15,6 +15,7 @@ const generateReferralCode = async () => {
 };
 
 // Registration Controller
+
 const registerUser = async (req, res) => {
   try {
     const { name, phone, email, password, referralCode } = req.body;
@@ -30,7 +31,6 @@ const registerUser = async (req, res) => {
 
     if (referralCode) {
       const parent = await User.findOne({ referralCode });
-
       if (!parent) {
         return res.status(400).json({ message: "Invalid referral code" });
       }
@@ -51,28 +51,15 @@ const registerUser = async (req, res) => {
       referralTree,
     });
 
-    // Reward system – Add points to 10 uplines
-    // if (referralTree.length > 0) {
-    //   for (let i = 0; i < referralTree.length; i = 10) {
-    //     const uplineId = referralTree[i];
-    //     const point = 100 - i;
-
-    //     await User.findByIdAndUpdate(uplineId, {
-    //       $inc: { points: point },
-    //     });
-    //   }
-    // }
-
-    // ধরলাম newUser হচ্ছে যিনি register করলেন
+    // 💸 Reward points to uplines
     if (referralTree.length > 0) {
       for (let i = 0; i < referralTree.length; i++) {
         const uplineId = referralTree[i];
         if (!uplineId) break;
 
-        // উল্টা করে প্রত্যেক upline user এর প্যাকেজ বের করো
         const packageReq = await PackageRequest.findOne({ userId: uplineId });
         const userPackage = packageReq?.packageName;
-        // console.log("packageReq", packageReq);
+
         const packageSettings = {
           "Business Relation": { generations: 10, startPoint: 1000 },
           "Business Relative": { generations: 7, startPoint: 700 },
@@ -81,15 +68,9 @@ const registerUser = async (req, res) => {
         };
 
         const settings = packageSettings[userPackage];
-
-        if (!settings) {
-          // console.log("Invalid package or no package for upline:", uplineId);
-          continue;
-        }
+        if (!settings) continue;
 
         const { generations, startPoint } = settings;
-
-        // এখন দেখো, এই upline user এর জন্য newUser কততম generation
         if (i < generations) {
           const point = startPoint - i * 100;
           if (point <= 0) break;
@@ -98,9 +79,7 @@ const registerUser = async (req, res) => {
             $inc: { points: point },
           });
 
-          // console.log(
-            `Upline ${uplineId} got ${point} points from generation ${i + 1}`
-          );
+          console.log(`✅ Upline ${uplineId} got ${point} points from generation ${i + 1}`);
         }
       }
     }
@@ -116,6 +95,7 @@ const registerUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // login Controller
 
@@ -291,7 +271,7 @@ const updateUserRole = async (req, res) => {
 };
 
 // Optional utility to generate summary from user
-const generateUserSummary = (user) => {
+const generateUserSummary = async (user) => {
   const outgoing = user.AllEntry?.outgoing || [];
 
   const getSumBySector = (sectorName) => {
@@ -300,19 +280,23 @@ const generateUserSummary = (user) => {
       .reduce((sum, entry) => sum + (entry.pointGiven || 0), 0);
   };
 
-  const productPurchasePoints = getSumBySector("ProductPurchase");
-  const referCommission = getSumBySector("ReferCommission");
-  const generationCommission = getSumBySector("GenerationCommission");
+  const productPurchasePoints = getSumBySector("10% personal reward from purchase");
+  const referCommission = getSumBySector("20% phone referrer commission");
+  const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("MegaCommission");
   const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
-  const repurchaseCommission = getSumBySector("RepurchaseCommission");
+  const repurchaseCommission = getSumBySector("10% personal reward from purchase");
   const specialFund = getSumBySector("SpecialFund");
   const withdrawableBalance = getSumBySector("Withdrawable");
   const totalWithdraw = getSumBySector("Withdraw");
   const totalTDS = getSumBySector("TDS");
 
+const referralusers = await User.filter({ referredBy: user.referralCode });
+console.log("Referral users:", referralusers);
+
+
   return [
-    { title: "Total Refer", value: user.referralTree?.length || 0 },
+    { title: "Total Refer", value: referralusers?.length || 0 },
     { title: "Total Free Team", value: 0 },
     { title: "Total Active Team", value: 0 },
     {
@@ -320,19 +304,19 @@ const generateUserSummary = (user) => {
       value: new Date(user.packageExpireDate) < new Date() ? 1 : 0,
     },
     { title: "Total Voucher", value: 0 },
-    { title: "Previous Month Pv", value: 0 },
+    { title: "Previous Month BV", value: 0 },
     {
-      title: "Current Month Pv",
+      title: "Current Month BV",
       value:
         user.TargetPV?.reduce((sum, pv) => sum + (pv.currentMonthPV || 0), 0) ||
         0,
     },
-    { title: "Monthly down sale pv", value: 0 },
-    { title: "Total Team Sale Pv", value: 0 },
+    { title: "Monthly down sale BV", value: 0 },
+    { title: "Total Team Sale BV", value: 0 },
     { title: "Total Team Member", value: user.referralTree?.length || 0 },
     { title: "Current Purchase Amount", value: 0 },
     { title: "Total Purchase Amount", value: 0 },
-    { title: "Total Purchase Pv", value: productPurchasePoints },
+    { title: "Total Purchase BV", value: productPurchasePoints },
     { title: "Refer Commission", value: referCommission },
     { title: "Generation Commission", value: generationCommission },
     { title: "Mega Commission", value: megaCommission },

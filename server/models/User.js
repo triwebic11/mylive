@@ -186,6 +186,8 @@ const userSchema = new mongoose.Schema(
     referredBy: String,
     placementBy: String,
     isActivePackage: String,
+   
+    
     referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
     userStatus: String,
     GenerationLevel: {
@@ -201,6 +203,11 @@ const userSchema = new mongoose.Schema(
     withdraw: Number,
 
     referralTree: [String],
+      // financial info
+    totalwithdraw: {
+      type: Number,
+      default: 0,
+    },
     points: {
       type: Number,
       default: 0,

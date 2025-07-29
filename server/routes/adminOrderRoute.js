@@ -88,6 +88,25 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   const thirtyPercent = grandPoint * 0.30;
   const twentyPercent = grandPoint * 0.20;
 
+    // 20% phone referrer
+  console.log("Buyer Referred By:", buyer?.referredBy);
+  if (buyer?.referredBy) {
+    const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
+    console.log("Phone Referrer:", phoneReferrer);
+    if (phoneReferrer) {
+      phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
+      phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
+      phoneReferrer.AllEntry.incoming.push({
+        fromUser: buyerId,
+        pointReceived: twentyPercent,
+        sector: '20% phone referrer commission',
+        date: new Date()
+      });
+      await phoneReferrer.save();
+    }
+  }
+
+
   const alreadyReceivedPersonalReward = buyer.AllEntry?.incoming?.some(
     (entry) => entry.sector === "10% personal reward from purchase"
   );
@@ -102,23 +121,22 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       date: new Date()
     });
     await buyer.save();
-  }
-
-  // 20% phone referrer
-  if (buyer.referredBy) {
-    const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
-    if (phoneReferrer) {
-      phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
-      phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
-      phoneReferrer.AllEntry.incoming.push({
+  } else {
+    // 10% direct commission
+    if (buyer) {
+      buyer.points = (buyer.points || 0) + tenPercent;
+      buyer.AllEntry = buyer.AllEntry || { incoming: [] };
+      buyer.AllEntry.incoming.push({
         fromUser: buyerId,
-        pointReceived: twentyPercent,
-        sector: '20% phone referrer commission',
+        pointReceived: tenPercent,
+        sector: '10% personal reward from purchase',
         date: new Date()
       });
-      await phoneReferrer.save();
+      await buyer.save();
     }
+
   }
+
 
   // 30% shared generation commission
   const uplineFlat = await buildUplineTree(buyer._id);
@@ -132,7 +150,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
     })
     .filter(Boolean);
 
-    console.log("Eligible Uplines:", eligibleUplines);
+  console.log("Eligible Uplines:", eligibleUplines);
 
   if (eligibleUplines.length > 0) {
     const pointPerUpline = thirtyPercent / eligibleUplines.length;
@@ -145,28 +163,12 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       uplineUser.AllEntry.incoming.push({
         fromUser: buyer._id,
         pointReceived: pointPerUpline,
-        sector: `Shared Generation Commission (Level ${upline.level})`,
+        sector: `Shared Generation Commission`,
         date: new Date()
       });
       await uplineUser.save();
     }
   }
-
-  // 10% direct commission
-    if (buyer) {
-      buyer.points = (buyer.points || 0) + tenPercent;
-      buyer.AllEntry = buyer.AllEntry || { incoming: [] };
-      buyer.AllEntry.incoming.push({
-        fromUser: buyerId,
-        pointReceived: tenPercent,
-        sector: '10% phone referrer commission',
-        date: new Date()
-      });
-      await buyer.save();
-    }
- 
-
-
 };
 
 // Order create
