@@ -1,20 +1,32 @@
-// models/WithdrawRequest.js
 const mongoose = require("mongoose");
 
 const withdrawRequestSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    name: String,
-    phone: String,
-    points: Number,
+    totalwithdraw: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
+    },
+    processedAt: {
+      type: Date,
     },
   },
   {

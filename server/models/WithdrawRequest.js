@@ -10,7 +10,14 @@ const withdrawRequestSchema = new mongoose.Schema(
     },
     name: String,
     phone: String,
-    points: Number,
+    totalwithdraw: {
+      type: Number,
+      default: 0,
+    },
+    points: {
+      type: Number,
+      default: 0,
+    },
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],

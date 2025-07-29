@@ -2,9 +2,9 @@
 const WithdrawRequest = require("../models/WithdrawRequest");
 const User = require("../models/User"); // Assuming you have a User model
 const createWithdrawRequest = async (req, res) => {
-  const { name, phone, userId, points } = req.body;
+  const { name, phone, userId, totalwithdraw } = req.body;
 
-  if (!name || !phone || !userId || !points) {
+  if (!name || !phone || !userId || !totalwithdraw) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -13,7 +13,7 @@ const createWithdrawRequest = async (req, res) => {
       name,
       phone,
       userId,
-      points,
+      totalwithdraw,
       status: "pending", // default
     });
 
@@ -59,28 +59,61 @@ const updateWithdrawStatus = async (req, res) => {
 
   try {
     const request = await WithdrawRequest.findById(id);
+
+    console.log("Request found:", request);
     if (!request) {
       return res.status(404).json({ message: "Withdraw request not found" });
+    }
+
+    // Prevent re-approving or re-rejecting
+    if (request.status !== "pending") {
+      return res.status(400).json({ message: "Request already processed" });
     }
 
     request.status = status;
     await request.save();
 
-    if (status === "approved") {
-      const user = await User.findById(request.userId);
-      if (user) {
-        // ✅ Point deduct
-        user.points -= request.points;
-        await user.save();
+    const withdrawAmount = parseFloat(request.totalwithdraw);
+    console.log("Withdraw amount:", withdrawAmount);
+   
 
-        // ✅ Emit socket event
-        const io = req.app.get("io"); // socket instance
-        io.emit("balance-updated", {
-          userId: user._id.toString(),
-          newPoints: user.points,
-        });
-      }
-    }
+
+    // if (status === "approved") {
+    //   const user = await User.findById(request.userId);
+    //   if (user) {
+    //     const withdrawAmount = parseFloat(request.totalwithdraw);
+    //     // const currentPoints = parseFloat(user.points || 0);
+    //     const currentWithdraw = parseFloat(user.totalwithdraw || 0);
+
+    //     if (isNaN(withdrawAmount)) {
+    //       return res.status(400).json({ message: "Invalid withdraw amount" });
+    //     }
+
+    //     // if (currentPoints < withdrawAmount) {
+    //     //   return res.status(400).json({ message: "Insufficient points for withdrawal" });
+    //     // }
+
+    //     // ❗ Deduct points
+    //     // user.points = currentPoints - withdrawAmount;
+
+    //     // Add to total withdraw
+    //     user.totalwithdraw = currentWithdraw + withdrawAmount;
+
+    //     await user.save();
+
+    //     // Optional: mark when processed
+    //     request.processedAt = new Date();
+    //     await request.save();
+
+    //     // Emit socket event
+    //     const io = req.app.get("io");
+    //     io.emit("balance-updated", {
+    //       userId: user._id.toString(),
+    //       totalwithdraw: user.totalwithdraw,
+    //       // points: user.points,
+    //     });
+    //   }
+    // }
 
     res.status(200).json({
       message: "Status updated successfully",
@@ -91,6 +124,7 @@ const updateWithdrawStatus = async (req, res) => {
     res.status(500).json({ message: "Failed to update request status" });
   }
 };
+
 
 module.exports = {
   createWithdrawRequest,
