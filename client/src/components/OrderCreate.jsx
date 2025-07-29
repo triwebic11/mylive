@@ -367,7 +367,7 @@ const OrderCreate = ({ title }) => {
                           Repurchase Free Product
                         </th>
                         <th className="px-4 py-2 my-2 md:my-0">
-                          Consistency Free Product
+                          Advance Consistency Free Product
                         </th>
                       </thead>
                       <tbody>
@@ -432,6 +432,9 @@ const OrderCreate = ({ title }) => {
       </form>
 
       {/* ✅ Filter inputs */}
+      <div className="mt-2">
+        <h1 className="text-xl">Total Orders: {filteredOrders?.length}</h1>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 my-6">
         <input
           type="text"

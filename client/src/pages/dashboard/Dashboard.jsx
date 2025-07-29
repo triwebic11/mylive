@@ -49,44 +49,93 @@ const dashboardArry = [
     icon: <HiOutlineWallet />,
     submenu: [{ title: "Transactions", link: "/dashboard/transactions" }],
   },
-  { title: "Today Statement", icon: <PiWallDuotone />, link: "/dashboard/today-statement" },
-  { title: "C-Statement", icon: <PiWallDuotone />, link: "/dashboard/commission-statement" },
-  { title: "My Consistency", icon: <PiWallDuotone />, link: "/dashboard/my-consistency" },
+  {
+    title: "Today Statement",
+    icon: <PiWallDuotone />,
+    link: "/dashboard/today-statement",
+  },
+  {
+    title: "C-Statement",
+    icon: <PiWallDuotone />,
+    link: "/dashboard/commission-statement",
+  },
+  {
+    title: "My Consistency",
+    icon: <PiWallDuotone />,
+    link: "/dashboard/my-consistency",
+  },
   { title: "Voucher", icon: <IoCardOutline />, link: "/dashboard/voucher" },
-  { title: "Withdraw", icon: <HiMiniArrowsUpDown />, link: "/dashboard/withdraw" },
+  {
+    title: "Withdraw",
+    icon: <HiMiniArrowsUpDown />,
+    link: "/dashboard/withdraw",
+  },
 
   { title: "My Order", icon: <TiShoppingCart />, link: "/dashboard/my-order" },
   // { title: "Package Update", link: "/dashboard" },
   { title: "Support", icon: <MdOutlineSms />, link: "/dashboard/support" },
   { title: "Kyc", icon: <IoKeyOutline />, link: "/dashboard/kyc" },
-  { title: "Update Password", icon: <MdLockOutline />, link: "/dashboard/update-password" },
+  {
+    title: "Update Password",
+    icon: <MdLockOutline />,
+    link: "/dashboard/update-password",
+  },
 ];
 
 const DspDashboard = [
   { title: "Profile", icon: <CgProfile />, link: "/dashboard/dspprofile" },
-  { title: "All User's Orders", icon: <RiUserFollowLine />, link: "/dashboard/allOrders" },
-  { title: "Order Now", icon: <TiShoppingCart />, link: "/dashboard/dspOrder" },
-  { title: "Order For User", icon: <TiShoppingCart />, link: "/dashboard/orderFroUser" },
-  { title: "Aproved Orders", icon: <MdDoneAll />, link: "/dashboard/myAprovedOrders" },
-  { title: "My Order", icon: <TiShoppingCart />, link: "/dashboard/myOrders" },
-  { title: "Kyc", icon: <IoKeyOutline />, link: "/dashboard/kyc" },
-    {
+  // { title: "All User's Orders", icon: <RiUserFollowLine />, link: "/dashboard/allOrders" },
+  {
+    title: "Order For User",
+    icon: <TiShoppingCart />,
+    link: "/dashboard/orderFroUser",
+  },
+  // { title: "Order Now", icon: <TiShoppingCart />, link: "/dashboard/dspOrder" },
+  {
+    title: "My Orders",
+    icon: <MdDoneAll />,
+    link: "/dashboard/myAprovedOrders",
+  },
+  // { title: "My Order", icon: <TiShoppingCart />, link: "/dashboard/myOrders" },
+  {
     title: "Wallet Statement",
     icon: <HiOutlineWallet />,
     submenu: [{ title: "Transactions", link: "/dashboard/transactions" }],
   },
+  { title: "Kyc", icon: <IoKeyOutline />, link: "/dashboard/kyc" },
 ];
 
 const adminDashboardArry = [
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
-   { title: "DB Storage", icon: <CiHome />, link: "/dashboard/storage" },
-  { title: "All Users", icon: <RiUserFollowLine />, link: "/dashboard/allUsers" },
-  { title: "Order for DSP", icon: <TiShoppingCart />, link: "/dashboard/createOrder" },
-  { title: "All DSP Orders", icon: <TiShoppingCart />, link: "/dashboard/allDspOrders" },
-  { title: "All Package Requester", icon: <FiPackage />, link: "/dashboard/allPackageRequestUser" },
-  { title: "All Withdrawal", icon: <HiMiniArrowsUpDown />, link: "/dashboard/allWithdrawals" },
-  { title: "Balance Conversion", icon: <RiMoneyDollarBoxLine />, link: "/dashboard/balanceConversion" },
-  { title: "Cash On Delivery", icon: <TiShoppingCart />, link: "/dashboard/CashonDelivery" },
+  { title: "DB Storage", icon: <CiHome />, link: "/dashboard/storage" },
+  { title: "Create DSP ID", icon: <CiHome />, link: "/dashboard/createDspId" },
+  {
+    title: "Order for DSP",
+    icon: <TiShoppingCart />,
+    link: "/dashboard/createOrder",
+  },
+  {
+    title: "All Users",
+    icon: <RiUserFollowLine />,
+    link: "/dashboard/allUsers",
+  },
+  {
+    title: "All DSP Orders",
+    icon: <TiShoppingCart />,
+    link: "/dashboard/allDspOrders",
+  },
+  // { title: "All Package Requester", icon: <FiPackage />, link: "/dashboard/allPackageRequestUser" },
+  {
+    title: "All Withdrawal",
+    icon: <HiMiniArrowsUpDown />,
+    link: "/dashboard/allWithdrawals",
+  },
+  {
+    title: "Balance Conversion",
+    icon: <RiMoneyDollarBoxLine />,
+    link: "/dashboard/balanceConversion",
+  },
+  // { title: "Cash On Delivery", icon: <TiShoppingCart />, link: "/dashboard/CashonDelivery" },
   {
     title: "Manage Products",
     icon: <MdManageHistory />,
@@ -103,8 +152,16 @@ const adminDashboardArry = [
       { title: "Update Packages", link: "/dashboard/updatePackages" },
     ],
   },
-  { title: "Update Password", icon: <MdLockOutline />, link: "/dashboard/update-password" },
-  { title: "User KYC Verified Request", icon: <IoKeyOutline />, link: "/dashboard/kycVerified" },
+  {
+    title: "Update Password",
+    icon: <MdLockOutline />,
+    link: "/dashboard/update-password",
+  },
+  {
+    title: "User KYC Verified Request",
+    icon: <IoKeyOutline />,
+    link: "/dashboard/kycVerified",
+  },
 ];
 
 const Dashboard = () => {
@@ -145,8 +202,8 @@ const Dashboard = () => {
     role === "admin"
       ? adminDashboardArry
       : role === "dsp"
-        ? DspDashboard
-        : dashboardArry;
+      ? DspDashboard
+      : dashboardArry;
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
@@ -181,7 +238,6 @@ const Dashboard = () => {
                 onClick={handleLogout}
                 className="w-full px-4 py-2 font-semibold  hover:text-purple-700 rounded-md  transition duration-300"
               >
-
                 Logout
               </button>
             </div>
@@ -193,8 +249,9 @@ const Dashboard = () => {
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
           {role?.toUpperCase()} Dashboard
@@ -289,9 +346,10 @@ const Dashboard = () => {
                 <NavLink
                   to={item.link}
                   className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer ${isActive
-                      ? "border-b-2 border-blue-500 bg-gray-100"
-                      : "hover:bg-gray-200"
+                    `flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer ${
+                      isActive
+                        ? "border-b-2 border-blue-500 bg-gray-100"
+                        : "hover:bg-gray-200"
                     }`
                   }
                 >

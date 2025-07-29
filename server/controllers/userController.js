@@ -155,7 +155,8 @@ const generateReferralCode = async () => {
 // };
 const registerUser = async (req, res) => {
   try {
-    const { name, phone, email, password, referralCode,placementBy } = req.body;
+    const { name, phone, email, password, referralCode, placementBy, role } =
+      req.body;
 
     // 1️⃣ Check if user already exists
     const existingUser = await User.findOne({ phone });
@@ -192,6 +193,7 @@ const registerUser = async (req, res) => {
       referredBy: referralCode || null,
       referralTree,
       placementBy, // Include placement ID
+      role,
     });
 
     // 5️⃣ ✅ Assign default package (optional but recommended)
@@ -627,14 +629,14 @@ async function buildTree(userId) {
     $or: [
       { placementBy: user.referralCode },
       { referredBy: user.referralCode },
-    ]
+    ],
   });
 
   // console.log("Children found:", children.length);
 
   // Recursively build tree for all children
   const childrenTrees = await Promise.all(
-    children.map(child => buildTree(child._id))
+    children.map((child) => buildTree(child._id))
   );
 
   return {
@@ -663,8 +665,6 @@ const getReferralTreeById = async (req, res) => {
   }
 };
 
-
-
 module.exports = {
   registerUser,
   loginUser,
@@ -677,5 +677,5 @@ module.exports = {
   updatProfileInfo,
   updateUserRole,
   userAgregateData,
-  getReferralTreeById
+  getReferralTreeById,
 };

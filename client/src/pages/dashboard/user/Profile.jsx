@@ -26,7 +26,7 @@ const Profile = () => {
           <h1 className="font-bold">Profile Information</h1>
           <p>Update your account's profile information and email address.</p>
         </div>
-        <UpdateProfileInfo user={user} />
+        <UpdateProfileInfo user={user} nameOrId="Your Name"/>
 
         <div className="mt-8">
           <MobAndBankInfoForm user={user} />

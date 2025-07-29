@@ -8,7 +8,11 @@ const DspProfile = () => {
   const { user } = useAuth(); // Assuming useAuth is used to get user data
   return (
     <div>
-      <UpdateProfileInfo user={user} />
+      <UpdateProfileInfo
+        user={user}
+        nameOrId="Your ID"
+        readonlyFields={["name", "email", "phone"]}
+      />
       <MobAndBankInfoForm user={user} />
       <UpdatePassword user={user} />
     </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 
-const UpdateProfileInfo = () => {
+const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
   const axiosSecure = useAxiosSecure();
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.user?._id;
@@ -108,7 +108,7 @@ const UpdateProfileInfo = () => {
       >
         {/* Fields */}
         {[
-          { label: "Full Name", name: "name" },
+          { label: `${nameOrId}`, name: "name" },
           { label: "Email", name: "email" },
           { label: "Phone", name: "phone" },
           { label: "NID No", name: "nid" },
@@ -121,38 +121,44 @@ const UpdateProfileInfo = () => {
           { label: "Nominee Relation", name: "norelation" },
           { label: "Nominee Date of Birth", name: "nodob", type: "date" },
           { label: "Nominee Phone", name: "nophone" },
-        ].map(({ label, name, type = "text", colSpan }) => (
-          <div key={name} className={colSpan === 2 ? "md:col-span-2" : ""}>
-            <label className="block text-sm font-medium">{label}</label>
+        ].map(({ label, name, type = "text", colSpan }) => {
+          const isReadOnly = readonlyFields.includes(name);
+          return (
+            <div key={name} className={colSpan === 2 ? "md:col-span-2" : ""}>
+              <label className="block text-sm font-medium">{label}</label>
 
-            {type === "select" ? (
-              <select
-                name={name}
-                value={form[name]}
-                onChange={handleChange}
-                className="w-full border px-3 py-2 rounded-md mt-1"
-              >
-                <option value="">Select Division</option>
-                <option value="Dhaka">Dhaka</option>
-                <option value="Chattagram">Chattagram</option>
-                <option value="Khulna">Khulna</option>
-                <option value="Rajshahi">Rajshahi</option>
-                <option value="Rangpur">Rangpur</option>
-                <option value="Mymensingh">Mymensingh</option>
-                <option value="Sylhet">Sylhet</option>
-                <option value="Barishal">Barishal</option>
-              </select>
-            ) : (
-              <input
-                type={type}
-                name={name}
-                value={form[name]}
-                onChange={handleChange}
-                className="w-full border px-3 py-2 rounded-md mt-1"
-              />
-            )}
-          </div>
-        ))}
+              {type === "select" ? (
+                <select
+                  name={name}
+                  value={form[name]}
+                  onChange={handleChange}
+                  className="w-full border px-3 py-2 rounded-md mt-1"
+                >
+                  <option value="">Select Division</option>
+                  <option value="Dhaka">Dhaka</option>
+                  <option value="Chattagram">Chattagram</option>
+                  <option value="Khulna">Khulna</option>
+                  <option value="Rajshahi">Rajshahi</option>
+                  <option value="Rangpur">Rangpur</option>
+                  <option value="Mymensingh">Mymensingh</option>
+                  <option value="Sylhet">Sylhet</option>
+                  <option value="Barishal">Barishal</option>
+                </select>
+              ) : (
+                <input
+                  type={type}
+                  name={name}
+                  value={form[name]}
+                  onChange={handleChange}
+                  readOnly={isReadOnly}
+                  className={`w-full border px-3 py-2 rounded-md mt-1 ${
+                    isReadOnly ? "bg-gray-100 cursor-not-allowed" : ""
+                  }`}
+                />
+              )}
+            </div>
+          );
+        })}
 
         <div className="md:col-span-2 text-right mt-4">
           <button

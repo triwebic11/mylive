@@ -67,7 +67,7 @@ export default function PackageUpdate() {
       Swal.fire("Success", "Request sent to admin.", "success");
       localStorage.setItem("userPackage", JSON.stringify(userData));
       setUserPackage(userData);
-      // ✅ Request success হলে wait page এ পাঠান
+      
       navigate("/package-waiting");
     } catch (err) {
       console.error(err);
@@ -81,7 +81,7 @@ export default function PackageUpdate() {
       <DashboardHeadings
         heading={"Our Packages"}
         smalltext={
-          "Choose the best package that suits your needs and start earning today!"
+          "Buy Products earn points and gain a package!"
         }
       ></DashboardHeadings>
       <p className="text-gray-600">
@@ -89,7 +89,7 @@ export default function PackageUpdate() {
         maximize your earnings.
       </p>
       <br />
-      <h1 className="font-bold text-xl">
+      {/* <h1 className="font-bold text-xl">
         If you are a DSP User skip this part -
       </h1>
       <Link
@@ -98,7 +98,7 @@ export default function PackageUpdate() {
       >
         {" "}
         Skip{" "}
-      </Link>
+      </Link> */}
       {/* Cards */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {packages?.map((plan, index) => {
