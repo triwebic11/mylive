@@ -459,13 +459,16 @@ const generateUserSummary = async (user, referredUsers = []) => {
 
   const incoming = user.AllEntry?.incoming || [];
 
-  const getSumBySector = (sectorName) => {
-    console.log("Calculating sum for sector:", sectorName);
+const getSumBySector = (sectorName) => {
+  console.log("Calculating sum for sector:", sectorName);
 
-    return incoming
-      .filter((entry) => entry.sector === sectorName)
-      .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
-  };
+  const total = incoming
+    .filter((entry) => entry.sector === sectorName)
+    .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+
+  return parseFloat(total.toFixed(2));
+};
+
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
   const referCommission = getSumBySector("20% phone referrer commission");

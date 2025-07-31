@@ -86,7 +86,7 @@ const FontDashboard = () => {
       return res.data;
     },
   });
-  // console.log("agretateee", agregate);
+  console.log("agretateee", agregate);
 
   useEffect(() => {
     const updateDuration = () => {
@@ -238,9 +238,13 @@ const FontDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-        {agregate?.summary?.map((stat, idx) => (
-          <DashboardCard key={idx} title={stat?.title} value={stat.value} />
-        ))}
+        {Array.isArray(agregate?.summary) ? (
+    agregate?.summary?.map((stat, idx) => (
+      <DashboardCard key={idx} title={stat?.title} value={stat.value} />
+    ))
+  ) : (
+    <p className="text-red-600 font-bold">No summary data found.</p>
+  )}
       </div>
 
       {/* <h2 className="text-xl font-bold mt-10 mb-4 text-purple-700">Fund</h2>

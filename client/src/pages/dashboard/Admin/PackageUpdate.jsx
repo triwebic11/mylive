@@ -67,7 +67,6 @@ export default function PackageUpdate() {
       Swal.fire("Success", "Request sent to admin.", "success");
       localStorage.setItem("userPackage", JSON.stringify(userData));
       setUserPackage(userData);
-      // ✅ Request success হলে wait page এ পাঠান
       navigate("/package-waiting");
     } catch (err) {
       console.error(err);
