@@ -19,9 +19,10 @@ const StyledNode = styled.div`
   background: #f9f9f9;
 `;
 
-
 const fetchReferralTree = async (userId) => {
-  const res = await axios.get(`https://apidata.shslira.com/api/users/referral-tree/${userId}`);
+  const res = await axios.get(
+    `https://apidata.shslira.com/api/users/referral-tree/${userId}`
+  );
   return res.data;
 };
 
@@ -61,13 +62,11 @@ const Dashboard = () => {
           </StyledNode>
         }
       >
-
         {node.left && renderTree(node.left)}
         {node.right && renderTree(node.right)}
       </TreeNode>
     );
   };
-
 
   return (
     <div className="max-w-full mx-auto p-6">
@@ -78,42 +77,53 @@ const Dashboard = () => {
       {/* Tree Visualization */}
       <div className="bg-white shadow rounded-2xl p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-700 mb-3">🌳 Your Referral Tree</h3>
+          <h3 className="text-lg font-semibold text-gray-700 mb-3">
+            🌳 Your Referral Tree
+          </h3>
           <div>
-          <div className="flex items-center gap-2 mb-4">
-            <p className="h-5 w-5 rounded-full bg-green-600"></p>
-            <p>Direct Refer</p>
+            <div className="flex items-center gap-2 mb-4">
+              <p className="h-5 w-5 rounded-full bg-green-600"></p>
+              <p>Direct Refer</p>
+            </div>
+            <div className="flex items-center gap-2 mb-4">
+              <p className="h-5 w-5 rounded-full bg-blue-600"></p>
+              <p>Placement Join</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2 mb-4">
-            <p className="h-5 w-5 rounded-full bg-blue-600"></p>
-            <p>Placement Join</p>
-          </div>
-        </div>
-        
         </div>
         {isLoading ? (
           <p>Loading referral tree...</p>
         ) : error ? (
           <p>Failed to load referral tree.</p>
         ) : referralTree ? (
-
-          <div className="rounded-3xl" style={{ overflow: "auto", maxWidth: "100%", border: '1px solid gray',padding: "30px", maxHeight: "80vh" }}>
-          <Tree
-            label={
-              <StyledNode $isDirectReferral={referralTree.referredBy === referralCode}>
-                <div>{referralTree?.name}</div>
-                <div style={{ fontSize: "12px", color: "gray" }}>
-                  Code: {referralTree?.referralCode}
-                </div>
-                <div style={{ fontSize: "12px", color: "gray" }}>
-                  Number: {referralTree?.number}
-                </div>
-              </StyledNode>
-            }
+          <div
+            className="rounded-3xl"
+            style={{
+              overflow: "auto",
+              maxWidth: "100%",
+              border: "1px solid gray",
+              padding: "30px",
+              maxHeight: "80vh",
+            }}
           >
-            {renderTree(referralTree.left)}
-            {renderTree(referralTree.right)}
-          </Tree>
+            <Tree
+              label={
+                <StyledNode
+                  $isDirectReferral={referralTree.referredBy === referralCode}
+                >
+                  <div>{referralTree?.name}</div>
+                  <div style={{ fontSize: "12px", color: "gray" }}>
+                    Code: {referralTree?.referralCode}
+                  </div>
+                  <div style={{ fontSize: "12px", color: "gray" }}>
+                    Number: {referralTree?.number}
+                  </div>
+                </StyledNode>
+              }
+            >
+              {renderTree(referralTree.left)}
+              {renderTree(referralTree.right)}
+            </Tree>
           </div>
         ) : (
           <p>No referral tree found.</p>

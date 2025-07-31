@@ -27,9 +27,9 @@ const OurProducts = () => {
       <div className="grid grid-cols-1  md:grid-cols-2">
         {products?.map((item, index) => (
           <>
-            <Link
-              key={index}
-              to={`/productdetails/${item._id}`}
+            <div
+              // key={index}
+              // to={`/productdetails/${item._id}`}
               className="relative  h-[330px] group overflow-hidden"
             >
               {/* Image */}
@@ -40,9 +40,9 @@ const OurProducts = () => {
               />
 
               {/* Centered Text */}
-              <div className="absolute inset-0 z-10 flex items-center justify-center text-white text-xl font-semibold">
+              {/* <div className="absolute inset-0 z-10 flex items-center justify-center text-white text-xl font-semibold">
                 <p className="bg-purple-800 py-1 px-4 rounded-md">Buy Now</p>
-              </div>
+              </div> */}
 
               {/* Top Border */}
               <div className="absolute top-6 left-6 w-0 h-0 border-t-4 border-white transition-all duration-500 group-hover:w-[calc(100%-48px)]" />
@@ -52,7 +52,7 @@ const OurProducts = () => {
               <div className="absolute bottom-6 left-6 w-0 h-0 border-b-4 border-white transition-all duration-500 group-hover:w-[calc(100%-48px)]" />
               {/* Right Border */}
               <div className="absolute top-6 right-6 w-0 h-0 border-r-4 border-white transition-all duration-500 group-hover:h-[calc(100%-48px)]" />
-            </Link>
+            </div>
           </>
         ))}
       </div>

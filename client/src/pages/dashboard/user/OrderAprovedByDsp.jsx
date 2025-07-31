@@ -8,11 +8,13 @@ const OrderAprovedByDsp = () => {
     productId: "",
     date: "",
   });
+  const buttonRefs = useRef({});
 
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const dspPhone = user?.user?.phone || user?.user?.email || "";
-  const pdfRef = useRef(); // PDF reference
+
+  const pdfRefs = useRef({});
 
   // console.log("Allllll orderssssssss", orders);
 
@@ -57,32 +59,44 @@ const OrderAprovedByDsp = () => {
     });
   };
 
-  const handleDownloadPDF = async () => {
-    // console.log("PDF GENERATION STARTED");
-
+  const handleDownloadPDF = async (orderId) => {
     try {
       const html2pdf = (await import("html2pdf.js")).default;
-      const element = pdfRef.current;
+      const element = pdfRefs.current[orderId]?.current;
+      const button = buttonRefs.current[orderId]?.current;
 
       if (!element) {
-        console.error("PDF element is missing");
+        console.error("PDF element not found");
         return;
       }
 
-      // Optional: Clean up weird styles
+      // ✅ Hide the button
+      if (button) button.style.display = "none";
+
       preprocessStyles();
 
       setTimeout(() => {
         const opt = {
           margin: 0.5,
-          filename: `OrdersByDSP_${new Date().toISOString().slice(0, 10)}.pdf`,
+          filename: `Order_${orderId}.pdf`,
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: { scale: 2, useCORS: true },
           jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
         };
 
-        html2pdf().set(opt).from(element).save();
-      }, 1000); // give 1 second to render content
+        html2pdf()
+          .set(opt)
+          .from(element)
+          .save()
+          .then(() => {
+            // ✅ Show the button again after download
+            if (button) button.style.display = "inline-block";
+          })
+          .catch((err) => {
+            console.error("PDF Download Failed:", err);
+            if (button) button.style.display = "inline-block";
+          });
+      }, 300);
     } catch (error) {
       console.error("Failed to generate PDF", error);
     }
@@ -98,14 +112,6 @@ const OrderAprovedByDsp = () => {
         <h1 className="font-semibold">
           Total Orders: {filteredOrders?.length}
         </h1>
-        {filteredOrders.length > 0 && (
-          <button
-            onClick={handleDownloadPDF}
-            className=" bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Download PDF
-          </button>
-        )}
       </div>
 
       {/* Filter Section */}
@@ -130,106 +136,126 @@ const OrderAprovedByDsp = () => {
       {filteredOrders.length === 0 ? (
         <p className="text-center text-gray-600">No orders found.</p>
       ) : (
-        <div
-          ref={pdfRef}
-          className="space-y-4 bg-white p-4 rounded-xl border border-gray-300"
-        >
+        <div className="space-y-4  bg-gray-50 p-4 rounded-xl border border-gray-300">
           {filteredOrders
             .slice()
             .reverse()
-            .map((order) => (
-              <div
-                key={order._id}
-                className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition duration-300"
-              >
-                {/* Part 1: Date and Phone */}
-                <div className=" flex flex-wrap justify-between items-center mb-4 bg-blue-50 p-2 rounded-md">
-                  <p className="text-sm font-medium text-gray-700">
-                    📅 Date:{" "}
-                    <span className="font-semibold">
-                      {order.date?.slice(0, 10)}
-                    </span>
-                  </p>
-                  <p className="text-sm font-medium text-gray-700">
-                    📞 Phone:{" "}
-                    <span className="font-semibold">{order?.dspPhone}</span>
-                  </p>
-                </div>
+            .map((order) => {
+              if (!pdfRefs.current[order._id]) {
+                pdfRefs.current[order._id] = React.createRef();
+              }
+              if (!buttonRefs.current[order._id]) {
+                buttonRefs.current[order._id] = React.createRef();
+              }
 
-                {/* Product Info Section */}
-                <div className="bg-gray-100 p-3 rounded-md mb-3">
-                  <h3 className="font-semibold text-gray-800 mb-2">
-                    🛒 Product Details:
-                  </h3>
+              return (
+                <div key={order._id}>
+                  <button
+                    onClick={() => handleDownloadPDF(order._id)}
+                    className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 mb-2"
+                  >
+                    Download PDF
+                  </button>
 
-                 <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm border border-gray-300 rounded-md">
-                      <thead className="bg-gray-200 text-gray-700">
-                        <tr>
-                          <th className="py-1 px-2 border">Product</th>
-                          <th className="py-1 px-2 border">Qty</th>
-                          <th className="py-1 px-2 border">BV</th>
-                          <th className="py-1 px-1 border">DP</th>
-                          <th className="py-1 px-1 border">MRP</th>
-                          <th className="py-1 px-1 border">Subtotal (৳)</th>
-                          <th className="py-1 px-1 border">SubPoint</th>
-                          <th className="py-1 px-1 border">SubDiscount</th>
-                          <th className="py-1 border">RFP</th>
-                          <th className="py-1 border">CFP</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {order.products.map((p, i) => (
-                          <tr key={i} className="text-center text-gray-800">
-                            <td className="py-1 px-2 border font-semibold">
-                              {p.productId}-{p.name}
-                            </td>
-                            <td className="py-1 px-2 border">{p.quantity}</td>
-                            <td className="py-1 px-2 border">{p.pointValue}</td>
-                            <td className="py-1 px-2 border">
-                              ৳{p.productRate}
-                            </td>
-                            <td className="py-1 px-2 border">৳{p.mrpRate}</td>
-                            <td className="py-1 px-1 border">
-                              ৳{p.subtotal || 0}
-                            </td>
-                            <td className="py-1 px-1 border">
-                              {p.subPoint || 0}
-                            </td>
-                            <td className="py-1 px-1 border">
-                              {p.subDiscount || 0}
-                            </td>
-                            <td className="py-1 px-1 border">
-                              {p.isRepurchaseFree ? "Yes" : "No"}
-                            </td>
-                            <td className="py-1 px-1  border">
-                              {p.isConsistencyFree ? "Yes" : "No"}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    <div>
-                      RFP = Repurchase Free Products <br />
-                      CFP = Consistency Free Products
+                  <div
+                    ref={pdfRefs.current[order._id]}
+                    className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition duration-300"
+                  >
+                    {/* Date and Phone */}
+                    <div className="flex flex-wrap justify-between items-center mb-4 bg-blue-50 p-2 rounded-md">
+                      <p className="text-sm font-medium text-gray-700">
+                        📅 Date:{" "}
+                        <span className="font-semibold">
+                          {order.date?.slice(0, 10)}
+                        </span>
+                      </p>
+                      <p className="text-sm font-medium text-gray-700">
+                        📞 Phone:{" "}
+                        <span className="font-semibold">{order?.dspPhone}</span>
+                      </p>
+                    </div>
+
+                    {/* Products Table */}
+                    <div className="bg-gray-100 p-3 rounded-md mb-3">
+                      <h3 className="font-semibold text-gray-800 mb-2">
+                        🛒 Product Details:
+                      </h3>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm border border-gray-300 rounded-md">
+                          <thead className="bg-gray-200 text-gray-700">
+                            <tr>
+                              <th className="py-1 px-2 border">Product</th>
+                              <th className="py-1 px-2 border">Qty</th>
+                              <th className="py-1 px-2 border">BV</th>
+                              <th className="py-1 px-1 border">DP</th>
+                              <th className="py-1 px-1 border">MRP</th>
+                              <th className="py-1 px-1 border">Subtotal (৳)</th>
+                              <th className="py-1 px-1 border">SubPoint</th>
+                              <th className="py-1 px-1 border">SubDiscount</th>
+                              <th className="py-1 border">RFP</th>
+                              <th className="py-1 border">CFP</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {order.products.map((p, i) => (
+                              <tr key={i} className="text-center text-gray-800">
+                                <td className="py-1 px-2 border font-semibold">
+                                  {p.productId}-{p.name}
+                                </td>
+                                <td className="py-1 px-2 border">
+                                  {p.quantity}
+                                </td>
+                                <td className="py-1 px-2 border">
+                                  {p.pointValue}
+                                </td>
+                                <td className="py-1 px-2 border">
+                                  ৳{p.productRate}
+                                </td>
+                                <td className="py-1 px-2 border">
+                                  ৳{p.mrpRate}
+                                </td>
+                                <td className="py-1 px-1 border">
+                                  ৳{p.subtotal || 0}
+                                </td>
+                                <td className="py-1 px-1 border">
+                                  {p.subPoint || 0}
+                                </td>
+                                <td className="py-1 px-1 border">
+                                  {p.subDiscount || 0}
+                                </td>
+                                <td className="py-1 px-1 border">
+                                  {p.isRepurchaseFree ? "Yes" : "No"}
+                                </td>
+                                <td className="py-1 px-1 border">
+                                  {p.isConsistencyFree ? "Yes" : "No"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <div className="my-1 text-sm">
+                          RFP = Repurchase Free Products <br />
+                          CFP = Consistency Free Products
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Totals */}
+                    <div className="flex flex-wrap justify-between bg-green-50 p-2 rounded-md text-sm font-medium text-gray-800">
+                      <p className="text-blue-700">
+                        💰 Grand Total: ৳{order.grandTotal || "0"}
+                      </p>
+                      <p className="text-blue-700">
+                        🎯 Grand Point: {order.grandPoint || "0"}
+                      </p>
+                      <p className="text-blue-700">
+                        🏷️ Grand Discount: {order.grandDiscount || "0"}
+                      </p>
                     </div>
                   </div>
                 </div>
-
-                {/* Part 3: Grand Totals */}
-                <div className="flex flex-wrap justify-between bg-green-50 p-2 rounded-md text-sm font-medium text-gray-800">
-                  <p className="text-blue-700">
-                    💰 Grand Total: ৳{order.grandTotal || "0"}
-                  </p>
-                  <p className="text-blue-700">
-                    🎯 Grand Point: {order.grandPoint || "0"}
-                  </p>
-                  <p className="text-blue-700">
-                    🏷️ Grand Discount: {order.grandDiscount || "0"}
-                  </p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
       )}
     </div>

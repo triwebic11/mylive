@@ -1,4 +1,6 @@
+const { privateDecrypt } = require("crypto");
 const mongoose = require("mongoose");
+const { type } = require("os");
 
 const productSchema = new mongoose.Schema(
   {
@@ -20,17 +22,20 @@ const productSchema = new mongoose.Schema(
     },
     mrpPrice: {
       type: Number,
-      required: true,
     },
     pointValue: {
       type: Number,
-      required: true,
     },
     productId: {
       type: Number,
       required: true,
     },
-
+    rfp: Number,
+    acfp: Number,
+    productRole: {
+      type: String,
+      default: "paid",
+    },
     isRepurchaseFree: { type: Boolean, default: false },
     isConsistencyFree: { type: Boolean, default: false },
     // isAdvanceConsistency: { type: Boolean, default: false },

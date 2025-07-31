@@ -14,7 +14,7 @@ import useUserById from "../../../Hooks/useUserById";
 
 export default function PackageUpdate() {
   const { user } = useAuth();
-  const [data] = useUserById()
+  const [data] = useUserById();
   console.log("User from package update page = ", data);
 
   // console.log("User from package update page = ", user);
@@ -67,6 +67,7 @@ export default function PackageUpdate() {
       Swal.fire("Success", "Request sent to admin.", "success");
       localStorage.setItem("userPackage", JSON.stringify(userData));
       setUserPackage(userData);
+
       navigate("/package-waiting");
     } catch (err) {
       console.error(err);
@@ -79,16 +80,14 @@ export default function PackageUpdate() {
       {/* Header */}
       <DashboardHeadings
         heading={"Our Packages"}
-        smalltext={
-          "Choose the best package that suits your needs and start earning today!"
-        }
+        smalltext={"Buy Products earn points and gain a package!"}
       ></DashboardHeadings>
       <p className="text-gray-600">
         Each package comes with unique features and benefits to help you
         maximize your earnings.
       </p>
       <br />
-      <h1 className="font-bold text-xl">
+      {/* <h1 className="font-bold text-xl">
         If you are a DSP User skip this part -
       </h1>
       <Link
@@ -97,7 +96,7 @@ export default function PackageUpdate() {
       >
         {" "}
         Skip{" "}
-      </Link>
+      </Link> */}
       {/* Cards */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {packages?.map((plan, index) => {
@@ -127,7 +126,7 @@ export default function PackageUpdate() {
               <h1
                 className={`text-xl font-bold ${getColorByIndex()} mb-4 px-4 py-2 rounded-3xl`}
               >
-                {plan.price}
+                {plan.PV} BV
               </h1>
 
               <ul className="text-left text-gray-700 text-sm space-y-2 flex-1">
@@ -146,12 +145,12 @@ export default function PackageUpdate() {
                 <GoPackage className="text-orange-400 font-semibold text-xl w-[10%]" />
               </li>
 
-              <button
+              {/* <button
                 onClick={() => handleAddPackage(plan)}
                 className="mt-6 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-semibold"
               >
                 Buy Now
-              </button>
+              </button> */}
             </div>
           );
         })}

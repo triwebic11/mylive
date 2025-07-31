@@ -74,8 +74,12 @@ const FontSize = Mark.create({
 const AddProduct = () => {
   const { register, handleSubmit } = useForm();
   const [details, setDetails] = useState("");
+  const [repurchaseFree, setRepurchaseFree] = useState(false);
+  const [consistencyFree, setConsistencyFree] = useState(false);
+  const [freeOrPaid, setFreeOrPaid] = useState(true);
   const [imageUrls, setImageUrls] = useState([]);
   const axiosSecure = useAxiosSecure();
+  const [productRole, setProductRole] = useState("");
   const [productOptions, setProductOptions] = useState({
     isRepurchaseFree: false,
     isConsistencyFree: false,
@@ -138,6 +142,9 @@ const AddProduct = () => {
       mrpPrice: data.mrpPrice,
       pointValue: data.pointValue,
       productId: data.productId || " ",
+      rfp: data.rfp || "",
+      acfp: data.acfp || "",
+      productRole: productRole,
       ...productOptions, // Include the new 4 fields here
     };
 
@@ -145,7 +152,7 @@ const AddProduct = () => {
 
     try {
       await axiosSecure.post("/products/product", payload); // Replace with your actual API
-      
+
       Swal.fire({
         icon: "success",
         title: "Product Added",
@@ -162,181 +169,247 @@ const AddProduct = () => {
       <h1 className="text-2xl pt-20 pb-5 md:ml-20 font-bold mb-2">
         Add Products{" "}
       </h1>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="md:max-w-[80%] w-full mx-auto p-4 space-y-4 bg-white shadow rounded"
-      >
-        {/* Product Name */}
+      <div className="md:max-w-[80%] w-full mx-auto p-4 space-y-4 bg-white shadow rounded">
+        <label
+          htmlFor="type"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Select Type
+        </label>
+        <input
+          list="typeOptions"
+          name="type"
+          id="type"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Choose Paid or Free"
+          onChange={(e) => {
+            const value = e.target.value.toLowerCase();
+            if (value === "free") {
+              setFreeOrPaid(false);
+            } else if (value === "paid") {
+              setFreeOrPaid(true);
+            }
+          }}
+        />
+        <datalist id="typeOptions">
+          <option value="Paid" />
+          <option value="Free" />
+        </datalist>
+      </div>
+      {freeOrPaid ? (
         <div>
-          <label className="block mb-1 font-semibold">Product Name</label>
-          <input
-            {...register("name", { required: true })}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        {/* Image Upload */}
-        <div>
-          <label className="block mb-1 font-semibold">Upload Image</label>
-          <Dropzone
-            onDrop={(acceptedFiles) => handleImageUpload(acceptedFiles[0])}
+          <h1 className="md:max-w-[80%] w-full text-green-900 font-bold mx-auto text-xl text-center bg-white shadow rounded">
+            Upload Paid Product
+          </h1>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="md:max-w-[80%] w-full mx-auto p-4 space-y-4 bg-white shadow rounded"
           >
-            {({ getRootProps, getInputProps }) => (
-              <div
-                {...getRootProps()}
-                className="border-2 py-10 border-dashed p-4 text-center rounded cursor-pointer"
+            {/* Product Name */}
+            <div>
+              <label className="block mb-1 font-semibold">Product Name</label>
+              <input
+                {...register("name", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+
+            {/* Image Upload */}
+            <div>
+              <label className="block mb-1 font-semibold">Upload Image</label>
+              <Dropzone
+                onDrop={(acceptedFiles) => handleImageUpload(acceptedFiles[0])}
               >
-                <input {...getInputProps()} />
-                {imageUrls.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    {imageUrls.map((url, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={url}
-                          alt={`Uploaded ${index}`}
-                          className="max-h-32 rounded"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => deleteImage(url)}
-                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-2 text-xs"
-                        >
-                          ✕
-                        </button>
+                {({ getRootProps, getInputProps }) => (
+                  <div
+                    {...getRootProps()}
+                    className="border-2 py-10 border-dashed p-4 text-center rounded cursor-pointer"
+                  >
+                    <input {...getInputProps()} />
+                    {imageUrls.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        {imageUrls.map((url, index) => (
+                          <div key={index} className="relative">
+                            <img
+                              src={url}
+                              alt={`Uploaded ${index}`}
+                              className="max-h-32 rounded"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => deleteImage(url)}
+                              className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-2 text-xs"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    ) : (
+                      <p>Drag & drop image here, or click to select</p>
+                    )}
                   </div>
-                ) : (
-                  <p>Drag & drop image here, or click to select</p>
+                )}
+              </Dropzone>
+            </div>
+
+            {/* Tiptap Editor */}
+            <div>
+              <label className="block mb-1 font-semibold">Details</label>
+
+              {/* Toolbar */}
+              <div className="flex flex-wrap gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().toggleBold().run()}
+                  className="btn"
+                >
+                  <FaBold />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().toggleItalic().run()}
+                  className="btn"
+                >
+                  <FaItalic />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor?.chain().focus().toggleBulletList().run()
+                  }
+                  className="btn"
+                >
+                  <CiCircleList />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().setFontSize(12).run()}
+                  className="btn"
+                >
+                  Small
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().setFontSize(16).run()}
+                  className="btn"
+                >
+                  Medium
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().setFontSize(20).run()}
+                  className="btn"
+                >
+                  Big
+                </button>
+              </div>
+
+              <div className="border rounded p-2 min-h-[150px]">
+                <EditorContent editor={editor} />
+              </div>
+            </div>
+
+            {/* Price */}
+            <div>
+              <label className="block mb-1 font-semibold">DP(TK)</label>
+              <input
+                type="number"
+                {...register("price", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-semibold">MRP(TK)</label>
+              <input
+                type="number"
+                {...register("mrpPrice", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+
+            {/* Point Value */}
+            <div>
+              <label className="block mb-1 font-semibold">
+                Point Value (PV)
+              </label>
+              <input
+                type="number"
+                {...register("pointValue", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+            {/* Product Id */}
+            <div>
+              <label className="block mb-1 font-semibold">Product Id</label>
+              <input
+                type="number"
+                {...register("productId", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Repurchase Free Product */}
+              {/* Repurchase Free Product */}
+              <div className="form-control mb-4">
+                <label className="label cursor-pointer justify-start gap-3">
+                  <input
+                    onClick={() => setRepurchaseFree(!repurchaseFree)}
+                    type="checkbox"
+                    {...register("isRepurchaseFree")}
+                    className="toggle toggle-success mr-1 text-2xl"
+                  />
+                  <span className="label-text font-semibold">
+                    Repurchase Free Product
+                  </span>
+                </label>
+                {repurchaseFree && (
+                  <div>
+                    <div className=" p-2 m-4 rounded-lg shadow-xl">
+                      <label className="block mb-1 font-semibold">
+                        Set % for repurchase free{" "}
+                      </label>
+                      <input
+                        {...register("rfp")}
+                        placeholder="Enter percentage value"
+                        className="border p-1 rounded-lg"
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
-            )}
-          </Dropzone>
-        </div>
 
-        {/* Tiptap Editor */}
-        <div>
-          <label className="block mb-1 font-semibold">Details</label>
+              {/* Consistency Free Product */}
+              <div className="form-control mb-4">
+                <label className="label cursor-pointer justify-start gap-3">
+                  <input
+                    onClick={() => setConsistencyFree(!consistencyFree)}
+                    type="checkbox"
+                    {...register("isConsistencyFree")}
+                    className="toggle toggle-success mr-1"
+                  />
+                  <span className="label-text font-semibold">
+                    Advance Consistency Free Product
+                  </span>
+                </label>
+                {consistencyFree && (
+                  <div>
+                    <div className=" p-2 m-4 rounded-lg shadow-xl">
+                      <label className="block mb-1 font-semibold">
+                        Set % for Advance Consistency Free{" "}
+                      </label>
+                      <input
+                        {...register("acfp")}
+                        placeholder="Enter percentage value"
+                        className="border p-1 rounded-lg"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
 
-          {/* Toolbar */}
-          <div className="flex flex-wrap gap-2 mb-2">
-            <button
-              type="button"
-              onClick={() => editor?.chain().focus().toggleBold().run()}
-              className="btn"
-            >
-              <FaBold />
-            </button>
-            <button
-              type="button"
-              onClick={() => editor?.chain().focus().toggleItalic().run()}
-              className="btn"
-            >
-              <FaItalic />
-            </button>
-            <button
-              type="button"
-              onClick={() => editor?.chain().focus().toggleBulletList().run()}
-              className="btn"
-            >
-              <CiCircleList />
-            </button>
-            <button
-              type="button"
-              onClick={() => editor?.chain().focus().setFontSize(12).run()}
-              className="btn"
-            >
-              Small
-            </button>
-            <button
-              type="button"
-              onClick={() => editor?.chain().focus().setFontSize(16).run()}
-              className="btn"
-            >
-              Medium
-            </button>
-            <button
-              type="button"
-              onClick={() => editor?.chain().focus().setFontSize(20).run()}
-              className="btn"
-            >
-              Big
-            </button>
-          </div>
-
-          <div className="border rounded p-2 min-h-[150px]">
-            <EditorContent editor={editor} />
-          </div>
-        </div>
-
-        {/* Price */}
-        <div>
-          <label className="block mb-1 font-semibold">DP(TK)</label>
-          <input
-            type="number"
-            {...register("price", { required: true })}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">MRP(TK)</label>
-          <input
-            type="number"
-            {...register("mrpPrice", { required: true })}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        {/* Point Value */}
-        <div>
-          <label className="block mb-1 font-semibold">Point Value (PV)</label>
-          <input
-            type="number"
-            {...register("pointValue", { required: true })}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-        {/* Product Id */}
-        <div>
-          <label className="block mb-1 font-semibold">Product Id</label>
-          <input
-            type="number"
-            {...register("productId", { required: true })}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Repurchase Free Product */}
-          {/* Repurchase Free Product */}
-          <div className="form-control mb-4">
-            <label className="label cursor-pointer justify-start gap-3">
-              <input
-                type="checkbox"
-                {...register("isRepurchaseFree")}
-                className="toggle toggle-success mr-1 text-2xl"
-              />
-              <span className="label-text font-semibold">
-                Repurchase Free Product
-              </span>
-            </label>
-          </div>
-
-          {/* Consistency Free Product */}
-          <div className="form-control mb-4">
-            <label className="label cursor-pointer justify-start gap-3">
-              <input
-                type="checkbox"
-                {...register("isConsistencyFree")}
-                className="toggle toggle-success mr-1"
-              />
-              <span className="label-text font-semibold">
-                Consistency Free Product
-              </span>
-            </label>
-          </div>
-
-          {/* Advance Consistency */}
-          {/* <div>
+              {/* Advance Consistency */}
+              {/* <div>
             <label className="block mb-1 font-semibold">
               Advance Consistency
             </label>
@@ -354,7 +427,7 @@ const AddProduct = () => {
           </div>
 
           {/* Add Consistency Free Product */}
-          {/* <div>
+              {/* <div>
             <label className="block mb-1 font-semibold">
               Add Consistency Free Product
             </label>
@@ -370,16 +443,181 @@ const AddProduct = () => {
               <option value="No">No</option>
             </select>
           </div>  */}
-        </div>
+            </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Add Product
-        </button>
-      </form>
+            {/* Submit */}
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Add Product
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div>
+          <h1 className="md:max-w-[80%] w-full text-yellow-700 font-bold mx-auto text-xl text-center bg-white shadow rounded">
+            Give Free Product
+          </h1>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="md:max-w-[80%] w-full mx-auto p-4 space-y-4 bg-white shadow rounded"
+          >
+            {/* Product Name */}
+            <div>
+              <label className="block mb-1 font-semibold">Product Name</label>
+              <input
+                {...register("name", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+
+            {/* Image Upload */}
+            <div>
+              <label className="block mb-1 font-semibold">Upload Image</label>
+              <Dropzone
+                onDrop={(acceptedFiles) => handleImageUpload(acceptedFiles[0])}
+              >
+                {({ getRootProps, getInputProps }) => (
+                  <div
+                    {...getRootProps()}
+                    className="border-2 py-10 border-dashed p-4 text-center rounded cursor-pointer"
+                  >
+                    <input {...getInputProps()} />
+                    {imageUrls.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        {imageUrls.map((url, index) => (
+                          <div key={index} className="relative">
+                            <img
+                              src={url}
+                              alt={`Uploaded ${index}`}
+                              className="max-h-32 rounded"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => deleteImage(url)}
+                              className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-2 text-xs"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p>Drag & drop image here, or click to select</p>
+                    )}
+                  </div>
+                )}
+              </Dropzone>
+            </div>
+
+            {/* Tiptap Editor */}
+            <div>
+              <label className="block mb-1 font-semibold">Details</label>
+
+              {/* Toolbar */}
+              <div className="flex flex-wrap gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().toggleBold().run()}
+                  className="btn"
+                >
+                  <FaBold />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().toggleItalic().run()}
+                  className="btn"
+                >
+                  <FaItalic />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor?.chain().focus().toggleBulletList().run()
+                  }
+                  className="btn"
+                >
+                  <CiCircleList />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().setFontSize(12).run()}
+                  className="btn"
+                >
+                  Small
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().setFontSize(16).run()}
+                  className="btn"
+                >
+                  Medium
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor?.chain().focus().setFontSize(20).run()}
+                  className="btn"
+                >
+                  Big
+                </button>
+              </div>
+
+              <div className="border rounded p-2 min-h-[150px]">
+                <EditorContent editor={editor} />
+              </div>
+            </div>
+
+            {/* Price */}
+            <div>
+              <label className="block mb-1 font-semibold">Price(TK)</label>
+              <input
+                type="number"
+                {...register("price", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+            {/* <div>
+          <label className="block mb-1 font-semibold">MRP(TK)</label>
+          <input
+            type="number"
+            {...register("mrpPrice", { required: true })}
+            className="w-full border p-2 rounded"
+          />
+        </div> */}
+
+            {/* Point Value */}
+            {/* <div>
+              <label className="block mb-1 font-semibold">
+                Point Value (PV)
+              </label>
+              <input
+                type="number"
+                {...register("pointValue", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div> */}
+            {/* Product Id */}
+            <div>
+              <label className="block mb-1 font-semibold">Product Id</label>
+              <input
+                type="number"
+                {...register("productId", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+
+            {/* Submit */}
+            <button
+              onClick={() => setProductRole("free")}
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Add Product
+            </button>
+          </form>
+        </div>
+      )}
     </>
   );
 };

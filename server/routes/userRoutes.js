@@ -28,6 +28,7 @@ router.get("/referral-tree/:userId", getReferralTreeById);
 router.put("/update-password/:userId", updateUserPassword);
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);
+
 router.put("/:id", updatProfileInfo);
 router.get("/admin/all-users", getAllUsers);
 router.get("/admin/user/:id", getUserById);
