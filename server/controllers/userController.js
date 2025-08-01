@@ -457,12 +457,12 @@ const updateUserRole = async (req, res) => {
 
 // Optional utility to generate summary from user
 const generateUserSummary = async (user, referredUsers = []) => {
-  console.log("Generating summary...");
+  // console.log("Generating summary...");
 
   const incoming = user.AllEntry?.incoming || [];
 
 const getSumBySector = (sectorName) => {
-  console.log("Calculating sum for sector:", sectorName);
+  // console.log("Calculating sum for sector:", sectorName);
 
   const total = incoming
     .filter((entry) => entry.sector === sectorName)
@@ -485,7 +485,7 @@ const getSumBySector = (sectorName) => {
   const homeFund = getSumBySector("House fund");
   const lifetimeBonus = getSumBySector("All life fund");
 
-  console.log("Referral Tree:", referredUsers);
+  // console.log("Referral Tree:", referredUsers);
   const totalTeamSalePv = referredUsers.reduce((total, referredUser) => {
     const referredIncoming = referredUser.AllEntry?.incoming || [];
     return total + getSumBySector(referredIncoming, "ProductPurchase");
@@ -554,12 +554,12 @@ const getSumBySector = (sectorName) => {
   const totalWithdraws = parseFloat(user?.totalwithdraw) || 0;  // note: your field is totalwithdraw, not totalWithdraw
   const withdrawableBalance = (points - totalWithdraws).toFixed(2);
 
-  console.log("Withdrawable Balance:", withdrawableBalance);
+  // console.log("Withdrawable Balance:", withdrawableBalance);
 
 const users = await User.find().select("-password");
 const totalreferral = users.filter(u => u.referredBy === user.referralCode);
 
-console.log("Total Referral Count:", totalreferral);
+// console.log("Total Referral Count:", totalreferral);
 
 const totalActiveTeams = totalreferral.filter(
   (u) => u.isActivePackage === "active"
@@ -568,8 +568,8 @@ const totalexpireTeams = totalreferral.filter(
   (u) => u.isActivePackage === "expired"
 ).length;
 
-console.log("Total Active Teams:", totalActiveTeams);
-console.log("Total Expired Teams:", totalexpireTeams);
+// console.log("Total Active Teams:", totalActiveTeams);
+// console.log("Total Expired Teams:", totalexpireTeams);
 
 const tree = await buildTree(user._id);
 
@@ -616,40 +616,6 @@ const totalBinaryPoints = totalPointsFromLeft + totalPointsFromRight;
     { title: "Lifetime Bonus", value: lifetimeBonus },
   ];
 };
-
-const userAgregateData = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid or missing user ID" });
-    }
-
-    const user = await User.findById(id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    // Fetch referred users based on referralTree
-    const referredUsers = await User.find({
-      _id: { $in: user.referralTree || [] },
-    });
-
-    const summary = await generateUserSummary(user, referredUsers);
-    console.log("Summary generated:", summary);
-
-    res.status(200).json({
-      success: true,
-      userId: user._id,
-      name: user.name,
-      email: user.email,
-     summary: summary,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error", error: err.message });
-  }
-};
 async function buildTree(userId) {
   const user = await User.findById(userId);
   if (!user) return null;
@@ -695,6 +661,220 @@ async function buildTree(userId) {
     totalPointsFromRight,
   };
 }
+
+const positionLevels = [
+  {
+    rank: 1,
+    leftPV: 5,
+    rightPV: 5,
+    leftBV: 30000,
+    rightBV: 30000,
+    position: "Executive Officer",
+    reward: "Frying Pan",
+  },
+  {
+    rank: 2,
+    leftPV: 15,
+    rightPV: 15,
+    leftBV: 90000,
+    rightBV: 90000,
+    position: "Executive Manager",
+    reward: "Rice Cooker",
+  },
+  {
+    rank: 3,
+    leftPV: 50,
+    rightPV: 50,
+    leftBV: 300000,
+    rightBV: 300000,
+    position: "Executive Director",
+    reward: "Inani Tour or ৳10,000 cash",
+  },
+  {
+    rank: 4,
+    leftPV: 120,
+    rightPV: 120,
+    leftBV: 720000,
+    rightBV: 720000,
+    position: "Executive Pal Director",
+    reward: "Cox’s Bazar Tour",
+  },
+  {
+    rank: 5,
+    leftPV: 220,
+    rightPV: 220,
+    leftBV: 1320000,
+    rightBV: 1320000,
+    position: "Executive Total Director",
+    reward: "Laptop or ৳30,000 cash",
+  },
+  {
+    rank: 6,
+    leftPV: 500,
+    rightPV: 500,
+    leftBV: 3000000,
+    rightBV: 3000000,
+    position: "EX = Emerald",
+    reward: "Bike or ৳50,000 cash",
+  },
+  {
+    rank: 7,
+    leftPV: 1000,
+    rightPV: 1000,
+    leftBV: 6000000,
+    rightBV: 6000000,
+    position: "EX = Elite",
+    reward: "Thailand Tour or ৳1,25,000 cash",
+  },
+  {
+    rank: 8,
+    leftPV: 2000,
+    rightPV: 2000,
+    leftBV: 12000000,
+    rightBV: 12000000,
+    position: "EX = Deluxe",
+    reward: "Hajj/Umrah or ৳3,00,000 cash",
+  },
+  {
+    rank: 9,
+    leftPV: 4000,
+    rightPV: 4000,
+    leftBV: 24000000,
+    rightBV: 24000000,
+    position: "EX = Marjury",
+    reward: "Car or ৳6,00,000 cash",
+  },
+  {
+    rank: 10,
+    leftPV: 8000,
+    rightPV: 8000,
+    leftBV: 48000000,
+    rightBV: 48000000,
+    position: "Diamond",
+    reward: "Car or ৳13,00,000 cash",
+  },
+  {
+    rank: 11,
+    leftPV: 16000,
+    rightPV: 16000,
+    leftBV: 96000000,
+    rightBV: 96000000,
+    position: "Double Diamond",
+    reward: "Private Car or ৳25,00,000 cash",
+  },
+  {
+    rank: 12,
+    leftPV: 24000,
+    rightPV: 24000,
+    leftBV: 144000000,
+    rightBV: 144000000,
+    position: "Crown Director",
+    reward: "৳50,00,000 cash",
+  },
+  {
+    rank: 13,
+    leftPV: 37000,
+    rightPV: 37000,
+    leftBV: 222000000,
+    rightBV: 222000000,
+    position: "Star Crown",
+    reward: "Mansion or ৳1 crore cash",
+  },
+  {
+    rank: 14,
+    leftPV: 50000,
+    rightPV: 50000,
+    leftBV: 300000000,
+    rightBV: 300000000,
+    position: "Universal Crown",
+    reward: "৳5 crore cash or Villa",
+  },
+];
+
+
+const UpdateRanksAndRewards = async (buyer) => {
+  try {
+    const tree = await buildTree(buyer._id);
+    if (!tree) return;
+
+    const leftTree = tree.left;
+    const rightTree = tree.right;
+
+    console.log("Left Tree:", leftTree.points);
+    console.log("Right Tree:", rightTree.points);
+
+    // const matchedRank = positionLevels
+    //   .slice()
+    //   .reverse()
+    //   .find(
+    //     (level) =>
+    //       leftPV >= level.leftPV && rightPV >= level.rightPV
+    //   );
+
+    // if (!matchedRank) return;
+
+    // const user = await User.findById(buyer._id);
+
+    // // Update if new position is higher than existing
+    // const currentRankIndex = positionLevels.findIndex(
+    //   (r) => r.position === user.Position
+    // );
+    // const newRankIndex = positionLevels.findIndex(
+    //   (r) => r.position === matchedRank.position
+    // );
+
+    // if (newRankIndex > currentRankIndex) {
+    //   user.Position = matchedRank.position;
+
+    //   if (!user.rewards?.includes(matchedRank.reward)) {
+    //     user.rewards = [...(user.rewards || []), matchedRank.reward];
+    //   }
+
+    //   await user.save();
+    //   console.log(
+    //     `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
+    //   );
+    // }
+  } catch (error) {
+    console.error("❌ Error updating ranks and rewards:", error);
+  }
+};
+
+const userAgregateData = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid or missing user ID" });
+    }
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Fetch referred users based on referralTree
+    const referredUsers = await User.find({
+      _id: { $in: user.referralTree || [] },
+    });
+
+    const summary = await generateUserSummary(user, referredUsers);
+    await UpdateRanksAndRewards(user);
+
+    // console.log("Summary generated:", summary);
+    res.status(200).json({
+      success: true,
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+     summary: summary,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+};
+
 
 
 const getReferralTreeById = async (req, res) => {

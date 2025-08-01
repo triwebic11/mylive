@@ -3,33 +3,6 @@ const router = express.Router();
 const AdminOrder = require("../models/AdminOrder");
 const User = require("../models/User");
 
-async function buildTree(userId) {
-  const user = await User.findById(userId);
-  if (!user) return null;
-
-  const children = await User.find({
-    $or: [
-      { placementBy: user.referralCode },
-      { referredBy: user.referralCode }
-    ]
-  });
-
-  const childrenTrees = await Promise.all(
-    children.map(child => buildTree(child._id))
-  );
-
-  return {
-    name: user.name,
-    _id: user._id,
-    Position: user.Position,
-    phone: user.phone,
-    referralCode: user.referralCode,
-    referredBy: user.referredBy,
-    placementBy: user.placementBy,
-    left: childrenTrees[0] || null,
-    right: childrenTrees[1] || null,
-  };
-}
 
 async function buildUplineTree(userId, depth = 0, maxDepth = 10, visited = new Set()) {
   if (depth > maxDepth) return [];
@@ -63,6 +36,8 @@ async function buildUplineTree(userId, depth = 0, maxDepth = 10, visited = new S
   return [...parentTree, currentNode];
 }
 
+
+
 const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalPrice) => {
   const buyer = await User.findOne({ phone: buyerphone });
   if (!buyer) return;
@@ -88,7 +63,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   const thirtyPercent = grandPoint * 0.30;
   const twentyPercent = grandPoint * 0.20;
 
-    // 20% phone referrer
+  // 20% phone referrer
   console.log("Buyer Referred By:", buyer?.referredBy);
   if (buyer?.referredBy) {
     const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
@@ -169,6 +144,12 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       await uplineUser.save();
     }
   }
+
+
+
+  // User Package Update
+  // await UpdateRanksAndRewards(buyer);
+
 };
 
 // Order create
