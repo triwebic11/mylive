@@ -16,25 +16,29 @@ exports.createProduct = async (req, res) => {
       productId,
       isRepurchaseFree = false,
       isConsistencyFree = false,
+      rfp,
+      acfp,
 
       // advanceConsistency = "No",
       // addConsistencyFreeProduct = "No",
     } = req.body;
 
-    // Validation
-    if (
-      !name ||
-      !image ||
-      !details ||
-      !price ||
-      !mrpPrice ||
-      !pointValue ||
-      !productId
-    ) {
-      return res
-        .status(400)
-        .json({ message: "All required fields must be filled." });
-    }
+    // // Validation
+    // if (
+    //   !name ||
+    //   !image ||
+    //   !details ||
+    //   !price ||
+    //   !mrpPrice ||
+    //   !pointValue ||
+    //   !productId ||
+    //   !rfp ||
+    //   !acfp
+    // ) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "All required fields must be filled." });
+    // }
 
     const newProduct = new Product({
       name,
@@ -46,6 +50,8 @@ exports.createProduct = async (req, res) => {
       productId,
       isRepurchaseFree,
       isConsistencyFree,
+      rfp,
+      acfp,
       // advanceConsistency,
       // addConsistencyFreeProduct,
     });
@@ -63,6 +69,17 @@ exports.createProduct = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+// controllers/productController.js
+exports.getProductsByRole = async (req, res) => {
+  const { role } = req.params;
+
+  try {
+    const products = await Product.find({ productRole: role });
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: "Server Error" });

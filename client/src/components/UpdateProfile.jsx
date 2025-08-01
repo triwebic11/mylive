@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
+import useAuth from "../Hooks/useAuth";
+import useRole from "../Hooks/useRole";
 
 const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
+  const { role } = useRole();
+
+  console.log("userrrrrrrrrrrrrrrr role", role);
   const axiosSecure = useAxiosSecure();
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.user?._id;
@@ -144,6 +149,21 @@ const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
                   <option value="Sylhet">Sylhet</option>
                   <option value="Barishal">Barishal</option>
                 </select>
+              ) : role === "dsp" ? (
+                name === "name" && name === "email" && name === "phone" ? (
+                  <p>form[name]</p>
+                ) : (
+                  <input
+                    type={type}
+                    name={name}
+                    value={form[name]}
+                    onChange={handleChange}
+                    readOnly={isReadOnly}
+                    className={`w-full border px-3 py-2 rounded-md mt-1 ${
+                      isReadOnly ? "bg-gray-100 cursor-not-allowed" : ""
+                    }`}
+                  />
+                )
               ) : (
                 <input
                   type={type}

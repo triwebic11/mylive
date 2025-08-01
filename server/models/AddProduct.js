@@ -22,25 +22,33 @@ const productSchema = new mongoose.Schema(
     },
     mrpPrice: {
       type: Number,
+      default: 0,
     },
     pointValue: {
       type: Number,
+      default: 0,
     },
+
     productId: {
       type: Number,
       required: true,
     },
-    rfp: Number,
-    acfp: Number,
     productRole: {
       type: String,
       default: "paid",
     },
     isRepurchaseFree: { type: Boolean, default: false },
     isConsistencyFree: { type: Boolean, default: false },
-    // isAdvanceConsistency: { type: Boolean, default: false },
-    // isAddConsistencyFree: { type: Boolean, default: false },
+    rfp: {
+      type: Number,
+      default: 0,
+    },
+    acfp: {
+      type: Number,
+      default: 0,
+    },
   },
+
   { timestamps: true }
 );
 

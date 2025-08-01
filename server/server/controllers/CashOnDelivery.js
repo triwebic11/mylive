@@ -1,7 +1,6 @@
 // Required modules and models
 const { ObjectId } = require("mongodb");
 const nodemailer = require("nodemailer");
-const mongoose = require("mongoose");
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const User = require("../models/User");
 const CashOnDeliveryModel = require("../models/CashOnDeliveryModel");
@@ -76,26 +75,18 @@ const checkAndApplyConsistencyBonus = (buyer, currentPV, product) => {
   }
 };
 
-
 const updatecashondelivery = async (req, res) => {
   try {
     const id = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid delivery ID" });
-    }
-
     const updateData = req.body;
-
-    // console.log("delivery id:", id);
-    // console.log("update data:", updateData);
 
     const existingOrder = await CashOnDeliveryModel.findById(id);
     if (!existingOrder) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    const wasPending = existingOrder.status !== "shipped" && updateData.status === "shipped";
+    const wasPending =
+      existingOrder.status !== "shipped" && updateData.status === "shipped";
 
     const updatedOrder = await CashOnDeliveryModel.findByIdAndUpdate(
       id,
@@ -105,36 +96,29 @@ const updatecashondelivery = async (req, res) => {
 
     if (wasPending && updateData.status === "shipped") {
       const { PV, product } = updatedOrder;
-      const buyer = await User.findById(updatedOrder?.userId);
+      const buyer = await User.findById(updatedOrder.userId);
       if (!buyer) return res.status(404).json({ message: "Buyer not found" });
-      // console.log("buyer data----------------", buyer)
 
-      // Initialize AllEntry arrays if missing
-      buyer.AllEntry = buyer.AllEntry || {};
-      buyer.AllEntry.incoming = Array.isArray(buyer.AllEntry.incoming) ? buyer.AllEntry.incoming : [];
-      buyer.AllEntry.outgoing = Array.isArray(buyer.AllEntry.outgoing) ? buyer.AllEntry.outgoing : [];
+      if (!buyer.AllEntry) buyer.AllEntry = { incoming: [], outgoing: [] };
+      buyer.points += PV;
 
-      buyer.points = (buyer.points || 0) + PV;
-
+      // ➤ 1. REFERRAL REWARD
       if (buyer.referredBy) {
         const referrer = await User.findOne({ referralCode: buyer.referredBy });
-        // console.log("referred data -----------", referrer)
-
         if (referrer) {
-          referrer.AllEntry = referrer.AllEntry || {};
-          referrer.AllEntry.incoming = Array.isArray(referrer.AllEntry.incoming) ? referrer.AllEntry.incoming : [];
-          referrer.AllEntry.outgoing = Array.isArray(referrer.AllEntry.outgoing) ? referrer.AllEntry.outgoing : [];
+          if (!referrer.AllEntry)
+            referrer.AllEntry = { incoming: [], outgoing: [] };
 
           const reward = Math.floor(PV * 0.1);
-          referrer.points = (referrer.points || 0) + reward;
+          referrer.points += reward;
 
           referrer.AllEntry.incoming.push({
             fromUser: buyer._id,
             name: buyer.name,
-            sector: "ProductPurchase",
+            sector: "referral",
             email: buyer.email,
             pointReceived: reward,
-            product: product?.name || "",
+            product: product?.name,
             type: "referral",
             date: new Date(),
           });
@@ -142,65 +126,58 @@ const updatecashondelivery = async (req, res) => {
           buyer.AllEntry.outgoing.push({
             toUser: referrer._id,
             name: referrer.name,
-            sector: "ProductPurchase",
+            sector: "referral",
             email: referrer.email,
             pointGiven: reward,
-            product: product?.name || "",
+            product: product?.name,
             type: "referral",
             date: new Date(),
           });
 
-          // Save referrer and log
-          try {
-            await referrer.save();
-            // console.log("Referrer saved successfully:", referrer);
-          } catch (err) {
-            console.error("Error saving referrer:", err);
-          }
+          await referrer.save();
 
           const remaining = PV - reward;
           if (remaining > 0) {
             buyer.AllEntry.incoming.push({
               fromUser: buyer._id,
               name: buyer.name,
-              sector: "ProductPurchase",
+              sector: "self-after-referral",
               email: buyer.email,
               pointReceived: remaining,
-              product: product?.name || "",
+              product: product?.name,
               type: "self-after-referral",
               date: new Date(),
             });
           }
         }
       } else {
+        // ➤ NO REFERRER → ALL PV TO BUYER
         buyer.AllEntry.incoming.push({
           fromUser: buyer._id,
           name: buyer.name,
           email: buyer.email,
-          sector: "ProductPurchase",
+          sector: "self-purchase",
           pointReceived: PV,
-          product: product?.name || "",
+          product: product?.name,
           type: "self-purchase",
           date: new Date(),
         });
       }
 
-      // Save buyer and log
-      try {
-        await buyer.save();
-        // console.log("Buyer saved successfully:", buyer);
-      } catch (err) {
-        console.error("Error saving buyer:", err);
-      }
+      // ➤ 2. ALL BONUS/COMMISSIONS EXECUTED DIRECTLY (no flag check)
+      await handleRepurchaseCommission(buyer, PV, product, "repurchase");
+      checkAndApplyConsistencyBonus(buyer, PV, product);
+      await handleAdvanceConsistency(buyer, PV, product);
+
+      await buyer.save();
     }
 
     res.status(200).json(updatedOrder);
   } catch (err) {
     console.error("Update error:", err);
-    res.status(500).json({
-      message: "Failed to update order",
-      error: err.message,
-    });
+    res
+      .status(500)
+      .json({ message: "Failed to update order", error: err.message });
   }
 };
 

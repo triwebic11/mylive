@@ -4,6 +4,7 @@ import useProducts from "../Hooks/useProducts";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useAuth from "../Hooks/useAuth";
 import { useLocation } from "react-router-dom";
+import useFreeOrPaidProducts from "../Hooks/useFreeOrPaidProduct";
 
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
@@ -12,19 +13,30 @@ const OrderCreate = ({ title }) => {
   // console.log("Current Location:", location);
 
   const [products] = useProducts();
+  const [freeProducts, setFreeProducts] = useFreeOrPaidProducts("free");
+
+  const [paidProducts, setPaidProducts] = useFreeOrPaidProducts("paid");
   const [allProducts, setAllProducts] = useState([]);
-  const [showOffer, setShowOffer] = useState([]);
+  const [isConsistencyFreeValue, setisConsistencyFreeValue] = useState();
+  const [isRepurchaseFreeValue, setisRepurchaseFreeValue] = useState();
   const [scndProducts, setScndProducts] = useState([
     {
       productId: "",
+
       productRate: "",
+      freeProductRate: "",
       mrpRate: "",
       discount: "",
       name: "",
+      freeProductName: "",
       pointValue: "",
       quantity: 1,
+      freeQuantity: 1,
+      freeProductId: "",
       isConsistencyFree: false,
+      isConsistencyFreeValue: "",
       isRepurchaseFree: false,
+      isRepurchaseFreeValue: "",
     },
   ]);
   const [dspPhone, setDspPhone] = useState("");
@@ -51,9 +63,30 @@ const OrderCreate = ({ title }) => {
 
   const handleProductChange = (index, field, value) => {
     const updated = [...scndProducts];
-    updated[index][field] = value;
+
+    // Quantity validation
+    if (field === "quantity" || field === "freeQuantity") {
+      const qty = Math.max(1, parseInt(value) || 1); // Ensure minimum value is 1
+      updated[index][field] = qty;
+    } else {
+      updated[index][field] = value;
+    }
+
     setScndProducts(updated);
   };
+  // const handleFreeProductChange = (index, field, value) => {
+  //   const updated = [...scndProducts];
+
+  //   // Quantity validation
+  //   if (field === "quantity") {
+  //     const qty = Math.max(1, parseInt(value) || 1); // Ensure minimum value is 1
+  //     updated[index][field] = qty;
+  //   } else {
+  //     updated[index][field] = value;
+  //   }
+
+  //   setScndProducts(updated);
+  // };
 
   const addProductField = () => {
     setScndProducts([
@@ -61,13 +94,19 @@ const OrderCreate = ({ title }) => {
       {
         productId: "",
         productRate: "",
+        freeProductRate: "",
+        freeProductName: "",
         mrpRate: "",
         discount: "",
         name: "",
         pointValue: "",
         quantity: 1,
+        freeQuantity: 1,
+        freeProductId: "",
         isConsistencyFree: false,
+        isConsistencyFreeValue: isConsistencyFreeValue,
         isRepurchaseFree: false,
+        isRepurchaseFreeValue: isRepurchaseFreeValue,
       },
     ]);
   };
@@ -79,6 +118,12 @@ const OrderCreate = ({ title }) => {
   const calculateGrandTotal = () =>
     scndProducts.reduce(
       (acc, p) => acc + (+p.productRate || 0) * (+p.quantity || 0),
+      0
+    );
+
+  const calculateFreeGrandTotal = () =>
+    scndProducts.reduce(
+      (acc, p) => acc + (+p.freeProductRate || 0) * (+p.freeQuantity || 0),
       0
     );
 
@@ -108,6 +153,7 @@ const OrderCreate = ({ title }) => {
       return {
         ...p,
         subtotal: price * quantity,
+        freeSubtotal: p.freeProductRate * p.freeQuantity,
         subPoint: (+p.pointValue || 0) * quantity,
         subDiscount: (mrp - price) * quantity,
       };
@@ -118,6 +164,7 @@ const OrderCreate = ({ title }) => {
       dspPhone,
       products: scndProductsWithSubtotal,
       grandTotal: calculateGrandTotal(),
+      freeGrandTotal: calculateFreeGrandTotal(), // ✅ new field
       grandPoint: calculateGrandPoint(),
       grandDiscount: calculateGrandDiscount(), // ✅ new field
       date: new Date().toISOString(),
@@ -209,219 +256,428 @@ const OrderCreate = ({ title }) => {
 
         {scndProducts.map((product, index) => {
           const matchedProduct = products?.find(
-            (p) => p.productId.toString() === product.productId.toString()
+            (p) => p.productId?.toString() === product.productId?.toString()
           );
 
           const subtotal =
             (+product.productRate || 0) * (+product.quantity || 0);
 
+          useEffect(() => {
+            if (product?.isRepurchaseFree && matchedProduct?.rfp && subtotal) {
+              const repurchaseValue = (matchedProduct.rfp * subtotal) / 100;
+              setisRepurchaseFreeValue(parseFloat(repurchaseValue.toFixed(2)));
+            } else {
+              setisRepurchaseFreeValue(0);
+            }
+
+            if (
+              product?.isConsistencyFree &&
+              matchedProduct?.acfp &&
+              subtotal
+            ) {
+              const consistencyValue = (matchedProduct.acfp * subtotal) / 100;
+              setisConsistencyFreeValue(
+                parseFloat(consistencyValue.toFixed(2))
+              );
+            } else {
+              setisConsistencyFreeValue(0);
+            }
+          }, [product, matchedProduct, subtotal]); // dependency list
+
           return (
-            <div
-              key={index}
-              className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 space-y-4"
-            >
-              <div className="overflow-x-auto rounded-lg border border-gray-200">
-                <table className="min-w-full text-sm text-left text-gray-800 grid grid-cols-2 md:grid-cols-1">
-                  <thead className="bg-gray-100 text-gray-900 font-semibold">
-                    <tr className="flex flex-col md:flex-row justify-around ">
-                      <th className="px-4 py-2 my-2 md:my-0">Product</th>
-                      <th className="px-4 py-2 my-2 md:my-0">DP (৳)</th>
-                      <th className="px-4 py-2 my-2 md:my-0">MRP</th>
-                      <th className="px-4 py-2 my-2 md:my-0">Quantity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="bg-white md:border-t flex flex-col md:flex-row">
-                      {/* Product Selector */}
-                      <td className="px-4 py-2 min-w-[200px]">
-                        <input
-                          list="product-options"
-                          value={product?.productId}
-                          onChange={(e) => {
-                            const selectedId = e.target.value;
-                            handleProductChange(index, "productId", selectedId);
-
-                            const selected = products.find(
-                              (p) => p.productId.toString() === selectedId
-                            );
-
-                            if (selected) {
-                              handleProductChange(
-                                index,
-                                "productRate",
-                                selected.price
-                              );
-                              handleProductChange(
-                                index,
-                                "mrpRate",
-                                selected.mrpPrice
-                              );
-                              handleProductChange(
-                                index,
-                                "pointValue",
-                                selected.pointValue
-                              );
-                              handleProductChange(index, "name", selected.name);
-                              handleProductChange(
-                                index,
-                                "isConsistencyFree",
-                                selected.isConsistencyFree
-                              );
-                              handleProductChange(
-                                index,
-                                "isRepurchaseFree",
-                                selected.isRepurchaseFree
-                              );
-                            }
-                          }}
-                          placeholder="Enter Product ID"
-                          className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          required
-                        />
-                        <datalist id="product-options">
-                          {products?.map((p) => (
-                            <option key={p._id} value={p.productId}>
-                              {p.productId} - {p.name}
-                            </option>
-                          ))}
-                        </datalist>
-                      </td>
-
-                      {/* Price */}
-                      <td className="px-4 py-2">
-                        <input
-                          type="number"
-                          value={product?.productRate}
-                          onChange={(e) =>
-                            handleProductChange(
-                              index,
-                              "productRate",
-                              e.target.value
-                            )
-                          }
-                          className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Discount Price"
-                          required
-                          readOnly
-                        />
-                      </td>
-
-                      {/* Regular Price */}
-
-                      <td className="px-4 py-2">
-                        <input
-                          type="number"
-                          value={product?.mrpRate}
-                          onChange={(e) =>
-                            handleProductChange(
-                              index,
-                              "mrpRate",
-                              e.target.value
-                            )
-                          }
-                          className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="MRP"
-                          required
-                          readOnly
-                        />
-                      </td>
-
-                      {/* Quantity */}
-                      <td className="px-4 py-2">
-                        <input
-                          type="number"
-                          value={product.quantity}
-                          onChange={(e) =>
-                            handleProductChange(
-                              index,
-                              "quantity",
-                              e.target.value
-                            )
-                          }
-                          className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Qty"
-                          required
-                        />
-                      </td>
-                      {/* Repurchase Free Product */}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Summary Info */}
-              <div className="bg-gray-100 p-4 rounded-lg text-sm text-gray-800 space-y-1">
+            //For paid product
+            <div>
+              <div
+                key={index}
+                className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 space-y-4"
+              >
                 <div className="overflow-x-auto rounded-lg border border-gray-200">
-                  <table className="min-w-full text-sm text-left text-gray-700">
+                  <table className="min-w-full text-sm text-left text-gray-800 grid grid-cols-2 md:grid-cols-1">
                     <thead className="bg-gray-100 text-gray-900 font-semibold">
-                      <tr>
-                        <th className="px-4 py-2">Subtotal</th>
-                        <th className="px-4 py-2">Name</th>
-                        <th className="px-4 py-2">BV</th>
-                        <th className="px-4 py-2">Discount</th>
+                      <tr className="flex flex-col md:flex-row justify-around ">
+                        <th className="px-4 py-2 my-2 md:my-0">Product</th>
+                        <th className="px-4 py-2 my-2 md:my-0">DP (৳)</th>
+                        <th className="px-4 py-2 my-2 md:my-0">MRP</th>
+                        <th className="px-4 py-2 my-2 md:my-0">Quantity</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="bg-white border-t">
-                        <td className="px-4 py-2 font-bold text-blue-700">
-                          ৳{subtotal}
+                      <tr className="bg-white md:border-t flex flex-col md:flex-row">
+                        {/* Product Selector */}
+                        <td className="px-4 py-2 min-w-[200px]">
+                          <input
+                            list="product-options"
+                            value={paidProducts?.productId}
+                            onChange={(e) => {
+                              const selectedId = e.target.value;
+                              handleProductChange(
+                                index,
+                                "productId",
+                                selectedId
+                              );
+
+                              const selected = products.find(
+                                (p) => p.productId?.toString() === selectedId
+                              );
+
+                              if (selected) {
+                                handleProductChange(
+                                  index,
+                                  "productRate",
+                                  selected.price
+                                );
+                                handleProductChange(
+                                  index,
+                                  "mrpRate",
+                                  selected.mrpPrice
+                                );
+                                handleProductChange(
+                                  index,
+                                  "pointValue",
+                                  selected.pointValue
+                                );
+                                handleProductChange(
+                                  index,
+                                  "name",
+                                  selected.name
+                                );
+                                handleProductChange(
+                                  index,
+                                  "isConsistencyFree",
+                                  selected.isConsistencyFree
+                                );
+                                handleProductChange(
+                                  index,
+                                  "isRepurchaseFree",
+                                  selected.isRepurchaseFree
+                                );
+                              }
+                            }}
+                            placeholder="Enter Product ID"
+                            className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                          />
+                          <datalist id="product-options">
+                            {paidProducts?.map((p) => (
+                              <option key={p._id} value={p.productId}>
+                                {p.productId} - {p.name}
+                              </option>
+                            ))}
+                          </datalist>
                         </td>
+
+                        {/* Price */}
                         <td className="px-4 py-2">
-                          {matchedProduct?.name || (
-                            <span className="text-gray-400">N/A</span>
-                          )}
+                          <input
+                            type="number"
+                            value={product?.productRate}
+                            onChange={(e) =>
+                              handleProductChange(
+                                index,
+                                "productRate",
+                                e.target.value
+                              )
+                            }
+                            className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Discount Price"
+                            required
+                            readOnly
+                          />
                         </td>
+
+                        {/* Regular Price */}
+
                         <td className="px-4 py-2">
-                          {matchedProduct?.pointValue ?? (
-                            <span className="text-gray-400">N/A</span>
-                          )}
+                          <input
+                            type="number"
+                            value={product?.mrpRate}
+                            onChange={(e) =>
+                              handleProductChange(
+                                index,
+                                "mrpRate",
+                                e.target.value
+                              )
+                            }
+                            className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="MRP"
+                            required
+                            readOnly
+                          />
                         </td>
+
+                        {/* Quantity */}
                         <td className="px-4 py-2">
-                          {matchedProduct ? (
-                            `৳${
-                              (+matchedProduct?.mrpPrice || 0) -
-                              (+matchedProduct?.price || 0)
-                            }`
-                          ) : (
-                            <span className="text-gray-400">N/A</span>
-                          )}
+                          <input
+                            type="number"
+                            value={product.quantity}
+                            onChange={(e) =>
+                              handleProductChange(
+                                index,
+                                "quantity",
+                                e.target.value
+                              )
+                            }
+                            className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Qty"
+                            required
+                          />
                         </td>
+                        {/* Repurchase Free Product */}
                       </tr>
                     </tbody>
                   </table>
-                  <div className="flex justify-between mt-3 px-3">
-                    <table>
-                      <thead>
-                        <th className="px-4 py-2 my-2 md:my-0">
-                          Repurchase Free Product
-                        </th>
-                        <th className="px-4 py-2 my-2 md:my-0">
-                          Advance Consistency Free Product
-                        </th>
+                </div>
+
+                {/* Summary Info */}
+                <div className="bg-gray-100 p-4 rounded-lg text-sm text-gray-800 space-y-1">
+                  <div className="overflow-x-auto rounded-lg border border-gray-200">
+                    <table className="min-w-full text-sm text-left text-gray-700">
+                      <thead className="bg-gray-100 text-gray-900 font-semibold">
+                        <tr>
+                          <th className="px-4 py-2">Subtotal</th>
+                          <th className="px-4 py-2">Name</th>
+                          <th className="px-4 py-2">BV</th>
+                          <th className="px-4 py-2">Discount</th>
+                        </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td className="px-4 py-2 text-center">
-                            {product.isRepurchaseFree ? "Yes" : "No"}
+                        <tr className="bg-white border-t">
+                          <td className="px-4 py-2 font-bold text-blue-700">
+                            ৳{subtotal}
                           </td>
-                          <td className="px-4 py-2 text-center">
-                            {product.isConsistencyFree ? "Yes" : "No"}
+                          <td className="px-4 py-2">
+                            {matchedProduct?.name || (
+                              <span className="text-gray-400">N/A</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-2">
+                            {matchedProduct?.pointValue ?? (
+                              <span className="text-gray-400">N/A</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-2">
+                            {matchedProduct ? (
+                              `৳${
+                                (+matchedProduct?.mrpPrice || 0) -
+                                (+matchedProduct?.price || 0)
+                              }`
+                            ) : (
+                              <span className="text-gray-400">N/A</span>
+                            )}
                           </td>
                         </tr>
                       </tbody>
                     </table>
-                    {userPackage}
+                    <div className="flex justify-between mt-3 px-3">
+                      <table>
+                        <thead>
+                          <th className="px-4 py-2 my-2 md:my-0">
+                            Repurchase Free Product
+                          </th>
+                          <th className="px-4 py-2 my-2 md:my-0">
+                            Advance Consistency Free Product
+                          </th>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td className="px-4 py-2 text-center">
+                              {product.isRepurchaseFree
+                                ? `${matchedProduct?.rfp}% = ${
+                                    (matchedProduct?.rfp * subtotal) / 100
+                                  } ৳`
+                                : "No"}
+                            </td>
+                            <td className="px-4 py-2 text-center">
+                              {product.isConsistencyFree
+                                ? `${matchedProduct?.acfp}% = ${
+                                    (matchedProduct?.acfp * subtotal) / 100
+                                  } ৳`
+                                : "No"}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      {userPackage}
+                    </div>
                   </div>
-                </div>
 
-                <button
-                  type="button"
-                  onClick={() => removeProductField(index)}
-                  className="mt-3 inline-block bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition duration-200 text-sm"
-                >
-                  Remove
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => removeProductField(index)}
+                    className="mt-3 inline-block bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition duration-200 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
+              {/* For free product */}
+              {(product.isRepurchaseFree || product.isConsistencyFree) && (
+                <div>
+                  {scndProducts.map((freeProduct, freeindex) => {
+                    const matchedFreeProduct = freeProducts?.find(
+                      (p) =>
+                        p.freeProductId?.toString() ===
+                        freeProduct.productId?.toString()
+                    );
+
+                    const freeSubtotal =
+                      (+freeProduct.freeProductRate || 0) *
+                      (+freeProduct.freeQuantity || 0);
+
+                    return (
+                      <div>
+                        <div
+                          key={freeindex}
+                          className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 space-y-4"
+                        >
+                          <h1>Free Product</h1>
+                          <div className="overflow-x-auto rounded-lg border border-gray-200">
+                            <table className="min-w-full text-sm text-left text-gray-800 grid grid-cols-2 md:grid-cols-1">
+                              <thead className="bg-gray-100 text-gray-900 font-semibold">
+                                <tr className="flex flex-col md:flex-row justify-around ">
+                                  <th className="px-4 py-2 my-2 md:my-0">
+                                    Product
+                                  </th>
+                                  <th className="px-4 py-2 my-2 md:my-0">
+                                    Price(৳)
+                                  </th>
+                                  <th className="px-4 py-2 my-2 md:my-0">
+                                    Quantity (৳)
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="bg-white md:border-t flex flex-col md:flex-row">
+                                  {/* Product Selector */}
+                                  <td className="px-4 py-2 min-w-[200px]">
+                                    <input
+                                      list="freeproduct-options"
+                                      value={freeProducts?.productId}
+                                      onChange={(e) => {
+                                        const selectedId = e.target.value;
+                                        handleProductChange(
+                                          freeindex,
+                                          "freeProductId",
+                                          selectedId
+                                        );
+
+                                        const selected = freeProducts.find(
+                                          (p) =>
+                                            p.productId?.toString() ===
+                                            selectedId
+                                        );
+
+                                        if (selected) {
+                                          handleProductChange(
+                                            freeindex,
+                                            "freeProductRate",
+                                            selected.price
+                                          );
+
+                                          handleProductChange(
+                                            freeindex,
+                                            "freeProductName",
+                                            selected.name
+                                          );
+                                        }
+                                      }}
+                                      placeholder="Enter Product ID"
+                                      className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      required
+                                    />
+                                    <datalist id="freeproduct-options">
+                                      {freeProducts?.map((p) => (
+                                        <option key={p._id} value={p.productId}>
+                                          {p.productId} - {p.name}
+                                        </option>
+                                      ))}
+                                    </datalist>
+                                  </td>
+
+                                  {/* Price */}
+                                  <td className="px-4 py-2">
+                                    <input
+                                      type="number"
+                                      value={freeProduct.freeProductRate || ""}
+                                      onChange={(e) =>
+                                        handleProductChange(
+                                          freeindex,
+                                          "freeProductRate",
+                                          e.target.value
+                                        )
+                                      }
+                                      className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      placeholder="Discount Price"
+                                      required
+                                      readOnly
+                                    />
+                                  </td>
+
+                                  {/* Regular Price */}
+
+                                  {/* Quantity */}
+                                  <td className="px-4 py-2">
+                                    <input
+                                      type="number"
+                                      value={product.freeQuantity}
+                                      onChange={(e) =>
+                                        handleProductChange(
+                                          freeindex,
+                                          "freeQuantity",
+                                          e.target.value
+                                        )
+                                      }
+                                      className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      placeholder="Qty"
+                                      required
+                                    />
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+
+                          {/* Summary Info */}
+                          <div className="bg-gray-100 p-4 rounded-lg text-sm text-gray-800 space-y-1">
+                            <div className="overflow-x-auto rounded-lg border border-gray-200">
+                              <table className="min-w-full text-sm text-left text-gray-700">
+                                <thead className="bg-gray-100 text-gray-900 font-semibold">
+                                  <tr>
+                                    <th className="px-4 py-2">Name</th>
+                                    <th className="px-4 py-2">Subtotal</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr className="bg-white border-t">
+                                    <td className="px-4 py-2">
+                                      {freeProduct.freeProductName || (
+                                        <span className="text-gray-400">
+                                          N/A
+                                        </span>
+                                      )}
+                                    </td>
+                                    <td className="px-4 py-2 font-bold text-blue-700">
+                                      ৳{freeSubtotal}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => removeProductField(index)}
+                              className="mt-3 inline-block bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition duration-200 text-sm"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
         })}

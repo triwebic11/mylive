@@ -79,7 +79,7 @@ const AddProduct = () => {
   const [freeOrPaid, setFreeOrPaid] = useState(true);
   const [imageUrls, setImageUrls] = useState([]);
   const axiosSecure = useAxiosSecure();
-  const [productRole, setProductRole] = useState("");
+
   const [productOptions, setProductOptions] = useState({
     isRepurchaseFree: false,
     isConsistencyFree: false,
@@ -139,12 +139,12 @@ const AddProduct = () => {
       image: imageUrls,
       details: details,
       price: data.price,
-      mrpPrice: data.mrpPrice,
-      pointValue: data.pointValue,
+      mrpPrice: data.mrpPrice ? Number(data.mrpPrice) : 0,
+      pointValue: data.pointValue ? Number(data.pointValue) : 0,
       productId: data.productId || " ",
       rfp: data.rfp || "",
       acfp: data.acfp || "",
-      productRole: productRole,
+      productRole: freeOrPaid ? "paid" : "free",
       ...productOptions, // Include the new 4 fields here
     };
 
@@ -609,7 +609,6 @@ const AddProduct = () => {
 
             {/* Submit */}
             <button
-              onClick={() => setProductRole("free")}
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >

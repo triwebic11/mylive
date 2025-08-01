@@ -160,6 +160,7 @@ router.post("/", async (req, res) => {
       dspPhone,
       products,
       grandTotal,
+      freeGrandTotal, 
       grandPoint,
       grandDiscount,
     } = req.body;
@@ -169,6 +170,7 @@ router.post("/", async (req, res) => {
       dspPhone,
       products,
       grandTotal,
+      freeGrandTotal,
       grandPoint,
       grandDiscount,
       date: new Date().toISOString(),
