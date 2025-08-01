@@ -2,7 +2,7 @@
 const { ObjectId } = require("mongodb");
 const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const User = require("../models/User");
 const CashOnDeliveryModel = require("../models/CashOnDeliveryModel");
 const {

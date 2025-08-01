@@ -44,6 +44,7 @@ const FontSize = Mark.create({
 
 const ProductForm = ({
   defaultValues = {},
+
   onSubmit,
   buttonText = "Add Product",
 }) => {
@@ -54,13 +55,20 @@ const ProductForm = ({
       mrpPrice: defaultValues.mrpPrice || "",
       pointValue: defaultValues.pointValue || "",
       productId: defaultValues.productId || "",
+      productRole: defaultValues.productRole || "",
       isRepurchaseFree: defaultValues.isRepurchaseFree || false,
       isConsistencyFree: defaultValues.isConsistencyFree || false,
+      rfp: defaultValues.rfp || "",
+      acfp: defaultValues.acfp || "",
+
       // isAdvanceConsistency: defaultValues.isAdvanceConsistency || false,
       // isAddConsistencyFree: defaultValues.isAddConsistencyFree || false,
     },
     shouldUnregister: false, // ✅ এটি দিয়ে checkbox values track থাকবে
   });
+
+  const isRepurchaseFree = watch("isRepurchaseFree");
+  const isConsistencyFree = watch("isConsistencyFree");
 
   const [imageUrls, setImageUrls] = useState(defaultValues.image || []);
   const [details, setDetails] = useState(defaultValues.details || "");
@@ -87,8 +95,11 @@ const ProductForm = ({
       mrpPrice: defaultValues.mrpPrice || "",
       pointValue: defaultValues.pointValue || "",
       productId: defaultValues.productId || "",
+      productRole: defaultValues.productRole || "",
       isRepurchaseFree: !!defaultValues.isRepurchaseFree,
       isConsistencyFree: !!defaultValues.isConsistencyFree,
+      rfp: defaultValues.rfp || "",
+      acfp: defaultValues.acfp || "",
       // isAdvanceConsistency: !!defaultValues.isAdvanceConsistency,
       // isAddConsistencyFree: !!defaultValues.isAddConsistencyFree,
     });
@@ -223,7 +234,7 @@ const ProductForm = ({
         <label className="block mb-1 font-semibold">MRP Price(TK)</label>
         <input
           type="number"
-          {...register("mrpPrice", { required: true })}
+          {...register("mrpPrice")}
           className="w-full border p-2 rounded"
         />
       </div>
@@ -232,7 +243,7 @@ const ProductForm = ({
         <label className="block mb-1 font-semibold">Point Value (PV)</label>
         <input
           type="number"
-          {...register("pointValue", { required: true })}
+          {...register("pointValue")}
           className="w-full border p-2 rounded"
         />
       </div>
@@ -244,6 +255,18 @@ const ProductForm = ({
           className="w-full border p-2 rounded"
         />
       </div>
+      <div>
+        <label className="block mb-1 font-semibold">Product Role</label>
+        <select
+          {...register("productRole", { required: true })}
+          className="w-full border p-2 rounded"
+        >
+          <option value="">Select Role</option>
+          <option value="paid">Paid</option>
+          <option value="free">Free</option>
+        </select>
+      </div>
+
       <div className="space-y-2">
         <label className="block">
           <input
@@ -253,30 +276,42 @@ const ProductForm = ({
           />
           Repurchase Free Product
         </label>
+        {isRepurchaseFree && (
+          <div>
+            <div className=" p-2 m-4 rounded-lg shadow-xl">
+              <label className="block mb-1 font-semibold">
+                Set % for repurchase free{" "}
+              </label>
+              <input
+                {...register("rfp")}
+                placeholder="Enter percentage value"
+                className="border p-1 rounded-lg"
+              />
+            </div>
+          </div>
+        )}
         <label className="block">
           <input
             type="checkbox"
             {...register("isConsistencyFree")}
             className="mr-2"
           />
-          Consistency Free Product
+          Advance Consistency Free Product
         </label>
-        {/* <label className="block">
-          <input
-            type="checkbox"
-            {...register("isAdvanceConsistency")}
-            className="mr-2"
-          />
-          Advance Consistency
-        </label>
-        <label className="block">
-          <input
-            type="checkbox"
-            {...register("isAddConsistencyFree")}
-            className="mr-2"
-          />
-          Add Consistency Free
-        </label> */}
+        {isConsistencyFree && (
+          <div>
+            <div className=" p-2 m-4 rounded-lg shadow-xl">
+              <label className="block mb-1 font-semibold">
+                Set % for Advance Consistency Free{" "}
+              </label>
+              <input
+                {...register("acfp")}
+                placeholder="Enter percentage value"
+                className="border p-1 rounded-lg"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       <button
