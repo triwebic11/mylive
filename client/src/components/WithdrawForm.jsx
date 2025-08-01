@@ -33,15 +33,18 @@ const WithdrawForm = ({ userId }) => {
       return Swal.fire("Insufficient", "You don't have enough points", "error");
     }
 
+    console.log(user?.totalwithdraw)
+
     const requestData = {
       name: user.name,
       phone: user.phone,
       userId: user._id,
-      points: parseInt(withdrawPoints),
+      totalwithdraw: parseInt(withdrawPoints),
     };
 
     try {
       await axiosSecure.post("/withdraw-requests", requestData);
+      console.log("Withdraw request data:", requestData);
       Swal.fire(
         "Success",
         "Your withdraw request has been submitted!",
