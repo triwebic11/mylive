@@ -42,6 +42,7 @@ app.use("/api/kyc", kycRoutes);
 app.use("/api/dsp", require("./routes/dspRoutes"));
 app.use("/api/admin-orders", require("./routes/adminOrderRoute"));
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/updateRank", require("./routes/RankUpgradeRequests"));
 
 app.get('/api/db-stats', async (req, res) => {
   try {

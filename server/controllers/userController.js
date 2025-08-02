@@ -4,6 +4,7 @@ const PackagesModel = require("../models/PackagesModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const RankUpgradeRequest = require("../models/RankUpgradeRequest");
 
 // Referral Code Generator
 const generateReferralCode = async () => {
@@ -461,15 +462,15 @@ const generateUserSummary = async (user, referredUsers = []) => {
 
   const incoming = user.AllEntry?.incoming || [];
 
-const getSumBySector = (sectorName) => {
-  // console.log("Calculating sum for sector:", sectorName);
+  const getSumBySector = (sectorName) => {
+    // console.log("Calculating sum for sector:", sectorName);
 
-  const total = incoming
-    .filter((entry) => entry.sector === sectorName)
-    .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+    const total = incoming
+      .filter((entry) => entry.sector === sectorName)
+      .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
 
-  return parseFloat(total.toFixed(2));
-};
+    return parseFloat(total.toFixed(2));
+  };
 
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
@@ -556,28 +557,28 @@ const getSumBySector = (sectorName) => {
 
   // console.log("Withdrawable Balance:", withdrawableBalance);
 
-const users = await User.find().select("-password");
-const totalreferral = users.filter(u => u.referredBy === user.referralCode);
+  const users = await User.find().select("-password");
+  const totalreferral = users.filter(u => u.referredBy === user.referralCode);
 
-// console.log("Total Referral Count:", totalreferral);
+  // console.log("Total Referral Count:", totalreferral);
 
-const totalActiveTeams = totalreferral.filter(
-  (u) => u.isActivePackage === "active"
-).length;
-const totalexpireTeams = totalreferral.filter(
-  (u) => u.isActivePackage === "expired"
-).length;
+  const totalActiveTeams = totalreferral.filter(
+    (u) => u.isActivePackage === "active"
+  ).length;
+  const totalexpireTeams = totalreferral.filter(
+    (u) => u.isActivePackage === "expired"
+  ).length;
 
-// console.log("Total Active Teams:", totalActiveTeams);
-// console.log("Total Expired Teams:", totalexpireTeams);
+  // console.log("Total Active Teams:", totalActiveTeams);
+  // console.log("Total Expired Teams:", totalexpireTeams);
 
-const tree = await buildTree(user._id);
+  const tree = await buildTree(user._id);
 
-const totalPointsFromLeft = tree?.totalPointsFromLeft || 0;
-const totalPointsFromRight = tree?.totalPointsFromRight || 0;
-const totalBinaryPoints = totalPointsFromLeft + totalPointsFromRight;
+  const totalPointsFromLeft = tree?.totalPointsFromLeft || 0;
+  const totalPointsFromRight = tree?.totalPointsFromRight || 0;
+  const totalBinaryPoints = totalPointsFromLeft + totalPointsFromRight;
 
-  return  [
+  return [
     { title: "Total Refer", value: totalreferral.length || 0 },
     { title: "Total Free Team", value: totalreferral.length },
     { title: "Total Active Team", value: totalActiveTeams },
@@ -671,6 +672,8 @@ const positionLevels = [
     rightBV: 30000,
     position: "Executive Officer",
     reward: "Frying Pan",
+    generationLevel: 10,
+    megaGenerationLevel: 3,
   },
   {
     rank: 2,
@@ -680,6 +683,8 @@ const positionLevels = [
     rightBV: 90000,
     position: "Executive Manager",
     reward: "Rice Cooker",
+    generationLevel: 15,
+    megaGenerationLevel: 3,
   },
   {
     rank: 3,
@@ -689,6 +694,8 @@ const positionLevels = [
     rightBV: 300000,
     position: "Executive Director",
     reward: "Inani Tour or ৳10,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 4,
@@ -698,6 +705,8 @@ const positionLevels = [
     rightBV: 720000,
     position: "Executive Pal Director",
     reward: "Cox’s Bazar Tour",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 5,
@@ -707,6 +716,8 @@ const positionLevels = [
     rightBV: 1320000,
     position: "Executive Total Director",
     reward: "Laptop or ৳30,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 6,
@@ -716,6 +727,8 @@ const positionLevels = [
     rightBV: 3000000,
     position: "EX = Emerald",
     reward: "Bike or ৳50,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 7,
@@ -725,6 +738,8 @@ const positionLevels = [
     rightBV: 6000000,
     position: "EX = Elite",
     reward: "Thailand Tour or ৳1,25,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 8,
@@ -734,6 +749,8 @@ const positionLevels = [
     rightBV: 12000000,
     position: "EX = Deluxe",
     reward: "Hajj/Umrah or ৳3,00,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 9,
@@ -743,6 +760,8 @@ const positionLevels = [
     rightBV: 24000000,
     position: "EX = Marjury",
     reward: "Car or ৳6,00,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 10,
@@ -752,6 +771,8 @@ const positionLevels = [
     rightBV: 48000000,
     position: "Diamond",
     reward: "Car or ৳13,00,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 11,
@@ -761,6 +782,8 @@ const positionLevels = [
     rightBV: 96000000,
     position: "Double Diamond",
     reward: "Private Car or ৳25,00,000 cash",
+    generationLevel: Infinity,  // From PDF: Unlimited
+    megaGenerationLevel: Infinity,
   },
   {
     rank: 12,
@@ -770,6 +793,8 @@ const positionLevels = [
     rightBV: 144000000,
     position: "Crown Director",
     reward: "৳50,00,000 cash",
+    generationLevel: Infinity,
+    megaGenerationLevel: Infinity,
   },
   {
     rank: 13,
@@ -779,6 +804,8 @@ const positionLevels = [
     rightBV: 222000000,
     position: "Star Crown",
     reward: "Mansion or ৳1 crore cash",
+    generationLevel: Infinity,
+    megaGenerationLevel: Infinity,
   },
   {
     rank: 14,
@@ -788,6 +815,8 @@ const positionLevels = [
     rightBV: 300000000,
     position: "Universal Crown",
     reward: "৳5 crore cash or Villa",
+    generationLevel: Infinity,
+    megaGenerationLevel: Infinity,
   },
 ];
 
@@ -797,48 +826,126 @@ const UpdateRanksAndRewards = async (buyer) => {
     const tree = await buildTree(buyer._id);
     if (!tree) return;
 
-    const leftTree = tree.left;
-    const rightTree = tree.right;
+    const leftBV = tree.left.points;
+    const rightBV = tree.right.points;
 
-    console.log("Left Tree:", leftTree.points);
-    console.log("Right Tree:", rightTree.points);
+    console.log("Left Tree:", leftBV);
+    console.log("Right Tree:", rightBV);
 
-    // const matchedRank = positionLevels
-    //   .slice()
-    //   .reverse()
-    //   .find(
-    //     (level) =>
-    //       leftPV >= level.leftPV && rightPV >= level.rightPV
-    //   );
 
-    // if (!matchedRank) return;
+    const matchedRank = positionLevels
+      .slice()
+      .reverse()
+      .find(
+        (level) =>
+          leftBV >= level.leftBV && rightBV >= level.rightBV
+      );
+    // console.log("Matched Rank:", matchedRank);
 
-    // const user = await User.findById(buyer._id);
+    if (!matchedRank) return;
+
+    const user = await User.findById(buyer._id);
 
     // // Update if new position is higher than existing
-    // const currentRankIndex = positionLevels.findIndex(
-    //   (r) => r.position === user.Position
-    // );
-    // const newRankIndex = positionLevels.findIndex(
-    //   (r) => r.position === matchedRank.position
-    // );
+    const currentRankIndex = positionLevels.findIndex(
+      (r) => r.position === user.Position
+    );
+    const newRankIndex = positionLevels.findIndex(
+      (r) => r.position === matchedRank.position
+    );
 
-    // if (newRankIndex > currentRankIndex) {
-    //   user.Position = matchedRank.position;
+    if (newRankIndex > currentRankIndex) {
+      user.Position = matchedRank.position;
+      user.rewards = matchedRank.reward;
+      user.GenerationLevel = matchedRank.generationLevel;
+      user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
 
-    //   if (!user.rewards?.includes(matchedRank.reward)) {
-    //     user.rewards = [...(user.rewards || []), matchedRank.reward];
-    //   }
+      if (!user.rewards?.includes(matchedRank.reward)) {
+        user.rewards = [...(user.rewards || []), matchedRank.reward];
+      }
 
-    //   await user.save();
-    //   console.log(
-    //     `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
-    //   );
-    // }
+      await user.save();
+
+      // Save to RankUpgradeRequest
+      const postrank = await RankUpgradeRequest.create({
+        userId: user._id,
+        name: user.name,
+        phone: user.phone,
+        previousPosition: positionLevels[currentRankIndex]?.position || null,
+        newPosition: matchedRank.position,
+        reward: matchedRank.reward,
+        leftBV,
+        rightBV,
+        status: 'pending'
+      });
+
+      console.log("Rank upgrade request created:", postrank);
+      console.log(`✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}`);
+      console.log(
+        `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
+      );
+    }
   } catch (error) {
     console.error("❌ Error updating ranks and rewards:", error);
   }
 };
+
+const PackageLevels = [
+  {
+    rank: 1,
+    pointsBV: 1000,
+    Package: "Friend",
+    generationLevel: 3,
+    megaGenerationLevel: 0,
+  },
+  {
+    rank: 2,
+    pointsBV: 2500,
+    Package: "Family",
+    generationLevel: 5,
+    megaGenerationLevel: 1,
+  },
+  {
+    rank: 3,
+    pointsBV: 7500,
+    Package: "Bussiness Relative",
+    generationLevel: 7,
+    megaGenerationLevel: 2,
+  },
+  {
+    rank: 1,
+    pointsBV: 17500,
+    Package: "Bussiness Relation",
+    generationLevel: 10,
+    megaGenerationLevel: 3,
+  },
+
+];
+
+const PackageLevelsdefine = async (buyer) => {
+  console.log("PackageLevelsdefine called for buyer:", buyer._id);
+  try {
+    const matchedRank = PackageLevels
+      .slice()
+      .reverse()
+      .find(
+        (level) =>
+          buyer.points >= level.pointsBV
+      );
+    console.log("Matched Rank:", matchedRank);
+
+
+      buyer.package = matchedRank.Package;
+      buyer.GenerationLevel = matchedRank.generationLevel;
+      buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+      await buyer.save();
+    
+    console.log(`✅ User ${buyer._id} package updated to `, buyer);
+  }
+  catch (error) {
+    console.error("❌ Error in PackageLevelsdefine:", error);
+  }
+}
 
 const userAgregateData = async (req, res) => {
   try {
@@ -859,7 +966,17 @@ const userAgregateData = async (req, res) => {
     });
 
     const summary = await generateUserSummary(user, referredUsers);
-    await UpdateRanksAndRewards(user);
+
+    const tree = await buildTree(user._id);
+    console.log("Referral Tree:", tree.left?.points, tree.right?.points);
+
+    if(tree.left?.points < 30000 || tree.right?.points < 30000) {
+      await PackageLevelsdefine(user);
+    }
+    else {
+      await UpdateRanksAndRewards(user);
+    }
+
 
     // console.log("Summary generated:", summary);
     res.status(200).json({
@@ -867,7 +984,7 @@ const userAgregateData = async (req, res) => {
       userId: user._id,
       name: user.name,
       email: user.email,
-     summary: summary,
+      summary: summary,
     });
   } catch (err) {
     console.error(err);
