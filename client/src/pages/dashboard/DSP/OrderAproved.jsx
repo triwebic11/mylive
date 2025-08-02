@@ -177,9 +177,11 @@ const OrderAproved = () => {
                               <th className="py-1 px-1 border">MRP</th>
                               <th className="py-1 px-1 border">Subtotal (৳)</th>
                               <th className="py-1 px-1 border">SubPoint</th>
-                              <th className="py-1 px-1 border">SubDiscount</th>
-                              <th className="py-1 border">RFP</th>
-                              <th className="py-1 border">CFP</th>
+                              <th className="py-1 px-1 border">
+                                SubDiscount ৳
+                              </th>
+                              <th className="py-1 border">RFP ৳</th>
+                              <th className="py-1 border">CFP ৳</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -210,10 +212,16 @@ const OrderAproved = () => {
                                   {p.subDiscount || 0}
                                 </td>
                                 <td className="py-1 px-1 border">
-                                  {p.isRepurchaseFree ? "Yes" : "No"}
+                                  {p.isRepurchaseFree
+                                    ? p.isRepurchaseFreeAmount
+                                    : "No"}
                                 </td>
                                 <td className="py-1 px-1 border">
-                                  {p.isConsistencyFree ? "Yes" : "No"}
+                                  {p.subtotal >= 5000
+                                    ? p.isConsistencyFree
+                                      ? p.isConsistencyFreeAmount
+                                      : "No"
+                                    : "No"}
                                 </td>
                               </tr>
                             ))}
@@ -223,6 +231,39 @@ const OrderAproved = () => {
                           RFP = Repurchase Free Products <br />
                           CFP = Consistency Free Products
                         </div>
+                        <h1 className="font-semibold text-green-800 text-lg">
+                          Free Product Details
+                        </h1>
+                        <table>
+                          <thead className="bg-gray-200 text-gray-700">
+                            <tr>
+                              <th className="py-1 px-2 border">ID and Name</th>
+                              <th className="py-1 px-2 border">Free Qty</th>
+                              <th className="py-1 px-2 border">Price</th>
+                              <th className="py-1 px-2 border">
+                                Free Subtotal
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {order.products.map((p, i) => (
+                              <tr key={i} className="text-center text-gray-800">
+                                <td className="py-1 px-2 border font-semibold">
+                                  {p.freeProductId}-{p.freeProductName}
+                                </td>
+                                <td className="py-1 px-2 border">
+                                  {p.freeQuantity}
+                                </td>
+                                <td className="py-1 px-2 border">
+                                  {p.freeProductRate}
+                                </td>
+                                <td className="py-1 px-2 border">
+                                  ৳{p.freeSubtotal || 0}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
 
@@ -236,6 +277,9 @@ const OrderAproved = () => {
                       </p>
                       <p className="text-blue-700">
                         🏷️ Grand Discount: {order.grandDiscount || "0"}
+                      </p>
+                      <p className="text-blue-700">
+                        Grand Free Total: ৳{order.freeGrandTotal || "0"}
                       </p>
                     </div>
                   </div>

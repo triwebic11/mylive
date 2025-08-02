@@ -17,8 +17,7 @@ const OrderCreate = ({ title }) => {
 
   const [paidProducts, setPaidProducts] = useFreeOrPaidProducts("paid");
   const [allProducts, setAllProducts] = useState([]);
-  const [isConsistencyFreeValue, setisConsistencyFreeValue] = useState();
-  const [isRepurchaseFreeValue, setisRepurchaseFreeValue] = useState();
+
   const [scndProducts, setScndProducts] = useState([
     {
       productId: "",
@@ -35,8 +34,10 @@ const OrderCreate = ({ title }) => {
       freeProductId: "",
       isConsistencyFree: false,
       isConsistencyFreeValue: "",
+      isConsistencyFreeAmount: "",
       isRepurchaseFree: false,
       isRepurchaseFreeValue: "",
+      isRepurchaseFreeAmount: "",
     },
   ]);
   const [dspPhone, setDspPhone] = useState("");
@@ -74,19 +75,6 @@ const OrderCreate = ({ title }) => {
 
     setScndProducts(updated);
   };
-  // const handleFreeProductChange = (index, field, value) => {
-  //   const updated = [...scndProducts];
-
-  //   // Quantity validation
-  //   if (field === "quantity") {
-  //     const qty = Math.max(1, parseInt(value) || 1); // Ensure minimum value is 1
-  //     updated[index][field] = qty;
-  //   } else {
-  //     updated[index][field] = value;
-  //   }
-
-  //   setScndProducts(updated);
-  // };
 
   const addProductField = () => {
     setScndProducts([
@@ -104,9 +92,11 @@ const OrderCreate = ({ title }) => {
         freeQuantity: 1,
         freeProductId: "",
         isConsistencyFree: false,
-        isConsistencyFreeValue: isConsistencyFreeValue,
+        isConsistencyFreeValue: "",
+        isConsistencyFreeAmount: "",
         isRepurchaseFree: false,
-        isRepurchaseFreeValue: isRepurchaseFreeValue,
+        isRepurchaseFreeValue: "",
+        isRepurchaseFreeAmount: "",
       },
     ]);
   };
@@ -262,27 +252,27 @@ const OrderCreate = ({ title }) => {
           const subtotal =
             (+product.productRate || 0) * (+product.quantity || 0);
 
-          useEffect(() => {
-            if (product?.isRepurchaseFree && matchedProduct?.rfp && subtotal) {
-              const repurchaseValue = (matchedProduct.rfp * subtotal) / 100;
-              setisRepurchaseFreeValue(parseFloat(repurchaseValue.toFixed(2)));
-            } else {
-              setisRepurchaseFreeValue(0);
-            }
+          // useEffect(() => {
+          //   if (product?.isRepurchaseFree && matchedProduct?.rfp && subtotal) {
+          //     const repurchaseValue = (matchedProduct.rfp * subtotal) / 100;
+          //     setisRepurchaseFreeValue(parseFloat(repurchaseValue.toFixed(2)));
+          //   } else {
+          //     setisRepurchaseFreeValue(0);
+          //   }
 
-            if (
-              product?.isConsistencyFree &&
-              matchedProduct?.acfp &&
-              subtotal
-            ) {
-              const consistencyValue = (matchedProduct.acfp * subtotal) / 100;
-              setisConsistencyFreeValue(
-                parseFloat(consistencyValue.toFixed(2))
-              );
-            } else {
-              setisConsistencyFreeValue(0);
-            }
-          }, [product, matchedProduct, subtotal]); // dependency list
+          //   if (
+          //     product?.isConsistencyFree &&
+          //     matchedProduct?.acfp &&
+          //     subtotal
+          //   ) {
+          //     const consistencyValue = (matchedProduct.acfp * subtotal) / 100;
+          //     setisConsistencyFreeValue(
+          //       parseFloat(consistencyValue.toFixed(2))
+          //     );
+          //   } else {
+          //     setisConsistencyFreeValue(0);
+          //   }
+          // }, [product, matchedProduct, subtotal]); // dependency list
 
           return (
             //For paid product
@@ -348,9 +338,43 @@ const OrderCreate = ({ title }) => {
                                 );
                                 handleProductChange(
                                   index,
+                                  "isRepurchaseFreeValue",
+                                  selected.rfp
+                                );
+                                handleProductChange(
+                                  index,
                                   "isRepurchaseFree",
                                   selected.isRepurchaseFree
                                 );
+                                handleProductChange(
+                                  index,
+                                  "isConsistencyFreeValue",
+                                  selected.acfp
+                                );
+                                const subtotal = selected.price || 0;
+
+                                if (selected.isRepurchaseFree && selected.rfp) {
+                                  const repurchaseAmount =
+                                    (selected.rfp * subtotal) / 100;
+                                  handleProductChange(
+                                    index,
+                                    "isRepurchaseFreeAmount",
+                                    repurchaseAmount
+                                  );
+                                }
+
+                                if (
+                                  selected.isConsistencyFree &&
+                                  selected.acfp
+                                ) {
+                                  const consistencyAmount =
+                                    (selected.acfp * subtotal) / 100;
+                                  handleProductChange(
+                                    index,
+                                    "isConsistencyFreeAmount",
+                                    consistencyAmount
+                                  );
+                                }
                               }
                             }}
                             placeholder="Enter Product ID"
@@ -475,7 +499,7 @@ const OrderCreate = ({ title }) => {
                             Repurchase Free Product
                           </th>
                           <th className="px-4 py-2 my-2 md:my-0">
-                            Advance Consistency Free Product
+                            {subtotal >= 5000 && "Consistency Free Product"}
                           </th>
                         </thead>
                         <tbody>
@@ -488,13 +512,74 @@ const OrderCreate = ({ title }) => {
                                 : "No"}
                             </td>
                             <td className="px-4 py-2 text-center">
-                              {product.isConsistencyFree
-                                ? `${matchedProduct?.acfp}% = ${
-                                    (matchedProduct?.acfp * subtotal) / 100
-                                  } ৳`
-                                : "No"}
+                              {subtotal >= 5000 &&
+                                (product.isConsistencyFree
+                                  ? `${matchedProduct?.acfp}% = ${
+                                      (matchedProduct?.acfp * subtotal) / 100
+                                    } ৳`
+                                  : "No")}
                             </td>
                           </tr>
+                          {/* <tr>
+                            <td className="px-4 py-2 text-center">
+                              {product.isRepurchaseFree ? (
+                                <>
+                                  <input
+                                    type="number"
+                                    className="outline-0 px-2 py-1 w-20 text-center"
+                                    value={matchedProduct?.rfp || ""}
+                                    onChange={(e) =>
+                                      handleProductChange(
+                                        index,
+                                        "isRepurchaseFreeValue",
+                                        e.target.value
+                                      )
+                                    }
+                                    readOnly
+                                  />
+                                  %
+                                  <span className="ml-1">
+                                    ={" "}
+                                    {(Number(matchedProduct?.rfp || 0) *
+                                      subtotal) /
+                                      100}{" "}
+                                    ৳
+                                  </span>
+                                </>
+                              ) : (
+                                "No"
+                              )}
+                            </td>
+                            <td className="px-4 py-2 text-center">
+                              {product.isConsistencyFree ? (
+                                <>
+                                  <input
+                                    type="number"
+                                    className="outline-0 px-2 py-1 w-20 text-center"
+                                    value={matchedProduct?.acfp || ""}
+                                    onChange={(e) =>
+                                      handleProductChange(
+                                        index,
+                                        "isConsistencyFreeValue",
+                                        e.target.value
+                                      )
+                                    }
+                                    readOnly
+                                  />
+                                  %
+                                  <span className="ml-1">
+                                    ={" "}
+                                    {(Number(matchedProduct?.acfp || 0) *
+                                      subtotal) /
+                                      100}{" "}
+                                    ৳
+                                  </span>
+                                </>
+                              ) : (
+                                "No"
+                              )}
+                            </td>
+                          </tr> */}
                         </tbody>
                       </table>
                       {userPackage}
@@ -772,6 +857,7 @@ const OrderCreate = ({ title }) => {
                 <p className="text-green-700 font-semibold">
                   Grand Discount: ৳{order.grandDiscount || "0"}
                 </p>
+                <p>Grand Free Total: ৳{order.freeGrandTotal || "0"}</p>
               </div>
             </div>
 
@@ -816,6 +902,35 @@ const OrderCreate = ({ title }) => {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+              <table>
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2">Free Product</th>
+                    <th className="px-4 py-2">Free Qty</th>
+                    <th className="px-4 py-2">Free Subtotal (৳)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {order.products
+                    .filter((p) => p.freeProductId)
+                    .map((p, i) => (
+                      <tr
+                        key={i}
+                        className={`border-t ${
+                          i % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        }`}
+                      >
+                        <td className="px-4 py-2">
+                          {p.freeProductId} - {p.freeProductName}
+                        </td>
+                        <td className="px-4 py-2">{p.freeQuantity}</td>
+                        <td className="px-4 py-2 text-blue-700 font-semibold">
+                          ৳{p.freeSubtotal || 0}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

@@ -17,8 +17,10 @@ const productSchema = new mongoose.Schema({
   subDiscount: Number, // ✅ Add this
   isRepurchaseFree: { type: Boolean, default: false },
   isRepurchaseFreeValue: { type: Number, default: 0 }, // ✅ Add this
+  isRepurchaseFreeAmount: { type: Number, default: 0 }, // ✅ Add this
   isConsistencyFree: { type: Boolean, default: false },
   isConsistencyFreeValue: { type: Number, default: 0 }, // ✅ Add this
+  isConsistencyFreeAmount: { type: Number, default: 0 }, // ✅ Add this
 });
 
 const adminOrderSchema = new mongoose.Schema({
