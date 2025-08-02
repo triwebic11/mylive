@@ -935,11 +935,11 @@ const PackageLevelsdefine = async (buyer) => {
     console.log("Matched Rank:", matchedRank);
 
 
-      buyer.package = matchedRank.Package;
-      buyer.GenerationLevel = matchedRank.generationLevel;
-      buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-      await buyer.save();
-    
+    buyer.package = matchedRank.Package;
+    buyer.GenerationLevel = matchedRank.generationLevel;
+    buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+    await buyer.save();
+
     console.log(`✅ User ${buyer._id} package updated to `, buyer);
   }
   catch (error) {
@@ -950,11 +950,9 @@ const PackageLevelsdefine = async (buyer) => {
 const userAgregateData = async (req, res) => {
   try {
     const { id } = req.params;
-
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid or missing user ID" });
     }
-
     const user = await User.findById(id);
 
     if (!user) {
@@ -969,16 +967,16 @@ const userAgregateData = async (req, res) => {
 
     const tree = await buildTree(user._id);
     console.log("Referral Tree:", tree.left?.points, tree.right?.points);
-
-    if(tree.left?.points < 30000 || tree.right?.points < 30000) {
+ // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
+    if (leftPoints >= 30000 && rightPoints >= 30000) {
+      await UpdateRanksAndRewards(user);
+    } else {
+      // ✅ Otherwise run package-level fallback logic
       await PackageLevelsdefine(user);
     }
-    else {
-      await UpdateRanksAndRewards(user);
-    }
 
 
-    // console.log("Summary generated:", summary);
+
     res.status(200).json({
       success: true,
       userId: user._id,
