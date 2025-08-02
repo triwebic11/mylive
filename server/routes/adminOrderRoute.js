@@ -10,13 +10,28 @@ async function buildTree(userId) {
   const children = await User.find({
     $or: [
       { placementBy: user.referralCode },
-      { referredBy: user.referralCode }
-    ]
+      { referredBy: user.referralCode },
+    ],
   });
 
   const childrenTrees = await Promise.all(
-    children.map(child => buildTree(child._id))
+    children.map((child) => buildTree(child._id))
   );
+
+  const leftChild = childrenTrees[0] || null;
+  const rightChild = childrenTrees[1] || null;
+
+  // Recursive total point calculation
+  const calculateTotalPoints = (node) => {
+    if (!node) return 0;
+    const selfPoints = node.points || 0;
+    const leftPoints = calculateTotalPoints(node.left);
+    const rightPoints = calculateTotalPoints(node.right);
+    return selfPoints + leftPoints + rightPoints;
+  };
+
+  const totalPointsFromLeft = calculateTotalPoints(leftChild);
+  const totalPointsFromRight = calculateTotalPoints(rightChild);
 
   return {
     name: user.name,
@@ -26,11 +41,13 @@ async function buildTree(userId) {
     referralCode: user.referralCode,
     referredBy: user.referredBy,
     placementBy: user.placementBy,
-    left: childrenTrees[0] || null,
-    right: childrenTrees[1] || null,
+    points: user.points || 0,
+    left: leftChild,
+    right: rightChild,
+    totalPointsFromLeft,
+    totalPointsFromRight,
   };
 }
-
 async function buildUplineTree(userId, depth = 0, maxDepth = 10, visited = new Set()) {
   if (depth > maxDepth) return [];
 
@@ -62,6 +79,191 @@ async function buildUplineTree(userId, depth = 0, maxDepth = 10, visited = new S
   const parentTree = await buildUplineTree(parent._id, depth + 1, maxDepth, visited);
   return [...parentTree, currentNode];
 }
+const positionLevels = [
+  {
+    rank: 1,
+    leftPV: 5,
+    rightPV: 5,
+    leftBV: 30000,
+    rightBV: 30000,
+    position: "Executive Officer",
+    reward: "Frying Pan",
+  },
+  {
+    rank: 2,
+    leftPV: 15,
+    rightPV: 15,
+    leftBV: 90000,
+    rightBV: 90000,
+    position: "Executive Manager",
+    reward: "Rice Cooker",
+  },
+  {
+    rank: 3,
+    leftPV: 50,
+    rightPV: 50,
+    leftBV: 300000,
+    rightBV: 300000,
+    position: "Executive Director",
+    reward: "Inani Tour or ৳10,000 cash",
+  },
+  {
+    rank: 4,
+    leftPV: 120,
+    rightPV: 120,
+    leftBV: 720000,
+    rightBV: 720000,
+    position: "Executive Pal Director",
+    reward: "Cox’s Bazar Tour",
+  },
+  {
+    rank: 5,
+    leftPV: 220,
+    rightPV: 220,
+    leftBV: 1320000,
+    rightBV: 1320000,
+    position: "Executive Total Director",
+    reward: "Laptop or ৳30,000 cash",
+  },
+  {
+    rank: 6,
+    leftPV: 500,
+    rightPV: 500,
+    leftBV: 3000000,
+    rightBV: 3000000,
+    position: "EX = Emerald",
+    reward: "Bike or ৳50,000 cash",
+  },
+  {
+    rank: 7,
+    leftPV: 1000,
+    rightPV: 1000,
+    leftBV: 6000000,
+    rightBV: 6000000,
+    position: "EX = Elite",
+    reward: "Thailand Tour or ৳1,25,000 cash",
+  },
+  {
+    rank: 8,
+    leftPV: 2000,
+    rightPV: 2000,
+    leftBV: 12000000,
+    rightBV: 12000000,
+    position: "EX = Deluxe",
+    reward: "Hajj/Umrah or ৳3,00,000 cash",
+  },
+  {
+    rank: 9,
+    leftPV: 4000,
+    rightPV: 4000,
+    leftBV: 24000000,
+    rightBV: 24000000,
+    position: "EX = Marjury",
+    reward: "Car or ৳6,00,000 cash",
+  },
+  {
+    rank: 10,
+    leftPV: 8000,
+    rightPV: 8000,
+    leftBV: 48000000,
+    rightBV: 48000000,
+    position: "Diamond",
+    reward: "Car or ৳13,00,000 cash",
+  },
+  {
+    rank: 11,
+    leftPV: 16000,
+    rightPV: 16000,
+    leftBV: 96000000,
+    rightBV: 96000000,
+    position: "Double Diamond",
+    reward: "Private Car or ৳25,00,000 cash",
+  },
+  {
+    rank: 12,
+    leftPV: 24000,
+    rightPV: 24000,
+    leftBV: 144000000,
+    rightBV: 144000000,
+    position: "Crown Director",
+    reward: "৳50,00,000 cash",
+  },
+  {
+    rank: 13,
+    leftPV: 37000,
+    rightPV: 37000,
+    leftBV: 222000000,
+    rightBV: 222000000,
+    position: "Star Crown",
+    reward: "Mansion or ৳1 crore cash",
+  },
+  {
+    rank: 14,
+    leftPV: 50000,
+    rightPV: 50000,
+    leftBV: 300000000,
+    rightBV: 300000000,
+    position: "Universal Crown",
+    reward: "৳5 crore cash or Villa",
+  },
+];
+
+
+
+const UpdateRanksAndRewards = async (buyer) => {
+  console.log("Updating ranks and rewards for user:", buyer);
+
+  try {
+    const tree = await buildTree(buyer._id);
+    if (!tree) return;
+
+    const leftTree = tree.left;
+    const rightTree = tree.right;
+
+    console.log("Left Tree:", leftTree.points);
+    console.log("Right Tree:", rightTree.points);
+
+
+    // const leftPV = await calculateTotalPV(leftTree);
+    // const rightPV = await calculateTotalPV(rightTree);
+
+    // const matchedRank = positionLevels
+    //   .slice()
+    //   .reverse()
+    //   .find(
+    //     (level) =>
+    //       leftPV >= level.leftPV && rightPV >= level.rightPV
+    //   );
+
+    // if (!matchedRank) return;
+
+    // const user = await User.findById(buyer._id);
+
+    // // Update if new position is higher than existing
+    // const currentRankIndex = positionLevels.findIndex(
+    //   (r) => r.position === user.Position
+    // );
+    // const newRankIndex = positionLevels.findIndex(
+    //   (r) => r.position === matchedRank.position
+    // );
+
+    // if (newRankIndex > currentRankIndex) {
+    //   user.Position = matchedRank.position;
+
+    //   if (!user.rewards?.includes(matchedRank.reward)) {
+    //     user.rewards = [...(user.rewards || []), matchedRank.reward];
+    //   }
+
+    //   await user.save();
+    //   console.log(
+    //     `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
+    //   );
+    // }
+  } catch (error) {
+    console.error("❌ Error updating ranks and rewards:", error);
+  }
+}
+
 
 const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalPrice) => {
   const buyer = await User.findOne({ phone: buyerphone });
@@ -88,7 +290,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   const thirtyPercent = grandPoint * 0.30;
   const twentyPercent = grandPoint * 0.20;
 
-    // 20% phone referrer
+  // 20% phone referrer
   console.log("Buyer Referred By:", buyer?.referredBy);
   if (buyer?.referredBy) {
     const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
@@ -169,6 +371,12 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       await uplineUser.save();
     }
   }
+
+
+
+  // User Package Update
+  await UpdateRanksAndRewards(buyer);
+
 };
 
 // Order create
@@ -179,7 +387,7 @@ router.post("/", async (req, res) => {
       dspPhone,
       products,
       grandTotal,
-      freeGrandTotal, 
+      freeGrandTotal,
       grandPoint,
       grandDiscount,
     } = req.body;

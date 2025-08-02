@@ -114,6 +114,7 @@ const adminDashboardArry = [
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
   { title: "DB Storage", icon: <CiHome />, link: "/dashboard/storage" },
   { title: "Create DSP ID", icon: <CiHome />, link: "/dashboard/createDspId" },
+  { title: "Ranks & Rewards", icon: <CiHome />, link: "/dashboard/ranksAndRewards" },
   {
     title: "Order for DSP",
     icon: <TiShoppingCart />,

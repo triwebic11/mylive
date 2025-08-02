@@ -200,6 +200,7 @@ const userSchema = new mongoose.Schema(
     },
     TargetPV: [Number],
     Position: String,
+    rewards: [String],
     withdraw: Number,
 
     referralTree: [String],

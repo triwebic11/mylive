@@ -72,6 +72,7 @@ import ForgotPassword from "./components/ForgotPassword.jsx";
 import ResetPassword from "./components/ResetPassword.jsx";
 import Storage from "./components/Storage.jsx";
 import CreateDspId from "./pages/dashboard/Admin/CreateDspId.jsx";
+import RanksAndRewards from "./pages/dashboard/Admin/RanksAndRewards.jsx";
 
 const queryClients = new QueryClient();
 
@@ -155,6 +156,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <AdminRoute>
               <Storage />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/ranksAndRewards",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <RanksAndRewards />
             </AdminRoute>
           </PrivetRouter>
         ),
