@@ -73,6 +73,8 @@ import ResetPassword from "./components/ResetPassword.jsx";
 import Storage from "./components/Storage.jsx";
 import CreateDspId from "./pages/dashboard/Admin/CreateDspId.jsx";
 import RanksAndRewards from "./pages/dashboard/Admin/RanksAndRewards.jsx";
+import DspStoreProduct from "./pages/dashboard/DSP/DspStoreProduct.jsx";
+import AdminStoreProduct from "./pages/dashboard/Admin/AdminStoreProduct.jsx";
 
 const queryClients = new QueryClient();
 
@@ -229,6 +231,16 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/dashboard/adminStoreProduct",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <AdminStoreProduct />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
         path: "/dashboard/createOrder",
         element: (
           <PrivetRouter>
@@ -326,6 +338,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <DspRoute>
               <DspProfile />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/dspStoreProduct",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <DspStoreProduct />
             </DspRoute>
           </PrivetRouter>
         ),

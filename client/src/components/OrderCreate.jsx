@@ -5,10 +5,13 @@ import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useAuth from "../Hooks/useAuth";
 import { useLocation } from "react-router-dom";
 import useFreeOrPaidProducts from "../Hooks/useFreeOrPaidProduct";
+import useRole from "../Hooks/useRole";
 
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const { role } = useRole();
+  // console.log("User Role:", role);
   const location = useLocation();
   // console.log("Current Location:", location);
 
@@ -50,7 +53,8 @@ const OrderCreate = ({ title }) => {
   const [monthFilter, setMonthFilter] = useState("");
 
   const userId = user?._id || user?.user?._id;
-  // console.log("allllll products", products);
+  // console.log("User ID:", userId);
+  // console.log("Set order data - ", order);
   useEffect(() => {
     if (userId) {
       axiosSecure
@@ -131,6 +135,16 @@ const OrderCreate = ({ title }) => {
       const discount = (mrp - price) * quantity;
       return acc + discount;
     }, 0);
+  let orderedFor = "";
+  let createdBy = "";
+
+  if (role === "admin") {
+    orderedFor = "dsp";
+    createdBy = "admin";
+  } else if (role === "dsp") {
+    orderedFor = "user";
+    createdBy = user?.user?.phone || user?.user?.email; // বা user._id, তুমি যা use করো
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -152,25 +166,31 @@ const OrderCreate = ({ title }) => {
     const orderData = {
       userId: userId,
       dspPhone,
+      orderedFor,
+      createdBy,
       products: scndProductsWithSubtotal,
       grandTotal: calculateGrandTotal(),
       freeGrandTotal: calculateFreeGrandTotal(), // ✅ new field
       grandPoint: calculateGrandPoint(),
       grandDiscount: calculateGrandDiscount(), // ✅ new field
+
       date: new Date().toISOString(),
     };
 
     try {
       const res = await axiosSecure.post("/admin-orders", orderData);
 
-      // console.log(`ordersssss`, orderData);
-      if (res.data._id) {
+      if (res.data?.order?._id) {
         setOrder(res.data);
         Swal.fire("✅ Success", "Order created!", "success");
       }
     } catch (err) {
       console.error("Order creation failed", err);
-      Swal.fire("❌ Error", "Failed to create order", "error");
+      Swal.fire(
+        ` ${err.response?.data?.message || "this product"}`,
+        "",
+        "error"
+      );
     }
   };
 
@@ -252,7 +272,6 @@ const OrderCreate = ({ title }) => {
           const subtotal =
             (+product.productRate || 0) * (+product.quantity || 0);
 
-          // useEffect(() => {
           //   if (product?.isRepurchaseFree && matchedProduct?.rfp && subtotal) {
           //     const repurchaseValue = (matchedProduct.rfp * subtotal) / 100;
           //     setisRepurchaseFreeValue(parseFloat(repurchaseValue.toFixed(2)));
@@ -495,12 +514,14 @@ const OrderCreate = ({ title }) => {
                     <div className="flex justify-between mt-3 px-3">
                       <table>
                         <thead>
-                          <th className="px-4 py-2 my-2 md:my-0">
-                            Repurchase Free Product
-                          </th>
-                          <th className="px-4 py-2 my-2 md:my-0">
-                            {subtotal >= 5000 && "Consistency Free Product"}
-                          </th>
+                          <tr>
+                            <th className="px-4 py-2 my-2 md:my-0">
+                              Repurchase Free Product
+                            </th>
+                            <th className="px-4 py-2 my-2 md:my-0">
+                              {subtotal >= 5000 && "Consistency Free Product"}
+                            </th>
+                          </tr>
                         </thead>
                         <tbody>
                           <tr>
@@ -520,66 +541,6 @@ const OrderCreate = ({ title }) => {
                                   : "No")}
                             </td>
                           </tr>
-                          {/* <tr>
-                            <td className="px-4 py-2 text-center">
-                              {product.isRepurchaseFree ? (
-                                <>
-                                  <input
-                                    type="number"
-                                    className="outline-0 px-2 py-1 w-20 text-center"
-                                    value={matchedProduct?.rfp || ""}
-                                    onChange={(e) =>
-                                      handleProductChange(
-                                        index,
-                                        "isRepurchaseFreeValue",
-                                        e.target.value
-                                      )
-                                    }
-                                    readOnly
-                                  />
-                                  %
-                                  <span className="ml-1">
-                                    ={" "}
-                                    {(Number(matchedProduct?.rfp || 0) *
-                                      subtotal) /
-                                      100}{" "}
-                                    ৳
-                                  </span>
-                                </>
-                              ) : (
-                                "No"
-                              )}
-                            </td>
-                            <td className="px-4 py-2 text-center">
-                              {product.isConsistencyFree ? (
-                                <>
-                                  <input
-                                    type="number"
-                                    className="outline-0 px-2 py-1 w-20 text-center"
-                                    value={matchedProduct?.acfp || ""}
-                                    onChange={(e) =>
-                                      handleProductChange(
-                                        index,
-                                        "isConsistencyFreeValue",
-                                        e.target.value
-                                      )
-                                    }
-                                    readOnly
-                                  />
-                                  %
-                                  <span className="ml-1">
-                                    ={" "}
-                                    {(Number(matchedProduct?.acfp || 0) *
-                                      subtotal) /
-                                      100}{" "}
-                                    ৳
-                                  </span>
-                                </>
-                              ) : (
-                                "No"
-                              )}
-                            </td>
-                          </tr> */}
                         </tbody>
                       </table>
                       {userPackage}

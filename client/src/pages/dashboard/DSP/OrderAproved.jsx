@@ -32,14 +32,7 @@ const OrderAproved = () => {
     );
   });
 
-  // ✅ Refs only for filtered orders
-  // useEffect(() => {
-  //   const refs = {};
-  //   filteredOrders.forEach((order) => {
-  //     refs[order._id] = React.createRef();
-  //   });
-  //   pdfRefs.current = refs;
-  // }, [filteredOrders]);
+ 
 
   const preprocessStyles = () => {
     const elements = document.querySelectorAll("*");

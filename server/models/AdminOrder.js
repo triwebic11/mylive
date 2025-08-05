@@ -30,6 +30,8 @@ const adminOrderSchema = new mongoose.Schema({
     required: true,
   },
   dspPhone: String,
+  orderedFor: String, // ✅ Add this
+  createdBy: String, // ✅ Add this
   products: [productSchema],
   grandTotal: Number, // ✅ Add this
   freeGrandTotal: { type: Number, default: 0 }, // ✅ Add this

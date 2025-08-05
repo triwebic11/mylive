@@ -1,6 +1,12 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { logo } from "../../assets";
-import { MdOutlineShoppingBag, MdMenu } from "react-icons/md";
+import {
+  MdOutlineShoppingBag,
+  MdMenu,
+  MdOutlineSdStorage,
+  MdAccountCircle,
+  MdOutlineLocalGroceryStore,
+} from "react-icons/md";
 import { CiHome } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import Swal from "sweetalert2";
@@ -24,6 +30,7 @@ import { RiUserFollowLine } from "react-icons/ri";
 import { RiMoneyDollarBoxLine } from "react-icons/ri";
 import { MdManageHistory } from "react-icons/md";
 import { MdDoneAll } from "react-icons/md";
+import { GiWantedReward } from "react-icons/gi";
 
 const dashboardArry = [
   {
@@ -84,6 +91,11 @@ const dashboardArry = [
 
 const DspDashboard = [
   { title: "Profile", icon: <CgProfile />, link: "/dashboard/dspprofile" },
+  {
+    title: "Store Product",
+    icon: <MdOutlineLocalGroceryStore />,
+    link: "/dashboard/dspStoreProduct",
+  },
   // { title: "All User's Orders", icon: <RiUserFollowLine />, link: "/dashboard/allOrders" },
   {
     title: "Order For User",
@@ -112,9 +124,26 @@ const DspDashboard = [
 
 const adminDashboardArry = [
   { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
-  { title: "DB Storage", icon: <CiHome />, link: "/dashboard/storage" },
-  { title: "Create DSP ID", icon: <CiHome />, link: "/dashboard/createDspId" },
-  { title: "Ranks & Rewards", icon: <CiHome />, link: "/dashboard/ranksAndRewards" },
+  {
+    title: "DB Storage",
+    icon: <MdOutlineSdStorage />,
+    link: "/dashboard/storage",
+  },
+  {
+    title: "Create DSP ID",
+    icon: <MdAccountCircle />,
+    link: "/dashboard/createDspId",
+  },
+  {
+    title: "Ranks & Rewards",
+    icon: <GiWantedReward />,
+    link: "/dashboard/ranksAndRewards",
+  },
+  {
+    title: "Store Product",
+    icon: <MdOutlineLocalGroceryStore />,
+    link: "/dashboard/adminStoreProduct",
+  },
   {
     title: "Order for DSP",
     icon: <TiShoppingCart />,
@@ -125,11 +154,11 @@ const adminDashboardArry = [
     icon: <RiUserFollowLine />,
     link: "/dashboard/allUsers",
   },
-  {
-    title: "All DSP Orders",
-    icon: <TiShoppingCart />,
-    link: "/dashboard/allDspOrders",
-  },
+  // {
+  //   title: "All DSP Orders",
+  //   icon: <TiShoppingCart />,
+  //   link: "/dashboard/allDspOrders",
+  // },
   // { title: "All Package Requester", icon: <FiPackage />, link: "/dashboard/allPackageRequestUser" },
   {
     title: "All Withdrawal",

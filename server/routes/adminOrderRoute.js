@@ -1,7 +1,152 @@
 const express = require("express");
 const router = express.Router();
-const AdminOrder = require("../models/AdminOrder");
 const User = require("../models/User");
+const AdminOrder = require("../models/AdminOrder");
+const DspInventory = require("../models/DspInventory");
+
+// 👉 Order Create (Admin → DSP / DSP → User)
+// Order create
+router.post("/", async (req, res) => {
+  try {
+    const {
+      userId,
+      dspPhone,
+      orderedFor,
+      createdBy,
+      products,
+      grandTotal,
+      freeGrandTotal,
+      grandPoint,
+      grandDiscount,
+    } = req.body;
+
+    // Step 1: Admin ordering for DSP
+    if (orderedFor === "dsp") {
+      for (const p of products) {
+        const existing = await DspInventory.findOne({
+          dspPhone,
+          productId: p.productId,
+        });
+
+        if (existing) {
+          existing.quantity += p.quantity;
+          await existing.save();
+        } else {
+          await DspInventory.create({
+            dspPhone,
+            productId: p.productId,
+            productName: p.name,
+            quantity: p.quantity,
+          });
+        }
+      }
+
+      const newOrder = new AdminOrder({
+        userId,
+        dspPhone,
+        orderedFor,
+        createdBy,
+        products,
+        grandTotal,
+        freeGrandTotal,
+        grandPoint,
+        grandDiscount,
+        date: new Date().toISOString(),
+      });
+
+      const savedOrder = await newOrder.save();
+      return res.status(201).json({
+        message: "Admin → DSP order created",
+        order: savedOrder,
+      });
+    }
+
+    // Step 2: DSP ordering for user
+    if (orderedFor === "user") {
+      // 1. Quantity check
+      for (const p of products) {
+        const stock = await DspInventory.findOne({
+          dspPhone: createdBy,
+          productId: p.productId,
+        });
+
+        if (!stock || stock.quantity < p.quantity) {
+          return res.status(400).json({
+            message: `Stock unavailable for ${p.productId}, ${p.name}`,
+          });
+        }
+      }
+
+      // 2. Deduct quantity
+      for (const p of products) {
+        await DspInventory.updateOne(
+          { dspPhone: createdBy, productId: p.productId },
+          { $inc: { quantity: -p.quantity } }
+        );
+      }
+
+      // 3. Save order
+      const newOrder = new AdminOrder({
+        userId,
+        dspPhone,
+        orderedFor,
+        createdBy,
+        products,
+        grandTotal,
+        freeGrandTotal,
+        grandPoint,
+        grandDiscount,
+        date: new Date().toISOString(),
+      });
+
+      const savedOrder = await newOrder.save();
+
+      // 4. Distribute points
+      await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
+
+      return res.status(201).json({
+        message: "DSP → User order created",
+        order: savedOrder,
+      });
+    }
+
+    res.status(400).json({ message: "Invalid order type" });
+    console.log("🔶 Incoming Order:", req.body);
+  } catch (error) {
+    console.error("❌ Error creating order:", error);
+    res.status(500).json({ message: "Failed to create order", error });
+  }
+});
+
+// Get orders by DSP phone
+router.get("/by-phone/:phone", async (req, res) => {
+  try {
+    const orders = await AdminOrder.find({ dspPhone: req.params.phone });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch orders", error: err });
+  }
+});
+
+// Get orders by user ID
+router.get("/by-user/:userId", async (req, res) => {
+  try {
+    const orders = await AdminOrder.find({ userId: req.params.userId });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch orders", error: err });
+  }
+});
+
+// Get all orders
+router.get("/", async (req, res) => {
+  try {
+    const orders = await AdminOrder.find();
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch orders", error: err });
+  }
+});
 
 async function buildTree(userId) {
   const user = await User.findById(userId);
@@ -48,7 +193,12 @@ async function buildTree(userId) {
     totalPointsFromRight,
   };
 }
-async function buildUplineTree(userId, depth = 0, maxDepth = 10, visited = new Set()) {
+async function buildUplineTree(
+  userId,
+  depth = 0,
+  maxDepth = 10,
+  visited = new Set()
+) {
   if (depth > maxDepth) return [];
 
   const user = await User.findById(userId);
@@ -69,14 +219,19 @@ async function buildUplineTree(userId, depth = 0, maxDepth = 10, visited = new S
     referralCode: user.referralCode,
     referredBy: user.referredBy,
     placementBy: user.placementBy,
-    GenerationLevel: user.GenerationLevel ?? 0
+    GenerationLevel: user.GenerationLevel ?? 0,
   };
 
   if (!parent) {
     return [currentNode];
   }
 
-  const parentTree = await buildUplineTree(parent._id, depth + 1, maxDepth, visited);
+  const parentTree = await buildUplineTree(
+    parent._id,
+    depth + 1,
+    maxDepth,
+    visited
+  );
   return [...parentTree, currentNode];
 }
 const positionLevels = [
@@ -208,8 +363,6 @@ const positionLevels = [
   },
 ];
 
-
-
 const UpdateRanksAndRewards = async (buyer) => {
   console.log("Updating ranks and rewards for user:", buyer);
 
@@ -222,7 +375,6 @@ const UpdateRanksAndRewards = async (buyer) => {
 
     console.log("Left Tree:", leftTree.points);
     console.log("Right Tree:", rightTree.points);
-
 
     // const leftPV = await calculateTotalPV(leftTree);
     // const rightPV = await calculateTotalPV(rightTree);
@@ -262,10 +414,14 @@ const UpdateRanksAndRewards = async (buyer) => {
   } catch (error) {
     console.error("❌ Error updating ranks and rewards:", error);
   }
-}
+};
 
-
-const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalPrice) => {
+const distributeGrandPoint = async (
+  buyerId,
+  grandPoint,
+  buyerphone,
+  grandTotalPrice
+) => {
   const buyer = await User.findOne({ phone: buyerphone });
   if (!buyer) return;
 
@@ -277,8 +433,8 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
     buyer.AllEntry.incoming.push({
       fromUser: buyer._id,
       pointReceived: fifteenPercent,
-      sector: '15% dsp reward from purchase',
-      date: new Date()
+      sector: "15% dsp reward from purchase",
+      date: new Date(),
     });
     await buyer.save();
     return;
@@ -286,14 +442,16 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
 
   if (buyer?.role === "admin") return;
 
-  const tenPercent = grandPoint * 0.10;
-  const thirtyPercent = grandPoint * 0.30;
-  const twentyPercent = grandPoint * 0.20;
+  const tenPercent = grandPoint * 0.1;
+  const thirtyPercent = grandPoint * 0.3;
+  const twentyPercent = grandPoint * 0.2;
 
   // 20% phone referrer
   console.log("Buyer Referred By:", buyer?.referredBy);
   if (buyer?.referredBy) {
-    const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
+    const phoneReferrer = await User.findOne({
+      referralCode: buyer.referredBy,
+    });
     console.log("Phone Referrer:", phoneReferrer);
     if (phoneReferrer) {
       phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
@@ -301,13 +459,12 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       phoneReferrer.AllEntry.incoming.push({
         fromUser: buyerId,
         pointReceived: twentyPercent,
-        sector: '20% phone referrer commission',
-        date: new Date()
+        sector: "20% phone referrer commission",
+        date: new Date(),
       });
       await phoneReferrer.save();
     }
   }
-
 
   const alreadyReceivedPersonalReward = buyer.AllEntry?.incoming?.some(
     (entry) => entry.sector === "10% personal reward from purchase"
@@ -319,8 +476,8 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
     buyer.AllEntry.incoming.push({
       fromUser: buyer._id,
       pointReceived: tenPercent,
-      sector: '10% personal reward from purchase',
-      date: new Date()
+      sector: "10% personal reward from purchase",
+      date: new Date(),
     });
     await buyer.save();
   } else {
@@ -331,14 +488,12 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       buyer.AllEntry.incoming.push({
         fromUser: buyerId,
         pointReceived: tenPercent,
-        sector: '10% personal reward from purchase',
-        date: new Date()
+        sector: "10% personal reward from purchase",
+        date: new Date(),
       });
       await buyer.save();
     }
-
   }
-
 
   // 30% shared generation commission
   const uplineFlat = await buildUplineTree(buyer._id);
@@ -361,85 +516,21 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       if (!uplineUser) continue;
 
       uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+      uplineUser.AllEntry = uplineUser.AllEntry || {
+        incoming: [],
+        outgoing: [],
+      };
       uplineUser.AllEntry.incoming.push({
         fromUser: buyer._id,
         pointReceived: pointPerUpline,
         sector: `Shared Generation Commission`,
-        date: new Date()
+        date: new Date(),
       });
       await uplineUser.save();
     }
   }
 
-
-
   // User Package Update
   await UpdateRanksAndRewards(buyer);
-
 };
-
-// Order create
-router.post("/", async (req, res) => {
-  try {
-    const {
-      userId,
-      dspPhone,
-      products,
-      grandTotal,
-      freeGrandTotal,
-      grandPoint,
-      grandDiscount,
-    } = req.body;
-
-    const newOrder = new AdminOrder({
-      userId,
-      dspPhone,
-      products,
-      grandTotal,
-      freeGrandTotal,
-      grandPoint,
-      grandDiscount,
-      date: new Date().toISOString(),
-    });
-
-    const savedOrder = await newOrder.save();
-    await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
-    res.status(201).json(savedOrder);
-  } catch (error) {
-    console.error("❌ Error creating order:", error);
-    res.status(500).json({ message: "Failed to create order", error });
-  }
-});
-
-// Get orders by DSP phone
-router.get("/by-phone/:phone", async (req, res) => {
-  try {
-    const orders = await AdminOrder.find({ dspPhone: req.params.phone });
-    res.json(orders);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch orders", error: err });
-  }
-});
-
-// Get orders by user ID
-router.get("/by-user/:userId", async (req, res) => {
-  try {
-    const orders = await AdminOrder.find({ userId: req.params.userId });
-    res.json(orders);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch orders", error: err });
-  }
-});
-
-// Get all orders
-router.get("/", async (req, res) => {
-  try {
-    const orders = await AdminOrder.find();
-    res.json(orders);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch orders", error: err });
-  }
-});
-
 module.exports = router;
