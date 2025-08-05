@@ -145,6 +145,12 @@ const OrderCreate = ({ title }) => {
     orderedFor = "user";
     createdBy = user?.user?.phone || user?.user?.email; // বা user._id, তুমি যা use করো
   }
+  const resetForm = () => {
+    setDspPhone("");
+
+    setScndProducts([]); // or [{}] if default one empty row needed
+    // set other form fields here if needed
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -192,6 +198,7 @@ const OrderCreate = ({ title }) => {
         "error"
       );
     }
+    resetForm();
   };
 
   // Filtering Logic
@@ -272,27 +279,6 @@ const OrderCreate = ({ title }) => {
           const subtotal =
             (+product.productRate || 0) * (+product.quantity || 0);
 
-          //   if (product?.isRepurchaseFree && matchedProduct?.rfp && subtotal) {
-          //     const repurchaseValue = (matchedProduct.rfp * subtotal) / 100;
-          //     setisRepurchaseFreeValue(parseFloat(repurchaseValue.toFixed(2)));
-          //   } else {
-          //     setisRepurchaseFreeValue(0);
-          //   }
-
-          //   if (
-          //     product?.isConsistencyFree &&
-          //     matchedProduct?.acfp &&
-          //     subtotal
-          //   ) {
-          //     const consistencyValue = (matchedProduct.acfp * subtotal) / 100;
-          //     setisConsistencyFreeValue(
-          //       parseFloat(consistencyValue.toFixed(2))
-          //     );
-          //   } else {
-          //     setisConsistencyFreeValue(0);
-          //   }
-          // }, [product, matchedProduct, subtotal]); // dependency list
-
           return (
             //For paid product
             <div>
@@ -300,6 +286,7 @@ const OrderCreate = ({ title }) => {
                 key={index}
                 className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 space-y-4"
               >
+                <h1>Paid Product</h1>
                 <div className="overflow-x-auto rounded-lg border border-gray-200">
                   <table className="min-w-full text-sm text-left text-gray-800 grid grid-cols-2 md:grid-cols-1">
                     <thead className="bg-gray-100 text-gray-900 font-semibold">
@@ -543,7 +530,7 @@ const OrderCreate = ({ title }) => {
                           </tr>
                         </tbody>
                       </table>
-                      {userPackage}
+                      {/* {userPackage} */}
                     </div>
                   </div>
 
@@ -556,177 +543,167 @@ const OrderCreate = ({ title }) => {
                   </button>
                 </div>
               </div>
-              {/* For free product */}
-              {(product.isRepurchaseFree || product.isConsistencyFree) && (
-                <div>
-                  {scndProducts.map((freeProduct, freeindex) => {
-                    const matchedFreeProduct = freeProducts?.find(
-                      (p) =>
-                        p.freeProductId?.toString() ===
-                        freeProduct.productId?.toString()
-                    );
-
-                    const freeSubtotal =
-                      (+freeProduct.freeProductRate || 0) *
-                      (+freeProduct.freeQuantity || 0);
-
-                    return (
-                      <div>
-                        <div
-                          key={freeindex}
-                          className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 space-y-4"
-                        >
-                          <h1>Free Product</h1>
-                          <div className="overflow-x-auto rounded-lg border border-gray-200">
-                            <table className="min-w-full text-sm text-left text-gray-800 grid grid-cols-2 md:grid-cols-1">
-                              <thead className="bg-gray-100 text-gray-900 font-semibold">
-                                <tr className="flex flex-col md:flex-row justify-around ">
-                                  <th className="px-4 py-2 my-2 md:my-0">
-                                    Product
-                                  </th>
-                                  <th className="px-4 py-2 my-2 md:my-0">
-                                    Price(৳)
-                                  </th>
-                                  <th className="px-4 py-2 my-2 md:my-0">
-                                    Quantity (৳)
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr className="bg-white md:border-t flex flex-col md:flex-row">
-                                  {/* Product Selector */}
-                                  <td className="px-4 py-2 min-w-[200px]">
-                                    <input
-                                      list="freeproduct-options"
-                                      value={freeProducts?.productId}
-                                      onChange={(e) => {
-                                        const selectedId = e.target.value;
-                                        handleProductChange(
-                                          freeindex,
-                                          "freeProductId",
-                                          selectedId
-                                        );
-
-                                        const selected = freeProducts.find(
-                                          (p) =>
-                                            p.productId?.toString() ===
-                                            selectedId
-                                        );
-
-                                        if (selected) {
-                                          handleProductChange(
-                                            freeindex,
-                                            "freeProductRate",
-                                            selected.price
-                                          );
-
-                                          handleProductChange(
-                                            freeindex,
-                                            "freeProductName",
-                                            selected.name
-                                          );
-                                        }
-                                      }}
-                                      placeholder="Enter Product ID"
-                                      className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                      required
-                                    />
-                                    <datalist id="freeproduct-options">
-                                      {freeProducts?.map((p) => (
-                                        <option key={p._id} value={p.productId}>
-                                          {p.productId} - {p.name}
-                                        </option>
-                                      ))}
-                                    </datalist>
-                                  </td>
-
-                                  {/* Price */}
-                                  <td className="px-4 py-2">
-                                    <input
-                                      type="number"
-                                      value={freeProduct.freeProductRate || ""}
-                                      onChange={(e) =>
-                                        handleProductChange(
-                                          freeindex,
-                                          "freeProductRate",
-                                          e.target.value
-                                        )
-                                      }
-                                      className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                      placeholder="Discount Price"
-                                      required
-                                      readOnly
-                                    />
-                                  </td>
-
-                                  {/* Regular Price */}
-
-                                  {/* Quantity */}
-                                  <td className="px-4 py-2">
-                                    <input
-                                      type="number"
-                                      value={product.freeQuantity}
-                                      onChange={(e) =>
-                                        handleProductChange(
-                                          freeindex,
-                                          "freeQuantity",
-                                          e.target.value
-                                        )
-                                      }
-                                      className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                      placeholder="Qty"
-                                      required
-                                    />
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-
-                          {/* Summary Info */}
-                          <div className="bg-gray-100 p-4 rounded-lg text-sm text-gray-800 space-y-1">
-                            <div className="overflow-x-auto rounded-lg border border-gray-200">
-                              <table className="min-w-full text-sm text-left text-gray-700">
-                                <thead className="bg-gray-100 text-gray-900 font-semibold">
-                                  <tr>
-                                    <th className="px-4 py-2">Name</th>
-                                    <th className="px-4 py-2">Subtotal</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr className="bg-white border-t">
-                                    <td className="px-4 py-2">
-                                      {freeProduct.freeProductName || (
-                                        <span className="text-gray-400">
-                                          N/A
-                                        </span>
-                                      )}
-                                    </td>
-                                    <td className="px-4 py-2 font-bold text-blue-700">
-                                      ৳{freeSubtotal}
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={() => removeProductField(index)}
-                              className="mt-3 inline-block bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition duration-200 text-sm"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </div>
           );
         })}
+        {/* For free product */}
+
+        <div>
+          {scndProducts.map((freeProduct, freeindex) => {
+            const matchedFreeProduct = freeProducts?.find(
+              (p) =>
+                p.freeProductId?.toString() ===
+                freeProduct.productId?.toString()
+            );
+
+            const freeSubtotal =
+              (+freeProduct.freeProductRate || 0) *
+              (+freeProduct.freeQuantity || 0);
+
+            return (
+              <div>
+                <div
+                  key={freeindex}
+                  className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 space-y-4"
+                >
+                  <h1>Free Product</h1>
+                  <div className="overflow-x-auto rounded-lg border border-gray-200">
+                    <table className="min-w-full text-sm text-left text-gray-800 grid grid-cols-2 md:grid-cols-1">
+                      <thead className="bg-gray-100 text-gray-900 font-semibold">
+                        <tr className="flex flex-col md:flex-row justify-around ">
+                          <th className="px-4 py-2 my-2 md:my-0">Product</th>
+                          <th className="px-4 py-2 my-2 md:my-0">Price(৳)</th>
+                          <th className="px-4 py-2 my-2 md:my-0">
+                            Quantity (৳)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-white md:border-t flex flex-col md:flex-row">
+                          {/* Product Selector */}
+                          <td className="px-4 py-2 min-w-[200px]">
+                            <input
+                              list="freeproduct-options"
+                              value={freeProducts?.productId}
+                              onChange={(e) => {
+                                const selectedId = e.target.value;
+                                handleProductChange(
+                                  freeindex,
+                                  "freeProductId",
+                                  selectedId
+                                );
+
+                                const selected = freeProducts.find(
+                                  (p) => p.productId?.toString() === selectedId
+                                );
+
+                                if (selected) {
+                                  handleProductChange(
+                                    freeindex,
+                                    "freeProductRate",
+                                    selected.price
+                                  );
+
+                                  handleProductChange(
+                                    freeindex,
+                                    "freeProductName",
+                                    selected.name
+                                  );
+                                }
+                              }}
+                              placeholder="Enter Product ID"
+                              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <datalist id="freeproduct-options">
+                              {freeProducts?.map((p) => (
+                                <option key={p._id} value={p.productId}>
+                                  {p.productId} - {p.name}
+                                </option>
+                              ))}
+                            </datalist>
+                          </td>
+
+                          {/* Price */}
+                          <td className="px-4 py-2">
+                            <input
+                              type="number"
+                              value={freeProduct.freeProductRate || ""}
+                              onChange={(e) =>
+                                handleProductChange(
+                                  freeindex,
+                                  "freeProductRate",
+                                  e.target.value
+                                )
+                              }
+                              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="Discount Price"
+                              required
+                              readOnly
+                            />
+                          </td>
+
+                          {/* Regular Price */}
+
+                          {/* Quantity */}
+                          <td className="px-4 py-2">
+                            <input
+                              type="number"
+                              value={freeProduct.freeQuantity}
+                              onChange={(e) =>
+                                handleProductChange(
+                                  freeindex,
+                                  "freeQuantity",
+                                  e.target.value
+                                )
+                              }
+                              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="Qty"
+                              required
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Summary Info */}
+                  <div className="bg-gray-100 p-4 rounded-lg text-sm text-gray-800 space-y-1">
+                    <div className="overflow-x-auto rounded-lg border border-gray-200">
+                      <table className="min-w-full text-sm text-left text-gray-700">
+                        <thead className="bg-gray-100 text-gray-900 font-semibold">
+                          <tr>
+                            <th className="px-4 py-2">Name</th>
+                            <th className="px-4 py-2">Subtotal</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="bg-white border-t">
+                            <td className="px-4 py-2">
+                              {freeProduct.freeProductName || (
+                                <span className="text-gray-400">N/A</span>
+                              )}
+                            </td>
+                            <td className="px-4 py-2 font-bold text-blue-700">
+                              ৳{freeSubtotal}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => removeProductField(index)}
+                      className="mt-3 inline-block bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition duration-200 text-sm"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
         <button
           type="button"
