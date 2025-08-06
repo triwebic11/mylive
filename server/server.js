@@ -21,7 +21,7 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT"],
   },
 });
-
+mongoose.set('strictQuery', true);
 // Connect MongoDB
 connectDB();
 
@@ -43,6 +43,8 @@ app.use("/api/dsp", require("./routes/dspRoutes"));
 app.use("/api/admin-orders", require("./routes/adminOrderRoute"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/updateRank", require("./routes/RankUpgradeRequests"));
+app.use("/api/inventory", require("./routes/dspInventoryRoute"));
+
 
 app.get('/api/db-stats', async (req, res) => {
   try {

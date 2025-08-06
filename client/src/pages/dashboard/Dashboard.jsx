@@ -1,6 +1,12 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { logo } from "../../assets";
-import { MdOutlineShoppingBag, MdMenu } from "react-icons/md";
+import {
+  MdOutlineShoppingBag,
+  MdMenu,
+  MdOutlineSdStorage,
+  MdAccountCircle,
+  MdOutlineLocalGroceryStore,
+} from "react-icons/md";
 import { CiHome } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import Swal from "sweetalert2";
@@ -24,6 +30,7 @@ import { RiUserFollowLine } from "react-icons/ri";
 import { RiMoneyDollarBoxLine } from "react-icons/ri";
 import { MdManageHistory } from "react-icons/md";
 import { MdDoneAll } from "react-icons/md";
+import { GiWantedReward } from "react-icons/gi";
 
 const dashboardArry = [
   {
@@ -83,7 +90,14 @@ const dashboardArry = [
 ];
 
 const DspDashboard = [
+
+  { title: "Dashboard", icon: <CgProfile />, link: "/dashboard/DspDashborad" },
   { title: "Profile", icon: <CgProfile />, link: "/dashboard/dspprofile" },
+  {
+    title: "Store Product",
+    icon: <MdOutlineLocalGroceryStore />,
+    link: "/dashboard/dspStoreProduct",
+  },
   // { title: "All User's Orders", icon: <RiUserFollowLine />, link: "/dashboard/allOrders" },
   {
     title: "Order For User",
@@ -111,10 +125,23 @@ const DspDashboard = [
 ];
 
 const adminDashboardArry = [
-  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
-  { title: "DB Storage", icon: <CiHome />, link: "/dashboard/storage" },
-  { title: "Create DSP ID", icon: <CiHome />, link: "/dashboard/createDspId" },
-  { title: "Ranks & Rewards", icon: <CiHome />, link: "/dashboard/ranksAndRewards" },
+  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/AdminDashboard" },
+  {
+    title: "DB Storage",
+    icon: <MdOutlineSdStorage />,
+    link: "/dashboard/storage",
+  },
+  {
+    title: "Create DSP ID",
+    icon: <MdAccountCircle />,
+    link: "/dashboard/createDspId",
+  },
+  {
+    title: "Ranks & Rewards",
+    icon: <GiWantedReward />,
+    link: "/dashboard/ranksAndRewards",
+  },
+
   {
     title: "Order for DSP",
     icon: <TiShoppingCart />,
@@ -125,11 +152,11 @@ const adminDashboardArry = [
     icon: <RiUserFollowLine />,
     link: "/dashboard/allUsers",
   },
-  {
-    title: "All DSP Orders",
-    icon: <TiShoppingCart />,
-    link: "/dashboard/allDspOrders",
-  },
+  // {
+  //   title: "All DSP Orders",
+  //   icon: <TiShoppingCart />,
+  //   link: "/dashboard/allDspOrders",
+  // },
   // { title: "All Package Requester", icon: <FiPackage />, link: "/dashboard/allPackageRequestUser" },
   {
     title: "All Withdrawal",
@@ -208,8 +235,8 @@ const Dashboard = () => {
     role === "admin"
       ? adminDashboardArry
       : role === "dsp"
-      ? DspDashboard
-      : dashboardArry;
+        ? DspDashboard
+        : dashboardArry;
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
@@ -255,9 +282,8 @@ const Dashboard = () => {
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
           {role?.toUpperCase()} Dashboard
@@ -352,10 +378,9 @@ const Dashboard = () => {
                 <NavLink
                   to={item.link}
                   className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer ${
-                      isActive
-                        ? "border-b-2 border-blue-500 bg-gray-100"
-                        : "hover:bg-gray-200"
+                    `flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer ${isActive
+                      ? "border-b-2 border-blue-500 bg-gray-100"
+                      : "hover:bg-gray-200"
                     }`
                   }
                 >

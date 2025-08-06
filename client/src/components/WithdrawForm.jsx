@@ -6,6 +6,7 @@ const WithdrawForm = ({ userId }) => {
   const [user, setUser] = useState(null);
   const [withdrawPoints, setWithdrawPoints] = useState("");
   let currentPoints = user?.points;
+  console.log("Current Points:", currentPoints);
   const axiosSecure = useAxiosSecure();
 
   // Fetch user data by ID
@@ -33,7 +34,7 @@ const WithdrawForm = ({ userId }) => {
       return Swal.fire("Insufficient", "You don't have enough points", "error");
     }
 
-    console.log(user?.totalwithdraw)
+    console.log(user?.totalwithdraw);
 
     const requestData = {
       name: user.name,
@@ -68,7 +69,7 @@ const WithdrawForm = ({ userId }) => {
 
         <p className="text-center text-gray-600 mb-4">
           You have{" "}
-          <span className="font-semibold text-green-600">{currentPoints}</span>{" "}
+          <span className="font-semibold text-green-600">{Number(currentPoints).toFixed(2)}</span>{" "}
           points available.
         </p>
       </div>
@@ -116,6 +117,7 @@ const WithdrawForm = ({ userId }) => {
           </label>
           <input
             type="number"
+            min="1"
             value={withdrawPoints}
             onChange={(e) => setWithdrawPoints(e.target.value)}
             placeholder="Enter points to withdraw"

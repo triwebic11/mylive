@@ -239,12 +239,12 @@ const FontDashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
         {Array.isArray(agregate?.summary) ? (
-    agregate?.summary?.map((stat, idx) => (
-      <DashboardCard key={idx} title={stat?.title} value={stat.value} />
-    ))
-  ) : (
-    <p className="text-red-600 font-bold">No summary data found.</p>
-  )}
+          agregate?.summary?.map((stat, idx) => (
+            <DashboardCard key={idx} title={stat?.title} value={stat.value} />
+          ))
+        ) : (
+          <p className="text-red-600 font-bold">No summary data found.</p>
+        )}
       </div>
 
       {/* <h2 className="text-xl font-bold mt-10 mb-4 text-purple-700">Fund</h2>

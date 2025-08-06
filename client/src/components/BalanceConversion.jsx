@@ -69,7 +69,9 @@ const BalanceConversion = ({ userId }) => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
         <div className="bg-blue-50 p-4 rounded-lg shadow-sm">
           <p className="text-sm text-gray-500">Available Points</p>
-          <p className="text-2xl font-bold text-blue-700">{point}</p>
+          <p className="text-2xl font-bold text-blue-700">
+            {Number(point).toFixed(2)}
+          </p>
         </div>
         <div className="bg-yellow-50 p-4 rounded-lg shadow-sm">
           <p className="text-sm text-gray-500">Conversion Rate</p>
@@ -79,7 +81,9 @@ const BalanceConversion = ({ userId }) => {
         </div>
         <div className="bg-green-50 p-4 rounded-lg shadow-sm">
           <p className="text-sm text-gray-500">Balance in Taka</p>
-          <p className="text-2xl font-bold text-green-700">{taka} ৳</p>
+          <p className="text-2xl font-bold text-green-700">
+            {Number(taka).toFixed(2)} ৳
+          </p>
         </div>
       </div>
     </div>
