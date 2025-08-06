@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
+import useUserById from "../Hooks/useUserById";
 
 const UserWithdrawHistory = ({ userId }) => {
   const [history, setHistory] = useState([]);
   const axiosSecure = useAxiosSecure()
+   const [data] = useUserById()
+    const availablepoints = data?.points - data?.totalwithdraw
 
   useEffect(() => {
     if (userId) {
@@ -40,7 +43,6 @@ const UserWithdrawHistory = ({ userId }) => {
                   timeStyle: "short",
                 }
               );
-
               return (
                 <tr key={item._id} className="hover:bg-gray-50">
                   <td className="px-4 py-2">{formattedDate}</td>

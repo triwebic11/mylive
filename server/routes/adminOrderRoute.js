@@ -592,7 +592,7 @@ const distributeGrandPoint = async (
 
   // *****************************************************************
 
-  // Mega generation logic
+  // 7%  Mega generation logic
 
   const MegauplineFlat = await buildUplineChainMultipleParents(buyer._id);
   const MegafilteredUpline = MegauplineFlat.filter(

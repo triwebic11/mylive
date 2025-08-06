@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import socket from "./socket"; // ✅ shared socket used
+import useUserById from "../Hooks/useUserById";
 
 const BalanceConversion = ({ userId }) => {
   const [point, setPoint] = useState(0);
   const [rate, setRate] = useState(1);
   const [taka, setTaka] = useState(0);
   const axiosSecure = useAxiosSecure();
+  const [data] = useUserById()
+  const availablepoints = data?.points - data?.totalwithdraw
 
   // ✅ Fetch user points
   useEffect(() => {
@@ -19,7 +22,8 @@ const BalanceConversion = ({ userId }) => {
         })
         .catch((err) => console.error("Failed to fetch user:", err));
     }
-  }, [userId]);
+  }, [axiosSecure, userId]);
+
 
   // ✅ Fetch conversion rate
   useEffect(() => {
@@ -30,12 +34,12 @@ const BalanceConversion = ({ userId }) => {
         setRate(parseFloat(currentRate).toFixed(2));
       })
       .catch((err) => console.error("Failed to fetch conversion rate:", err));
-  }, []);
+  }, [axiosSecure]);
 
   // ✅ Calculate taka
   useEffect(() => {
-    setTaka(point * rate);
-  }, [point, rate]);
+    setTaka(availablepoints * rate);
+  }, [availablepoints, rate]);
 
   // ✅ Listen to real-time updates
   useEffect(() => {
@@ -70,7 +74,7 @@ const BalanceConversion = ({ userId }) => {
         <div className="bg-blue-50 p-4 rounded-lg shadow-sm">
           <p className="text-sm text-gray-500">Available Points</p>
           <p className="text-2xl font-bold text-blue-700">
-            {Number(point).toFixed(2)}
+            {Number(availablepoints).toFixed(2)}
           </p>
         </div>
         <div className="bg-yellow-50 p-4 rounded-lg shadow-sm">
