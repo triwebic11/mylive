@@ -139,11 +139,7 @@ const adminDashboardArry = [
     icon: <GiWantedReward />,
     link: "/dashboard/ranksAndRewards",
   },
-  {
-    title: "Store Product",
-    icon: <MdOutlineLocalGroceryStore />,
-    link: "/dashboard/adminStoreProduct",
-  },
+
   {
     title: "Order for DSP",
     icon: <TiShoppingCart />,

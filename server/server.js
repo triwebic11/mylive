@@ -21,7 +21,7 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT"],
   },
 });
-
+mongoose.set('strictQuery', true);
 // Connect MongoDB
 connectDB();
 
