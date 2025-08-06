@@ -456,6 +456,72 @@ const updateUserRole = async (req, res) => {
   }
 };
 
+async function buildUplineChainMultipleParents(userId, depth = 0, maxDepth = 10, visited = new Set()) {
+  if (depth > maxDepth) return [];
+
+  const user = await User.findById(userId).lean();
+  if (!user || visited.has(user._id.toString())) return [];
+
+  visited.add(user._id.toString());
+
+  const parents = await User.find({
+    $or: [
+      { referralCode: user.referredBy },
+      { referralCode: user.placementBy }
+    ].filter(cond => Object.values(cond)[0])
+  }).lean();
+
+  if (!parents.length) {
+    return [user];
+  }
+
+  let chains = [];
+
+  for (const parent of parents) {
+    const chain = await buildUplineChainMultipleParents(parent._id, depth + 1, maxDepth, visited);
+    chains.push(...chain);
+  }
+
+  // Optional: remove duplicates and sort if needed
+  // For simplicity, just return parents + current user as linear array
+  return [...chains, user];
+}
+
+
+
+
+// async function buildUplineTree(userId, depth = 0, maxDepth = 10, visited = new Set()) {
+//   if (depth > maxDepth) return [];
+
+//   const user = await User.findById(userId);
+//   if (!user || visited.has(user._id.toString())) return [];
+
+//   visited.add(user._id.toString());
+
+//   const query = [];
+//   if (user.referredBy) query.push({ referralCode: user.referredBy });
+//   if (user.placementBy) query.push({ referralCode: user.placementBy });
+
+//   const parent = await User.findOne({ $or: query });
+
+//   const currentNode = {
+//     name: user.name,
+//     _id: user._id,
+//     phone: user.phone,
+//     referralCode: user.referralCode,
+//     referredBy: user.referredBy,
+//     placementBy: user.placementBy,
+//     GenerationLevel: user.GenerationLevel ?? 0
+//   };
+
+//   if (!parent) {
+//     return [currentNode];
+//   }
+
+//   const parentTree = await buildUplineTree(parent._id, depth + 1, maxDepth, visited);
+//   return [...parentTree, currentNode];
+// }
+
 // Optional utility to generate summary from user
 const generateUserSummary = async (user, referredUsers = []) => {
   // console.log("Generating summary...");
@@ -475,16 +541,16 @@ const generateUserSummary = async (user, referredUsers = []) => {
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
   const referCommission = getSumBySector("20% phone referrer commission");
-  const generationCommission = getSumBySector("Shared Generation Commission (Level 1)");
-  const megaCommission = getSumBySector("MegaCommission");
+  const generationCommission = getSumBySector("Shared Generation Commission");
+  const megaCommission = getSumBySector("Shared mega Generation Commission");
   const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
   const repurchaseCommission = getSumBySector("10% personal reward from purchase");
-  const specialFund = getSumBySector("Special Fund");
+  const specialFund = getSumBySector("Special Fund Commission");
   const totalTDS = getSumBySector("TDS");
-  const carFund = getSumBySector("Car Fund");
-  const tourFund = getSumBySector("Travel Fund");
-  const homeFund = getSumBySector("House fund");
-  const lifetimeBonus = getSumBySector("All life fund");
+  const carFund = getSumBySector("Car Fund Commission");
+  const tourFund = getSumBySector("Travel Fund Commission");
+  const homeFund = getSumBySector("House Fund Commission");
+  const executiveOfficer = getSumBySector("Executive Officer Commission");
 
   // console.log("Referral Tree:", referredUsers);
   const totalTeamSalePv = referredUsers.reduce((total, referredUser) => {
@@ -524,7 +590,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
         date.getMonth() === currentMonth && date.getFullYear() === currentYear
       );
     })
-    .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+    .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0).toFixed(2);
 
   const monthlyDownSalePv = previousMonthPv - currentMonthPv;
   const getSumAmountBySector = (sectorName) => {
@@ -609,13 +675,17 @@ const generateUserSummary = async (user, referredUsers = []) => {
     { title: "Withdrawable Balance", value: withdrawableBalance },
     { title: "Total Withdraw", value: user?.totalwithdraw },
     { title: "Total TDS", value: totalTDS },
+    { title: "Executive Officer", value: executiveOfficer },
     { title: "Special Fund", value: specialFund },
-    { title: "Executive Officer", value: specialFund },
     { title: "Car Fund", value: carFund },
     { title: "Tour Fund", value: tourFund },
     { title: "Home Fund", value: homeFund },
-    { title: "Lifetime Bonus", value: lifetimeBonus },
   ];
+
+
+
+
+
 };
 async function buildTree(userId) {
   const user = await User.findById(userId);
@@ -769,7 +839,7 @@ const positionLevels = [
     rightPV: 8000,
     leftBV: 48000000,
     rightBV: 48000000,
-    position: "Diamond",
+    position: "Diamond Director",
     reward: "Car or ৳13,00,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -966,14 +1036,20 @@ const userAgregateData = async (req, res) => {
     const summary = await generateUserSummary(user, referredUsers);
 
     const tree = await buildTree(user._id);
+    const leftPoints = tree.left?.points || 0;
+    const rightPoints = tree.right?.points || 0;
     console.log("Referral Tree:", tree.left?.points, tree.right?.points);
- // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
+    // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
     if (leftPoints >= 30000 && rightPoints >= 30000) {
       await UpdateRanksAndRewards(user);
     } else {
       // ✅ Otherwise run package-level fallback logic
       await PackageLevelsdefine(user);
     }
+
+    // *****************************************************************
+
+
 
 
 

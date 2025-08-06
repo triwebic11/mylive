@@ -7,8 +7,9 @@ import BalanceConversion from "../../../../components/BalanceConversion";
 import useAuth from "../../../../Hooks/useAuth";
 import { Tree, TreeNode } from "react-organizational-chart";
 import styled from "styled-components";
-import axios from "axios";
+// import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 
 // Styled node for tree visualization
 const StyledNode = styled.div`
@@ -19,19 +20,22 @@ const StyledNode = styled.div`
   background: #f9f9f9;
 `;
 
-const fetchReferralTree = async (userId) => {
-  const res = await axios.get(
-    `https://apidata.shslira.com/api/users/referral-tree/${userId}`
-  );
-  return res.data;
-};
+
 
 const Dashboard = () => {
   const { user } = useAuth();
   const userId = user?.user?._id;
   const referralCode = user?.user?.referralCode || "";
+  const axiosSecure = useAxiosSecure();
 
-  const referralLink = `https://shslira.com/register?ref=${referralCode}`;
+  // const referralLink = `https://shslira.com/register?ref=${referralCode}`;
+
+  const fetchReferralTree = async (userId) => {
+  const res = await axiosSecure.get(
+    `/users/referral-tree/${userId}`
+  );
+  return res.data;
+};
 
   const {
     data: referralTree,

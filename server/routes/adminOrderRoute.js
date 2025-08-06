@@ -220,8 +220,8 @@ const UpdateRanksAndRewards = async (buyer) => {
     const leftTree = tree.left;
     const rightTree = tree.right;
 
-    console.log("Left Tree:", leftTree.points);
-    console.log("Right Tree:", rightTree.points);
+    console.log("Left Tree:", leftTree?.points);
+    console.log("Right Tree:", rightTree?.points);
 
 
     // const leftPV = await calculateTotalPV(leftTree);
@@ -265,6 +265,38 @@ const UpdateRanksAndRewards = async (buyer) => {
 }
 
 
+async function buildUplineChainMultipleParents(userId, depth = 0, maxDepth = 10, visited = new Set()) {
+  if (depth > maxDepth) return [];
+
+  const user = await User.findById(userId).lean();
+  if (!user || visited.has(user._id.toString())) return [];
+
+  visited.add(user._id.toString());
+
+  const parents = await User.find({
+    $or: [
+      { referralCode: user.referredBy },
+      { referralCode: user.placementBy }
+    ].filter(cond => Object.values(cond)[0])
+  }).lean();
+
+  if (!parents.length) {
+    return [user];
+  }
+
+  let chains = [];
+
+  for (const parent of parents) {
+    const chain = await buildUplineChainMultipleParents(parent._id, depth + 1, maxDepth, visited);
+    chains.push(...chain);
+  }
+
+  // Optional: remove duplicates and sort if needed
+  // For simplicity, just return parents + current user as linear array
+  return [...chains, user];
+}
+
+
 const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalPrice) => {
   const buyer = await User.findOne({ phone: buyerphone });
   if (!buyer) return;
@@ -289,6 +321,10 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   const tenPercent = grandPoint * 0.10;
   const thirtyPercent = grandPoint * 0.30;
   const twentyPercent = grandPoint * 0.20;
+  const sevenPercent = grandPoint * 0.07;
+  const threePercent = grandPoint * 0.03;
+  const fourPercent = grandPoint * 0.04;
+
 
   // 20% phone referrer
   console.log("Buyer Referred By:", buyer?.referredBy);
@@ -341,26 +377,50 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
 
 
   // 30% shared generation commission
-  const uplineFlat = await buildUplineTree(buyer._id);
-  const eligibleUplines = uplineFlat
-    .map((uplineUser, index) => {
-      const requiredLevel = index + 1;
-      if (uplineUser.GenerationLevel >= requiredLevel) {
-        return { ...uplineUser, level: requiredLevel };
-      }
-      return null;
-    })
-    .filter(Boolean);
+  // *****************************************************************
 
-  console.log("Eligible Uplines:", eligibleUplines);
+  const uplineFlat = await buildUplineChainMultipleParents(buyer._id);
+  const filteredUpline = uplineFlat.filter(
+    (u) => u._id.toString() !== buyer._id.toString()
+  );
+  // console.log("Upline Flat Structure:", filteredUpline);
 
-  if (eligibleUplines.length > 0) {
-    const pointPerUpline = thirtyPercent / eligibleUplines.length;
-    for (const upline of eligibleUplines) {
+  const eligibleUplines = filteredUpline.filter(
+    (u) => u.GenerationLevel > 0
+  );
+
+  function searchUserInTree(node, userId, maxDepth, currentDepth = 1) {
+    if (!node || currentDepth > maxDepth) return false;
+
+    if (node._id && node._id.toString() === userId.toString()) {
+      return true;
+    }
+
+    return (
+      searchUserInTree(node.left, userId, maxDepth, currentDepth + 1) ||
+      searchUserInTree(node.right, userId, maxDepth, currentDepth + 1)
+    );
+  }
+
+  const finalUplines = [];
+
+  for (const upline of eligibleUplines) {
+    const tree = await buildTree(upline._id); // upline's downline tree
+    const foundUser = searchUserInTree(tree, buyer._id, upline.GenerationLevel);
+    if (foundUser) {
+      finalUplines.push(upline);
+    }
+  }
+
+  if (finalUplines.length > 0) {
+    const pointPerUpline = thirtyPercent / finalUplines.length;
+
+    for (const upline of finalUplines) {
       const uplineUser = await User.findById(upline._id);
       if (!uplineUser) continue;
 
       uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
       uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
       uplineUser.AllEntry.incoming.push({
         fromUser: buyer._id,
@@ -368,10 +428,221 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
         sector: `Shared Generation Commission`,
         date: new Date()
       });
+
       await uplineUser.save();
     }
   }
 
+  // *****************************************************************
+
+  // Mega generation logic
+
+  const MegauplineFlat = await buildUplineChainMultipleParents(buyer._id);
+  const MegafilteredUpline = MegauplineFlat.filter(
+    (u) => u._id.toString() !== buyer._id.toString()
+  );
+  // console.log("Upline Flat Structure:", filteredUpline);
+
+  const MegaeligibleUplines = MegafilteredUpline.filter(
+    (u) => u.MegaGenerationLevel > 0
+  );
+
+  function searchUserInTree(node, userId, maxDepth, currentDepth = 1) {
+    if (!node || currentDepth > maxDepth) return false;
+
+    if (node._id && node._id.toString() === userId.toString()) {
+      return true;
+    }
+
+    return (
+      searchUserInTree(node.left, userId, maxDepth, currentDepth + 1) ||
+      searchUserInTree(node.right, userId, maxDepth, currentDepth + 1)
+    );
+  }
+
+  const MegafinalUplines = [];
+
+  for (const upline of MegaeligibleUplines) {
+    const tree = await buildTree(upline._id); // upline's downline tree
+    const foundUser = searchUserInTree(tree, buyer._id, upline.MegaGenerationLevel);
+    if (foundUser) {
+      MegafinalUplines.push(upline);
+    }
+  }
+
+
+
+
+  // Check if user has a position before distributing commission
+  if (buyer?.Position) {
+    if (MegafinalUplines.length > 0) {
+      const pointPerUpline = sevenPercent / MegafinalUplines.length;
+
+      for (const upline of MegafinalUplines) {
+        const uplineUser = await User.findById(upline._id);
+        if (!uplineUser) continue;
+
+        uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+        uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+        uplineUser.AllEntry.incoming.push({
+          fromUser: buyer._id,
+          pointReceived: pointPerUpline,
+          sector: `Shared mega Generation Commission`,
+          date: new Date()
+        });
+
+        await uplineUser.save();
+      }
+    }
+  }
+
+
+
+  // *****************************************************************
+
+  // 3% shared generation commission for Executive Manager and above
+
+  const ExcutiveOfficereligibleUplines = finalUplines.filter((u) =>
+    u.Position === 'Excutive Officer'
+  );
+
+  if (ExcutiveOfficereligibleUplines.length > 0) {
+
+    const pointPerUpline = threePercent / ExcutiveOfficereligibleUplines.length;
+    for (const upline of ExcutiveOfficereligibleUplines) {
+      const uplineUser = await User.findById(upline._id);
+      if (!uplineUser) continue;
+
+      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+      uplineUser.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        pointReceived: pointPerUpline,
+        sector: `Executive Officer Commission`,
+        date: new Date()
+      });
+
+      await uplineUser.save();
+    }
+  }
+
+
+  // *****************************************************************
+
+  // 4% shared generation commission for Executive Manager and above
+
+  const positioneligibleUplines = finalUplines.filter((u) =>
+    u.Position === 'Executive Manager'
+  );
+
+  if (positioneligibleUplines.length > 0) {
+    const pointPerUpline = fourPercent / positioneligibleUplines.length;
+
+    for (const upline of positioneligibleUplines) {
+      const uplineUser = await User.findById(upline._id);
+      if (!uplineUser) continue;
+
+      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+      uplineUser.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        pointReceived: pointPerUpline,
+        sector: `Special Fund Commission`,
+        date: new Date()
+      });
+
+      await uplineUser.save();
+    }
+  }
+
+  // *****************************************************************
+  // 4% shared generation commission for Executive Director and above
+
+  const ExcutiveDirectoreligibleUplines = finalUplines.filter((u) =>
+    u.Position === 'Executive Director'
+  );
+
+  if (ExcutiveDirectoreligibleUplines.length > 0) {
+    const pointPerUpline = fourPercent / ExcutiveDirectoreligibleUplines.length;
+
+    for (const upline of ExcutiveDirectoreligibleUplines) {
+      const uplineUser = await User.findById(upline._id);
+      if (!uplineUser) continue;
+
+      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+      uplineUser.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        pointReceived: pointPerUpline,
+        sector: `Travel Fund Commission`,
+        date: new Date()
+      });
+
+      await uplineUser.save();
+    }
+  }
+
+  // *****************************************************************
+  // 4% shared generation commission for Diamond Director and above
+
+  const DimondDirectoreligibleUplines = finalUplines.filter((u) =>
+    u.Position === 'Diamond Director'
+  );
+
+  if (DimondDirectoreligibleUplines.length > 0) {
+    const pointPerUpline = fourPercent / DimondDirectoreligibleUplines.length;
+
+    for (const upline of DimondDirectoreligibleUplines) {
+      const uplineUser = await User.findById(upline._id);
+      if (!uplineUser) continue;
+
+      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+      uplineUser.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        pointReceived: pointPerUpline,
+        sector: `Car Fund Commission`,
+        date: new Date()
+      });
+
+      await uplineUser.save();
+    }
+  }
+  // *****************************************************************
+  // 3% shared generation commission for Crown Director and above
+
+  const CrawonDirectoreligibleUplines = finalUplines.filter((u) =>
+    u.Position === 'Crown Director'
+  );
+
+  if (CrawonDirectoreligibleUplines.length > 0) {
+    const pointPerUpline = threePercent / CrawonDirectoreligibleUplines.length;
+
+    for (const upline of CrawonDirectoreligibleUplines) {
+      const uplineUser = await User.findById(upline._id);
+      if (!uplineUser) continue;
+
+      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+      uplineUser.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        pointReceived: pointPerUpline,
+        sector: `House Fund Commission`,
+        date: new Date()
+      });
+
+      await uplineUser.save();
+    }
+  }
+
+
+  // *****************************************************************
 
 
   // User Package Update

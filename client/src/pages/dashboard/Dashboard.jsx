@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
-import useUserById from "../../Hooks/useUserById";
+// import useUserById from "../../Hooks/useUserById";
 import useRole from "../../Hooks/useRole";
 import useAuth from "../../Hooks/useAuth";
 import { FaLink } from "react-icons/fa";
@@ -174,10 +174,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const [rightSideBar, setRightSideBar] = useState(true);
+  // const [rightSideBar, setRightSideBar] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
-  const [data] = useUserById();
+  // const [data] = useUserById();
   const { role } = useRole();
   const { user } = useAuth();
 
@@ -318,7 +318,7 @@ const Dashboard = () => {
       )}
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:block fixed top-0 left-0 inset-y-0 w-64 bg-white px-4 py-6 overflow-y-auto z-40 shadow">
+      <aside className="hidden md:block fixed top-0 left-0 inset-y-0 bg-white px-4 py-6 overflow-y-auto z-40 shadow">
         <Link to="/" className="block mb-6">
           <img src={logo} alt="Logo" className="w-32" />
         </Link>
