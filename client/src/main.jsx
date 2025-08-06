@@ -34,7 +34,6 @@ import Withdraw from "./pages/dashboard/user/Withdorw.jsx";
 import MyOrder from "./pages/dashboard/user/MyOrder.jsx";
 import Voucher from "./pages/dashboard/SuperAdmin/Voucher.jsx";
 import MyConsistency from "./pages/dashboard/SuperAdmin/MyConsistency.jsx";
-import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import PackegForActive from "./pages/packeg/PackegForActive.jsx";
 import UpdatePassword from "./components/UpdatePassword.jsx";
 import UserDetails from "./components/UserDetails.jsx";
@@ -75,6 +74,8 @@ import CreateDspId from "./pages/dashboard/Admin/CreateDspId.jsx";
 import RanksAndRewards from "./pages/dashboard/Admin/RanksAndRewards.jsx";
 import DspStoreProduct from "./pages/dashboard/DSP/DspStoreProduct.jsx";
 import AdminStoreProduct from "./pages/dashboard/Admin/AdminStoreProduct.jsx";
+import DspDashborad from "./pages/dashboard/DSP/DspDashborad.jsx";
+import AdminDashboard from "./pages/dashboard/Admin/AdminDashboard.jsx";
 
 const queryClients = new QueryClient();
 
@@ -231,6 +232,16 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/dashboard/AdminDashboard",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
         path: "/dashboard/adminStoreProduct",
         element: (
           <PrivetRouter>
@@ -328,6 +339,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <DspRoute>
               <AllOrders />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/DspDashborad",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <DspDashborad />
             </DspRoute>
           </PrivetRouter>
         ),

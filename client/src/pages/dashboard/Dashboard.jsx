@@ -90,6 +90,8 @@ const dashboardArry = [
 ];
 
 const DspDashboard = [
+
+  { title: "Dashboard", icon: <CgProfile />, link: "/dashboard/DspDashborad" },
   { title: "Profile", icon: <CgProfile />, link: "/dashboard/dspprofile" },
   {
     title: "Store Product",
@@ -123,7 +125,7 @@ const DspDashboard = [
 ];
 
 const adminDashboardArry = [
-  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/leaderboardAdmin" },
+  { title: "Dashboard", icon: <CiHome />, link: "/dashboard/AdminDashboard" },
   {
     title: "DB Storage",
     icon: <MdOutlineSdStorage />,
@@ -233,8 +235,8 @@ const Dashboard = () => {
     role === "admin"
       ? adminDashboardArry
       : role === "dsp"
-      ? DspDashboard
-      : dashboardArry;
+        ? DspDashboard
+        : dashboardArry;
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
@@ -280,9 +282,8 @@ const Dashboard = () => {
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
           {role?.toUpperCase()} Dashboard
@@ -377,10 +378,9 @@ const Dashboard = () => {
                 <NavLink
                   to={item.link}
                   className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer ${
-                      isActive
-                        ? "border-b-2 border-blue-500 bg-gray-100"
-                        : "hover:bg-gray-200"
+                    `flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer ${isActive
+                      ? "border-b-2 border-blue-500 bg-gray-100"
+                      : "hover:bg-gray-200"
                     }`
                   }
                 >
