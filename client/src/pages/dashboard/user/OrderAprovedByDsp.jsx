@@ -166,6 +166,7 @@ const OrderAprovedByDsp = () => {
                           {order.date?.slice(0, 10)}
                         </span>
                       </p>
+                      <p>Name: {user?.name || user?.user?.name}</p>
                       <p className="text-sm font-medium text-gray-700">
                         📞 Phone:{" "}
                         <span className="font-semibold">{order?.dspPhone}</span>

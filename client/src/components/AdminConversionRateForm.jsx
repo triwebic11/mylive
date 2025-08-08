@@ -8,6 +8,8 @@ const AdminConversionRateForm = () => {
   const [currentRate, setCurrentRate] = useState(1);
   const [pointInput, setPointInput] = useState("");
   const [takaInput, setTakaInput] = useState("");
+  const [tdsValue, setTdsValue] = useState("");
+  const [newTdsValue, setNewTdsValue] = useState("");
   const axiosSecure = useAxiosSecure();
 
   // ✅ Load current rate
@@ -16,7 +18,9 @@ const AdminConversionRateForm = () => {
       .get("/conversion-rate")
       .then((res) => {
         const rate = res.data?.pointToTaka || 1;
+        const tdsValue = res.data?.tdsValue || 1;
         setCurrentRate(rate);
+        setTdsValue(tdsValue);
       })
       .catch((err) => console.error("Failed to fetch conversion rate", err));
   }, []);
@@ -28,29 +32,25 @@ const AdminConversionRateForm = () => {
     const points = parseFloat(pointInput);
     const taka = parseFloat(takaInput);
 
-    if (!points || !taka || points <= 0 || taka <= 0) {
-      return Swal.fire(
-        "Invalid",
-        "Please enter valid positive values",
-        "warning"
-      );
-    }
-
     const pointToTaka = taka / points;
 
     try {
-      await axiosSecure.put("/conversion-rate", { pointToTaka });
+      await axiosSecure.put("/conversion-rate", {
+        pointToTaka,
+        newTdsValue: tdsValue,
+      });
 
       // ✅ Emit to socket (with key: pointToTaka)
       socket.emit("conversionRateUpdated", { pointToTaka });
 
       setCurrentRate(pointToTaka.toFixed(2));
-      setPointInput("");
-      setTakaInput("");
+      setNewTdsValue(tdsValue);
 
       Swal.fire(
         "Updated!",
-        `New rate is 1 Point = ${pointToTaka.toFixed(2)} ৳`,
+        `New rate is 1 Point = ${pointToTaka.toFixed(
+          2
+        )} ৳ and TDS value is ${tdsValue}`,
         "success"
       );
     } catch (err) {
@@ -93,6 +93,16 @@ const AdminConversionRateForm = () => {
             onChange={(e) => setTakaInput(e.target.value)}
             placeholder="Enter Taka (e.g. 10)"
             className="w-full border px-4 py-2 rounded-md shadow-sm"
+          />
+        </div>
+        <div>
+          <h1>Set TDS Value</h1>
+          <input
+            type="text"
+            value={tdsValue}
+            onChange={(e) => setTdsValue(e.target.value)}
+            placeholder="Enter TDS Value"
+            className="border border-gray-700 p-1 rounded-lg outline-0"
           />
         </div>
 
