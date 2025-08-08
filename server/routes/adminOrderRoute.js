@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const AdminOrder = require("../models/AdminOrder");
 const DspInventory = require("../models/DspInventory");
+const AdminStore = require("../models/AdminStore");
 
 // 👉 Order Create (Admin → DSP / DSP → User)
 // Order create
@@ -656,147 +657,160 @@ const distributeGrandPoint = async (
 
 
 
-  // *****************************************************************
 
-  // 3% shared generation commission for Executive Manager and above
-
-  const ExcutiveOfficereligibleUplines = finalUplines.filter((u) =>
-    u.Position === 'Excutive Officer'
-  );
-
-  if (ExcutiveOfficereligibleUplines.length > 0) {
-
-    const pointPerUpline = threePercent / ExcutiveOfficereligibleUplines.length;
-    for (const upline of ExcutiveOfficereligibleUplines) {
-      const uplineUser = await User.findById(upline._id);
-      if (!uplineUser) continue;
-
-      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-
-      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-      uplineUser.AllEntry.incoming.push({
-        fromUser: buyer._id,
-        pointReceived: pointPerUpline,
-        sector: `Executive Officer Commission`,
-        date: new Date()
-      });
-
-      await uplineUser.save();
-    }
-  }
+  // *********************************************************************
+  await AdminStore.create({
+    datafrom: buyer._id,
+    Executive_Officer: threePercent,
+    Special_Fund: fourPercent,
+    Car_Fund: fourPercent,
+    Tour_Fund: fourPercent,
+    Home_Fund: threePercent,
+  });
 
 
-  // *****************************************************************
 
-  // 4% shared generation commission for Executive Manager and above
+  // // *****************************************************************
 
-  const positioneligibleUplines = finalUplines.filter((u) =>
-    u.Position === 'Executive Manager'
-  );
+  // // 3% shared generation commission for Executive Manager and above
 
-  if (positioneligibleUplines.length > 0) {
-    const pointPerUpline = fourPercent / positioneligibleUplines.length;
+  // const ExcutiveOfficereligibleUplines = finalUplines.filter((u) =>
+  //   u.Position === 'Excutive Officer'
+  // );
 
-    for (const upline of positioneligibleUplines) {
-      const uplineUser = await User.findById(upline._id);
-      if (!uplineUser) continue;
+  // if (ExcutiveOfficereligibleUplines.length > 0) {
 
-      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+  //   const pointPerUpline = threePercent / ExcutiveOfficereligibleUplines.length;
+  //   for (const upline of ExcutiveOfficereligibleUplines) {
+  //     const uplineUser = await User.findById(upline._id);
+  //     if (!uplineUser) continue;
 
-      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-      uplineUser.AllEntry.incoming.push({
-        fromUser: buyer._id,
-        pointReceived: pointPerUpline,
-        sector: `Special Fund Commission`,
-        date: new Date()
-      });
+  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
 
-      await uplineUser.save();
-    }
-  }
+  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+  //     uplineUser.AllEntry.incoming.push({
+  //       fromUser: buyer._id,
+  //       pointReceived: pointPerUpline,
+  //       sector: `Executive Officer Commission`,
+  //       date: new Date()
+  //     });
 
-  // *****************************************************************
-  // 4% shared generation commission for Executive Director and above
+  //     await uplineUser.save();
+  //   }
+  // }
 
-  const ExcutiveDirectoreligibleUplines = finalUplines.filter((u) =>
-    u.Position === 'Executive Director'
-  );
 
-  if (ExcutiveDirectoreligibleUplines.length > 0) {
-    const pointPerUpline = fourPercent / ExcutiveDirectoreligibleUplines.length;
+  // // *****************************************************************
 
-    for (const upline of ExcutiveDirectoreligibleUplines) {
-      const uplineUser = await User.findById(upline._id);
-      if (!uplineUser) continue;
+  // // 4% shared generation commission for Executive Manager and above
 
-      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+  // const positioneligibleUplines = finalUplines.filter((u) =>
+  //   u.Position === 'Executive Manager'
+  // );
 
-      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-      uplineUser.AllEntry.incoming.push({
-        fromUser: buyer._id,
-        pointReceived: pointPerUpline,
-        sector: `Travel Fund Commission`,
-        date: new Date()
-      });
+  // if (positioneligibleUplines.length > 0) {
+  //   const pointPerUpline = fourPercent / positioneligibleUplines.length;
 
-      await uplineUser.save();
-    }
-  }
+  //   for (const upline of positioneligibleUplines) {
+  //     const uplineUser = await User.findById(upline._id);
+  //     if (!uplineUser) continue;
 
-  // *****************************************************************
-  // 4% shared generation commission for Diamond Director and above
+  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
 
-  const DimondDirectoreligibleUplines = finalUplines.filter((u) =>
-    u.Position === 'Diamond Director'
-  );
+  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+  //     uplineUser.AllEntry.incoming.push({
+  //       fromUser: buyer._id,
+  //       pointReceived: pointPerUpline,
+  //       sector: `Special Fund Commission`,
+  //       date: new Date()
+  //     });
 
-  if (DimondDirectoreligibleUplines.length > 0) {
-    const pointPerUpline = fourPercent / DimondDirectoreligibleUplines.length;
+  //     await uplineUser.save();
+  //   }
+  // }
 
-    for (const upline of DimondDirectoreligibleUplines) {
-      const uplineUser = await User.findById(upline._id);
-      if (!uplineUser) continue;
+  // // *****************************************************************
+  // // 4% shared generation commission for Executive Director and above
 
-      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+  // const ExcutiveDirectoreligibleUplines = finalUplines.filter((u) =>
+  //   u.Position === 'Executive Director'
+  // );
 
-      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-      uplineUser.AllEntry.incoming.push({
-        fromUser: buyer._id,
-        pointReceived: pointPerUpline,
-        sector: `Car Fund Commission`,
-        date: new Date()
-      });
+  // if (ExcutiveDirectoreligibleUplines.length > 0) {
+  //   const pointPerUpline = fourPercent / ExcutiveDirectoreligibleUplines.length;
 
-      await uplineUser.save();
-    }
-  }
-  // *****************************************************************
-  // 3% shared generation commission for Crown Director and above
+  //   for (const upline of ExcutiveDirectoreligibleUplines) {
+  //     const uplineUser = await User.findById(upline._id);
+  //     if (!uplineUser) continue;
 
-  const CrawonDirectoreligibleUplines = finalUplines.filter((u) =>
-    u.Position === 'Crown Director'
-  );
+  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
 
-  if (CrawonDirectoreligibleUplines.length > 0) {
-    const pointPerUpline = threePercent / CrawonDirectoreligibleUplines.length;
+  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+  //     uplineUser.AllEntry.incoming.push({
+  //       fromUser: buyer._id,
+  //       pointReceived: pointPerUpline,
+  //       sector: `Travel Fund Commission`,
+  //       date: new Date()
+  //     });
 
-    for (const upline of CrawonDirectoreligibleUplines) {
-      const uplineUser = await User.findById(upline._id);
-      if (!uplineUser) continue;
+  //     await uplineUser.save();
+  //   }
+  // }
 
-      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+  // // *****************************************************************
+  // // 4% shared generation commission for Diamond Director and above
 
-      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-      uplineUser.AllEntry.incoming.push({
-        fromUser: buyer._id,
-        pointReceived: pointPerUpline,
-        sector: `House Fund Commission`,
-        date: new Date()
-      });
+  // const DimondDirectoreligibleUplines = finalUplines.filter((u) =>
+  //   u.Position === 'Diamond Director'
+  // );
 
-      await uplineUser.save();
-    }
-  }
+  // if (DimondDirectoreligibleUplines.length > 0) {
+  //   const pointPerUpline = fourPercent / DimondDirectoreligibleUplines.length;
+
+  //   for (const upline of DimondDirectoreligibleUplines) {
+  //     const uplineUser = await User.findById(upline._id);
+  //     if (!uplineUser) continue;
+
+  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+  //     uplineUser.AllEntry.incoming.push({
+  //       fromUser: buyer._id,
+  //       pointReceived: pointPerUpline,
+  //       sector: `Car Fund Commission`,
+  //       date: new Date()
+  //     });
+
+  //     await uplineUser.save();
+  //   }
+  // }
+  // // *****************************************************************
+  // // 3% shared generation commission for Crown Director and above
+
+  // const CrawonDirectoreligibleUplines = finalUplines.filter((u) =>
+  //   u.Position === 'Crown Director'
+  // );
+
+  // if (CrawonDirectoreligibleUplines.length > 0) {
+  //   const pointPerUpline = threePercent / CrawonDirectoreligibleUplines.length;
+
+  //   for (const upline of CrawonDirectoreligibleUplines) {
+  //     const uplineUser = await User.findById(upline._id);
+  //     if (!uplineUser) continue;
+
+  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+  //     uplineUser.AllEntry.incoming.push({
+  //       fromUser: buyer._id,
+  //       pointReceived: pointPerUpline,
+  //       sector: `House Fund Commission`,
+  //       date: new Date()
+  //     });
+
+  //     await uplineUser.save();
+  //   }
+  // }
 
 
   // *****************************************************************

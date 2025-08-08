@@ -76,6 +76,7 @@ import DspStoreProduct from "./pages/dashboard/DSP/DspStoreProduct.jsx";
 import AdminStoreProduct from "./pages/dashboard/Admin/AdminStoreProduct.jsx";
 import DspDashborad from "./pages/dashboard/DSP/DspDashborad.jsx";
 import AdminDashboard from "./pages/dashboard/Admin/AdminDashboard.jsx";
+import FundDistribute from "./pages/dashboard/Admin/FundDistribute.jsx";
 
 const queryClients = new QueryClient();
 
@@ -169,6 +170,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <AdminRoute>
               <RanksAndRewards />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/FundDistribute",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <FundDistribute />
             </AdminRoute>
           </PrivetRouter>
         ),

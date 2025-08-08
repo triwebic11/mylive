@@ -30,7 +30,7 @@ import { RiUserFollowLine } from "react-icons/ri";
 import { RiMoneyDollarBoxLine } from "react-icons/ri";
 import { MdManageHistory } from "react-icons/md";
 import { MdDoneAll } from "react-icons/md";
-import { GiWantedReward } from "react-icons/gi";
+import { GiLifeSupport, GiWantedReward } from "react-icons/gi";
 
 const dashboardArry = [
   {
@@ -140,6 +140,11 @@ const adminDashboardArry = [
     title: "Ranks & Rewards",
     icon: <GiWantedReward />,
     link: "/dashboard/ranksAndRewards",
+  },
+  {
+    title: "Fund Distribute",
+    icon: <GiLifeSupport />,
+    link: "/dashboard/FundDistribute",
   },
 
   {

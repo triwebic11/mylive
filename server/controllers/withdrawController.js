@@ -15,13 +15,13 @@ const createWithdrawRequest = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const newTotalWithdraw = (user.totalwithdraw || 0) + parseFloat(totalwithdraw);
+    // const newTotalWithdraw = (user.totalwithdraw || 0) + parseFloat(totalwithdraw);
 
     const newRequest = new WithdrawRequest({
       name,
       phone,
       userId,
-      totalwithdraw: newTotalWithdraw,
+      totalwithdraw: totalwithdraw,
       status: "pending",
     });
 
@@ -97,13 +97,16 @@ const updateWithdrawStatus = async (req, res) => {
         if (currentPoints < withdrawAmount) {
           return res.status(400).json({ message: "Insufficient points for withdrawal" });
         } 
-        user.totalwithdraw = withdrawAmount;
+
+        const newTotalWithdraw = (user.totalwithdraw || 0) + parseFloat(withdrawAmount);
+        user.totalwithdraw = newTotalWithdraw;
 
         await user.save();
 
         // Optional: mark when processed
         request.processedAt = new Date();
         await request.save();
+
 
         // Emit socket event
         const io = req.app.get("io");
