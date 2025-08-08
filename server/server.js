@@ -46,7 +46,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/updateRank", require("./routes/RankUpgradeRequests"));
 app.use("/api/inventory", require("./routes/dspInventoryRoute"));
 app.get("/api/adminsummary", AdminSummery);
-app.use("/api/adminstore", require("./routes/adminStoreRoute"));
+app.use("/api/adminstore", require("./routes/AdminStoraRoute"));
 app.get("/api/db-stats", async (req, res) => {
   try {
     // যদি connection এখনও তৈরি না হয়
