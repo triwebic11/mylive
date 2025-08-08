@@ -4,6 +4,7 @@ const PackagesModel = require("../models/PackagesModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const AdminOrder = require("../models/AdminOrder");
 const RankUpgradeRequest = require("../models/RankUpgradeRequest");
 
 // Referral Code Generator
@@ -613,7 +614,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
   };
 
   const currentPurchaseAmount = getSumPointBySectorInLastNDays(
-    "ProductPurchase",
+    "10% personal reward from purchase",
     10
   );
 
@@ -622,6 +623,18 @@ const generateUserSummary = async (user, referredUsers = []) => {
   const withdrawableBalance = (points - totalWithdraws).toFixed(2);
 
   // console.log("Withdrawable Balance:", withdrawableBalance);
+
+
+  function countUsersInTree(tree) {
+  if (!tree) return 0;
+  const leftCount = countUsersInTree(tree.left);
+  const rightCount = countUsersInTree(tree.right);
+  return 1 + leftCount + rightCount; // 1 for current user
+}
+const userTree = await buildTree(user._id);
+const totalUsersInTree = countUsersInTree(userTree);
+console.log(`Total users in tree: ${totalUsersInTree}`);
+
 
   const users = await User.find().select("-password");
   const totalreferral = users.filter(u => u.referredBy === user.referralCode);
@@ -644,9 +657,11 @@ const generateUserSummary = async (user, referredUsers = []) => {
   const totalPointsFromRight = tree?.totalPointsFromRight || 0;
   const totalBinaryPoints = totalPointsFromLeft + totalPointsFromRight;
 
+  const orders = await AdminOrder.find({ dspPhone: user?.phone });
+
   return [
     { title: "Total Refer", value: totalreferral.length || 0 },
-    { title: "Total Free Team", value: totalreferral.length },
+    { title: "Total Free Team", value: totalUsersInTree - 1 },
     { title: "Total Active Team", value: totalActiveTeams },
     {
       title: "Currently Expired",
@@ -662,10 +677,10 @@ const generateUserSummary = async (user, referredUsers = []) => {
       title: "Monthly down sale pv",
       value: previousMonthPv >= currentMonthPv && monthlyDownSalePv,
     },
-    { title: "Total Team Sale Pv", value: totalBinaryPoints },
+    { title: "Total Team Sale Pv", value: totalBinaryPoints.toFixed(2) },
     { title: "Total Team Member", value: user.referralTree?.length || 0 },
     { title: "Current Purchase Amount", value: currentPurchaseAmount },
-    { title: "Total Purchase Amount", value: totalPurchaseAmount },
+    { title: "Total Purchase Amount", value: user?.points },
     { title: "Total Purchase Pv", value: productPurchasePoints },
     { title: "Refer Commission", value: referCommission },
     { title: "Generation Commission", value: generationCommission },
@@ -929,6 +944,7 @@ const UpdateRanksAndRewards = async (buyer) => {
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+      user.isActivePackage = "active"
 
       if (!user.rewards?.includes(matchedRank.reward)) {
         user.rewards = [...(user.rewards || []), matchedRank.reward];
@@ -1008,6 +1024,7 @@ const PackageLevelsdefine = async (buyer) => {
     buyer.package = matchedRank.Package;
     buyer.GenerationLevel = matchedRank.generationLevel;
     buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+    buyer.isActivePackage = "active"
     await buyer.save();
 
     console.log(`✅ User ${buyer._id} package updated to `, buyer);
