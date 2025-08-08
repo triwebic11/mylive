@@ -53,14 +53,6 @@ exports.getStoresummery = async (req, res) => {
 };
 
 
-const sectorNameMap = {
-  "Executive Officer": "Executive Officer Fund",
-  "Executive Manager": "Special Fund",
-  "Executive Director": "Tour Fund",
-  "Diamond": "Car Fund",
-  "Crown Director": "Home Fund",
-};
-
 
 exports.AddAdminStoreData = async (req, res) => {
   try {

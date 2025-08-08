@@ -47,6 +47,8 @@ const AdminWithdrawRequests = () => {
     );
   });
 
+  console.log(filteredRequests)
+
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-xl mt-8">
       <div>
@@ -93,7 +95,7 @@ const AdminWithdrawRequests = () => {
                 <tr key={req._id} className="hover:bg-gray-50">
                   <td className="px-4 py-2">{req.name}</td>
                   <td className="px-4 py-2">{req.phone}</td>
-                  <td className="px-4 py-2">{req.points}</td>
+                  <td className="px-4 py-2">{req.totalwithdraw}</td>
                   <td className="px-4 py-2">{date}</td>
                   <td className="px-4 py-2">
                     <span
