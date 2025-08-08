@@ -14,7 +14,8 @@ const OrderCreate = ({ title }) => {
 
   const [users, setUsers] = useState([]);
   const [matchedUser, setMatchedUser] = useState(null);
-
+  const [adminOrders, setAdminOrders] = useState([]);
+  const [activeBtn, setActiveBtn] = useState("admin");
   // console.log("User Role:", role);
   const location = useLocation();
   // console.log("Current Location:", location);
@@ -69,6 +70,22 @@ const OrderCreate = ({ title }) => {
         .catch((err) => console.error("Error loading orders", err));
     }
   }, [userId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axiosSecure.get("/admin-orders");
+        const onlyAdminOrders = res.data.filter(
+          (order) => order.createdBy === "admin"
+        );
+        setAdminOrders(onlyAdminOrders);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, [axiosSecure]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -224,30 +241,39 @@ const OrderCreate = ({ title }) => {
   };
 
   // Filtering Logic
-  const filteredOrders = allProducts
-    .slice()
-    .reverse()
-    .filter((order) => {
-      const matchesPhone = phoneFilter
-        ? order.dspPhone?.toLowerCase().includes(phoneFilter.toLowerCase())
-        : true;
+  const filteredOrders =
+    activeBtn === "admin"
+      ? adminOrders
+      : allProducts
+          .slice()
+          .reverse()
+          .filter((order) => {
+            const matchesPhone = phoneFilter
+              ? order.dspPhone
+                  ?.toLowerCase()
+                  .includes(phoneFilter.toLowerCase())
+              : true;
 
-      const matchesProduct = productFilter
-        ? order.products?.some((p) =>
-            p.productId?.toLowerCase().includes(productFilter.toLowerCase())
-          )
-        : true;
+            const matchesProduct = productFilter
+              ? order.products?.some((p) =>
+                  p.productId
+                    ?.toLowerCase()
+                    .includes(productFilter.toLowerCase())
+                )
+              : true;
 
-      const matchesDate = dateFilter
-        ? order.date?.slice(0, 10) === dateFilter
-        : true;
+            const matchesDate = dateFilter
+              ? order.date?.slice(0, 10) === dateFilter
+              : true;
 
-      const matchesMonth = monthFilter
-        ? new Date(order.date).getMonth() + 1 === Number(monthFilter)
-        : true;
+            const matchesMonth = monthFilter
+              ? new Date(order.date).getMonth() + 1 === Number(monthFilter)
+              : true;
 
-      return matchesPhone && matchesProduct && matchesDate && matchesMonth;
-    });
+            return (
+              matchesPhone && matchesProduct && matchesDate && matchesMonth
+            );
+          });
   let grandPoint = calculateGrandPoint();
   let userPackage;
   if (grandPoint >= 17500) {
@@ -796,6 +822,30 @@ const OrderCreate = ({ title }) => {
       </div>
 
       {/* ✅ Order Summary */}
+      <div>
+        <button
+          onClick={() => setActiveBtn("admin")}
+          className={`p-1 mx-1 border border-gray-900 rounded-lg duration-150 hover:shadow-lg shadow-gray-500 
+          ${
+            activeBtn === "admin"
+              ? "bg-green-800 text-white"
+              : "bg-white text-black"
+          }`}
+        >
+          All Ordered By SHSLira
+        </button>
+        <button
+          onClick={() => setActiveBtn("you")}
+          className={`p-1 mx-1 border border-gray-900 rounded-lg duration-150 hover:shadow-lg shadow-gray-500 
+          ${
+            activeBtn === "you"
+              ? "bg-green-800 text-white"
+              : "bg-white text-black"
+          }`}
+        >
+          Ordered By You
+        </button>
+      </div>
       <div className="space-y-4 max-h-[450px] overflow-y-auto bg-gray-50 p-4 rounded-xl border border-gray-300">
         {filteredOrders.map((order) => (
           <div
