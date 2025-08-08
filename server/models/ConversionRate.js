@@ -4,7 +4,13 @@ const conversionRateSchema = new mongoose.Schema(
   {
     pointToTaka: {
       type: Number,
-      required: true,
+
+      default: 1,
+    },
+
+    tdsValue: {
+      type: Number,
+
       default: 1,
     },
   },

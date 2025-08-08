@@ -11,6 +11,10 @@ const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const { role } = useRole();
+
+  const [users, setUsers] = useState([]);
+  const [matchedUser, setMatchedUser] = useState(null);
+
   // console.log("User Role:", role);
   const location = useLocation();
   // console.log("Current Location:", location);
@@ -65,6 +69,24 @@ const OrderCreate = ({ title }) => {
         .catch((err) => console.error("Error loading orders", err));
     }
   }, [userId]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axiosSecure.get("/users");
+        setUsers(res.data);
+      } catch (error) {
+        console.error("Failed to load users", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const foundUser = users.find((user) => user.phone === dspPhone);
+    setMatchedUser(foundUser || null);
+  }, [dspPhone, users]);
 
   const handleProductChange = (index, field, value) => {
     const updated = [...scndProducts];
@@ -266,11 +288,18 @@ const OrderCreate = ({ title }) => {
           type="text"
           value={dspPhone}
           onChange={(e) => setDspPhone(e.target.value)}
-          placeholder="Enter DSP Phone"
+          placeholder="Enter Phone number"
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
           required
         />
+        {matchedUser && (
+          <p className="flex flex-col mt-2 font-semibold border border-green-200 p-2 rounded-lg  bg-purple-800 text-white">
+            <span> Buyer Name: {matchedUser.name} </span>
+            <span> Buyer Email: {matchedUser.email}</span>
 
+            <span> Buyer Address: {matchedUser.address}</span>
+          </p>
+        )}
         {scndProducts.map((product, index) => {
           const matchedProduct = products?.find(
             (p) => p.productId?.toString() === product.productId?.toString()
