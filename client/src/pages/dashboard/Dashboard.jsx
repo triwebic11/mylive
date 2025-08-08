@@ -344,7 +344,7 @@ const Dashboard = () => {
       )}
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:block fixed top-0 left-0 inset-y-0 bg-white px-4 py-6 overflow-y-auto z-40 shadow">
+      <aside className="hidden md:block w-64 fixed top-0 left-0 inset-y-0 bg-white px-4 py-6 overflow-y-auto z-40 shadow">
         <Link to="/" className="block mb-6">
           <img src={logo} alt="Logo" className="w-32" />
         </Link>

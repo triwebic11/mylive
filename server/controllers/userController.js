@@ -631,7 +631,21 @@ const generateUserSummary = async (user, referredUsers = []) => {
   const rightCount = countUsersInTree(tree.right);
   return 1 + leftCount + rightCount; // 1 for current user
 }
+function sumPointsInTree(tree) {
+  if (!tree) return 0;
+
+  const leftPoints = sumPointsInTree(tree.left);
+  const rightPoints = sumPointsInTree(tree.right);
+  const currentPoints = tree.points || 0;
+
+  return currentPoints + leftPoints + rightPoints;
+}
+
 const userTree = await buildTree(user._id);
+// Total points in left and right downlines, excluding self
+const totalDownlinePoints = sumPointsInTree(userTree.left) + sumPointsInTree(userTree.right);
+
+// console.log("Total points in downline:", totalDownlinePoints);
 const totalUsersInTree = countUsersInTree(userTree);
 console.log(`Total users in tree: ${totalUsersInTree}`);
 
@@ -667,20 +681,20 @@ console.log(`Total users in tree: ${totalUsersInTree}`);
       title: "Currently Expired",
       value: totalexpireTeams,
     },
-    { title: "Total Voucher", value: 0 },
-    { title: "Previous Month Pv", value: previousMonthPv },
+    { title: "Total Voucher", value: orders?.length || 0 },
+    { title: "Previous Month Pv", value: previousMonthPv || 0},
     {
       title: "Current Month Pv",
-      value: currentMonthPv,
+      value: currentMonthPv || 0,
     },
     {
       title: "Monthly down sale pv",
-      value: previousMonthPv >= currentMonthPv && monthlyDownSalePv,
+      value: totalDownlinePoints.toFixed(2) || 0,
     },
-    { title: "Total Team Sale Pv", value: totalBinaryPoints.toFixed(2) },
-    { title: "Total Team Member", value: user.referralTree?.length || 0 },
+    { title: "Total Team Sale Pv", value: totalBinaryPoints.toFixed(2) || 0 },
+    { title: "Total Team Member", value: totalUsersInTree - 1 || 0 },
     { title: "Current Purchase Amount", value: currentPurchaseAmount },
-    { title: "Total Purchase Amount", value: user?.points },
+    { title: "Total Purchase Amount", value: user?.points.toFixed(2) },
     { title: "Total Purchase Pv", value: productPurchasePoints },
     { title: "Refer Commission", value: referCommission },
     { title: "Generation Commission", value: generationCommission },

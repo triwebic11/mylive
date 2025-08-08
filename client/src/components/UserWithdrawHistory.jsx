@@ -46,7 +46,7 @@ const UserWithdrawHistory = ({ userId }) => {
               return (
                 <tr key={item._id} className="hover:bg-gray-50">
                   <td className="px-4 py-2">{formattedDate}</td>
-                  <td className="px-4 py-2">{item.points}</td>
+                  <td className="px-4 py-2">{item.totalwithdraw}</td>
                   <td className="px-4 py-2">
                     <span className="text-green-600 font-semibold capitalize">
                       {item.status}
