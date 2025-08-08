@@ -2,20 +2,19 @@ import { useQuery } from '@tanstack/react-query';
 import useAxiosPublic from './useAxiosPublic';
 
 const useUserData = () => {
+  const axiosSecure = useAxiosPublic();
 
-    const axiosPublic = useAxiosPublic()
-    const {data, isLoading, isError, error, refetch} = useQuery({
-        queryKey: ['userData'],
-        queryFn: async () => {
-            const response = await axiosPublic.get('/users/my-referrals');
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        },
-    })
-    return [data, isLoading, isError, error, refetch]
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['userData'],
+    queryFn: async () => {
+      const response = await axiosSecure.get('/users/my-referrals');
+      // Axios does not have response.ok or response.json()
+      return response.data; // directly return data
+    },
+  });
 
-}
+  console.log(data);
+  return [data, isLoading, isError, error, refetch];
+};
 
 export default useUserData;

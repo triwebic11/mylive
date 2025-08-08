@@ -1,23 +1,22 @@
 const mongoose = require("mongoose");
 
-
 const adminStoreSchema = new mongoose.Schema({
-  userId: {
+  datafrom: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  Executive_Officer: String,
-  Special_Fund: String,
-  Car_Fund: String,
-  Tour_Fund:String,
-
+  Executive_Officer: { type: Number, min: 0 },
+  Special_Fund: { type: Number, min: 0 },
+  Car_Fund: { type: Number, min: 0 },
+  Tour_Fund: { type: Number, min: 0 },
+  Home_Fund: { type: Number, min: 0 },
   date: {
     type: String,
-    default: new Date().toISOString(),
+    default: () => new Date().toISOString(),
   },
 });
 
-const Order = mongoose.model("AdminStore", adminStoreSchema);
+const AdminStore = mongoose.model("AdminStore", adminStoreSchema);
 
-module.exports = Order;
+module.exports = AdminStore;

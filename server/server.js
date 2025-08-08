@@ -45,6 +45,7 @@ app.use("/api/admin-orders", require("./routes/adminOrderRoute"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/updateRank", require("./routes/RankUpgradeRequests"));
 app.use("/api/inventory", require("./routes/dspInventoryRoute"));
+app.use('/api/adminstore', require("./routes/AdminStoraRoute"))
 app.get('/api/adminsummery', AdminSummery)
 
 
