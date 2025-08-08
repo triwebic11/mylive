@@ -57,47 +57,42 @@ const DashboardCard = ({ title, value, change, isPositive, gradient }) => (
 
 const cards = [
     {
-        title: "Amount spend",
+        title: "Total Users",
         value: "$7.0K",
         change: "+0.13%",
         isPositive: true,
         gradient: "bg-gradient-to-r from-purple-500 to-indigo-500"
     },
     {
-        title: "Revenue",
+        title: "Total Orders",
         value: "$42.5K",
         change: "-2.86%",
         isPositive: false,
         gradient: "bg-gradient-to-r from-blue-500 to-blue-700"
     },
     {
-        title: "ROI",
+        title: "Total DSP",
         value: "508%",
         change: "-3.55%",
         isPositive: false,
         gradient: "bg-gradient-to-r from-blue-400 to-blue-600"
     },
     {
-        title: "Orders",
+        title: "Total Reward & Ranks",
         value: "960",
         change: "-5.60%",
         isPositive: false,
         gradient: "bg-gradient-to-r from-green-400 to-teal-500"
     },
+   
     {
-        title: "Cost per order",
-        value: "$7.3",
-        change: "+6.07%",
-        isPositive: true,
-        gradient: "bg-gradient-to-r from-pink-400 to-red-400"
+        title: "Total Products",
+        value: "960",
+        change: "-5.60%",
+        isPositive: false,
+        gradient: "bg-gradient-to-r from-green-400 to-teal-500"
     },
-    {
-        title: "Avg order amount",
-        value: "$44",
-        change: "+2.91%",
-        isPositive: true,
-        gradient: "bg-gradient-to-r from-purple-500 to-pink-400"
-    },
+   
 ];
 
 
@@ -106,7 +101,7 @@ const AdminDashboard = () => {
         <div>
             <h2 className="p-2 text-xl font-semibold">Admin Dashboard</h2>
             <TopSlider />
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 {cards.map((card, index) => (
                     <DashboardCard key={index} {...card} />
                 ))}

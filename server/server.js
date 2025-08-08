@@ -13,6 +13,7 @@ const withdrawRoutes = require("./routes/withdrawRequests");
 const packageRequestRoutes = require("./routes/packageRequestRoutes");
 const kycRoutes = require("./routes/kycRoutes");
 const { default: mongoose } = require("mongoose");
+const { AdminSummery } = require("./controllers/AdminSummery");
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -44,6 +45,7 @@ app.use("/api/admin-orders", require("./routes/adminOrderRoute"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/updateRank", require("./routes/RankUpgradeRequests"));
 app.use("/api/inventory", require("./routes/dspInventoryRoute"));
+app.get('/api/adminsummery', AdminSummery)
 
 
 app.get('/api/db-stats', async (req, res) => {
