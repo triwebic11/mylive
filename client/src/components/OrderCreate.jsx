@@ -242,9 +242,11 @@ const OrderCreate = ({ title }) => {
 
   // Filtering Logic
   const filteredOrders =
-    activeBtn === "admin"
-      ? adminOrders
-      : allProducts
+    role === "admin"
+      ? (activeBtn === "admin"
+        ? adminOrders
+        : allProducts)
+      : (allProducts || [])
           .slice()
           .reverse()
           .filter((order) => {
@@ -833,30 +835,34 @@ const OrderCreate = ({ title }) => {
       </div>
 
       {/* ✅ Order Summary */}
-      <div>
-        <button
-          onClick={() => setActiveBtn("admin")}
-          className={`p-1 mx-1 border border-gray-900 rounded-lg duration-150 hover:shadow-lg shadow-gray-500 
+      {role === "admin" ? (
+        <div>
+          <button
+            onClick={() => setActiveBtn("admin")}
+            className={`p-1 mx-1 border border-gray-900 rounded-lg duration-150 hover:shadow-lg shadow-gray-500 
           ${
             activeBtn === "admin"
               ? "bg-green-800 text-white"
               : "bg-white text-black"
           }`}
-        >
-          All Ordered By SHSLira
-        </button>
-        <button
-          onClick={() => setActiveBtn("you")}
-          className={`p-1 mx-1 border border-gray-900 rounded-lg duration-150 hover:shadow-lg shadow-gray-500 
+          >
+            All Ordered By SHSLira
+          </button>
+          <button
+            onClick={() => setActiveBtn("you")}
+            className={`p-1 mx-1 border border-gray-900 rounded-lg duration-150 hover:shadow-lg shadow-gray-500 
           ${
             activeBtn === "you"
               ? "bg-green-800 text-white"
               : "bg-white text-black"
           }`}
-        >
-          Ordered By You
-        </button>
-      </div>
+          >
+            Ordered By You
+          </button>
+        </div>
+      ) : (
+        <h1>All Orders</h1>
+      )}
       <div className="space-y-4 max-h-[450px] overflow-y-auto bg-gray-50 p-4 rounded-xl border border-gray-300">
         {filteredOrders.map((order) => (
           <div
