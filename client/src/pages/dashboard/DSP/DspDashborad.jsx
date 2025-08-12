@@ -136,15 +136,8 @@ const DspDashborad = () => {
             </div>
             <TopSlider />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-                {Array.isArray(agregate?.summary) ? (
-                    agregate?.summary?.map((stat, idx) => (
-                        <DashboardCard title={"none"} value={"stat.value"} />
-                    ))
-                ) : (
-                    <p className="text-red-600 font-bold">No summary data found.</p>
-                )}
-            </div>
+                <DashboardCard title={"none"} value={"stat.value"} />
+            
         </div>
     );
 };
