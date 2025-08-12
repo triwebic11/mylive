@@ -15,7 +15,7 @@ import useUserById from "../../../Hooks/useUserById";
 export default function PackageUpdate() {
   const { user } = useAuth();
   const [data] = useUserById();
-  console.log("User from package update page = ", data);
+  // console.log("User from package update page = ", data);
 
   // console.log("User from package update page = ", user);
   // console.log("User role from package update page = ", user?.role);
@@ -23,7 +23,7 @@ export default function PackageUpdate() {
   const userName = data?.name;
   const userEmail = data?.email;
   const userPhone = data?.phone;
-  console.log(userId, userName, userEmail, userPhone);
+  // console.log(userId, userName, userEmail, userPhone);
   const { role } = useRole();
   // console.log("User Role from package update page = ", role);
 
@@ -31,7 +31,7 @@ export default function PackageUpdate() {
   const { setUserPackage } = useAuth();
   const navigate = useNavigate();
   const [packages, isLoading, isError, error, refetch] = usePackages();
-  console.log(packages);
+  // console.log(packages);
   const axiosSecure = useAxiosSecure();
 
   // // console.log("user package compo----", data);

@@ -657,7 +657,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
 
   // console.log("Total points in downline:", totalDownlinePoints);
   const totalUsersInTree = countUsersInTree(userTree);
-  console.log(`Total users in tree: ${totalUsersInTree}`);
+  // console.log(`Total users in tree: ${totalUsersInTree}`);
 
   const users = await User.find().select("-password");
   const totalreferral = users.filter((u) => u.referredBy === user.referralCode);
@@ -943,8 +943,8 @@ const UpdateRanksAndRewards = async (buyer) => {
     const leftBV = tree.left.points;
     const rightBV = tree.right.points;
 
-    console.log("Left Tree:", leftBV);
-    console.log("Right Tree:", rightBV);
+    // console.log("Left Tree:", leftBV);
+    // console.log("Right Tree:", rightBV);
 
     const matchedRank = positionLevels
       .slice()
@@ -990,13 +990,13 @@ const UpdateRanksAndRewards = async (buyer) => {
         status: "pending",
       });
 
-      console.log("Rank upgrade request created:", postrank);
-      console.log(
-        `✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}`
-      );
-      console.log(
-        `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
-      );
+      // console.log("Rank upgrade request created:", postrank);
+      // console.log(
+      //   `✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}`
+      // );
+      // console.log(
+      //   `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
+      // );
     }
   } catch (error) {
     console.error("❌ Error updating ranks and rewards:", error);
@@ -1035,12 +1035,12 @@ const PackageLevels = [
 ];
 
 const PackageLevelsdefine = async (buyer) => {
-  console.log("PackageLevelsdefine called for buyer:", buyer._id);
+  // console.log("PackageLevelsdefine called for buyer:", buyer._id);
   try {
     const matchedRank = PackageLevels.slice()
       .reverse()
       .find((level) => buyer.points >= level.pointsBV);
-    console.log("Matched Rank:", matchedRank);
+    // console.log("Matched Rank:", matchedRank);
 
     buyer.package = matchedRank.Package;
     buyer.GenerationLevel = matchedRank.generationLevel;
@@ -1048,7 +1048,7 @@ const PackageLevelsdefine = async (buyer) => {
     buyer.isActivePackage = "active";
     await buyer.save();
 
-    console.log(`✅ User ${buyer._id} package updated to `, buyer);
+    // console.log(`✅ User ${buyer._id} package updated to `, buyer);
   } catch (error) {
     console.error("❌ Error in PackageLevelsdefine:", error);
   }
@@ -1075,7 +1075,7 @@ const userAgregateData = async (req, res) => {
     const tree = await buildTree(user._id);
     const leftPoints = tree.left?.points || 0;
     const rightPoints = tree.right?.points || 0;
-    console.log("Referral Tree:", tree.left?.points, tree.right?.points);
+    // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
     // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
     if (leftPoints >= 30000 && rightPoints >= 30000) {
       await UpdateRanksAndRewards(user);

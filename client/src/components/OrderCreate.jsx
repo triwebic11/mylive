@@ -69,7 +69,7 @@ const OrderCreate = ({ title }) => {
         })
         .catch((err) => console.error("Error loading orders", err));
     }
-  }, [userId]);
+  }, [axiosSecure, userId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,7 +98,7 @@ const OrderCreate = ({ title }) => {
     };
 
     fetchUsers();
-  }, []);
+  }, [axiosSecure]);
 
   useEffect(() => {
     const foundUser = users.find((user) => user.phone === dspPhone);
@@ -224,7 +224,6 @@ const OrderCreate = ({ title }) => {
 
     try {
       const res = await axiosSecure.post("/admin-orders", orderData);
-
       if (res.data?.order?._id) {
         setOrder(res.data);
         Swal.fire("✅ Success", "Order created!", "success");

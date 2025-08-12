@@ -87,7 +87,7 @@ const updateWithdrawStatus = async (req, res) => {
         const currentPoints = parseFloat(user.points || 0);
         const currentWithdraw = parseFloat(user.totalwithdraw || 0);
 
-        console.log("currentWithdraw amount:", currentWithdraw);
+        // console.log("currentWithdraw amount:", currentWithdraw);
 
 
         if (isNaN(withdrawAmount)) {

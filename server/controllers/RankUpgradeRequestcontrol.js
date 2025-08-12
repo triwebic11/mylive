@@ -4,7 +4,7 @@ exports.getRanksRequest = async (req, res) => {
   try {
     const requests = await RankUpgradeRequest.find().sort({ createdAt: -1 });
 
-    console.log("Fetched Rank Upgrade Requests:", requests);
+    // console.log("Fetched Rank Upgrade Requests:", requests);
     res.json(requests);
   } catch (error) {
     console.error("Error fetching rank update requests:", error);

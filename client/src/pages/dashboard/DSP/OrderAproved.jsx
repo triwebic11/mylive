@@ -59,7 +59,7 @@ const OrderAproved = () => {
     try {
       const html2pdf = (await import("html2pdf.js")).default;
       const element = pdfRefs.current[orderId]?.current;
-      console.log("PDF Element For ID", orderId, element);
+      // console.log("PDF Element For ID", orderId, element);
       if (!element) {
         console.error("PDF element not found");
         return;

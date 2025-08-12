@@ -13,7 +13,7 @@ const useUserData = () => {
     },
   });
 
-  console.log(data);
+  // console.log(data);
   return [data, isLoading, isError, error, refetch];
 };
 

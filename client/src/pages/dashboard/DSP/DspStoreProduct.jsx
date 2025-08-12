@@ -8,7 +8,7 @@ const DspStoreProduct = () => {
   // console.log("Current User phone:", user?.user?.email || user?.user?.email );
   const phone = user?.user?.phone || user?.user?.email;
   const { data: inventory = [], isLoading } = useDspInventory(phone);
-  console.log("Dsp Inventory Data:", inventory);
+  // console.log("Dsp Inventory Data:", inventory);
 
   if (isLoading) return <p className="text-center py-10">Loading...</p>;
 

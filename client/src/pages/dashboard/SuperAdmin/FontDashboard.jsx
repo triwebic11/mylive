@@ -86,7 +86,7 @@ const FontDashboard = () => {
       return res.data;
     },
   });
-  console.log("agretateee", agregate);
+  // console.log("agretateee", agregate);
 
   useEffect(() => {
     const updateDuration = () => {

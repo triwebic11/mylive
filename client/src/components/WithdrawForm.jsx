@@ -6,7 +6,7 @@ const WithdrawForm = ({ userId }) => {
   const [user, setUser] = useState(null);
   const [withdrawPoints, setWithdrawPoints] = useState("");
   let currentPoints = user?.points;
-  console.log("Current Points:", currentPoints);
+  // console.log("Current Points:", currentPoints);
   const axiosSecure = useAxiosSecure();
 
   // Fetch user data by ID
@@ -34,7 +34,7 @@ const WithdrawForm = ({ userId }) => {
       return Swal.fire("Insufficient", "You don't have enough points", "error");
     }
 
-    console.log(user?.totalwithdraw);
+    // console.log(user?.totalwithdraw);
 
     const requestData = {
       name: user.name,
@@ -45,7 +45,7 @@ const WithdrawForm = ({ userId }) => {
 
     try {
       await axiosSecure.post("/withdraw-requests", requestData);
-      console.log("Withdraw request data:", requestData);
+      // console.log("Withdraw request data:", requestData);
       Swal.fire(
         "Success",
         "Your withdraw request has been submitted!",

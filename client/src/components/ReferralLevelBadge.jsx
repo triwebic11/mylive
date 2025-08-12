@@ -42,7 +42,7 @@ export default function ReferralLevelBadge({ data }) {
   // const { user } = useAuth();
   // const userId = user?.user?._id;
   const axiosSecure = useAxiosSecure();
-  console.log("ReferralLevelBadge data:", data);
+  // console.log("ReferralLevelBadge data:", data);
 
   useEffect(() => {
     const fetchPackage = async () => {

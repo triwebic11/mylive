@@ -7,7 +7,7 @@ import useRole from "../Hooks/useRole";
 const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
   const { role } = useRole();
 
-  console.log("userrrrrrrrrrrrrrrr role", role);
+  // console.log("userrrrrrrrrrrrrrrr role", role);
   const axiosSecure = useAxiosSecure();
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.user?._id;

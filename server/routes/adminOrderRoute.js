@@ -21,6 +21,10 @@ router.post("/", async (req, res) => {
       grandDiscount,
     } = req.body;
 
+    
+      // 4. Distribute points
+      await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
+
     // Step 1: Admin ordering for DSP
     if (orderedFor === "dsp") {
       for (const p of products) {
@@ -102,8 +106,6 @@ router.post("/", async (req, res) => {
 
       const savedOrder = await newOrder.save();
 
-      // 4. Distribute points
-      await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
 
       return res.status(201).json({
         message: "DSP → User order created",
@@ -365,7 +367,7 @@ const positionLevels = [
 ];
 
 const UpdateRanksAndRewards = async (buyer) => {
-  console.log("Updating ranks and rewards for user:", buyer);
+  // console.log("Updating ranks and rewards for user:", buyer);
 
   try {
     const tree = await buildTree(buyer._id);
@@ -374,8 +376,8 @@ const UpdateRanksAndRewards = async (buyer) => {
     const leftTree = tree.left;
     const rightTree = tree.right;
 
-    console.log("Left Tree:", leftTree?.points);
-    console.log("Right Tree:", rightTree?.points);
+    // console.log("Left Tree:", leftTree?.points);
+    // console.log("Right Tree:", rightTree?.points);
 
 
     // const leftPV = await calculateTotalPV(leftTree);
@@ -458,11 +460,13 @@ const distributeGrandPoint = async (
   grandTotalPrice
 ) => {
   const buyer = await User.findOne({ phone: buyerphone });
+  // console.log("buyer-------", buyer)
   if (!buyer) return;
 
   const fifteenPercent = grandPoint * 0.15;
 
   if (buyer?.role === "dsp") {
+    // console.log("dsp getting.....")
     buyer.points = (buyer.points || 0) + fifteenPercent;
     buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
     buyer.AllEntry.incoming.push({
@@ -486,12 +490,12 @@ const distributeGrandPoint = async (
 
 
   // 20% phone referrer
-  console.log("Buyer Referred By:", buyer?.referredBy);
+  // console.log("Buyer Referred By:", buyer?.referredBy);
   if (buyer?.referredBy) {
     const phoneReferrer = await User.findOne({
       referralCode: buyer.referredBy,
     });
-    console.log("Phone Referrer:", phoneReferrer);
+    // console.log("Phone Referrer:", phoneReferrer);
     if (phoneReferrer) {
       phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
       phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };

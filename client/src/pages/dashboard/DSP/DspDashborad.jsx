@@ -104,7 +104,7 @@ const DspDashborad = () => {
       return res.data;
     },
   });
-  console.log("agretateee", agregate);
+//   console.log("agretateee", agregate);
 
   useEffect(() => {
     const updateDuration = () => {
@@ -155,7 +155,7 @@ const DspDashborad = () => {
       </div>
       <TopSlider />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
         {/* {Array.isArray(agregate?.summary) ? (
                     agregate?.summary?.map((stat, idx) => (
                         <DashboardCard title={"none"} value={"stat.value"} />
