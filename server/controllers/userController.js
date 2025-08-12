@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const AdminOrder = require("../models/AdminOrder");
 const RankUpgradeRequest = require("../models/RankUpgradeRequest");
+const TdsRate = require("../models/ConversionRate");
 
 // Referral Code Generator
 const generateReferralCode = async () => {
@@ -457,7 +458,12 @@ const updateUserRole = async (req, res) => {
   }
 };
 
-async function buildUplineChainMultipleParents(userId, depth = 0, maxDepth = 10, visited = new Set()) {
+async function buildUplineChainMultipleParents(
+  userId,
+  depth = 0,
+  maxDepth = 10,
+  visited = new Set()
+) {
   if (depth > maxDepth) return [];
 
   const user = await User.findById(userId).lean();
@@ -468,8 +474,8 @@ async function buildUplineChainMultipleParents(userId, depth = 0, maxDepth = 10,
   const parents = await User.find({
     $or: [
       { referralCode: user.referredBy },
-      { referralCode: user.placementBy }
-    ].filter(cond => Object.values(cond)[0])
+      { referralCode: user.placementBy },
+    ].filter((cond) => Object.values(cond)[0]),
   }).lean();
 
   if (!parents.length) {
@@ -479,7 +485,12 @@ async function buildUplineChainMultipleParents(userId, depth = 0, maxDepth = 10,
   let chains = [];
 
   for (const parent of parents) {
-    const chain = await buildUplineChainMultipleParents(parent._id, depth + 1, maxDepth, visited);
+    const chain = await buildUplineChainMultipleParents(
+      parent._id,
+      depth + 1,
+      maxDepth,
+      visited
+    );
     chains.push(...chain);
   }
 
@@ -487,9 +498,6 @@ async function buildUplineChainMultipleParents(userId, depth = 0, maxDepth = 10,
   // For simplicity, just return parents + current user as linear array
   return [...chains, user];
 }
-
-
-
 
 // async function buildUplineTree(userId, depth = 0, maxDepth = 10, visited = new Set()) {
 //   if (depth > maxDepth) return [];
@@ -539,13 +547,14 @@ const generateUserSummary = async (user, referredUsers = []) => {
     return parseFloat(total.toFixed(2));
   };
 
-
   const productPurchasePoints = getSumBySector("ProductPurchase");
   const referCommission = getSumBySector("20% phone referrer commission");
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared mega Generation Commission");
   const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
-  const repurchaseCommission = getSumBySector("10% personal reward from purchase");
+  const repurchaseCommission = getSumBySector(
+    "10% personal reward from purchase"
+  );
   const specialFund = getSumBySector("Special Fund Commission");
   const totalTDS = getSumBySector("TDS");
   const carFund = getSumBySector("Car Fund Commission");
@@ -591,7 +600,8 @@ const generateUserSummary = async (user, referredUsers = []) => {
         date.getMonth() === currentMonth && date.getFullYear() === currentYear
       );
     })
-    .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0).toFixed(2);
+    .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0)
+    .toFixed(2);
 
   const monthlyDownSalePv = previousMonthPv - currentMonthPv;
   const getSumAmountBySector = (sectorName) => {
@@ -619,39 +629,38 @@ const generateUserSummary = async (user, referredUsers = []) => {
   );
 
   const points = parseFloat(user?.points) || 0;
-  const totalWithdraws = parseFloat(user?.totalwithdraw) || 0;  // note: your field is totalwithdraw, not totalWithdraw
+  const totalWithdraws = parseFloat(user?.totalwithdraw) || 0; // note: your field is totalwithdraw, not totalWithdraw
   const withdrawableBalance = (points - totalWithdraws).toFixed(2);
 
   // console.log("Withdrawable Balance:", withdrawableBalance);
 
-
   function countUsersInTree(tree) {
-  if (!tree) return 0;
-  const leftCount = countUsersInTree(tree.left);
-  const rightCount = countUsersInTree(tree.right);
-  return 1 + leftCount + rightCount; // 1 for current user
-}
-function sumPointsInTree(tree) {
-  if (!tree) return 0;
+    if (!tree) return 0;
+    const leftCount = countUsersInTree(tree.left);
+    const rightCount = countUsersInTree(tree.right);
+    return 1 + leftCount + rightCount; // 1 for current user
+  }
+  function sumPointsInTree(tree) {
+    if (!tree) return 0;
 
-  const leftPoints = sumPointsInTree(tree.left);
-  const rightPoints = sumPointsInTree(tree.right);
-  const currentPoints = tree.points || 0;
+    const leftPoints = sumPointsInTree(tree.left);
+    const rightPoints = sumPointsInTree(tree.right);
+    const currentPoints = tree.points || 0;
 
-  return currentPoints + leftPoints + rightPoints;
-}
+    return currentPoints + leftPoints + rightPoints;
+  }
 
-const userTree = await buildTree(user._id);
-// Total points in left and right downlines, excluding self
-const totalDownlinePoints = sumPointsInTree(userTree.left) + sumPointsInTree(userTree.right);
+  const userTree = await buildTree(user._id);
+  // Total points in left and right downlines, excluding self
+  const totalDownlinePoints =
+    sumPointsInTree(userTree.left) + sumPointsInTree(userTree.right);
 
-// console.log("Total points in downline:", totalDownlinePoints);
-const totalUsersInTree = countUsersInTree(userTree);
-console.log(`Total users in tree: ${totalUsersInTree}`);
-
+  // console.log("Total points in downline:", totalDownlinePoints);
+  const totalUsersInTree = countUsersInTree(userTree);
+  console.log(`Total users in tree: ${totalUsersInTree}`);
 
   const users = await User.find().select("-password");
-  const totalreferral = users.filter(u => u.referredBy === user.referralCode);
+  const totalreferral = users.filter((u) => u.referredBy === user.referralCode);
 
   // console.log("Total Referral Count:", totalreferral);
 
@@ -673,6 +682,18 @@ console.log(`Total users in tree: ${totalUsersInTree}`);
 
   const orders = await AdminOrder.find({ dspPhone: user?.phone });
 
+  let totalTdsValue = 0;
+  try {
+    const tdsRate = await TdsRate.findOne();
+    const tdsRateValue = tdsRate ? tdsRate.tdsValue : 0;
+    totalTdsValue = (user?.totalwithdraw * tdsRateValue) / 100;
+
+    await user.save();
+  } catch (error) {
+    console.error("Error calculating TDS:", error);
+    user.totalTDS = 0; // Default to 0 if error occurs
+    await user.save();
+  }
   return [
     { title: "Total Refer", value: totalreferral.length || 0 },
     { title: "Total Free Team", value: totalUsersInTree - 1 },
@@ -682,7 +703,7 @@ console.log(`Total users in tree: ${totalUsersInTree}`);
       value: totalexpireTeams,
     },
     { title: "Total Voucher", value: orders?.length || 0 },
-    { title: "Previous Month Pv", value: previousMonthPv || 0},
+    { title: "Previous Month Pv", value: previousMonthPv || 0 },
     {
       title: "Current Month Pv",
       value: currentMonthPv || 0,
@@ -703,18 +724,13 @@ console.log(`Total users in tree: ${totalUsersInTree}`);
     { title: "Repurchase Commission", value: repurchaseCommission },
     { title: "Withdrawable Balance", value: withdrawableBalance },
     { title: "Total Withdraw", value: user?.totalwithdraw },
-    { title: "Total TDS", value: totalTDS },
+    { title: "Total TDS", value: totalTdsValue.toFixed(2) || 0 },
     { title: "Executive Officer", value: executiveOfficer },
     { title: "Special Fund", value: specialFund },
     { title: "Car Fund", value: carFund },
     { title: "Tour Fund", value: tourFund },
     { title: "Home Fund", value: homeFund },
   ];
-
-
-
-
-
 };
 async function buildTree(userId) {
   const user = await User.findById(userId);
@@ -881,7 +897,7 @@ const positionLevels = [
     rightBV: 96000000,
     position: "Double Diamond",
     reward: "Private Car or ৳25,00,000 cash",
-    generationLevel: Infinity,  // From PDF: Unlimited
+    generationLevel: Infinity, // From PDF: Unlimited
     megaGenerationLevel: Infinity,
   },
   {
@@ -919,7 +935,6 @@ const positionLevels = [
   },
 ];
 
-
 const UpdateRanksAndRewards = async (buyer) => {
   try {
     const tree = await buildTree(buyer._id);
@@ -931,14 +946,10 @@ const UpdateRanksAndRewards = async (buyer) => {
     console.log("Left Tree:", leftBV);
     console.log("Right Tree:", rightBV);
 
-
     const matchedRank = positionLevels
       .slice()
       .reverse()
-      .find(
-        (level) =>
-          leftBV >= level.leftBV && rightBV >= level.rightBV
-      );
+      .find((level) => leftBV >= level.leftBV && rightBV >= level.rightBV);
     // console.log("Matched Rank:", matchedRank);
 
     if (!matchedRank) return;
@@ -958,7 +969,7 @@ const UpdateRanksAndRewards = async (buyer) => {
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-      user.isActivePackage = "active"
+      user.isActivePackage = "active";
 
       if (!user.rewards?.includes(matchedRank.reward)) {
         user.rewards = [...(user.rewards || []), matchedRank.reward];
@@ -976,11 +987,13 @@ const UpdateRanksAndRewards = async (buyer) => {
         reward: matchedRank.reward,
         leftBV,
         rightBV,
-        status: 'pending'
+        status: "pending",
       });
 
       console.log("Rank upgrade request created:", postrank);
-      console.log(`✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}`);
+      console.log(
+        `✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}`
+      );
       console.log(
         `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
       );
@@ -1019,34 +1032,27 @@ const PackageLevels = [
     generationLevel: 10,
     megaGenerationLevel: 3,
   },
-
 ];
 
 const PackageLevelsdefine = async (buyer) => {
   console.log("PackageLevelsdefine called for buyer:", buyer._id);
   try {
-    const matchedRank = PackageLevels
-      .slice()
+    const matchedRank = PackageLevels.slice()
       .reverse()
-      .find(
-        (level) =>
-          buyer.points >= level.pointsBV
-      );
+      .find((level) => buyer.points >= level.pointsBV);
     console.log("Matched Rank:", matchedRank);
-
 
     buyer.package = matchedRank.Package;
     buyer.GenerationLevel = matchedRank.generationLevel;
     buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-    buyer.isActivePackage = "active"
+    buyer.isActivePackage = "active";
     await buyer.save();
 
     console.log(`✅ User ${buyer._id} package updated to `, buyer);
-  }
-  catch (error) {
+  } catch (error) {
     console.error("❌ Error in PackageLevelsdefine:", error);
   }
-}
+};
 
 const userAgregateData = async (req, res) => {
   try {
@@ -1080,10 +1086,6 @@ const userAgregateData = async (req, res) => {
 
     // *****************************************************************
 
-
-
-
-
     res.status(200).json({
       success: true,
       userId: user._id,
@@ -1096,8 +1098,6 @@ const userAgregateData = async (req, res) => {
     res.status(500).json({ message: "Server Error", error: err.message });
   }
 };
-
-
 
 const getReferralTreeById = async (req, res) => {
   try {

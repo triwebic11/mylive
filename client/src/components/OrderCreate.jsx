@@ -14,7 +14,8 @@ const OrderCreate = ({ title }) => {
 
   const [users, setUsers] = useState([]);
   const [matchedUser, setMatchedUser] = useState(null);
-
+  const [adminOrders, setAdminOrders] = useState([]);
+  const [activeBtn, setActiveBtn] = useState("admin");
   // console.log("User Role:", role);
   const location = useLocation();
   // console.log("Current Location:", location);
@@ -69,6 +70,22 @@ const OrderCreate = ({ title }) => {
         .catch((err) => console.error("Error loading orders", err));
     }
   }, [userId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axiosSecure.get("/admin-orders");
+        const onlyAdminOrders = res.data.filter(
+          (order) => order.createdBy === "admin"
+        );
+        setAdminOrders(onlyAdminOrders);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, [axiosSecure]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -224,30 +241,41 @@ const OrderCreate = ({ title }) => {
   };
 
   // Filtering Logic
-  const filteredOrders = allProducts
-    .slice()
-    .reverse()
-    .filter((order) => {
-      const matchesPhone = phoneFilter
-        ? order.dspPhone?.toLowerCase().includes(phoneFilter.toLowerCase())
-        : true;
+  const filteredOrders =
+    role === "admin"
+      ? (activeBtn === "admin"
+        ? adminOrders
+        : allProducts)
+      : (allProducts || [])
+          .slice()
+          .reverse()
+          .filter((order) => {
+            const matchesPhone = phoneFilter
+              ? order.dspPhone
+                  ?.toLowerCase()
+                  .includes(phoneFilter.toLowerCase())
+              : true;
 
-      const matchesProduct = productFilter
-        ? order.products?.some((p) =>
-            p.productId?.toLowerCase().includes(productFilter.toLowerCase())
-          )
-        : true;
+            const matchesProduct = productFilter
+              ? order.products?.some((p) =>
+                  p.productId
+                    ?.toLowerCase()
+                    .includes(productFilter.toLowerCase())
+                )
+              : true;
 
-      const matchesDate = dateFilter
-        ? order.date?.slice(0, 10) === dateFilter
-        : true;
+            const matchesDate = dateFilter
+              ? order.date?.slice(0, 10) === dateFilter
+              : true;
 
-      const matchesMonth = monthFilter
-        ? new Date(order.date).getMonth() + 1 === Number(monthFilter)
-        : true;
+            const matchesMonth = monthFilter
+              ? new Date(order.date).getMonth() + 1 === Number(monthFilter)
+              : true;
 
-      return matchesPhone && matchesProduct && matchesDate && matchesMonth;
-    });
+            return (
+              matchesPhone && matchesProduct && matchesDate && matchesMonth
+            );
+          });
   let grandPoint = calculateGrandPoint();
   let userPackage;
   if (grandPoint >= 17500) {
@@ -535,7 +563,8 @@ const OrderCreate = ({ title }) => {
                               Repurchase Free Product
                             </th>
                             <th className="px-4 py-2 my-2 md:my-0">
-                              {subtotal >= 5000 && "Consistency Free Product"}
+                              {subtotal >= 5000 &&
+                                "Advance Consistency Free Product"}
                             </th>
                           </tr>
                         </thead>
@@ -591,144 +620,154 @@ const OrderCreate = ({ title }) => {
 
             return (
               <div>
-                <div
-                  key={freeindex}
-                  className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 space-y-4"
-                >
-                  <h1>Free Product</h1>
-                  <div className="overflow-x-auto rounded-lg border border-gray-200">
-                    <table className="min-w-full text-sm text-left text-gray-800 grid grid-cols-2 md:grid-cols-1">
-                      <thead className="bg-gray-100 text-gray-900 font-semibold">
-                        <tr className="flex flex-col md:flex-row justify-around ">
-                          <th className="px-4 py-2 my-2 md:my-0">Product</th>
-                          <th className="px-4 py-2 my-2 md:my-0">Price(৳)</th>
-                          <th className="px-4 py-2 my-2 md:my-0">
-                            Quantity (৳)
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="bg-white md:border-t flex flex-col md:flex-row">
-                          {/* Product Selector */}
-                          <td className="px-4 py-2 min-w-[200px]">
-                            <input
-                              list="freeproduct-options"
-                              value={freeProducts?.productId}
-                              onChange={(e) => {
-                                const selectedId = e.target.value;
-                                handleProductChange(
-                                  freeindex,
-                                  "freeProductId",
-                                  selectedId
-                                );
-
-                                const selected = freeProducts.find(
-                                  (p) => p.productId?.toString() === selectedId
-                                );
-
-                                if (selected) {
-                                  handleProductChange(
-                                    freeindex,
-                                    "freeProductRate",
-                                    selected.price
-                                  );
-
-                                  handleProductChange(
-                                    freeindex,
-                                    "freeProductName",
-                                    selected.name
-                                  );
-                                }
-                              }}
-                              placeholder="Enter Product ID"
-                              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                            <datalist id="freeproduct-options">
-                              {freeProducts?.map((p) => (
-                                <option key={p._id} value={p.productId}>
-                                  {p.productId} - {p.name}
-                                </option>
-                              ))}
-                            </datalist>
-                          </td>
-
-                          {/* Price */}
-                          <td className="px-4 py-2">
-                            <input
-                              type="number"
-                              value={freeProduct.freeProductRate || ""}
-                              onChange={(e) =>
-                                handleProductChange(
-                                  freeindex,
-                                  "freeProductRate",
-                                  e.target.value
-                                )
-                              }
-                              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="Discount Price"
-                              required
-                              readOnly
-                            />
-                          </td>
-
-                          {/* Regular Price */}
-
-                          {/* Quantity */}
-                          <td className="px-4 py-2">
-                            <input
-                              type="number"
-                              value={freeProduct.freeQuantity}
-                              onChange={(e) =>
-                                handleProductChange(
-                                  freeindex,
-                                  "freeQuantity",
-                                  e.target.value
-                                )
-                              }
-                              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="Qty"
-                              required
-                            />
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Summary Info */}
-                  <div className="bg-gray-100 p-4 rounded-lg text-sm text-gray-800 space-y-1">
-                    <div className="overflow-x-auto rounded-lg border border-gray-200">
-                      <table className="min-w-full text-sm text-left text-gray-700">
-                        <thead className="bg-gray-100 text-gray-900 font-semibold">
-                          <tr>
-                            <th className="px-4 py-2">Name</th>
-                            <th className="px-4 py-2">Subtotal</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="bg-white border-t">
-                            <td className="px-4 py-2">
-                              {freeProduct.freeProductName || (
-                                <span className="text-gray-400">N/A</span>
-                              )}
-                            </td>
-                            <td className="px-4 py-2 font-bold text-blue-700">
-                              ৳{freeSubtotal}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => removeProductField(index)}
-                      className="mt-3 inline-block bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition duration-200 text-sm"
+                {(freeProduct.isRepurchaseFree ||
+                  freeProduct.isConsistencyFree) && (
+                  <div>
+                    <div
+                      key={freeindex}
+                      className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 space-y-4"
                     >
-                      Remove
-                    </button>
+                      <h1>Free Product</h1>
+                      <div className="overflow-x-auto rounded-lg border border-gray-200">
+                        <table className="min-w-full text-sm text-left text-gray-800 grid grid-cols-2 md:grid-cols-1">
+                          <thead className="bg-gray-100 text-gray-900 font-semibold">
+                            <tr className="flex flex-col md:flex-row justify-around ">
+                              <th className="px-4 py-2 my-2 md:my-0">
+                                Product
+                              </th>
+                              <th className="px-4 py-2 my-2 md:my-0">
+                                Price(৳)
+                              </th>
+                              <th className="px-4 py-2 my-2 md:my-0">
+                                Quantity (৳)
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="bg-white md:border-t flex flex-col md:flex-row">
+                              {/* Product Selector */}
+                              <td className="px-4 py-2 min-w-[200px]">
+                                <input
+                                  list="freeproduct-options"
+                                  value={freeProducts?.productId}
+                                  onChange={(e) => {
+                                    const selectedId = e.target.value;
+                                    handleProductChange(
+                                      freeindex,
+                                      "freeProductId",
+                                      selectedId
+                                    );
+
+                                    const selected = freeProducts.find(
+                                      (p) =>
+                                        p.productId?.toString() === selectedId
+                                    );
+
+                                    if (selected) {
+                                      handleProductChange(
+                                        freeindex,
+                                        "freeProductRate",
+                                        selected.price
+                                      );
+
+                                      handleProductChange(
+                                        freeindex,
+                                        "freeProductName",
+                                        selected.name
+                                      );
+                                    }
+                                  }}
+                                  placeholder="Enter Product ID"
+                                  className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <datalist id="freeproduct-options">
+                                  {freeProducts?.map((p) => (
+                                    <option key={p._id} value={p.productId}>
+                                      {p.productId} - {p.name}
+                                    </option>
+                                  ))}
+                                </datalist>
+                              </td>
+
+                              {/* Price */}
+                              <td className="px-4 py-2">
+                                <input
+                                  type="number"
+                                  value={freeProduct.freeProductRate || ""}
+                                  onChange={(e) =>
+                                    handleProductChange(
+                                      freeindex,
+                                      "freeProductRate",
+                                      e.target.value
+                                    )
+                                  }
+                                  className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  placeholder="Discount Price"
+                                  required
+                                  readOnly
+                                />
+                              </td>
+
+                              {/* Regular Price */}
+
+                              {/* Quantity */}
+                              <td className="px-4 py-2">
+                                <input
+                                  type="number"
+                                  value={freeProduct.freeQuantity}
+                                  onChange={(e) =>
+                                    handleProductChange(
+                                      freeindex,
+                                      "freeQuantity",
+                                      e.target.value
+                                    )
+                                  }
+                                  className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  placeholder="Qty"
+                                  required
+                                />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Summary Info */}
+                      <div className="bg-gray-100 p-4 rounded-lg text-sm text-gray-800 space-y-1">
+                        <div className="overflow-x-auto rounded-lg border border-gray-200">
+                          <table className="min-w-full text-sm text-left text-gray-700">
+                            <thead className="bg-gray-100 text-gray-900 font-semibold">
+                              <tr>
+                                <th className="px-4 py-2">Name</th>
+                                <th className="px-4 py-2">Subtotal</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="bg-white border-t">
+                                <td className="px-4 py-2">
+                                  {freeProduct.freeProductName || (
+                                    <span className="text-gray-400">N/A</span>
+                                  )}
+                                </td>
+                                <td className="px-4 py-2 font-bold text-blue-700">
+                                  ৳{freeSubtotal}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => removeProductField(index)}
+                          className="mt-3 inline-block bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition duration-200 text-sm"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             );
           })}
@@ -796,6 +835,34 @@ const OrderCreate = ({ title }) => {
       </div>
 
       {/* ✅ Order Summary */}
+      {role === "admin" ? (
+        <div>
+          <button
+            onClick={() => setActiveBtn("admin")}
+            className={`p-1 mx-1 border border-gray-900 rounded-lg duration-150 hover:shadow-lg shadow-gray-500 
+          ${
+            activeBtn === "admin"
+              ? "bg-green-800 text-white"
+              : "bg-white text-black"
+          }`}
+          >
+            All Ordered By SHSLira
+          </button>
+          <button
+            onClick={() => setActiveBtn("you")}
+            className={`p-1 mx-1 border border-gray-900 rounded-lg duration-150 hover:shadow-lg shadow-gray-500 
+          ${
+            activeBtn === "you"
+              ? "bg-green-800 text-white"
+              : "bg-white text-black"
+          }`}
+          >
+            Ordered By You
+          </button>
+        </div>
+      ) : (
+        <h1>All Orders</h1>
+      )}
       <div className="space-y-4 max-h-[450px] overflow-y-auto bg-gray-50 p-4 rounded-xl border border-gray-300">
         {filteredOrders.map((order) => (
           <div

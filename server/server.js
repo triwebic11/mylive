@@ -22,7 +22,7 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT"],
   },
 });
-mongoose.set('strictQuery', true);
+mongoose.set("strictQuery", true);
 // Connect MongoDB
 connectDB();
 
@@ -45,11 +45,9 @@ app.use("/api/admin-orders", require("./routes/adminOrderRoute"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/updateRank", require("./routes/RankUpgradeRequests"));
 app.use("/api/inventory", require("./routes/dspInventoryRoute"));
-app.use('/api/adminstore', require("./routes/AdminStoraRoute"))
-app.get('/api/adminsummery', AdminSummery)
-
-
-app.get('/api/db-stats', async (req, res) => {
+app.get("/api/adminsummary", AdminSummery);
+app.use("/api/adminstore", require("./routes/AdminStoraRoute"));
+app.get("/api/db-stats", async (req, res) => {
   try {
     // যদি connection এখনও তৈরি না হয়
     if (!mongoose.connection.readyState) {
@@ -72,8 +70,8 @@ app.get('/api/db-stats', async (req, res) => {
       avgObjSize: stats.avgObjSize,
     });
   } catch (error) {
-    console.error('Error fetching DB stats:', error);
-    res.status(500).json({ message: 'Failed to fetch DB stats' });
+    console.error("Error fetching DB stats:", error);
+    res.status(500).json({ message: "Failed to fetch DB stats" });
   }
 });
 

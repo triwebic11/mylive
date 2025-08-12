@@ -1,13 +1,10 @@
-
-
-
 // routes/productRoutes.js
 const express = require("express");
 const router = express.Router();
 const {
   getStore,
   AddAdminStoreData,
-  getStoresummery
+  getStoresummery,
 } = require("../controllers/AdminStoreController");
 
 router.get("/", getStore);
