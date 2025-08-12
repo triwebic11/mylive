@@ -65,12 +65,10 @@ const TopSlider = () => {
 const FontDashboard = () => {
   const [data] = useUserById();
   const { user } = useAuth();
-  const userId = user?.user?._id || "";
 
   const [duration, setDuration] = useState("15s");
 
   const axiosPublic = useAxiosPublic();
-  const axiosSecure = useAxiosSecure();
   const dspPhone = user?.user?.phone || user?.user?.email || "";
 
   const {

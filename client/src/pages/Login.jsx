@@ -6,6 +6,7 @@ import { AuthContext } from "../AuthProvider/AuthProvider";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 import { logo } from "../assets/index.js";
 import { Eye, EyeOff } from "lucide-react";
+import useRole from "../Hooks/useRole.jsx";
 
 const Login = () => {
   const {
@@ -16,6 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(AuthContext);
   const axiosPublic = useAxiosPublic();
+  const {role} = useRole()
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,8 +36,20 @@ const Login = () => {
         showConfirmButton: false,
         timer: 1500,
       });
+ 
+      if(role === "admin"){
+        navigate("/dashboard/AdminDashboard");
+      }
+      else if (role === "dsp"){
+        navigate("/dashboard/DspDashborad");
+      }
+      else if(role === "user"){
+        navigate("/dashboard/DspDashborad");
+      }
+      else{
+        navigate("/")
+      }
 
-      navigate("/dashboard");
       localStorage.setItem("userId", res.data.user._id);
     } catch (error) {
       if (error.response && error.response.status === 400) {

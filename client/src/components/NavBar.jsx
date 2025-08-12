@@ -38,7 +38,7 @@ function NavBar() {
   const [isProductsOpen, setProductsOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(null);
-  const { role, isLoading } = useRole()
+  const { role} = useRole()
 
   // console.log("rooooooooooooole", role)
 
@@ -115,12 +115,20 @@ function NavBar() {
           {/* Auth Buttons */}
           {user ? (
             <>
-               <Link
-                to={role === "admin" ? "/dashboard/leaderboardAdmin" : "/dashboard/leaderboard"}
+              <Link
+                to={
+                  role === "admin"
+                    ? "/dashboard/AdminDashboard"
+                    : role === "dsp"
+                      ? "/dashboard/DspDashborad"
+                      : role === "user"
+                        ? "/dashboard/leaderboard"
+                        : "/"
+                }
                 className="block py-1 text-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {role === "admin" ? "Dashboard" : "Dashboard"}
+                Dashboard
               </Link>
               <button onClick={handleLogout} className="hover:text-blue-600">
                 Logout
@@ -217,12 +225,21 @@ function NavBar() {
             <>
 
               <Link
-                to={role === "admin" ? "/dashboard/leaderboardAdmin" : "/dashboard/leaderboard"}
+                to={
+                  role === "admin"
+                    ? "/dashboard/AdminDashboard"
+                    : role === "dsp"
+                      ? "/dashboard/DspDashborad"
+                      : role === "user"
+                        ? "/dashboard/leaderboard"
+                        : "/"
+                }
                 className="block py-1 text-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {role === "admin" ? "Dashboard" : "userDashboard"}
+                Dashboard
               </Link>
+
 
 
               <button
