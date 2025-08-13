@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { banner1, banner2 } from "../../../assets";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useUserById from "../../../Hooks/useUserById";
 
 const DashboardCard = ({ title, value }) => (
   <div className="bg-gradient-to-r from-pink-400 to-blue-500 rounded-xl border border-gray-200 shadow-md flex justify-between items-center p-4 min-h-32 relative">
@@ -53,15 +54,16 @@ const TopSlider = () => {
 };
 
 const DspDashborad = () => {
-//   const [data] = useUserById();
+  //   const [data] = useUserById();
   const { user } = useAuth();
+  const [data] = useUserById();
   const [dspOrders, setOrders] = useState([]);
   const userId = user?.user?._id || user?._id || "";
   const [allProducts, setAllProducts] = useState([]);
 
-//   const [duration, setDuration] = useState("15s");
+  //   const [duration, setDuration] = useState("15s");
 
-//   const axiosPublic = useAxiosPublic();
+  //   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
   const dspPhone = user?.user?.phone || user?.user?.email || "";
 
@@ -85,25 +87,25 @@ const DspDashborad = () => {
     }
   }, [userId]);
 
-//   const {
-//     data: agregate,
-//     isLoading,
-//     isError,
-//     error,
-//     refetch,
-//   } = useQuery({
-//     queryKey: ["agregate", data?._id],
-//     queryFn: async () => {
-//       const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
-//       return res.data;
-//     },
-//   });
-//   console.log("agretateee", agregate);
+  //   const {
+  //     data: agregate,
+  //     isLoading,
+  //     isError,
+  //     error,
+  //     refetch,
+  //   } = useQuery({
+  //     queryKey: ["agregate", data?._id],
+  //     queryFn: async () => {
+  //       const res = await axiosPublic.get(`/users/userAgregateData/${data?._id}`);
+  //       return res.data;
+  //     },
+  //   });
+  //   console.log("agretateee", agregate);
 
   useEffect(() => {
     const updateDuration = () => {
       const isLargeScreen = window.innerWidth >= 768;
-    //   setDuration(isLargeScreen ? "25s" : "15s");
+      //   setDuration(isLargeScreen ? "25s" : "15s");
     };
 
     updateDuration();
@@ -111,18 +113,18 @@ const DspDashborad = () => {
     return () => window.removeEventListener("resize", updateDuration);
   }, []);
 
-//   const { data: orders } = useQuery({
-//     queryKey: ["orders"],
-//     queryFn: async () => {
-//       try {
-//         const res = await axiosPublic.get(`/admin-orders/by-phone/${dspPhone}`);
-//         return Array.isArray(res.data) ? [...res.data].reverse() : [];
-//       } catch (err) {
-//         console.error("Error fetching cash on delivery:", err);
-//         throw err;
-//       }
-//     },
-//   });
+  //   const { data: orders } = useQuery({
+  //     queryKey: ["orders"],
+  //     queryFn: async () => {
+  //       try {
+  //         const res = await axiosPublic.get(`/admin-orders/by-phone/${dspPhone}`);
+  //         return Array.isArray(res.data) ? [...res.data].reverse() : [];
+  //       } catch (err) {
+  //         console.error("Error fetching cash on delivery:", err);
+  //         throw err;
+  //       }
+  //     },
+  //   });
   return (
     <div>
       <h2 className="p-2 text-xl font-semibold">Dsp Dashboard</h2>
@@ -162,7 +164,7 @@ const DspDashborad = () => {
           title="Order For User"
           value={allProducts?.length || 0}
         />
-        <DashboardCard title="Total Points" value={user?.user?.points || 0} />
+        <DashboardCard title="Total Points" value={data?.points || 0} />
       </div>
     </div>
   );
