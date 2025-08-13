@@ -69,10 +69,10 @@ export default function ReferralLevelBadge({ data }) {
     <div
       className={`px-5 py-4 rounded-xl inline-block shadow-md border-l-4 border-black ${current.bg} ${current.text}`}
     >
-      <h1 className="text-xl font-bold mb-1 flex items-center gap-2">
+      {/* <h1 className="text-xl font-bold mb-1 flex items-center gap-2">
         <span className="text-2xl">{current.emoji}</span>
         Package: {data?.package || "Normal"}
-      </h1>
+      </h1> */}
       <h2 className="text-base sm:text-lg font-medium">
         Generation Level:{" "}
         <span className="font-bold">

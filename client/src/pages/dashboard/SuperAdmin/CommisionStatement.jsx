@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useAgregate from "../../../Hooks/useAgregate";
 import useUserById from "../../../Hooks/useUserById";
+import useUserStatements from "../../../Hooks/useUserStatements";
 
 const StatementRow = ({ label, value, bold = false }) => (
     <div
@@ -43,10 +44,10 @@ export default function CommissionStatement({
         isLoading,
         isError,
         error,
-        refetch] = useAgregate()
-        // console.log("agreeeee", agregate)
+        refetch] = useUserStatements()
+        console.log("agreeeee", agregate)
 
-        const total = agregate?.summary.reduce((sum, item) => sum + item.value, 0);
+        const total = agregate?.summary.reduce((sum, item) => sum + parseInt(item.value), 0);
 
     const handleSearch = (e) => {
         e.preventDefault();

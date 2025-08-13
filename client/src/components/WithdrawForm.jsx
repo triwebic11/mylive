@@ -4,10 +4,32 @@ import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const WithdrawForm = ({ userId }) => {
   const [user, setUser] = useState(null);
-  const [withdrawPoints, setWithdrawPoints] = useState("");
+  const [withdrawtaka, setWithdrawtaka] = useState("");
+    const [rate, setRate] = useState(1);
   let currentPoints = user?.points;
-  // console.log("Current Points:", currentPoints);
-  const axiosSecure = useAxiosSecure();
+    const axiosSecure = useAxiosSecure();
+  console.log("Current Points:", currentPoints);
+
+    // ✅ Fetch conversion rate
+  useEffect(() => {
+    axiosSecure
+      .get("/conversion-rate")
+      .then((res) => {
+        const currentRate = res.data?.pointToTaka || 1;
+        setRate(parseFloat(currentRate).toFixed(2));
+      })
+      .catch((err) => console.error("Failed to fetch conversion rate:", err));
+  }, [axiosSecure]);
+
+
+  const totaltaka = currentPoints * rate
+
+  console.log(withdrawtaka)
+
+  console.log("totaltakaaaaaaa",totaltaka)
+      const withdrawpointsconvert = withdrawtaka / rate
+
+    console.log("withdrow poibts", withdrawpointsconvert)
 
   // Fetch user data by ID
   useEffect(() => {
@@ -22,7 +44,7 @@ const WithdrawForm = ({ userId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!withdrawPoints || withdrawPoints <= 0) {
+    if (!withdrawtaka || withdrawtaka <= 0) {
       return Swal.fire(
         "Invalid",
         "Please enter a valid point amount",
@@ -30,9 +52,11 @@ const WithdrawForm = ({ userId }) => {
       );
     }
 
-    if (withdrawPoints > currentPoints) {
+    if (withdrawtaka > totaltaka) {
       return Swal.fire("Insufficient", "You don't have enough points", "error");
     }
+
+
 
     // console.log(user?.totalwithdraw);
 
@@ -40,18 +64,19 @@ const WithdrawForm = ({ userId }) => {
       name: user.name,
       phone: user.phone,
       userId: user._id,
-      totalwithdraw: parseInt(withdrawPoints),
+      totalTaka: parseInt(withdrawtaka),
+      totalwithdraw: parseInt(withdrawpointsconvert),
     };
 
     try {
       await axiosSecure.post("/withdraw-requests", requestData);
-      // console.log("Withdraw request data:", requestData);
+      console.log("Withdraw request data:", requestData);
       Swal.fire(
         "Success",
         "Your withdraw request has been submitted!",
         "success"
       );
-      setWithdrawPoints("");
+      setWithdrawtaka("");
     } catch (error) {
       console.error("Withdraw request failed:", error);
       Swal.fire("Error", "Something went wrong. Try again later.", "error");
@@ -118,9 +143,9 @@ const WithdrawForm = ({ userId }) => {
           <input
             type="number"
             min="1"
-            value={withdrawPoints}
-            onChange={(e) => setWithdrawPoints(e.target.value)}
-            placeholder="Enter points to withdraw"
+            value={withdrawtaka}
+            onChange={(e) => setWithdrawtaka(e.target.value)}
+            placeholder="Enter amount to withdraw"
             className="w-full mt-1 border rounded px-3 py-2"
             required
           />

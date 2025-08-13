@@ -1,10 +1,11 @@
 // controllers/withdrawController.js
 const WithdrawRequest = require("../models/WithdrawRequest");
 const User = require("../models/User"); // Assuming you have a User model
+const TdsRate = require("../models/ConversionRate");
 const createWithdrawRequest = async (req, res) => {
-  const { name, phone, userId, totalwithdraw } = req.body;
+  const { name, phone, userId, totalwithdraw, totalTaka } = req.body;
 
-  if (!name || !phone || !userId || !totalwithdraw) {
+  if (!name || !phone || !userId || !totalwithdraw || !totalTaka) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -21,6 +22,7 @@ const createWithdrawRequest = async (req, res) => {
       name,
       phone,
       userId,
+      totalTaka,
       totalwithdraw: totalwithdraw,
       status: "pending",
     });
@@ -72,6 +74,9 @@ const updateWithdrawStatus = async (req, res) => {
       return res.status(404).json({ message: "Withdraw request not found" });
     }
 
+     const tdsRate = await TdsRate.findOne();
+      console.log("TDS Rate",tdsRate?.pointToTaka)
+
     // Prevent re-approving or re-rejecting
     if (request.status !== "pending") {
       return res.status(400).json({ message: "Request already processed" });
@@ -83,8 +88,9 @@ const updateWithdrawStatus = async (req, res) => {
     if (status === "approved") {
       const user = await User.findById(request.userId);
       if (user) {
-        const withdrawAmount = parseFloat(request.totalwithdraw);
-        const currentPoints = parseFloat(user.points || 0);
+        const withdrawAmount = parseFloat(request.totalTaka);
+        // const withdrowtaka = parseFloat(request?.totalTaka || 0)
+        const currentPoints = parseFloat(user.points * tdsRate);
         const currentWithdraw = parseFloat(user.totalwithdraw || 0);
 
         // console.log("currentWithdraw amount:", currentWithdraw);

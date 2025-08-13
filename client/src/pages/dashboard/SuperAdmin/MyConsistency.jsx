@@ -42,7 +42,7 @@ const pointsByMonth = last4MonthsPoints(incomingEntries);
                         key={index}
                         className="bg-white shadow-sm rounded-lg p-6 text-center border"
                     >
-                        <p className="text-3xl font-medium text-gray-900">{totalPoints}</p>
+                        <p className="text-3xl font-medium text-gray-900">{totalPoints.toFixed(2)}</p>
                         <p className="mt-2 text-gray-600">{month}</p>
                     </div>
                 ))}

@@ -429,7 +429,7 @@ const Dashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 p-4 pt-20 md:pt-4">
+      <main className="flex-1 md:ml-64 p-4  bg-sky-100 pt-20 md:pt-4">
         <Outlet />
       </main>
     </div>

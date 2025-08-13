@@ -10,6 +10,10 @@ const withdrawRequestSchema = new mongoose.Schema(
     },
     name: String,
     phone: String,
+   totalTaka: {
+      type: Number,
+      default: 0,
+    }, 
     totalwithdraw: {
       type: Number,
       default: 0,

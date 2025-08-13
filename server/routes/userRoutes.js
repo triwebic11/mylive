@@ -16,6 +16,8 @@ const {
   submitKycImages,
   getUserKycById,
   getReferralTreeById,
+  userStatements,
+  userAllStatements,
 } = require("../controllers/userController");
 
 router.post("/register", registerUser);
@@ -34,6 +36,8 @@ router.get("/admin/all-users", getAllUsers);
 router.get("/admin/user/:id", getUserById);
 router.patch("/updaterole/:id", updateUserRole);
 router.get("/userAgregateData/:id", userAgregateData);
+router.get("/userStatements/:id", userStatements);
+router.get("/userAllStatements/:id", userAllStatements);
 // router.post("/kyc", submitKycImages);
 // router.get("/kyc/:id", getUserKycById);
 

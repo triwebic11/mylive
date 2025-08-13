@@ -11,22 +11,27 @@ import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import CountdownTimer from "../../../components/CountdownTimer";
 
 const DashboardCard = ({ title, value }) => (
-  <div className="bg-white rounded-xl border border-gray-200 shadow-md flex justify-between items-center p-4 min-h-[100px] relative">
+  <div className="bg-white rounded-xl border-b-2 border-blue-700 shadow-md flex  flex-col justify-between  p-4 min-h-[100px] relative">
     {/* Left: Icon + Title */}
     <div className=" items-center ">
-      <span className="text-sm text-purple-800 font-semibold">{title}</span>
-      <div className="w-10 h-10 border border-purple-600 flex items-center justify-center rounded-md">
-        <FaArrowRight className="text-purple-700 text-sm" />
-      </div>
+      <span className="text-base text-blue-800 font-semibold">{title}</span>
+      {/* <div className="w-10 h-10 border border-blue-600 flex items-center justify-center rounded-md">
+        {/* <FaArrowRight className="text-blue-700 text-sm" /> */}
+      {/* </div> */}
     </div>
+    <div className="flex justify-between">
+      <div>
 
-    {/* Right: Value */}
+      </div>
+
     <div>
       <span className="text-xl font-bold text-purple-700">{value}</span>
     </div>
+    </div>
 
-    {/* Bottom Border Highlight */}
-    <div className="absolute bottom-0 left-0 w-full h-[1.5px] bg-yellow-500 rounded-b-xl" />
+    {/* Right: Value */}
+
+   
   </div>
 );
 
@@ -65,12 +70,23 @@ const TopSlider = () => {
 const FontDashboard = () => {
   const [data] = useUserById();
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure()
 
   const [duration, setDuration] = useState("15s");
 
   const axiosPublic = useAxiosPublic();
   const dspPhone = user?.user?.phone || user?.user?.email || "";
 
+  const {
+    data: referaltree,
+  } = useQuery({
+    queryKey: ["referaltree", data?._id],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/users/referral-tree/${data?._id}`);
+      return res.data;
+    },
+  });
+  console.log(referaltree)
   const {
     data: agregate,
     isLoading,
@@ -128,8 +144,8 @@ const FontDashboard = () => {
 
 
   return (
-    <div className=" w-[100%] mx-auto  min-h-screen">
-      <h2 className="p-2 text-xl font-semibold">Dashboard</h2>
+    <div className=" w-[100%] bg-sky-100 mx-auto  min-h-screen">
+      <h2 className="text-xl font-semibold">Dashboard</h2>
 
       <div className="relative w-full overflow-hidden py-2 flex items-center">
         {/* Inline keyframes only once */}
@@ -150,7 +166,7 @@ const FontDashboard = () => {
         {/* <span className="text-sm font-bold uppercase">{countdown}</span> */}
         {/* Scrolling Text */}
         {/* <marquee> </marquee> */}
-        <marquee className="flex-1 overflow-hidden font-semibold text-pink-600">
+        <marquee className="flex-1 overflow-hidden font-semibold text-purple-700">
           SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে শনিবার
           ও রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন |
         </marquee>
@@ -170,11 +186,40 @@ const FontDashboard = () => {
           Repurchase Validity: 30d 23h 59m 59s
         </p> */}
       </header>
+      <div className="flex justify-between">
 
       <ReferralLevelBadge data={data} />
+      {/* Left right BV */}
+
+        <div
+      className={`px-5 py-4 rounded-xl inline-block shadow-md border-r-4 border-black `}
+    >
+      <h1 className="text-xl font-bold text-purple-700 mb-1 flex items-center gap-2">
+        <span className="text-2xl "></span>
+        Left / Right BV
+      </h1>
+      <div className="flex">
+
+      <h2 className="text-base sm:text-lg font-medium">
+        
+           {referaltree?.left?.points}
+
+      </h2>
+      <h2 className="text-base sm:text-lg font-medium">
+        
+           /
+
+      </h2>
+      <h2 className="text-base sm:text-lg font-medium">
+        {referaltree?.right?.points}
+      </h2>
+      </div>
+    </div>
+      </div>
+
       <div className="w-full mx-auto p-2 space-y-4">
         {/* Header Bar */}
-        <div className="bg-pink-600 text-white flex justify-between items-center px-4 py-2 rounded-md">
+        <div className="bg-blue-600 text-white flex justify-between items-center px-4 py-2 rounded-md">
           <h2 className="text-base font-semibold">Repurchase Validity</h2>
 
           {data?.isActivePackage === "active" ? (
@@ -207,7 +252,7 @@ const FontDashboard = () => {
           {/* Order Card */}
           <div className="md:w-1/2">
             <div className="bg-white shadow-black/80 shadow-sm rounded-md p-2 text-center text-sm h-28  ">
-              <h3 className="text-purple-700 font-bold text-base mb-2">
+              <h3 className="text-blue-700 font-bold text-base mb-2">
                 Order
               </h3>
               <div className="flex justify-between items-center">

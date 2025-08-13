@@ -7,6 +7,20 @@ const AdminWithdrawRequests = () => {
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const axiosSecure = useAxiosSecure();
+    const [rate, setRate] = useState(1);
+
+    // ✅ Fetch conversion rate
+  useEffect(() => {
+    axiosSecure
+      .get("/conversion-rate")
+      .then((res) => {
+        const currentRate = res.data?.pointToTaka || 1;
+        setRate(parseFloat(currentRate).toFixed(2));
+      })
+      .catch((err) => console.error("Failed to fetch conversion rate:", err));
+  }, [axiosSecure]);
+
+
 
   // Load withdraw requests
   useEffect(() => {
@@ -47,7 +61,7 @@ const AdminWithdrawRequests = () => {
     );
   });
 
-  // console.log(filteredRequests)
+  console.log(filteredRequests)
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-xl mt-8">
@@ -78,7 +92,7 @@ const AdminWithdrawRequests = () => {
             <tr>
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Phone</th>
-              <th className="px-4 py-2 text-left">Points</th>
+              <th className="px-4 py-2 text-left">Amount</th>
               <th className="px-4 py-2 text-left">Requested At</th>
               <th className="px-4 py-2 text-left">Status</th>
               <th className="px-4 py-2 text-left">Action</th>
@@ -95,7 +109,7 @@ const AdminWithdrawRequests = () => {
                 <tr key={req._id} className="hover:bg-gray-50">
                   <td className="px-4 py-2">{req.name}</td>
                   <td className="px-4 py-2">{req.phone}</td>
-                  <td className="px-4 py-2">{req.totalwithdraw}</td>
+                  <td className="px-4 py-2">{req.totalTaka}</td>
                   <td className="px-4 py-2">{date}</td>
                   <td className="px-4 py-2">
                     <span
