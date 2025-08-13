@@ -19,143 +19,6 @@ const generateReferralCode = async () => {
   return code;
 };
 
-// Registration Controller
-// const registerUser = async (req, res) => {
-//   try {
-//     const { name, phone, email, password, referralCode } = req.body;
-
-//     const existingUser = await User.findOne({ phone });
-//     if (existingUser)
-//       return res.status(400).json({ message: "User already exists" });
-
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     const newReferralCode = await generateReferralCode();
-
-//     let referralTree = [];
-
-//     if (referralCode) {
-//       const parent = await User.findOne({ referralCode });
-
-//       if (!parent) {
-//         return res.status(400).json({ message: "Invalid referral code" });
-//       }
-
-//       referralTree = [
-//         parent._id.toString(),
-//         ...parent.referralTree.slice(0, 9),
-//       ];
-//     }
-
-//     const newUser = await User.create({
-//       name,
-//       email,
-//       phone,
-//       password: hashedPassword,
-//       referralCode: newReferralCode,
-//       referredBy: referralCode || null,
-//       referralTree,
-//     });
-
-//     // Reward system – Add points to 10 uplines
-//     // if (referralTree.length > 0) {
-//     //   for (let i = 0; i < referralTree.length; i = 10) {
-//     //     const uplineId = referralTree[i];
-//     //     const point = 100 - i;
-
-//     //     await User.findByIdAndUpdate(uplineId, {
-//     //       $inc: { points: point },
-//     //     });
-//     //   }
-//     // }
-
-//     // ধরলাম newUser হচ্ছে যিনি register করলেন
-//     if (referralTree.length > 0) {
-//       // STEP 1: নতুন user এর package info বের করো
-//       const childPackageReq = await PackageRequest.findOne({
-//         userId: newUser._id,
-//       });
-//       const childPackageName = childPackageReq?.packageName;
-
-//       const childPackageModel = await PackagesModel.findOne({
-//         name: childPackageName,
-//       });
-//       const childStartPoint = childPackageModel?.PV;
-//       const childDecreasePV = childPackageModel?.decreasePV || 100;
-
-//       if (!childStartPoint) {
-//         // console.log("❌ Child user's package PV not found");
-//         return;
-//       }
-
-//       // STEP 2: Loop through all uplines
-//       for (let i = 0; i < referralTree.length; i++) {
-//         const uplineId = referralTree[i];
-//         if (!uplineId) break;
-
-//         // STEP 3: প্রতিটি upline user এর package details বের করো
-//         const uplinePackageReq = await PackageRequest.findOne({
-//           userId: uplineId,
-//         });
-//         const uplinePackageName = uplinePackageReq?.packageName;
-
-//         const uplinePackageModel = await PackagesModel.findOne({
-//           name: uplinePackageName,
-//         });
-//         const uplineGenerations = (() => {
-//           switch (uplinePackageName) {
-//             case "Business Relation":
-//               return 10;
-//             case "Business Relative":
-//               return 7;
-//             case "Family":
-//               return 5;
-//             case "Friend":
-//               return 3;
-//             default:
-//               return 0;
-//           }
-//         })();
-
-//         if (!uplineGenerations) {
-//           // console.log(`⛔ Invalid or missing package for upline: ${uplineId}`);
-//           continue;
-//         }
-
-//         // STEP 4: Check if this upline is eligible for this generation
-//         if (i < uplineGenerations) {
-//           const point = childStartPoint - i * childDecreasePV;
-
-//           if (point > 0) {
-//             await User.findByIdAndUpdate(uplineId, {
-//               $inc: { points: point },
-//             });
-
-//             // console.log(
-//               `✅ Upline ${uplineId} got ${point} points from generation ${i + 1
-//               } based on child package`
-//             );
-//           } else {
-//             // console.log(`⚠️ Point is 0 or less for upline ${uplineId}`);
-//           }
-//         } else {
-//           // console.log(
-//             `⛔ Upline ${uplineId} not eligible for generation ${i + 1}`
-//           );
-//         }
-//       }
-//     }
-
-//     res.status(201).json({
-//       message: "User registered successfully",
-//       userId: newUser._id,
-//       referralCode: newReferralCode,
-//       referralTree,
-//       points: newUser.points,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 const registerUser = async (req, res) => {
   try {
     const { name, phone, email, password, referralCode, placementBy, role } =
@@ -683,8 +546,9 @@ const generateUserSummary = async (user, referredUsers = []) => {
   const orders = await AdminOrder.find({ dspPhone: user?.phone });
 
   let totalTdsValue = 0;
+  const tdsRate = await TdsRate.findOne();
+  console.log("TDS Rate", tdsRate?.pointToTaka)
   try {
-    const tdsRate = await TdsRate.findOne();
     const tdsRateValue = tdsRate ? tdsRate.tdsValue : 0;
     totalTdsValue = (user?.totalwithdraw * tdsRateValue) / 100;
 
@@ -703,35 +567,161 @@ const generateUserSummary = async (user, referredUsers = []) => {
       value: totalexpireTeams,
     },
     { title: "Total Voucher", value: orders?.length || 0 },
-    { title: "Previous Month Pv", value: previousMonthPv || 0 },
+    { title: "Previous Month BV", value: previousMonthPv || 0 },
     {
-      title: "Current Month Pv",
+      title: "Current Month BV",
       value: currentMonthPv || 0,
     },
     {
-      title: "Monthly down sale pv",
+      title: "Monthly down sale BV",
       value: totalDownlinePoints.toFixed(2) || 0,
     },
-    { title: "Total Team Sale Pv", value: totalBinaryPoints.toFixed(2) || 0 },
+    { title: "Total Team Sale BV", value: totalBinaryPoints.toFixed(2) || 0 },
     { title: "Total Team Member", value: totalUsersInTree - 1 || 0 },
     { title: "Current Purchase Amount", value: currentPurchaseAmount },
     { title: "Total Purchase Amount", value: user?.points.toFixed(2) },
-    { title: "Total Purchase Pv", value: productPurchasePoints },
-    { title: "Refer Commission", value: referCommission },
-    { title: "Generation Commission", value: generationCommission },
-    { title: "Mega Commission", value: megaCommission },
-    { title: "Repurchase Sponsor Bonus", value: repurchaseSponsorBonus },
-    { title: "Repurchase Commission", value: repurchaseCommission },
-    { title: "Withdrawable Balance", value: withdrawableBalance },
-    { title: "Total Withdraw", value: user?.totalwithdraw },
-    { title: "Total TDS", value: totalTdsValue.toFixed(2) || 0 },
-    { title: "Executive Officer", value: executiveOfficer },
-    { title: "Special Fund", value: specialFund },
-    { title: "Car Fund", value: carFund },
-    { title: "Tour Fund", value: tourFund },
-    { title: "Home Fund", value: homeFund },
+    { title: "Total Purchase BV", value: productPurchasePoints },
+    { title: "Refer Commission", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Generation Commission", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Mega Commission", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Repurchase Sponsor Bonus", value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Total Withdraw", value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
+    { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
+    { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
+    { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
+    { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
+    { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
   ];
 };
+const generateUserSummaryStatements = async (user, referredUsers = []) => {
+  const incoming = user.AllEntry?.incoming || [];
+
+  // Today's date range
+  const today = new Date();
+  const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+  const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+  // Sum for today's entries by sector
+  const getSumBySector = (sectorName) => {
+    const total = incoming
+      .filter(
+        (entry) =>
+          entry.sector === sectorName &&
+          new Date(entry.date) >= startOfDay &&
+          new Date(entry.date) <= endOfDay
+      )
+      .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+
+    return parseFloat(total.toFixed(2));
+  };
+
+  const productPurchasePoints = getSumBySector("ProductPurchase");
+  const referCommission = getSumBySector("20% phone referrer commission");
+  const generationCommission = getSumBySector("Shared Generation Commission");
+  const megaCommission = getSumBySector("Shared mega Generation Commission");
+  const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
+  const repurchaseCommission = getSumBySector(
+    "10% personal reward from purchase"
+  );
+  const specialFund = getSumBySector("Special Fund Commission");
+  const carFund = getSumBySector("Car Fund Commission");
+  const tourFund = getSumBySector("Travel Fund Commission");
+  const homeFund = getSumBySector("House Fund Commission");
+  const executiveOfficer = getSumBySector("Executive Officer Commission");
+
+  // Points, withdraw, etc. (also filtered by today's date if needed)
+  const points = productPurchasePoints; // Today’s total purchase points
+  const totalWithdraws = 0; // Only today's withdraw if you track by date
+  const withdrawableBalance = points - totalWithdraws;
+
+  let totalTdsValue = 0;
+  const tdsRate = await TdsRate.findOne();
+  try {
+    const tdsRateValue = tdsRate ? tdsRate.tdsValue : 0;
+    totalTdsValue = (totalWithdraws * tdsRateValue) / 100;
+    await user.save();
+  } catch (error) {
+    console.error("Error calculating TDS:", error);
+    user.totalTDS = 0;
+    await user.save();
+  }
+
+  return [
+    { title: "Generation Commission", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Mega Commission", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Refer Commission", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Total Withdraw", value: (totalWithdraws * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
+    { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
+    { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
+    { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
+    { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
+    { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
+  ];
+};
+const generateUserSummaryCommissionStatements = async (user, referredUsers = []) => {
+  const incoming = user.AllEntry?.incoming || [];
+
+  // Sum for all-time entries by sector (no date filter)
+  const getSumBySector = (sectorName) => {
+    const total = incoming
+      .filter((entry) => entry.sector === sectorName)
+      .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+
+    return parseFloat(total.toFixed(2));
+  };
+
+  const productPurchasePoints = getSumBySector("ProductPurchase");
+  const referCommission = getSumBySector("20% phone referrer commission");
+  const generationCommission = getSumBySector("Shared Generation Commission");
+  const megaCommission = getSumBySector("Shared mega Generation Commission");
+  const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
+  const repurchaseCommission = getSumBySector("10% personal reward from purchase");
+  const specialFund = getSumBySector("Special Fund Commission");
+  const carFund = getSumBySector("Car Fund Commission");
+  const tourFund = getSumBySector("Travel Fund Commission");
+  const homeFund = getSumBySector("House Fund Commission");
+  const executiveOfficer = getSumBySector("Executive Officer Commission");
+
+  // Total points and withdraws
+  const points = parseFloat(user?.points) || 0;
+  const totalWithdraws = parseFloat(user?.totalwithdraw) || 0;
+  const withdrawableBalance = (points - totalWithdraws).toFixed(2);
+
+  let totalTdsValue = 0;
+  const tdsRate = await TdsRate.findOne();
+  try {
+    const tdsRateValue = tdsRate ? tdsRate.tdsValue : 0;
+    totalTdsValue = (totalWithdraws * tdsRateValue) / 100;
+    await user.save();
+  } catch (error) {
+    console.error("Error calculating TDS:", error);
+    user.totalTDS = 0;
+    await user.save();
+  }
+
+  return [
+    { title: "Generation Commission", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Mega Commission", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Refer Commission", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Total Withdraw", value: (totalWithdraws * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka},
+    { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
+    { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
+    { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
+    { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka},
+    { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
+  ];
+};
+
+
 async function buildTree(userId) {
   const user = await User.findById(userId);
   if (!user) return null;
@@ -1098,6 +1088,74 @@ const userAgregateData = async (req, res) => {
     res.status(500).json({ message: "Server Error", error: err.message });
   }
 };
+const userStatements = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid or missing user ID" });
+    }
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Fetch referred users based on referralTree
+    const referredUsers = await User.find({
+      _id: { $in: user.referralTree || [] },
+    });
+
+    const summary = await generateUserSummaryStatements(user, referredUsers);
+
+
+
+    // *****************************************************************
+
+    res.status(200).json({
+      success: true,
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      summary: summary,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+};
+const userAllStatements = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid or missing user ID" });
+    }
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Fetch referred users based on referralTree
+    const referredUsers = await User.find({
+      _id: { $in: user.referralTree || [] },
+    });
+
+    const summary = await generateUserSummaryCommissionStatements(user, referredUsers);
+
+
+
+    // *****************************************************************
+
+    res.status(200).json({
+      success: true,
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      summary: summary,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+};
 
 const getReferralTreeById = async (req, res) => {
   try {
@@ -1124,4 +1182,6 @@ module.exports = {
   updateUserRole,
   userAgregateData,
   getReferralTreeById,
+  userStatements,
+  userAllStatements
 };

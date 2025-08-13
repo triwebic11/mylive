@@ -36,6 +36,7 @@ const MyConsistency = () => {
 
   // console.log("my consistancy",pointsByMonth);
 
+<<<<<<< HEAD
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6">
       {/* <h1 className="text-lg font-semibold text-gray-800 mb-2 pl-8">My Consistency</h1> */}
@@ -55,6 +56,25 @@ const MyConsistency = () => {
       </div>
     </div>
   );
+=======
+    return (
+        <div className="min-h-screen bg-gray-50 px-4 py-6">
+            {/* <h1 className="text-lg font-semibold text-gray-800 mb-2 pl-8">My Consistency</h1> */}
+            <h2 className="text-2xl font-bold text-black mb-6">My Consistency</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                {Object.entries(pointsByMonth)?.map(([month, totalPoints], index) => (
+                    <div
+                        key={index}
+                        className="bg-white shadow-sm rounded-lg p-6 text-center border"
+                    >
+                        <p className="text-3xl font-medium text-gray-900">{totalPoints.toFixed(2)}</p>
+                        <p className="mt-2 text-gray-600">{month}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+>>>>>>> b2eca6c2642bf81dc293d4162dfef964d1f965c6
 };
 
 export default MyConsistency;

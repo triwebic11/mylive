@@ -61,23 +61,23 @@ const FundDistribute = () => {
             <div className='grid md:grid-cols-3 grid-cols-1 lg:grid-cols-5 gap-5'>
                 <div className='bg-sky-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Executive Officer</p>
-                    {adminstore?.Executive_Officer_sum}
+                    {adminstore?.Executive_Officer_sum.toFixed(2)}
                 </div>
                 <div className='bg-purple-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Executive Manager</p>
-                    {adminstore?.Special_Fund_sum}
+                    {adminstore?.Special_Fund_sum.toFixed(2)}
                 </div>
                 <div className='bg-green-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Executive Director</p>
-                    {adminstore?.Tour_Fund_sum}
+                    {adminstore?.Tour_Fund_sum.toFixed(2)}
                 </div>
                 <div className='bg-blue-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Diamond</p>
-                    {adminstore?.Car_Fund_sum}
+                    {adminstore?.Car_Fund_sum.toFixed(2)}
                 </div>
                 <div className='bg-red-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Crown Director</p>
-                    {adminstore?.Home_Fund_sum}
+                    {adminstore?.Home_Fund_sum.toFixed(2)}
                 </div>
 
             </div>
