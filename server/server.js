@@ -4,7 +4,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const connectDB = require("./config/db");
 require("dotenv").config();
-// const cron = require("node-cron");
+const cron = require("node-cron");
 // const {
 //   processMonthlyUserRankAndFunds,
 // } = require("./utils/fullMonthlyLevelCommissionProcessor");
@@ -14,6 +14,7 @@ const packageRequestRoutes = require("./routes/packageRequestRoutes");
 const kycRoutes = require("./routes/kycRoutes");
 const { default: mongoose } = require("mongoose");
 const { AdminSummery } = require("./controllers/AdminSummery");
+const User = require("./models/User");
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -77,11 +78,46 @@ app.get("/api/db-stats", async (req, res) => {
 
 // app.use("/api/uploads", require("./routes/uploadRoute"));
 
-// cron.schedule("* * * * *", async () => {
-//   // console.log("📆 Monthly commission running from server.js...");
-//   await processMonthlyUserRankAndFunds();
-// });
 
+const checkExpiredUsers = async () => {
+  const now = new Date();
+
+  const expiredUsers = await User.find({
+    packageExpireDate: { $lt: now }
+  });
+
+  expiredUsers.forEach(user => {
+    console.log({
+      name: user.name,
+      email: user.email,
+      packageExpireDate: user.packageExpireDate,
+      status: "expire"
+    });
+  });
+};
+
+// checkExpiredUsers();
+
+// Prottekdin raat 12 ta e check hobe
+cron.schedule("* * * * *", async () => {
+  const now = new Date();
+
+
+  const result = await User.updateMany(
+    { packageExpireDate: { $lt: now }, isActivePackage: "active" },
+    { $set: { isActivePackage: "expire" } }
+  );
+
+  console.log(`Updated ${result.modifiedCount} users to expire.`);
+
+  // update hoye jawa users abar fetch kore log korbo
+  const expiredUsers = await User.find({
+    packageExpireDate: { $lt: now },
+    isActivePackage: "expire"
+  });
+  console.log("Expired users:", expiredUsers)
+  // console.log("Expired packages updated:", now.toLocaleString("en-BD", { timeZone: "Asia/Dhaka" }));
+});
 // Root route
 app.get("/", (req, res) => {
   // console.log("server is running");

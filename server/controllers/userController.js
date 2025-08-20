@@ -1067,12 +1067,12 @@ const userAgregateData = async (req, res) => {
     const rightPoints = tree.right?.points || 0;
     // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
     // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
-    if (leftPoints >= 30000 && rightPoints >= 30000) {
-      await UpdateRanksAndRewards(user);
-    } else {
-      // ✅ Otherwise run package-level fallback logic
-      await PackageLevelsdefine(user);
-    }
+    // if (leftPoints >= 30000 && rightPoints >= 30000) {
+    //   await UpdateRanksAndRewards(user);
+    // } else {
+    //   // ✅ Otherwise run package-level fallback logic
+    //   await PackageLevelsdefine(user);
+    // }
 
     // *****************************************************************
 

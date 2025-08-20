@@ -4,6 +4,7 @@ const User = require("../models/User");
 const AdminOrder = require("../models/AdminOrder");
 const DspInventory = require("../models/DspInventory");
 const AdminStore = require("../models/AdminStore");
+const RankUpgradeRequest = require("../models/RankUpgradeRequest");
 
 // 👉 Order Create (Admin → DSP / DSP → User)
 // Order create
@@ -21,9 +22,9 @@ router.post("/", async (req, res) => {
       grandDiscount,
     } = req.body;
 
-    
-      // 4. Distribute points
-      await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
+
+    // 4. Distribute points
+    await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
 
     // Step 1: Admin ordering for DSP
     if (orderedFor === "dsp") {
@@ -196,47 +197,7 @@ async function buildTree(userId) {
     totalPointsFromRight,
   };
 }
-async function buildUplineTree(
-  userId,
-  depth = 0,
-  maxDepth = 10,
-  visited = new Set()
-) {
-  if (depth > maxDepth) return [];
 
-  const user = await User.findById(userId);
-  if (!user || visited.has(user._id.toString())) return [];
-
-  visited.add(user._id.toString());
-
-  const query = [];
-  if (user.referredBy) query.push({ referralCode: user.referredBy });
-  if (user.placementBy) query.push({ referralCode: user.placementBy });
-
-  const parent = await User.findOne({ $or: query });
-
-  const currentNode = {
-    name: user.name,
-    _id: user._id,
-    phone: user.phone,
-    referralCode: user.referralCode,
-    referredBy: user.referredBy,
-    placementBy: user.placementBy,
-    GenerationLevel: user.GenerationLevel ?? 0,
-  };
-
-  if (!parent) {
-    return [currentNode];
-  }
-
-  const parentTree = await buildUplineTree(
-    parent._id,
-    depth + 1,
-    maxDepth,
-    visited
-  );
-  return [...parentTree, currentNode];
-}
 const positionLevels = [
   {
     rank: 1,
@@ -246,6 +207,8 @@ const positionLevels = [
     rightBV: 30000,
     position: "Executive Officer",
     reward: "Frying Pan",
+    generationLevel: 10,
+    megaGenerationLevel: 3,
   },
   {
     rank: 2,
@@ -255,6 +218,8 @@ const positionLevels = [
     rightBV: 90000,
     position: "Executive Manager",
     reward: "Rice Cooker",
+    generationLevel: 15,
+    megaGenerationLevel: 3,
   },
   {
     rank: 3,
@@ -264,6 +229,8 @@ const positionLevels = [
     rightBV: 300000,
     position: "Executive Director",
     reward: "Inani Tour or ৳10,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 4,
@@ -273,6 +240,8 @@ const positionLevels = [
     rightBV: 720000,
     position: "Executive Pal Director",
     reward: "Cox’s Bazar Tour",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 5,
@@ -282,6 +251,8 @@ const positionLevels = [
     rightBV: 1320000,
     position: "Executive Total Director",
     reward: "Laptop or ৳30,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 6,
@@ -291,6 +262,8 @@ const positionLevels = [
     rightBV: 3000000,
     position: "EX = Emerald",
     reward: "Bike or ৳50,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 7,
@@ -300,6 +273,8 @@ const positionLevels = [
     rightBV: 6000000,
     position: "EX = Elite",
     reward: "Thailand Tour or ৳1,25,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 8,
@@ -309,6 +284,8 @@ const positionLevels = [
     rightBV: 12000000,
     position: "EX = Deluxe",
     reward: "Hajj/Umrah or ৳3,00,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 9,
@@ -318,6 +295,8 @@ const positionLevels = [
     rightBV: 24000000,
     position: "EX = Marjury",
     reward: "Car or ৳6,00,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 10,
@@ -325,8 +304,10 @@ const positionLevels = [
     rightPV: 8000,
     leftBV: 48000000,
     rightBV: 48000000,
-    position: "Diamond",
+    position: "Diamond Director",
     reward: "Car or ৳13,00,000 cash",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
   },
   {
     rank: 11,
@@ -336,6 +317,8 @@ const positionLevels = [
     rightBV: 96000000,
     position: "Double Diamond",
     reward: "Private Car or ৳25,00,000 cash",
+    generationLevel: Infinity, // From PDF: Unlimited
+    megaGenerationLevel: Infinity,
   },
   {
     rank: 12,
@@ -345,6 +328,8 @@ const positionLevels = [
     rightBV: 144000000,
     position: "Crown Director",
     reward: "৳50,00,000 cash",
+    generationLevel: Infinity,
+    megaGenerationLevel: Infinity,
   },
   {
     rank: 13,
@@ -354,6 +339,8 @@ const positionLevels = [
     rightBV: 222000000,
     position: "Star Crown",
     reward: "Mansion or ৳1 crore cash",
+    generationLevel: Infinity,
+    megaGenerationLevel: Infinity,
   },
   {
     rank: 14,
@@ -363,62 +350,129 @@ const positionLevels = [
     rightBV: 300000000,
     position: "Universal Crown",
     reward: "৳5 crore cash or Villa",
+    generationLevel: Infinity,
+    megaGenerationLevel: Infinity,
   },
 ];
 
 const UpdateRanksAndRewards = async (buyer) => {
-  // console.log("Updating ranks and rewards for user:", buyer);
-
   try {
     const tree = await buildTree(buyer._id);
     if (!tree) return;
 
-    const leftTree = tree.left;
-    const rightTree = tree.right;
+    const leftBV = tree.left.points;
+    const rightBV = tree.right.points;
 
-    // console.log("Left Tree:", leftTree?.points);
-    // console.log("Right Tree:", rightTree?.points);
+    // console.log("Left Tree:", leftBV);
+    // console.log("Right Tree:", rightBV);
 
+    const matchedRank = positionLevels
+      .slice()
+      .reverse()
+      .find((level) => leftBV >= level.leftBV && rightBV >= level.rightBV);
+    // console.log("Matched Rank:", matchedRank);
 
-    // const leftPV = await calculateTotalPV(leftTree);
-    // const rightPV = await calculateTotalPV(rightTree);
+    if (!matchedRank) return;
 
-    // const matchedRank = positionLevels
-    //   .slice()
-    //   .reverse()
-    //   .find(
-    //     (level) =>
-    //       leftPV >= level.leftPV && rightPV >= level.rightPV
-    //   );
-
-    // if (!matchedRank) return;
-
-    // const user = await User.findById(buyer._id);
+    const user = await User.findById(buyer._id);
 
     // // Update if new position is higher than existing
-    // const currentRankIndex = positionLevels.findIndex(
-    //   (r) => r.position === user.Position
-    // );
-    // const newRankIndex = positionLevels.findIndex(
-    //   (r) => r.position === matchedRank.position
-    // );
+    const currentRankIndex = positionLevels.findIndex(
+      (r) => r.position === user.Position
+    );
+    const newRankIndex = positionLevels.findIndex(
+      (r) => r.position === matchedRank.position
+    );
 
-    // if (newRankIndex > currentRankIndex) {
-    //   user.Position = matchedRank.position;
+    if (newRankIndex > currentRankIndex) {
+      user.Position = matchedRank.position;
+      user.rewards = matchedRank.reward;
+      user.GenerationLevel = matchedRank.generationLevel;
+      user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+      user.isActivePackage = "active";
 
-    //   if (!user.rewards?.includes(matchedRank.reward)) {
-    //     user.rewards = [...(user.rewards || []), matchedRank.reward];
-    //   }
+      if (!user.rewards?.includes(matchedRank.reward)) {
+        user.rewards = [...(user.rewards || []), matchedRank.reward];
+      }
 
-    //   await user.save();
-    //   console.log(
-    //     `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
-    //   );
-    // }
+      await user.save();
+
+      // Save to RankUpgradeRequest
+      const postrank = await RankUpgradeRequest.create({
+        userId: user._id,
+        name: user.name,
+        phone: user.phone,
+        previousPosition: positionLevels[currentRankIndex]?.position || null,
+        newPosition: matchedRank.position,
+        reward: matchedRank.reward,
+        leftBV,
+        rightBV,
+        status: "pending",
+      });
+
+      // console.log("Rank upgrade request created:", postrank);
+      // console.log(
+      //   `✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}`
+      // );
+      // console.log(
+      //   `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
+      // );
+    }
   } catch (error) {
     console.error("❌ Error updating ranks and rewards:", error);
   }
-}
+};
+
+const PackageLevels = [
+  {
+    rank: 1,
+    pointsBV: 1000,
+    Package: "Friend",
+    generationLevel: 3,
+    megaGenerationLevel: 0,
+  },
+  {
+    rank: 2,
+    pointsBV: 2500,
+    Package: "Family",
+    generationLevel: 5,
+    megaGenerationLevel: 1,
+  },
+  {
+    rank: 3,
+    pointsBV: 7500,
+    Package: "Bussiness Relative",
+    generationLevel: 7,
+    megaGenerationLevel: 2,
+  },
+  {
+    rank: 1,
+    pointsBV: 17500,
+    Package: "Bussiness Relation",
+    generationLevel: 10,
+    megaGenerationLevel: 3,
+  },
+];
+
+const PackageLevelsdefine = async (buyer) => {
+  // console.log("PackageLevelsdefine called for buyer:", buyer._id);
+  try {
+    const matchedRank = PackageLevels.slice()
+      .reverse()
+      .find((level) => buyer.points >= level.pointsBV);
+    // console.log("Matched Rank:", matchedRank);
+
+    buyer.package = matchedRank.Package;
+    buyer.GenerationLevel = matchedRank.generationLevel;
+    buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+    buyer.isActivePackage = "active";
+    await buyer.save();
+
+    // console.log(`✅ User ${buyer._id} package updated to `, buyer);
+  } catch (error) {
+    console.error("❌ Error in PackageLevelsdefine:", error);
+  }
+};
 
 
 async function buildUplineChainMultipleParents(userId, depth = 0, maxDepth = 10, visited = new Set()) {
@@ -460,8 +514,11 @@ const distributeGrandPoint = async (
   grandTotalPrice
 ) => {
   const buyer = await User.findOne({ phone: buyerphone });
+
   // console.log("buyer-------", buyer)
   if (!buyer) return;
+
+  
 
   const fifteenPercent = grandPoint * 0.15;
 
@@ -673,154 +730,24 @@ const distributeGrandPoint = async (
   });
 
 
-
-  // // *****************************************************************
-
-  // // 3% shared generation commission for Executive Manager and above
-
-  // const ExcutiveOfficereligibleUplines = finalUplines.filter((u) =>
-  //   u.Position === 'Excutive Officer'
-  // );
-
-  // if (ExcutiveOfficereligibleUplines.length > 0) {
-
-  //   const pointPerUpline = threePercent / ExcutiveOfficereligibleUplines.length;
-  //   for (const upline of ExcutiveOfficereligibleUplines) {
-  //     const uplineUser = await User.findById(upline._id);
-  //     if (!uplineUser) continue;
-
-  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-
-  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-  //     uplineUser.AllEntry.incoming.push({
-  //       fromUser: buyer._id,
-  //       pointReceived: pointPerUpline,
-  //       sector: `Executive Officer Commission`,
-  //       date: new Date()
-  //     });
-
-  //     await uplineUser.save();
-  //   }
-  // }
-
-
-  // // *****************************************************************
-
-  // // 4% shared generation commission for Executive Manager and above
-
-  // const positioneligibleUplines = finalUplines.filter((u) =>
-  //   u.Position === 'Executive Manager'
-  // );
-
-  // if (positioneligibleUplines.length > 0) {
-  //   const pointPerUpline = fourPercent / positioneligibleUplines.length;
-
-  //   for (const upline of positioneligibleUplines) {
-  //     const uplineUser = await User.findById(upline._id);
-  //     if (!uplineUser) continue;
-
-  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-
-  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-  //     uplineUser.AllEntry.incoming.push({
-  //       fromUser: buyer._id,
-  //       pointReceived: pointPerUpline,
-  //       sector: `Special Fund Commission`,
-  //       date: new Date()
-  //     });
-
-  //     await uplineUser.save();
-  //   }
-  // }
-
-  // // *****************************************************************
-  // // 4% shared generation commission for Executive Director and above
-
-  // const ExcutiveDirectoreligibleUplines = finalUplines.filter((u) =>
-  //   u.Position === 'Executive Director'
-  // );
-
-  // if (ExcutiveDirectoreligibleUplines.length > 0) {
-  //   const pointPerUpline = fourPercent / ExcutiveDirectoreligibleUplines.length;
-
-  //   for (const upline of ExcutiveDirectoreligibleUplines) {
-  //     const uplineUser = await User.findById(upline._id);
-  //     if (!uplineUser) continue;
-
-  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-
-  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-  //     uplineUser.AllEntry.incoming.push({
-  //       fromUser: buyer._id,
-  //       pointReceived: pointPerUpline,
-  //       sector: `Travel Fund Commission`,
-  //       date: new Date()
-  //     });
-
-  //     await uplineUser.save();
-  //   }
-  // }
-
-  // // *****************************************************************
-  // // 4% shared generation commission for Diamond Director and above
-
-  // const DimondDirectoreligibleUplines = finalUplines.filter((u) =>
-  //   u.Position === 'Diamond Director'
-  // );
-
-  // if (DimondDirectoreligibleUplines.length > 0) {
-  //   const pointPerUpline = fourPercent / DimondDirectoreligibleUplines.length;
-
-  //   for (const upline of DimondDirectoreligibleUplines) {
-  //     const uplineUser = await User.findById(upline._id);
-  //     if (!uplineUser) continue;
-
-  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-
-  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-  //     uplineUser.AllEntry.incoming.push({
-  //       fromUser: buyer._id,
-  //       pointReceived: pointPerUpline,
-  //       sector: `Car Fund Commission`,
-  //       date: new Date()
-  //     });
-
-  //     await uplineUser.save();
-  //   }
-  // }
-  // // *****************************************************************
-  // // 3% shared generation commission for Crown Director and above
-
-  // const CrawonDirectoreligibleUplines = finalUplines.filter((u) =>
-  //   u.Position === 'Crown Director'
-  // );
-
-  // if (CrawonDirectoreligibleUplines.length > 0) {
-  //   const pointPerUpline = threePercent / CrawonDirectoreligibleUplines.length;
-
-  //   for (const upline of CrawonDirectoreligibleUplines) {
-  //     const uplineUser = await User.findById(upline._id);
-  //     if (!uplineUser) continue;
-
-  //     uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-
-  //     uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-  //     uplineUser.AllEntry.incoming.push({
-  //       fromUser: buyer._id,
-  //       pointReceived: pointPerUpline,
-  //       sector: `House Fund Commission`,
-  //       date: new Date()
-  //     });
-
-  //     await uplineUser.save();
-  //   }
-  // }
-
-
   // *****************************************************************
 
 
   // User Package Update
-  await UpdateRanksAndRewards(buyer);
+
+  const tree = await buildTree(buyer._id);
+  const leftPoints = tree.left?.points || 0;
+  const rightPoints = tree.right?.points || 0;
+  // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
+  // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
+  if (leftPoints >= 30000 && rightPoints >= 30000) {
+    console.log("Both sides have enough points, running rank update logic");
+    await UpdateRanksAndRewards(buyer);
+  } else {
+    // ✅ Otherwise run package-level fallback logic
+    console.log("Running package-level fallback logic");
+    await PackageLevelsdefine(buyer);
+  }
+
 };
 module.exports = router;

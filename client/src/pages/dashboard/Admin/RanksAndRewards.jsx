@@ -68,7 +68,7 @@ const RanksAndRewards = () => {
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">Ranks and Rewards</h2>
-            <table className="w-full border border-gray-200 text-sm">
+            <table className="w-full bg-white border border-gray-200 text-sm">
                 <thead>
                     <tr className="bg-gray-200 text-left">
                         <th className="border border-gray-200 px-2 py-1">Name</th>

@@ -59,7 +59,7 @@ const FundDistribute = () => {
         <div>
             <h1 className='py-10 text-center text-2xl font-semibold bg-blue-400 mb-5 text-white rounded-2xl'>Total Company Funds</h1>
             <div className='grid md:grid-cols-3 grid-cols-1 lg:grid-cols-5 gap-5'>
-                <div className='bg-sky-100 py-10 text-center text-black text-5xl rounded-2xl'>
+                <div className='bg-gray-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Executive Officer</p>
                     {adminstore?.Executive_Officer_sum.toFixed(2)}
                 </div>
@@ -87,7 +87,7 @@ const FundDistribute = () => {
           onClick={handleDistributeFunds}
           className='bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg text-lg'
         >
-          Distribute Funds (Backend)
+          Click To Distribute Funds
         </button>
 
         {postStatus && (
