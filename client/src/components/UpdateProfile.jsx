@@ -3,6 +3,77 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useRole from "../Hooks/useRole";
 
+const districtData = [
+  "Dhaka",
+  "Gazipur",
+  "Kishoreganj",
+  "Manikganj",
+  "Munshiganj",
+  "Narayanganj",
+  "Narsingdi",
+  "Tangail",
+  "Faridpur",
+  "Gopalganj",
+  "Madaripur",
+  "Rajbari",
+  "Shariatpur",
+
+  "Chattogram",
+  "Cox's Bazar",
+  "Bandarban",
+  "Khagrachhari",
+  "Rangamati",
+  "Brahmanbaria",
+  "Cumilla",
+  "Chandpur",
+  "Feni",
+  "Lakshmipur",
+  "Noakhali",
+
+  "Rajshahi",
+  "Bogra",
+  "Joypurhat",
+  "Naogaon",
+  "Natore",
+  "Chapainawabganj",
+  "Pabna",
+  "Sirajganj",
+
+  "Rangpur",
+  "Dinajpur",
+  "Gaibandha",
+  "Kurigram",
+  "Lalmonirhat",
+  "Nilphamari",
+  "Panchagarh",
+  "Thakurgaon",
+  "Mymensingh",
+  "Jamalpur",
+  "Netrokona",
+  "Sherpur",
+  "Sylhet",
+  "Habiganj",
+  "Moulvibazar",
+  "Sunamganj",
+  "Barishal",
+  "Barguna",
+  "Bhola",
+  "Jhalokathi",
+  "Patuakhali",
+  "Pirojpur",
+
+  "Khulna",
+  "Bagerhat",
+  "Chuadanga",
+  "Jashore",
+  "Jhenaidah",
+  "Kushtia",
+  "Magura",
+  "Meherpur",
+  "Narail",
+  "Satkhira",
+];
+
 const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
   const { role } = useRole();
 
@@ -118,7 +189,7 @@ const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
           { label: "NID No", name: "nid" },
           { label: "Date of Birth", name: "dob", type: "date" },
           { label: "Division", name: "division", type: "select" },
-          { label: "City", name: "city" },
+          { label: "City", name: "city", type: "select" },
           { label: "Post Code", name: "postcode" },
           { label: "Address", name: "address", colSpan: 2 },
           { label: "Nominee Name", name: "noname" },
@@ -132,25 +203,42 @@ const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
               <label className="block text-sm font-medium">{label}</label>
 
               {type === "select" ? (
-                <select
-                  name={name}
-                  value={form[name]}
-                  onChange={handleChange}
-                  className="w-full border px-3 py-2 rounded-md mt-1"
-                >
-                  <option value="">Select Division</option>
-                  <option value="Dhaka">Dhaka</option>
-                  <option value="Chattagram">Chattagram</option>
-                  <option value="Khulna">Khulna</option>
-                  <option value="Rajshahi">Rajshahi</option>
-                  <option value="Rangpur">Rangpur</option>
-                  <option value="Mymensingh">Mymensingh</option>
-                  <option value="Sylhet">Sylhet</option>
-                  <option value="Barishal">Barishal</option>
-                </select>
+                name === "division" ? (
+                  <select
+                    name={name}
+                    value={form[name]}
+                    onChange={handleChange}
+                    className="w-full border px-3 py-2 rounded-md mt-1"
+                  >
+                    <option value="">Select Division</option>
+                    <option value="Dhaka">Dhaka</option>
+                    <option value="Chattagram">Chattagram</option>
+                    <option value="Khulna">Khulna</option>
+                    <option value="Rajshahi">Rajshahi</option>
+                    <option value="Rangpur">Rangpur</option>
+                    <option value="Mymensingh">Mymensingh</option>
+                    <option value="Sylhet">Sylhet</option>
+                    <option value="Barishal">Barishal</option>
+                  </select>
+                ) : (
+                  <select
+                    name={name}
+                    value={form[name]}
+                    onChange={handleChange}
+                    className="w-full border px-3 py-2 rounded-md mt-1"
+                  >
+                    <option value="">Select City</option>
+
+                    {districtData.map((district) => (
+                      <option key={district} value={district}>
+                        {district}
+                      </option>
+                    ))}
+                  </select>
+                )
               ) : role === "dsp" ? (
                 name === "name" && name === "email" && name === "phone" ? (
-                  <p>form[name]</p>
+                  <p>{form[name]}</p>
                 ) : (
                   <input
                     type={type}
@@ -163,6 +251,14 @@ const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
                     }`}
                   />
                 )
+              ) : name === "phone" ? (
+                <p
+                  className={`w-full border px-3 py-2 rounded-md mt-1 ${
+                    isReadOnly ? "bg-gray-100 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {form[name]}
+                </p>
               ) : (
                 <input
                   type={type}

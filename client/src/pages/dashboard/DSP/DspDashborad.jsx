@@ -164,7 +164,7 @@ const DspDashborad = () => {
           title="Order For User"
           value={allProducts?.length || 0}
         />
-        <DashboardCard title="Total Points" value={data?.points || 0} />
+        <DashboardCard title="Total Points" value={(data?.points).toFixed(2) || 0} />
       </div>
     </div>
   );
