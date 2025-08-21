@@ -115,7 +115,7 @@ router.post("/", async (req, res) => {
     }
 
     res.status(400).json({ message: "Invalid order type" });
-    console.log("🔶 Incoming Order:", req.body);
+    // console.log("🔶 Incoming Order:", req.body);
   } catch (error) {
     console.error("❌ Error creating order:", error);
     res.status(500).json({ message: "Failed to create order", error });
@@ -389,7 +389,15 @@ const UpdateRanksAndRewards = async (buyer) => {
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-      user.isActivePackage = "active";
+      if (buyer.isActivePackage === "expire" || buyer.isActivePackage === "In Active") {
+        buyer.isActivePackage = "active";
+        // 30 din er expire date
+        const expireDate = new Date();
+        expireDate.setDate(expireDate.getDate() + 30);
+        buyer.packageExpireDate = expireDate;
+
+        // console.log(`✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate}`);
+      }
 
       if (!user.rewards?.includes(matchedRank.reward)) {
         user.rewards = [...(user.rewards || []), matchedRank.reward];
@@ -454,25 +462,45 @@ const PackageLevels = [
   },
 ];
 
-const PackageLevelsdefine = async (buyer) => {
-  // console.log("PackageLevelsdefine called for buyer:", buyer._id);
+const PackageLevelsdefine = async (buyerId) => {
   try {
+    // always DB theke fresh document niben
+    const buyer = await User.findById(buyerId);
+
+    if (!buyer) {
+      // console.log("❌ Buyer not found");
+      return;
+    }
+
     const matchedRank = PackageLevels.slice()
       .reverse()
       .find((level) => buyer.points >= level.pointsBV);
-    // console.log("Matched Rank:", matchedRank);
 
-    buyer.package = matchedRank.Package;
-    buyer.GenerationLevel = matchedRank.generationLevel;
-    buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-    buyer.isActivePackage = "active";
-    await buyer.save();
+    if (matchedRank) {
+      buyer.package = matchedRank.Package;
+      buyer.GenerationLevel = matchedRank.generationLevel;
+      buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+      if (buyer.isActivePackage === "expire" || buyer.isActivePackage === "In Active") {
+        buyer.isActivePackage = "active";
+        // 30 din er expire date
+        const expireDate = new Date();
+        expireDate.setDate(expireDate.getDate() + 30);
+        buyer.packageExpireDate = expireDate;
 
-    // console.log(`✅ User ${buyer._id} package updated to `, buyer);
+        // console.log(`✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate}`);
+      }
+
+
+      await buyer.save();
+
+      // console.log(`✅ User ${buyer.name} (${buyer._id}) package updated → ${buyer.package}, Expire: ${buyer.packageExpireDate}`);
+    }
   } catch (error) {
     console.error("❌ Error in PackageLevelsdefine:", error);
   }
 };
+
+
 
 
 async function buildUplineChainMultipleParents(userId, depth = 0, maxDepth = 10, visited = new Set()) {
@@ -518,7 +546,7 @@ const distributeGrandPoint = async (
   // console.log("buyer-------", buyer)
   if (!buyer) return;
 
-  
+
 
   const fifteenPercent = grandPoint * 0.15;
 
@@ -544,6 +572,8 @@ const distributeGrandPoint = async (
   const sevenPercent = grandPoint * 0.07;
   const threePercent = grandPoint * 0.03;
   const fourPercent = grandPoint * 0.04;
+
+  // console.log("ten percent:", tenPercent);
 
 
   // 20% phone referrer
@@ -740,14 +770,15 @@ const distributeGrandPoint = async (
   const rightPoints = tree.right?.points || 0;
   // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
   // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
-  if (leftPoints >= 30000 && rightPoints >= 30000) {
-    console.log("Both sides have enough points, running rank update logic");
-    await UpdateRanksAndRewards(buyer);
-  } else {
-    // ✅ Otherwise run package-level fallback logic
-    console.log("Running package-level fallback logic");
+  if (buyer?.points <= 17500) {
+    // console.log("Both sides have enough points, running rank update logic");
+    // await UpdateRanksAndRewards(buyer);
     await PackageLevelsdefine(buyer);
-  }
+  } 
+  // else {
+  //   // ✅ Otherwise run package-level fallback logic
+  //   // console.log("Running package-level fallback logic");
+  // }
 
 };
 module.exports = router;

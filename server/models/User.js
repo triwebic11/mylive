@@ -185,9 +185,9 @@ const userSchema = new mongoose.Schema(
     referralCode: String,
     referredBy: String,
     placementBy: String,
-    isActivePackage: String,
-   
-    
+    isActivePackage: { type: String, default: "In Active" },
+    packageExpireDate: { type: Date },
+
     referredByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // ইউজার আইডি রেফারার
     userStatus: String,
     GenerationLevel: {
@@ -204,7 +204,7 @@ const userSchema = new mongoose.Schema(
     withdraw: Number,
 
     referralTree: [String],
-      // financial info
+    // financial info
     totalwithdraw: {
       type: Number,
       default: 0,

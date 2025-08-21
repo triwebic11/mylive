@@ -77,6 +77,7 @@ import AdminStoreProduct from "./pages/dashboard/Admin/AdminStoreProduct.jsx";
 import DspDashborad from "./pages/dashboard/DSP/DspDashborad.jsx";
 import AdminDashboard from "./pages/dashboard/Admin/AdminDashboard.jsx";
 import FundDistribute from "./pages/dashboard/Admin/FundDistribute.jsx";
+import UserRanksRewards from "./pages/dashboard/user/UserRanksRewards.jsx";
 
 const queryClients = new QueryClient();
 
@@ -440,6 +441,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <UserRoute>
               <OurProducts />
+            </UserRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/userranksAndRewards",
+        element: (
+          <PrivetRouter>
+            <UserRoute>
+              <UserRanksRewards />
             </UserRoute>
           </PrivetRouter>
         ),

@@ -19,22 +19,23 @@ const {
   userStatements,
   userAllStatements,
 } = require("../controllers/userController");
+const { verifyToken, verifyAdmin, verifyCustomer } = require("../Security/Security");
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/my-referrals/:refCode", getMyReferrals);
-router.get("/my-referrals/", getMyAllReferrals);
+router.get("/my-referrals/:refCode",  getMyReferrals);
+router.get("/my-referrals/",getMyAllReferrals);
 router.post("/referral-tree", getReferralTreeDetails);
-router.get("/referral-tree/:userId", getReferralTreeById);
+router.get("/referral-tree/:userId",getReferralTreeById);
 
 router.put("/update-password/:userId", updateUserPassword);
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);
 
 router.put("/:id", updatProfileInfo);
-router.get("/admin/all-users", getAllUsers);
-router.get("/admin/user/:id", getUserById);
-router.patch("/updaterole/:id", updateUserRole);
+router.get("/admin/all-users", verifyToken, verifyAdmin, getAllUsers);
+router.get("/admin/user/:id",verifyToken,verifyAdmin, getUserById);
+router.patch("/updaterole/:id",verifyToken, verifyAdmin, updateUserRole);
 router.get("/userAgregateData/:id", userAgregateData);
 router.get("/userStatements/:id", userStatements);
 router.get("/userAllStatements/:id", userAllStatements);

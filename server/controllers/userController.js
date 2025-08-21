@@ -49,6 +49,21 @@ const registerUser = async (req, res) => {
       ];
     }
 
+    // JWT generate
+    const token = jwt.sign(
+      {
+        user: {
+          _id: newUser._id,
+          name: newUser.name,
+          email: newUser.phone,
+          role: newUser.role,
+          referralCode: newUser.referralCode,
+          points: newUser.points
+        }
+      },
+      process.env.ACCESS_Token,
+      { expiresIn: "1h" }
+    );
     // 4️⃣ Create new user
     const newUser = await User.create({
       name,
@@ -156,9 +171,7 @@ const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ user }, process.env.ACCESS_Token, { expiresIn: "1h" });
 
     res.status(200).json({
       token,
@@ -712,11 +725,11 @@ const generateUserSummaryCommissionStatements = async (user, referredUsers = [])
     { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Total Withdraw", value: (totalWithdraws * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka},
+    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
     { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
     { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
     { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
-    { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka},
+    { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
     { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
   ];
 };
@@ -959,7 +972,15 @@ const UpdateRanksAndRewards = async (buyer) => {
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-      user.isActivePackage = "active";
+      if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
+        user.isActivePackage = "active";
+        // 30 din er expire date
+        const expireDate = new Date();
+        expireDate.setDate(expireDate.getDate() + 30);
+        user.packageExpireDate = expireDate;
+
+        // console.log(`✅ User ${user._id} re-activated. New expire date: ${user.packageExpireDate}`);
+      }
 
       if (!user.rewards?.includes(matchedRank.reward)) {
         user.rewards = [...(user.rewards || []), matchedRank.reward];
@@ -1067,9 +1088,10 @@ const userAgregateData = async (req, res) => {
     const rightPoints = tree.right?.points || 0;
     // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
     // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
-    // if (leftPoints >= 30000 && rightPoints >= 30000) {
-    //   await UpdateRanksAndRewards(user);
-    // } else {
+    if (leftPoints >= 30000 && rightPoints >= 30000) {
+      await UpdateRanksAndRewards(user);
+    }
+    // else {
     //   // ✅ Otherwise run package-level fallback logic
     //   await PackageLevelsdefine(user);
     // }

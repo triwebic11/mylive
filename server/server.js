@@ -5,6 +5,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 require("dotenv").config();
 const cron = require("node-cron");
+const jwt = require("jsonwebtoken");
 // const {
 //   processMonthlyUserRankAndFunds,
 // } = require("./utils/fullMonthlyLevelCommissionProcessor");
@@ -30,6 +31,20 @@ connectDB();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+
+
+//sent jwt 
+
+app.post('/api/jwt', async (req, res) => {
+  const user = req.body;
+  const token = jwt.sign(user, process.env.ACCESS_Token, {
+    expiresIn: '10h'
+  })
+  // console.log(token)
+  res.send({ token })
+})
+
 
 // Routes
 app.use("/api/users", require("./routes/userRoutes"));
@@ -108,14 +123,14 @@ cron.schedule("* * * * *", async () => {
     { $set: { isActivePackage: "expire" } }
   );
 
-  console.log(`Updated ${result.modifiedCount} users to expire.`);
+  // console.log(`Updated ${result?.modifiedCount} users to expire.`);
 
   // update hoye jawa users abar fetch kore log korbo
   const expiredUsers = await User.find({
     packageExpireDate: { $lt: now },
     isActivePackage: "expire"
   });
-  console.log("Expired users:", expiredUsers)
+  // console.log("Expired users:", expiredUsers)
   // console.log("Expired packages updated:", now.toLocaleString("en-BD", { timeZone: "Asia/Dhaka" }));
 });
 // Root route

@@ -135,6 +135,13 @@ const Register = () => {
         referralCode: res.data.referralCode,
         referralTree: res.data.referralTree,
       };
+
+      // / 2️⃣ Generate JWT immediately after registration
+    const tokenRes = await axiosPublic.post("/jwt", userData);
+    const token = tokenRes?.data?.token;
+
+    // 3️⃣ Store user + token in localStorage
+    localStorage.setItem("user", JSON.stringify({ ...userData, token }));
       localStorage.setItem("user", JSON.stringify(userData));
       setUserReferralCode(res.data.referralCode);
       setReferralTree(res.data.referralTree);
