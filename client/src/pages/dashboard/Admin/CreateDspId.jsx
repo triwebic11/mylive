@@ -155,11 +155,11 @@ const CreateDspId = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 rounded-5xl px-4 py-5">
+    <div className="flex flex-col justify-center items-center min-h-screen  rounded-5xl px-4 py-5">
       <h2 className="text-3xl font-semibold text-center mb-6">Create DSP ID</h2>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-3xl  p-6 rounded-md shadow-lg hover:shadow-purple-300 duration-300 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 border-purple-600"
+        className="w-full max-w-3xl bg-white rounded-2xl  p-6 shadow-lg hover:shadow-purple-300 duration-300 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 border-purple-600"
       >
         <div>
           <label>DSP ID </label>

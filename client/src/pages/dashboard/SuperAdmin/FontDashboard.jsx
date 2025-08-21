@@ -86,7 +86,7 @@ const FontDashboard = () => {
       return res.data;
     },
   });
-  console.log(referaltree)
+  // console.log(referaltree)
   const {
     data: agregate,
     isLoading,
@@ -233,7 +233,7 @@ const FontDashboard = () => {
           <div className="md:w-1/2">
             <div className="bg-white h-28 shadow-black/80 shadow-sm rounded-md p-4 flex justify-between items-center text-center text-sm">
               <div className="flex-1">
-                <div className={`inline-block ${data?.isActivePackage === "active" ? "bg-green-300 text-green-900" : 'bg-red-300 text-red-900'} font-semibold px-3 py-1 rounded-full text-xs`}>
+                <div className={`inline-block ${data?.isActivePackage === "active" ? "bg-green-300 text-green-900" : 'bg-red-300 text-red-900'} font-semibold px-3 py-1 rounded-full uppercase text-xs`}>
                   {data?.isActivePackage}
                 </div>
                 <p className="mt-1 text-gray-700">Status</p>

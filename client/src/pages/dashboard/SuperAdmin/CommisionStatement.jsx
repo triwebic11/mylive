@@ -45,7 +45,7 @@ export default function CommissionStatement({
         isError,
         error,
         refetch] = useUserStatements()
-        console.log("agreeeee", agregate)
+        // console.log("agreeeee", agregate)
 
         const total = agregate?.summary.reduce((sum, item) => sum + parseInt(item.value), 0);
 

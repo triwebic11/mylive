@@ -8,7 +8,7 @@ const WithdrawForm = ({ userId }) => {
     const [rate, setRate] = useState(1);
   let currentPoints = user?.points;
     const axiosSecure = useAxiosSecure();
-  console.log("Current Points:", currentPoints);
+  // console.log("Current Points:", currentPoints);
 
     // ✅ Fetch conversion rate
   useEffect(() => {
@@ -24,12 +24,12 @@ const WithdrawForm = ({ userId }) => {
 
   const totaltaka = currentPoints * rate
 
-  console.log(withdrawtaka)
+  // console.log(withdrawtaka)
 
-  console.log("totaltakaaaaaaa",totaltaka)
+  // console.log("totaltakaaaaaaa",totaltaka)
       const withdrawpointsconvert = withdrawtaka / rate
 
-    console.log("withdrow poibts", withdrawpointsconvert)
+    // console.log("withdrow poibts", withdrawpointsconvert)
 
   // Fetch user data by ID
   useEffect(() => {
@@ -53,7 +53,7 @@ const WithdrawForm = ({ userId }) => {
     }
 
     if (withdrawtaka > totaltaka) {
-      return Swal.fire("Insufficient", "You don't have enough points", "error");
+      return Swal.fire("Insufficient", "You don't have enough amount", "error");
     }
 
 
@@ -138,7 +138,7 @@ const WithdrawForm = ({ userId }) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Withdraw Points
+            Enter Withdraw Amount
           </label>
           <input
             type="number"

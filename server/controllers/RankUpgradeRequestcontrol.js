@@ -21,7 +21,7 @@ exports.RankUpdateRequest = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    console.log("Updating Rank Upgrade Request:", id, "to status:", status);
+    // console.log("Updating Rank Upgrade Request:", id, "to status:", status);
 
     const updated = await RankUpgradeRequest.findByIdAndUpdate(
       id,

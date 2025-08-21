@@ -94,15 +94,15 @@ const AllUsers = () => {
   };
 
   return (
-    <div className="max-w-[1900px] p-6">
-      <div>
+    <div className="max-w-[1900px]  p-6">
+      {/* <div>
         <Link
           to="/dashboard"
           className=" bg-amber-800 text-white border border-amber-500 px-2 py-1 rounded-xl hover:opacity-80 my-10 inline-block "
         >
           Go to Dashboard
         </Link>
-      </div>
+      </div> */}
 
       {/* 🔍 Search and Role Filter */}
       <div className="mb-4 flex flex-wrap gap-4 items-center">
@@ -144,7 +144,7 @@ const AllUsers = () => {
       </h1>
 
       <div className="max-w-full overflow-x-auto">
-        <table className="min-w-full table-auto border-collapse border border-gray-300">
+        <table className="min-w-full bg-white table-auto border-collapse border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
               <th className="border px-4 py-2">Name</th>

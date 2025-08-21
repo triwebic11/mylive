@@ -26,8 +26,18 @@ const Login = () => {
       const res = await axiosPublic.post("/users/login", data);
       const loggedInUser = res?.data;
 
+
+       // 2️⃣ Request JWT
+      const tokenRes = await axiosPublic.post("/jwt", loggedInUser);
+      const token = tokenRes.data.token;
+
+      // 3️⃣ Store user + token
+      const userWithToken = { ...loggedInUser, token };
+      localStorage.setItem("user", JSON.stringify(userWithToken));
+      localStorage.setItem("userId", loggedInUser._id);
+
       // console.log("logeed", loggedInUser);
-      localStorage.setItem("user", JSON.stringify(loggedInUser));
+      // localStorage.setItem("user", JSON.stringify(loggedInUser));
       setUser(loggedInUser);
 
       Swal.fire({

@@ -77,6 +77,11 @@ const dashboardArry = [
     icon: <HiMiniArrowsUpDown />,
     link: "/dashboard/withdraw",
   },
+  {
+    title: "Ranks & Rewards",
+    icon: <GiWantedReward />,
+    link: "/dashboard/userranksAndRewards",
+  },
 
   { title: "My Order", icon: <TiShoppingCart />, link: "/dashboard/my-order" },
   // { title: "Package Update", link: "/dashboard" },
