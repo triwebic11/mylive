@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 const MobAndBankInfoForm = ({ user }) => {
   const userId = user?.user._id;
 
@@ -16,13 +17,14 @@ const MobAndBankInfoForm = ({ user }) => {
   });
   const [loading, setLoading] = useState(false);
   const axiosSecure = useAxiosSecure()
+    const axiosPublic = useAxiosPublic();
 
   // Fetch existing data
   useEffect(() => {
     if (!userId) return;
     setLoading(true);
 
-    axiosSecure
+    axiosPublic
       .get(`/profile/accountsInfo/${userId}`)
       .then((res) => {
         if (res.data) {
@@ -50,7 +52,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
   const handleCreate = async () => {
     try {
-      await axiosSecure.post("/profile/accountsInfo", {
+      await axiosPublic.post("/profile/accountsInfo", {
         userId,
         ...formData,
       });
@@ -69,7 +71,7 @@ const MobAndBankInfoForm = ({ user }) => {
 
   const handleUpdate = async () => {
     try {
-      await axiosSecure.put(`/profile/${userId}`, formData);
+      await axiosPublic.put(`/profile/${userId}`, formData);
 
       Swal.fire({
         icon: "success",
@@ -88,7 +90,7 @@ const MobAndBankInfoForm = ({ user }) => {
     if (!userId) return alert("❌ User not found. Please login again.");
 
     try {
-      const res = await axiosSecure.get(
+      const res = await axiosPublic.get(
         `/profile/accountsInfo/${userId}`
       );
       if (res.data) {

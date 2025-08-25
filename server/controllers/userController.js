@@ -601,12 +601,12 @@ const generateUserSummary = async (user, referredUsers = []) => {
     { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Total Withdraw", value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
     { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
     { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
     { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
     { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
     { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
+    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
   ];
 };
 const generateUserSummaryStatements = async (user, referredUsers = []) => {
@@ -972,15 +972,15 @@ const UpdateRanksAndRewards = async (buyer) => {
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-      if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
-        user.isActivePackage = "active";
+      // if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
+        // user.isActivePackage = "active";
         // 30 din er expire date
-        const expireDate = new Date();
-        expireDate.setDate(expireDate.getDate() + 30);
-        user.packageExpireDate = expireDate;
+        // const expireDate = new Date();
+        // expireDate.setDate(expireDate.getDate() + 30);
+        // user.packageExpireDate = expireDate;
 
         // console.log(`✅ User ${user._id} re-activated. New expire date: ${user.packageExpireDate}`);
-      }
+      // }
 
       if (!user.rewards?.includes(matchedRank.reward)) {
         user.rewards = [...(user.rewards || []), matchedRank.reward];

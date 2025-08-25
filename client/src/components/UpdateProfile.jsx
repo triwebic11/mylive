@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useRole from "../Hooks/useRole";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 const districtData = [
   "Dhaka",
@@ -79,6 +80,7 @@ const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
 
   // console.log("userrrrrrrrrrrrrrrr role", role);
   const axiosSecure = useAxiosSecure();
+    const axiosPublic = useAxiosPublic();
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.user?._id;
 
@@ -106,7 +108,7 @@ const UpdateProfileInfo = ({ nameOrId, readonlyFields = [] }) => {
 
     setLoading(true);
     try {
-      const res = await axiosSecure.get(`/users/${userId}`);
+      const res = await axiosPublic.get(`/users/${userId}`);
       const user = res.data;
 
       setForm({

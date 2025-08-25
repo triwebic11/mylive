@@ -53,7 +53,7 @@ const verifyAdmin = async (req, res, next) => {
 
     // console.log("User found:", user); // ✅ এখানে user object দেখা যাবে
 
-    if (!user || user.role !== "admin") {
+    if (user.role !== "admin") {
       return res.status(403).json({ message: "Forbidden: Admin only" });
     }
     next();
@@ -71,7 +71,7 @@ const verifyCustomer = async (req, res, next) => {
     // console.log("Decoded email for customer:", email); // ✅ এখানে email দেখা যাবে
     const user = await User.findOne({ phone: email });
 
-    if (user?.role !== "admin" || user?.role !== "dsp") {
+    if (user?.role !== "user") {
       return res.status(403).json({ message: "Forbidden: Customers only" });
     }
     next();
@@ -86,7 +86,7 @@ const verifyDSP = async (req, res, next) => {
     const email = req.decoded.email;
     const user = await User.findOne({ phone: email });
 
-    if (user?.role !== "admin" || user?.role !== "user") {
+    if (user?.role !== "dsp") {
       return res.status(403).json({ message: "Forbidden: Admins only" });
     }
     next();

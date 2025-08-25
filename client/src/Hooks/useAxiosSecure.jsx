@@ -2,6 +2,7 @@ import axios from "axios";
 
 const axiosSecure = axios.create({
   baseURL: "http://localhost:5000/api",
+   withCredentials: true,
   // baseURL: "https://apidata.shslira.com/api",
 });
 
@@ -10,6 +11,7 @@ axiosSecure.interceptors.request.use(
   (config) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = user?.token; // এখানেই ঠিক key বসাতে হবে
+    // console.log("Using token:", token); // ✅ token দেখা যাবে
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

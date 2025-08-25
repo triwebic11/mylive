@@ -33,9 +33,9 @@ router.get("/", getAllUsers);
 router.get("/:id", getUserById);
 
 router.put("/:id", updatProfileInfo);
-router.get("/admin/all-users", verifyToken, verifyAdmin, getAllUsers);
-router.get("/admin/user/:id",verifyToken,verifyAdmin, getUserById);
-router.patch("/updaterole/:id",verifyToken, verifyAdmin, updateUserRole);
+router.get("/admin/all-users", getAllUsers);
+router.get("/admin/user/:id", getUserById);
+router.patch("/updaterole/:id",updateUserRole);
 router.get("/userAgregateData/:id", userAgregateData);
 router.get("/userStatements/:id", userStatements);
 router.get("/userAllStatements/:id", userAllStatements);

@@ -193,11 +193,11 @@ const OrderCreate = ({ title }) => {
     // set other form fields here if needed
   };
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true); 
 
     const scndProductsWithSubtotal = scndProducts.map((p) => {
       const mrp = +p.mrpRate || 0;
