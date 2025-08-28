@@ -156,6 +156,7 @@ async function buildTree(userId) {
   const user = await User.findById(userId);
   if (!user) return null;
 
+  // 1) Children load
   const children = await User.find({
     $or: [
       { placementBy: user.referralCode },
@@ -170,7 +171,7 @@ async function buildTree(userId) {
   const leftChild = childrenTrees[0] || null;
   const rightChild = childrenTrees[1] || null;
 
-  // Recursive total point calculation
+  // 2) Recursive total point calculation (lifetime points)
   const calculateTotalPoints = (node) => {
     if (!node) return 0;
     const selfPoints = node.points || 0;
@@ -182,6 +183,33 @@ async function buildTree(userId) {
   const totalPointsFromLeft = calculateTotalPoints(leftChild);
   const totalPointsFromRight = calculateTotalPoints(rightChild);
 
+  // 3) Monthly incoming sum (ONLY current month for one user)
+  const getMonthlyIncoming = async (id) => {
+    const u = await User.findById(id);
+    if (!u?.AllEntry?.incoming) return 0;
+
+    let total = 0;
+    const now = new Date();
+
+    for (const entry of u.AllEntry.incoming) {
+      const entryDate = new Date(entry.date);
+
+      // ✅ শুধু এই মাস ও বছরের income হিসাব হবে
+      if (
+        entryDate.getMonth() === now.getMonth() &&
+        entryDate.getFullYear() === now.getFullYear()
+      ) {
+        total += entry.pointReceived;
+      }
+    }
+    return total;
+  };
+
+  // 4) শুধু সরাসরি leftChild আর rightChild এর monthly income
+  const monthlyleftBV = leftChild ? await getMonthlyIncoming(leftChild._id) : 0;
+  const monthlyrightBV = rightChild ? await getMonthlyIncoming(rightChild._id) : 0;
+
+  // 5) Return structured tree
   return {
     name: user.name,
     _id: user._id,
@@ -193,6 +221,8 @@ async function buildTree(userId) {
     points: user.points || 0,
     left: leftChild,
     right: rightChild,
+    monthlyleftBV,      // ✅ শুধু এক লেভেল left
+    monthlyrightBV,     // ✅ শুধু এক লেভেল right
     totalPointsFromLeft,
     totalPointsFromRight,
   };
@@ -260,7 +290,7 @@ const positionLevels = [
     rightPV: 500,
     leftBV: 3000000,
     rightBV: 3000000,
-    position: "EX = Emerald",
+    position: "Executive Emerald",
     reward: "Bike or ৳50,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -271,7 +301,7 @@ const positionLevels = [
     rightPV: 1000,
     leftBV: 6000000,
     rightBV: 6000000,
-    position: "EX = Elite",
+    position: "Executive Elite",
     reward: "Thailand Tour or ৳1,25,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -282,7 +312,7 @@ const positionLevels = [
     rightPV: 2000,
     leftBV: 12000000,
     rightBV: 12000000,
-    position: "EX = Deluxe",
+    position: "Executive Deluxe",
     reward: "Hajj/Umrah or ৳3,00,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -293,7 +323,7 @@ const positionLevels = [
     rightPV: 4000,
     leftBV: 24000000,
     rightBV: 24000000,
-    position: "EX = Marjury",
+    position: "Executive Marjury",
     reward: "Car or ৳6,00,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,

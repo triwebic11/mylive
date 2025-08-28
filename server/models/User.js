@@ -200,6 +200,7 @@ const userSchema = new mongoose.Schema(
     },
     TargetPV: [Number],
     Position: String,
+    RewardPosition: String,
     rewards: [String],
     withdraw: Number,
 

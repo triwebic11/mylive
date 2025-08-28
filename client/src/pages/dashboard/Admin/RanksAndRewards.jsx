@@ -3,20 +3,22 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 
 
 const RanksAndRewards = () => {
     const queryClient = useQueryClient();
     const axiosSecure = useAxiosSecure()
+    const axiospublic = useAxiosPublic()
 
     const fetchRanks = async () => {
-        const res = await axiosSecure.get("/updateRank");
+        const res = await axiospublic.get("/updateRank");
         return res.data;
     };
 
     const updateRankStatus = async ({ id, status }) => {
-        const res = await axiosSecure.patch(`/updateRank/${id}`, {
+        const res = await axiospublic.patch(`/updateRank/${id}`, {
             status,
         });
         return res.data;
@@ -26,6 +28,8 @@ const RanksAndRewards = () => {
         queryKey: ["rankRequests"],
         queryFn: fetchRanks,
     });
+
+    console.log("Ranks and Rewards Data: ", data);
 
     const mutation = useMutation({
         mutationFn: updateRankStatus,

@@ -9,7 +9,8 @@ import { Tree, TreeNode } from "react-organizational-chart";
 import styled from "styled-components";
 // import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+// import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 
 // Styled node for tree visualization
 const StyledNode = styled.div`
@@ -26,12 +27,14 @@ const Dashboard = () => {
   const { user } = useAuth();
   const userId = user?.user?._id;
   const referralCode = user?.user?.referralCode || "";
-  const axiosSecure = useAxiosSecure();
+  // const axiosSecure = useAxiosSecure();
+  const axiospublic = useAxiosPublic(); // For public endpoints
+
 
   // const referralLink = `https://shslira.com/register?ref=${referralCode}`;
 
   const fetchReferralTree = async (userId) => {
-  const res = await axiosSecure.get(
+  const res = await axiospublic.get(
     `/users/referral-tree/${userId}`
   );
   return res.data;
@@ -160,7 +163,7 @@ const Dashboard = () => {
       </div>
 
       <MyReferral referralCode={referralCode} />
-      <ReferralTree referralTree={user?.user?.referralTree} />
+      {/* <ReferralTree referralTree={user?.user?.referralTree} /> */}
     </div>
   );
 };

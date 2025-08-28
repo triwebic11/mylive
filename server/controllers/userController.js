@@ -874,7 +874,7 @@ const positionLevels = [
     rightPV: 500,
     leftBV: 3000000,
     rightBV: 3000000,
-    position: "EX = Emerald",
+    position: "Executive Emerald",
     reward: "Bike or ৳50,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -885,7 +885,7 @@ const positionLevels = [
     rightPV: 1000,
     leftBV: 6000000,
     rightBV: 6000000,
-    position: "EX = Elite",
+    position: "Executive Elite",
     reward: "Thailand Tour or ৳1,25,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -896,7 +896,7 @@ const positionLevels = [
     rightPV: 2000,
     leftBV: 12000000,
     rightBV: 12000000,
-    position: "EX = Deluxe",
+    position: "Executive Deluxe",
     reward: "Hajj/Umrah or ৳3,00,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -907,7 +907,7 @@ const positionLevels = [
     rightPV: 4000,
     leftBV: 24000000,
     rightBV: 24000000,
-    position: "EX = Marjury",
+    position: "Executive Marjury",
     reward: "Car or ৳6,00,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -968,6 +968,48 @@ const positionLevels = [
     megaGenerationLevel: Infinity,
   },
 ];
+const positionLevelsforRanks = [
+  {
+    rank: 1,
+    leftBV: 15000,
+    rightBV: 15000,
+    position: "Executive Officer",
+    generationLevel: 10,
+    megaGenerationLevel: 3,
+  },
+  {
+    rank: 2,
+    leftBV: 30000,
+    rightBV: 30000,
+    position: "Executive Manager",
+    generationLevel: 15,
+    megaGenerationLevel: 3,
+  },
+  {
+    rank: 3,
+    leftBV: 60000,
+    rightBV: 60000,
+    position: "Executive Director",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
+  },
+  {
+    rank: 4,
+    leftBV: 150000,
+    rightBV: 150000,
+    position: "Diamond Director",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
+  },
+  {
+    rank: 5,
+    leftBV: 300000,
+    rightBV: 300000,
+    position: "Crown Director",
+    generationLevel: Infinity,
+    megaGenerationLevel: Infinity,
+  },
+];
 
 const UpdateRanksAndRewards = async (buyer) => {
   try {
@@ -999,7 +1041,7 @@ const UpdateRanksAndRewards = async (buyer) => {
     );
 
     if (newRankIndex > currentRankIndex) {
-      user.Position = matchedRank.position;
+      user.RewardPosition = matchedRank.position;
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
@@ -1039,6 +1081,54 @@ const UpdateRanksAndRewards = async (buyer) => {
       // console.log(
       //   `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
       // );
+    }
+  } catch (error) {
+    console.error("❌ Error updating ranks and rewards:", error);
+  }
+};
+const UpdateRanks = async (buyer) => {
+  try {
+    const tree = await buildTree(buyer._id);
+    if (!tree) return;
+
+    const leftBV = tree.monthlyleftBV;
+    const rightBV = tree.monthlyrightBV;
+
+    // console.log("Left Tree:", leftBV);
+    // console.log("Right Tree:", rightBV);
+
+    const matchedRank = positionLevelsforRanks
+      .slice()
+      .reverse()
+      .find((level) => leftBV >= level.leftBV && rightBV >= level.rightBV);
+    // console.log("Matched Rank:", matchedRank);
+
+    if (!matchedRank) return;
+
+    const user = await User.findById(buyer._id);
+
+    // // Update if new position is higher than existing
+    const currentRankIndex = positionLevelsforRanks.findIndex(
+      (r) => r.position === user.Position
+    );
+    const newRankIndex = positionLevelsforRanks.findIndex(
+      (r) => r.position === matchedRank.position
+    );
+
+    if (newRankIndex > currentRankIndex) {
+      user.Position = matchedRank.position;
+      user.GenerationLevel = matchedRank.generationLevel;
+      user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+      // if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
+        // user.isActivePackage = "active";
+        // 30 din er expire date
+        // const expireDate = new Date();
+        // expireDate.setDate(expireDate.getDate() + 30);
+        // user.packageExpireDate = expireDate;
+
+        // console.log(`✅ User ${user._id} re-activated. New expire date: ${user.packageExpireDate}`);
+      // }
+      await user.save();
     }
   } catch (error) {
     console.error("❌ Error updating ranks and rewards:", error);
@@ -1119,6 +1209,12 @@ const userAgregateData = async (req, res) => {
     const rightPoints = tree.right?.points || 0;
     if (leftPoints >= 30000 && rightPoints >= 30000) {
       await UpdateRanksAndRewards(user);
+    }
+
+    const leftmonthlyBV = tree?.monthlyleftBV || 0;
+    const rightmonthlyBV = tree?.monthlyrightBV || 0;
+    if (leftmonthlyBV >= 15000 && rightmonthlyBV >= 15000) {
+      await UpdateRanks(user);
     }
     // else {
     //   // ✅ Otherwise run package-level fallback logic

@@ -4,18 +4,22 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import useUserById from "../../../Hooks/useUserById";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 
 
 const UserRanksRewards = () => {
     const axiosSecure = useAxiosSecure()
+    const axiospublic = useAxiosPublic()
     const [data] = useUserById()
+
+    console.log("data from useUserById hook:", data);
 
 
     console.log("UserRanksRewards data:", data);
 
     const fetchRanks = async () => {
-        const res = await axiosSecure.get("/updateRank");
+        const res = await axiospublic.get("/updateRank");
         return res.data;
     };
 
