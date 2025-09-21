@@ -53,13 +53,11 @@ const registerUser = async (req, res) => {
     const token = jwt.sign(
       {
         user: {
-          _id: newUser._id,
-          name: newUser.name,
-          email: newUser.phone,
-          role: newUser.role,
-          referralCode: newUser.referralCode,
-          points: newUser.points
-        }
+          name: name,
+          email: phone,
+          role: role,
+          referralCode: referralCode,
+        },
       },
       process.env.ACCESS_Token,
       { expiresIn: "1h" }
@@ -171,7 +169,9 @@ const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-    const token = jwt.sign({ user }, process.env.ACCESS_Token, { expiresIn: "1h" });
+    const token = jwt.sign({ user }, process.env.ACCESS_Token, {
+      expiresIn: "1h",
+    });
 
     res.status(200).json({
       token,
@@ -560,7 +560,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
 
   let totalTdsValue = 0;
   const tdsRate = await TdsRate.findOne();
-  console.log("TDS Rate", tdsRate?.pointToTaka)
+  console.log("TDS Rate", tdsRate?.pointToTaka);
   try {
     const tdsRateValue = tdsRate ? tdsRate.tdsValue : 0;
     totalTdsValue = (user?.totalwithdraw * tdsRateValue) / 100;
@@ -594,15 +594,42 @@ const generateUserSummary = async (user, referredUsers = []) => {
     { title: "Current Purchase Amount", value: currentPurchaseAmount },
     { title: "Total Purchase Amount", value: user?.points.toFixed(2) },
     { title: "Total Purchase BV", value: productPurchasePoints },
-    { title: "Refer Commission", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Generation Commission", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Mega Commission", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Repurchase Sponsor Bonus", value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Total Withdraw", value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
-    { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
+    {
+      title: "Refer Commission",
+      value: (referCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Generation Commission",
+      value: (generationCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Mega Commission",
+      value: (megaCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Repurchase Sponsor Bonus",
+      value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Repurchase Commission",
+      value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Withdrawable Balance",
+      value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Total Withdraw",
+      value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Total TDS",
+      value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka,
+    },
+    {
+      title: "Executive Officer",
+      value: executiveOfficer * tdsRate?.pointToTaka,
+    },
     { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
     { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
     { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
@@ -663,21 +690,48 @@ const generateUserSummaryStatements = async (user, referredUsers = []) => {
   }
 
   return [
-    { title: "Generation Commission", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Mega Commission", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Refer Commission", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Total Withdraw", value: (totalWithdraws * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
-    { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
+    {
+      title: "Generation Commission",
+      value: (generationCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Mega Commission",
+      value: (megaCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Refer Commission",
+      value: (referCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Repurchase Commission",
+      value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Withdrawable Balance",
+      value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Total Withdraw",
+      value: (totalWithdraws * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Total TDS",
+      value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka,
+    },
+    {
+      title: "Executive Officer",
+      value: executiveOfficer * tdsRate?.pointToTaka,
+    },
     { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
     { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
     { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
     { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
   ];
 };
-const generateUserSummaryCommissionStatements = async (user, referredUsers = []) => {
+const generateUserSummaryCommissionStatements = async (
+  user,
+  referredUsers = []
+) => {
   const incoming = user.AllEntry?.incoming || [];
 
   // Sum for all-time entries by sector (no date filter)
@@ -694,7 +748,9 @@ const generateUserSummaryCommissionStatements = async (user, referredUsers = [])
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared mega Generation Commission");
   const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
-  const repurchaseCommission = getSumBySector("10% personal reward from purchase");
+  const repurchaseCommission = getSumBySector(
+    "10% personal reward from purchase"
+  );
   const specialFund = getSumBySector("Special Fund Commission");
   const carFund = getSumBySector("Car Fund Commission");
   const tourFund = getSumBySector("Travel Fund Commission");
@@ -719,21 +775,44 @@ const generateUserSummaryCommissionStatements = async (user, referredUsers = [])
   }
 
   return [
-    { title: "Generation Commission", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Mega Commission", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Refer Commission", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Total Withdraw", value: (totalWithdraws * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
-    { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
+    {
+      title: "Generation Commission",
+      value: (generationCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Mega Commission",
+      value: (megaCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Refer Commission",
+      value: (referCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Repurchase Commission",
+      value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Withdrawable Balance",
+      value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Total Withdraw",
+      value: (totalWithdraws * tdsRate?.pointToTaka).toFixed(2),
+    },
+    {
+      title: "Total TDS",
+      value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka,
+    },
+    {
+      title: "Executive Officer",
+      value: executiveOfficer * tdsRate?.pointToTaka,
+    },
     { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
     { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
     { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
     { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
   ];
 };
-
 
 async function buildTree(userId) {
   const user = await User.findById(userId);
@@ -972,7 +1051,10 @@ const UpdateRanksAndRewards = async (buyer) => {
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-      if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
+      if (
+        user.isActivePackage === "expire" ||
+        user.isActivePackage === "In Active"
+      ) {
         user.isActivePackage = "active";
         // 30 din er expire date
         const expireDate = new Date();
@@ -1128,8 +1210,6 @@ const userStatements = async (req, res) => {
 
     const summary = await generateUserSummaryStatements(user, referredUsers);
 
-
-
     // *****************************************************************
 
     res.status(200).json({
@@ -1160,9 +1240,10 @@ const userAllStatements = async (req, res) => {
       _id: { $in: user.referralTree || [] },
     });
 
-    const summary = await generateUserSummaryCommissionStatements(user, referredUsers);
-
-
+    const summary = await generateUserSummaryCommissionStatements(
+      user,
+      referredUsers
+    );
 
     // *****************************************************************
 
@@ -1205,5 +1286,5 @@ module.exports = {
   userAgregateData,
   getReferralTreeById,
   userStatements,
-  userAllStatements
+  userAllStatements,
 };

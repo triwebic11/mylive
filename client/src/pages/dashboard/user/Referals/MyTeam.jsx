@@ -20,8 +20,6 @@ const StyledNode = styled.div`
   background: #f9f9f9;
 `;
 
-
-
 const Dashboard = () => {
   const { user } = useAuth();
   const userId = user?.user?._id;
@@ -31,11 +29,9 @@ const Dashboard = () => {
   // const referralLink = `https://shslira.com/register?ref=${referralCode}`;
 
   const fetchReferralTree = async (userId) => {
-  const res = await axiosSecure.get(
-    `/users/referral-tree/${userId}`
-  );
-  return res.data;
-};
+    const res = await axiosSecure.get(`/users/referral-tree/${userId}`);
+    return res.data;
+  };
 
   const {
     data: referralTree,
@@ -55,7 +51,10 @@ const Dashboard = () => {
     return (
       <TreeNode
         label={
-          <StyledNode style={{ width: "130px", color: "gray" }}  $isDirectReferral={isDirectReferral}>
+          <StyledNode
+            style={{ width: "130px", color: "gray" }}
+            $isDirectReferral={isDirectReferral}
+          >
             <div>{node.name}</div>
             <div style={{ fontSize: "12px", color: "gray" }}>
               Code: {node.referralCode}
@@ -160,7 +159,7 @@ const Dashboard = () => {
       </div>
 
       <MyReferral referralCode={referralCode} />
-      <ReferralTree referralTree={user?.user?.referralTree} />
+      {/* <ReferralTree referralTree={user?.user?.referralTree} /> */}
     </div>
   );
 };
