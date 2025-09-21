@@ -202,7 +202,7 @@ const FontDashboard = () => {
 
       <h2 className="text-base sm:text-lg font-medium">
         
-           {referaltree?.left?.points}
+           {referaltree?.monthlyleftBV.toFixed(2)}
 
       </h2>
       <h2 className="text-base sm:text-lg font-medium">
@@ -211,7 +211,7 @@ const FontDashboard = () => {
 
       </h2>
       <h2 className="text-base sm:text-lg font-medium">
-        {referaltree?.right?.points}
+        {referaltree?.monthlyrightBV.toFixed(2)}
       </h2>
       </div>
     </div>

@@ -68,29 +68,6 @@ const Transactions = () => {
             </div>
           ))}
       </div>
-      <div className="transaction-list">
-        <h1 className="bg-blue-500 text-white p-2 rounded-md">All Outgoing Point</h1>
-        {[...(data?.AllEntry?.outgoing || [])]
-          .reverse()
-          .map((item, idx) => (
-          <div key={idx} className="transaction">
-            <div className="left">
-              <img
-                src="https://img.icons8.com/color/48/000000/download.png"
-                alt="icon"
-                className="rotate-180"
-              />
-              <div className="details">
-                <p>Sector : {item?.sector || 'Not Define'}</p>
-                <p>Point : {item?.pointGiven || 0} </p>
-                <p>Name : {item?.name || 0} </p>
-                <p>Date : {moment(item?.date).local().format('MMMM Do YYYY, h:mm A')} </p>
-              </div>
-            </div>
-            {/* <div className="amount">{item?.amount}</div> */}
-          </div>
-        ))}
-      </div>
 
       <style jsx>{`
         .container {

@@ -7,12 +7,13 @@ const {
   updateBankInfo,
   getAllAccountInfo,
 } = require("../controllers/bankInfoController");
+const { verifyToken, verifyCustomer, verifyAdmin } = require("../Security/Security");
 
 // Create
 router.post("/accountsInfo", createBankInfo);
 
 // Get by userId
-router.get("/accountsInfo/:userId", getBankInfo);
+router.get("/accountsInfo/:userId",  getBankInfo);
 
 router.get("/all", getAllAccountInfo);
 

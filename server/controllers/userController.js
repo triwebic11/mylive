@@ -594,46 +594,19 @@ const generateUserSummary = async (user, referredUsers = []) => {
     { title: "Current Purchase Amount", value: currentPurchaseAmount },
     { title: "Total Purchase Amount", value: user?.points.toFixed(2) },
     { title: "Total Purchase BV", value: productPurchasePoints },
-    {
-      title: "Refer Commission",
-      value: (referCommission * tdsRate?.pointToTaka).toFixed(2),
-    },
-    {
-      title: "Generation Commission",
-      value: (generationCommission * tdsRate?.pointToTaka).toFixed(2),
-    },
-    {
-      title: "Mega Commission",
-      value: (megaCommission * tdsRate?.pointToTaka).toFixed(2),
-    },
-    {
-      title: "Repurchase Sponsor Bonus",
-      value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2),
-    },
-    {
-      title: "Repurchase Commission",
-      value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2),
-    },
-    {
-      title: "Withdrawable Balance",
-      value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2),
-    },
-    {
-      title: "Total Withdraw",
-      value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2),
-    },
-    {
-      title: "Total TDS",
-      value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka,
-    },
-    {
-      title: "Executive Officer",
-      value: executiveOfficer * tdsRate?.pointToTaka,
-    },
+    { title: "Refer Commission", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Generation Commission", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Mega Commission", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Repurchase Sponsor Bonus", value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Total Withdraw", value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
     { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
     { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
     { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
     { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
+    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
   ];
 };
 const generateUserSummaryStatements = async (user, referredUsers = []) => {
@@ -818,6 +791,7 @@ async function buildTree(userId) {
   const user = await User.findById(userId);
   if (!user) return null;
 
+  // 1) Children load
   const children = await User.find({
     $or: [
       { placementBy: user.referralCode },
@@ -832,7 +806,7 @@ async function buildTree(userId) {
   const leftChild = childrenTrees[0] || null;
   const rightChild = childrenTrees[1] || null;
 
-  // Recursive total point calculation
+  // 2) Recursive total point calculation (lifetime points)
   const calculateTotalPoints = (node) => {
     if (!node) return 0;
     const selfPoints = node.points || 0;
@@ -844,6 +818,33 @@ async function buildTree(userId) {
   const totalPointsFromLeft = calculateTotalPoints(leftChild);
   const totalPointsFromRight = calculateTotalPoints(rightChild);
 
+  // 3) Monthly incoming sum (ONLY current month for one user)
+  const getMonthlyIncoming = async (id) => {
+    const u = await User.findById(id);
+    if (!u?.AllEntry?.incoming) return 0;
+
+    let total = 0;
+    const now = new Date();
+
+    for (const entry of u.AllEntry.incoming) {
+      const entryDate = new Date(entry.date);
+
+      // ✅ শুধু এই মাস ও বছরের income হিসাব হবে
+      if (
+        entryDate.getMonth() === now.getMonth() &&
+        entryDate.getFullYear() === now.getFullYear()
+      ) {
+        total += entry.pointReceived;
+      }
+    }
+    return total;
+  };
+
+  // 4) শুধু সরাসরি leftChild আর rightChild এর monthly income
+  const monthlyleftBV = leftChild ? await getMonthlyIncoming(leftChild._id) : 0;
+  const monthlyrightBV = rightChild ? await getMonthlyIncoming(rightChild._id) : 0;
+
+  // 5) Return structured tree
   return {
     name: user.name,
     _id: user._id,
@@ -855,10 +856,13 @@ async function buildTree(userId) {
     points: user.points || 0,
     left: leftChild,
     right: rightChild,
+    monthlyleftBV,      // ✅ শুধু এক লেভেল left
+    monthlyrightBV,     // ✅ শুধু এক লেভেল right
     totalPointsFromLeft,
     totalPointsFromRight,
   };
 }
+
 
 const positionLevels = [
   {
@@ -922,7 +926,7 @@ const positionLevels = [
     rightPV: 500,
     leftBV: 3000000,
     rightBV: 3000000,
-    position: "EX = Emerald",
+    position: "Executive Emerald",
     reward: "Bike or ৳50,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -933,7 +937,7 @@ const positionLevels = [
     rightPV: 1000,
     leftBV: 6000000,
     rightBV: 6000000,
-    position: "EX = Elite",
+    position: "Executive Elite",
     reward: "Thailand Tour or ৳1,25,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -944,7 +948,7 @@ const positionLevels = [
     rightPV: 2000,
     leftBV: 12000000,
     rightBV: 12000000,
-    position: "EX = Deluxe",
+    position: "Executive Deluxe",
     reward: "Hajj/Umrah or ৳3,00,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -955,7 +959,7 @@ const positionLevels = [
     rightPV: 4000,
     leftBV: 24000000,
     rightBV: 24000000,
-    position: "EX = Marjury",
+    position: "Executive Marjury",
     reward: "Car or ৳6,00,000 cash",
     generationLevel: 20,
     megaGenerationLevel: 4,
@@ -1016,6 +1020,48 @@ const positionLevels = [
     megaGenerationLevel: Infinity,
   },
 ];
+const positionLevelsforRanks = [
+  {
+    rank: 1,
+    leftBV: 15000,
+    rightBV: 15000,
+    position: "Executive Officer",
+    generationLevel: 10,
+    megaGenerationLevel: 3,
+  },
+  {
+    rank: 2,
+    leftBV: 30000,
+    rightBV: 30000,
+    position: "Executive Manager",
+    generationLevel: 15,
+    megaGenerationLevel: 3,
+  },
+  {
+    rank: 3,
+    leftBV: 60000,
+    rightBV: 60000,
+    position: "Executive Director",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
+  },
+  {
+    rank: 4,
+    leftBV: 150000,
+    rightBV: 150000,
+    position: "Diamond Director",
+    generationLevel: 20,
+    megaGenerationLevel: 4,
+  },
+  {
+    rank: 5,
+    leftBV: 300000,
+    rightBV: 300000,
+    position: "Crown Director",
+    generationLevel: Infinity,
+    megaGenerationLevel: Infinity,
+  },
+];
 
 const UpdateRanksAndRewards = async (buyer) => {
   try {
@@ -1047,22 +1093,19 @@ const UpdateRanksAndRewards = async (buyer) => {
     );
 
     if (newRankIndex > currentRankIndex) {
-      user.Position = matchedRank.position;
+      user.RewardPosition = matchedRank.position;
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-      if (
-        user.isActivePackage === "expire" ||
-        user.isActivePackage === "In Active"
-      ) {
-        user.isActivePackage = "active";
+      // if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
+        // user.isActivePackage = "active";
         // 30 din er expire date
-        const expireDate = new Date();
-        expireDate.setDate(expireDate.getDate() + 30);
-        user.packageExpireDate = expireDate;
+        // const expireDate = new Date();
+        // expireDate.setDate(expireDate.getDate() + 30);
+        // user.packageExpireDate = expireDate;
 
         // console.log(`✅ User ${user._id} re-activated. New expire date: ${user.packageExpireDate}`);
-      }
+      // }
 
       if (!user.rewards?.includes(matchedRank.reward)) {
         user.rewards = [...(user.rewards || []), matchedRank.reward];
@@ -1090,6 +1133,54 @@ const UpdateRanksAndRewards = async (buyer) => {
       // console.log(
       //   `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
       // );
+    }
+  } catch (error) {
+    console.error("❌ Error updating ranks and rewards:", error);
+  }
+};
+const UpdateRanks = async (buyer) => {
+  try {
+    const tree = await buildTree(buyer._id);
+    if (!tree) return;
+
+    const leftBV = tree.monthlyleftBV;
+    const rightBV = tree.monthlyrightBV;
+
+    // console.log("Left Tree:", leftBV);
+    // console.log("Right Tree:", rightBV);
+
+    const matchedRank = positionLevelsforRanks
+      .slice()
+      .reverse()
+      .find((level) => leftBV >= level.leftBV && rightBV >= level.rightBV);
+    // console.log("Matched Rank:", matchedRank);
+
+    if (!matchedRank) return;
+
+    const user = await User.findById(buyer._id);
+
+    // // Update if new position is higher than existing
+    const currentRankIndex = positionLevelsforRanks.findIndex(
+      (r) => r.position === user.Position
+    );
+    const newRankIndex = positionLevelsforRanks.findIndex(
+      (r) => r.position === matchedRank.position
+    );
+
+    if (newRankIndex > currentRankIndex) {
+      user.Position = matchedRank.position;
+      user.GenerationLevel = matchedRank.generationLevel;
+      user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+      // if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
+        // user.isActivePackage = "active";
+        // 30 din er expire date
+        // const expireDate = new Date();
+        // expireDate.setDate(expireDate.getDate() + 30);
+        // user.packageExpireDate = expireDate;
+
+        // console.log(`✅ User ${user._id} re-activated. New expire date: ${user.packageExpireDate}`);
+      // }
+      await user.save();
     }
   } catch (error) {
     console.error("❌ Error updating ranks and rewards:", error);
@@ -1168,10 +1259,14 @@ const userAgregateData = async (req, res) => {
     const tree = await buildTree(user._id);
     const leftPoints = tree.left?.points || 0;
     const rightPoints = tree.right?.points || 0;
-    // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
-    // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
     if (leftPoints >= 30000 && rightPoints >= 30000) {
       await UpdateRanksAndRewards(user);
+    }
+
+    const leftmonthlyBV = tree?.monthlyleftBV || 0;
+    const rightmonthlyBV = tree?.monthlyrightBV || 0;
+    if (leftmonthlyBV >= 15000 && rightmonthlyBV >= 15000) {
+      await UpdateRanks(user);
     }
     // else {
     //   // ✅ Otherwise run package-level fallback logic

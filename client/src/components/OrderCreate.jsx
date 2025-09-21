@@ -197,7 +197,7 @@ const OrderCreate = ({ title }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true); 
 
     const scndProductsWithSubtotal = scndProducts.map((p) => {
       const mrp = +p.mrpRate || 0;
