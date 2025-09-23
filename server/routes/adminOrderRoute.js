@@ -617,6 +617,19 @@ const distributeGrandPoint = async (
   // console.log("buyer-------", buyer)
   if (!buyer) return;
 
+    console.log("Buyer", buyer?.points);
+  // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
+  // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
+  if (buyer?.points < 17501) {
+
+    // console.log(grandPoint)
+
+    // console.log("Buyer points less than 17500, running package level logic");
+    // console.log("Both sides have enough points, running rank update logic");
+    // await UpdateRanksAndRewards(buyer);
+    await PackageLevelsdefine(buyer, grandPoint);
+  }
+
 
 
   const fifteenPercent = grandPoint * 0.15;
@@ -839,13 +852,8 @@ const distributeGrandPoint = async (
   const tree = await buildTree(buyer._id);
   const leftPoints = tree.left?.points || 0;
   const rightPoints = tree.right?.points || 0;
-  // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
-  // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
-  if (buyer?.points <= 17500) {
-    // console.log("Both sides have enough points, running rank update logic");
-    // await UpdateRanksAndRewards(buyer);
-    await PackageLevelsdefine(buyer, grandPoint);
-  }
+
+
   // else {
   //   // ✅ Otherwise run package-level fallback logic
   //   // console.log("Running package-level fallback logic");

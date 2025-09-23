@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAuth from "../../../Hooks/useAuth";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 
 const OrderAprovedByDsp = () => {
   const [orders, setOrders] = useState([]);
@@ -10,7 +11,8 @@ const OrderAprovedByDsp = () => {
   });
   const buttonRefs = useRef({});
 
-  const axiosSecure = useAxiosSecure();
+  const axiosPublic = useAxiosPublic();
+  // const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const dspPhone = user?.user?.phone || user?.user?.email || "";
 
@@ -20,7 +22,7 @@ const OrderAprovedByDsp = () => {
 
   useEffect(() => {
     if (dspPhone) {
-      axiosSecure
+      axiosPublic
         .get(`/admin-orders/by-phone/${dspPhone}`)
         .then((res) => setOrders(res.data))
         .catch((err) => console.error("Error loading orders", err));

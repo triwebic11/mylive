@@ -107,20 +107,20 @@ const registerUser = async (req, res) => {
           });
           const uplinePackageName = uplinePackageReq?.packageName;
 
-          const uplineGenerations = (() => {
-            switch (uplinePackageName) {
-              case "Business Relation":
-                return 10;
-              case "Business Relative":
-                return 7;
-              case "Family":
-                return 5;
-              case "Friend":
-                return 3;
-              default:
-                return 0;
-            }
-          })();
+          // const uplineGenerations = (() => {
+          //   switch (uplinePackageName) {
+          //     case "Business Relation":
+          //       return 10;
+          //     case "Business Relative":
+          //       return 7;
+          //     case "Family":
+          //       return 5;
+          //     case "Friend":
+          //       return 3;
+          //     default:
+          //       return 0;
+          //   }
+          // })();
 
           // if (i < uplineGenerations) {
           //   const point = childStartPoint - i * childDecreasePV;
@@ -591,22 +591,22 @@ const generateUserSummary = async (user, referredUsers = []) => {
     },
     { title: "Total Team Sale BV", value: totalBinaryPoints.toFixed(2) || 0 },
     { title: "Total Team Member", value: totalUsersInTree - 1 || 0 },
-    { title: "Current Purchase Amount", value: currentPurchaseAmount },
-    { title: "Total Purchase Amount", value: user?.points.toFixed(2) },
+    { title: "Current Purchase Amount ৳", value: currentPurchaseAmount * tdsRate?.pointToTaka },
+    { title: "Total Purchase Amount ৳", value: user?.points.toFixed(2) * tdsRate?.pointToTaka },
     { title: "Total Purchase BV", value: productPurchasePoints },
-    { title: "Refer Commission", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Generation Commission", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Mega Commission", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Repurchase Sponsor Bonus", value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Refer Commission ৳", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Generation Commission ৳", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Mega Commission ৳", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Repurchase Sponsor Bonus ৳", value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Withdrawable Balance", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Withdrawable Balance ৳", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Total Withdraw", value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Executive Officer", value: executiveOfficer * tdsRate?.pointToTaka },
-    { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
-    { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
-    { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
-    { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
-    { title: "Total TDS", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
+    { title: "Executive Officer ৳", value: executiveOfficer * tdsRate?.pointToTaka },
+    { title: "Special Fund ৳", value: specialFund * tdsRate?.pointToTaka },
+    { title: "Car Fund ৳", value: carFund * tdsRate?.pointToTaka },
+    { title: "Tour Fund ৳", value: tourFund * tdsRate?.pointToTaka },
+    { title: "Home Fund ৳", value: homeFund * tdsRate?.pointToTaka },
+    { title: "Total TDS ৳", value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka },
   ];
 };
 const generateUserSummaryStatements = async (user, referredUsers = []) => {
@@ -664,41 +664,41 @@ const generateUserSummaryStatements = async (user, referredUsers = []) => {
 
   return [
     {
-      title: "Generation Commission",
+      title: "Generation Commission ৳",
       value: (generationCommission * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Mega Commission",
+      title: "Mega Commission ৳",
       value: (megaCommission * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Refer Commission",
+      title: "Refer Commission ৳",
       value: (referCommission * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Repurchase Commission",
+      title: "Repurchase Commission ৳",
       value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Withdrawable Balance",
+      title: "Withdrawable Balance ৳",
       value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Total Withdraw",
+      title: "Total Withdraw ৳",
       value: (totalWithdraws * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Total TDS",
+      title: "Total TDS ৳",
       value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka,
     },
     {
-      title: "Executive Officer",
+      title: "Executive Officer ৳",
       value: executiveOfficer * tdsRate?.pointToTaka,
     },
-    { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
-    { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
-    { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
-    { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
+    { title: "Special Fund ৳", value: specialFund * tdsRate?.pointToTaka },
+    { title: "Car Fund ৳", value: carFund * tdsRate?.pointToTaka },
+    { title: "Tour Fund ৳", value: tourFund * tdsRate?.pointToTaka },
+    { title: "Home Fund ৳", value: homeFund * tdsRate?.pointToTaka },
   ];
 };
 const generateUserSummaryCommissionStatements = async (
@@ -749,41 +749,41 @@ const generateUserSummaryCommissionStatements = async (
 
   return [
     {
-      title: "Generation Commission",
+      title: "Generation Commission ৳",
       value: (generationCommission * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Mega Commission",
+      title: "Mega Commission ৳",
       value: (megaCommission * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Refer Commission",
+      title: "Refer Commission ৳",
       value: (referCommission * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Repurchase Commission",
+      title: "Repurchase Commission ৳",
       value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Withdrawable Balance",
+      title: "Withdrawable Balance ৳",
       value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Total Withdraw",
+      title: "Total Withdraw ৳",
       value: (totalWithdraws * tdsRate?.pointToTaka).toFixed(2),
     },
     {
-      title: "Total TDS",
+      title: "Total TDS ৳",
       value: totalTdsValue.toFixed(2) * tdsRate?.pointToTaka,
     },
     {
-      title: "Executive Officer",
+      title: "Executive Officer ৳",
       value: executiveOfficer * tdsRate?.pointToTaka,
     },
-    { title: "Special Fund", value: specialFund * tdsRate?.pointToTaka },
-    { title: "Car Fund", value: carFund * tdsRate?.pointToTaka },
-    { title: "Tour Fund", value: tourFund * tdsRate?.pointToTaka },
-    { title: "Home Fund", value: homeFund * tdsRate?.pointToTaka },
+    { title: "Special Fund ৳", value: specialFund * tdsRate?.pointToTaka },
+    { title: "Car Fund ৳", value: carFund * tdsRate?.pointToTaka },
+    { title: "Tour Fund ৳", value: tourFund * tdsRate?.pointToTaka },
+    { title: "Home Fund ৳", value: homeFund * tdsRate?.pointToTaka },
   ];
 };
 

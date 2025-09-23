@@ -128,6 +128,8 @@ const FontDashboard = () => {
     },
   });
 
+  console.log("orders", orders);
+
   // const userProductsArry = orders?.filter(
   //   (order) => order?.userId === data?._id
   // );

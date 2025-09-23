@@ -8,6 +8,7 @@ import useFreeOrPaidProducts from "../Hooks/useFreeOrPaidProduct";
 import useRole from "../Hooks/useRole";
 
 import { LuLoader } from "react-icons/lu";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
@@ -194,6 +195,7 @@ const OrderCreate = ({ title }) => {
   };
 
   const [loading, setLoading] = useState(false);
+  const axiosPublic = useAxiosPublic();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -228,13 +230,15 @@ const OrderCreate = ({ title }) => {
     };
 
     try {
-      const res = await axiosSecure.post("/admin-orders", orderData);
+      const res = await axiosPublic.post("/admin-orders", orderData);
       if (res.data?.order?._id) {
         setOrder(res.data);
+        setLoading(false);
         Swal.fire("✅ Success", "Order created!", "success");
       }
     } catch (err) {
       console.error("Order creation failed", err);
+      setLoading(false);
       Swal.fire(
         ` ${err.response?.data?.message || "this product"}`,
         "",
