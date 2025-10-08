@@ -580,10 +580,18 @@ const generateUserSummary = async (user, referredUsers = []) => {
       value: totalexpireTeams,
     },
     { title: "Total Voucher", value: orders?.length || 0 },
-    { title: "Previous Month BV", value: previousMonthPv || 0 },
+    // { title: "Previous Month BV", value: previousMonthPv || 0 },
     {
       title: "Current Month BV",
-      value: currentMonthPv || 0,
+      value: `${tree?.monthlyleftBV} (Left) + ${tree?.monthlyrightBV} (Right)`,
+    },
+    {
+      title: "Team Current Month BV",
+      value: `${tree?.totalPointsFromLeft} (Left) + ${tree?.totalPointsFromRight} (Right)`,
+    },
+    {
+      title: "Team previous Month PV",
+      value: `${tree?.previousmonthlyleftBV / 6000} (Left) + ${tree?.previousmonthlyrightBV / 6000} (Right)`,
     },
     {
       title: "Monthly down sale BV",
@@ -593,7 +601,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
     { title: "Total Team Member", value: totalUsersInTree - 1 || 0 },
     { title: "Current Purchase Amount ৳", value: currentPurchaseAmount * tdsRate?.pointToTaka },
     { title: "Total Purchase Amount ৳", value: user?.points.toFixed(2) * tdsRate?.pointToTaka },
-    { title: "Total Purchase BV", value: productPurchasePoints },
+    { title: "Total Purchase BV", value: repurchaseCommission },
     { title: "Refer Commission ৳", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Generation Commission ৳", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Mega Commission ৳", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
@@ -839,10 +847,38 @@ async function buildTree(userId) {
     }
     return total;
   };
+  // 3) Monthly incoming sum (ONLY current month for one user)
+  const previousgetMonthlyIncoming = async (id) => {
+    const u = await User.findById(id);
+    if (!u?.AllEntry?.incoming) return 0;
+
+    let total = 0;
+    const now = new Date();
+    const previousMonth = new Date(now);
+    previousMonth.setMonth(now.getMonth()-1)
+
+    console.log("previousMonth", previousMonth);
+
+    for (const entry of u.AllEntry.incoming) {
+      const entryDate = new Date(entry.date);
+
+      // ✅ শুধু এই মাস ও বছরের income হিসাব হবে
+      if (
+        entryDate.getMonth() === previousMonth.getMonth() &&
+        entryDate.getFullYear() === previousMonth.getFullYear()
+      ) {
+        total += entry.pointReceived;
+      }
+    }
+    return total;
+  };
 
   // 4) শুধু সরাসরি leftChild আর rightChild এর monthly income
   const monthlyleftBV = leftChild ? await getMonthlyIncoming(leftChild._id) : 0;
   const monthlyrightBV = rightChild ? await getMonthlyIncoming(rightChild._id) : 0;
+  // 4) শুধু সরাসরি leftChild আর rightChild এর monthly income
+  const previousmonthlyleftBV = leftChild ? await previousgetMonthlyIncoming(leftChild._id) : 0;
+  const previousmonthlyrightBV = rightChild ? await previousgetMonthlyIncoming(rightChild._id) : 0;
 
   // 5) Return structured tree
   return {
@@ -860,6 +896,8 @@ async function buildTree(userId) {
     monthlyrightBV,     // ✅ শুধু এক লেভেল right
     totalPointsFromLeft,
     totalPointsFromRight,
+    previousmonthlyrightBV,
+    previousmonthlyleftBV
   };
 }
 
