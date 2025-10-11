@@ -857,7 +857,7 @@ async function buildTree(userId) {
     const previousMonth = new Date(now);
     previousMonth.setMonth(now.getMonth()-1)
 
-    console.log("previousMonth", previousMonth);
+    // console.log("previousMonth", previousMonth);
 
     for (const entry of u.AllEntry.incoming) {
       const entryDate = new Date(entry.date);
