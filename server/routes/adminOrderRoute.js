@@ -139,7 +139,7 @@ router.post("/", async (req, res) => {
     let userPromise = Promise.resolve(); // default no-op
     const buyer = await User.findOne({ phone: dspPhone });
 
-    if (grandPoint || buyer.points * 10 > 500) {
+    if (buyer.points * 10 > 500) {
       if (buyer?.isActivePackage === "In Active") {
         buyer.isActivePackage = "active";
 
@@ -614,7 +614,7 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
     // always DB theke fresh document niben
     const buyer = await User.findById(buyerId);
 
-    console.log("Buyer current points:", buyer?.points);
+    // console.log("Buyer current points:", buyer?.points);
 
     // console.log("Grand points from purchase:", grandPoint + buyer?.points);
 
@@ -623,13 +623,13 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
     }
 
     const tenPercentOfGrandPoint = grandPoint * 0.10;
-    console.log("Ten parcent package level:", tenPercentOfGrandPoint);
+    // console.log("Ten parcent package level:", tenPercentOfGrandPoint);
 
     if (
       (!buyer.Position || buyer.Position.trim() === "" || buyer.Position === "Executive Officer")
       && tenPercentOfGrandPoint >= 500
     ) {
-      console.log("Position empty or Executive Officer AND points >= 500: special action");
+      // console.log("Position empty or Executive Officer AND points >= 500: special action");
 
       const givenpoint = buyer?.points + grandPoint;
       const matchedRank = PackageLevels.slice()
