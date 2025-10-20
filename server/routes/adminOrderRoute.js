@@ -791,6 +791,7 @@ const distributeGrandPoint = async (
     // console.log("Phone Referrer:", phoneReferrer);
     if (phoneReferrer) {
       phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
+     
       phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
       phoneReferrer.AllEntry.incoming.push({
         fromUser: buyerId,
@@ -806,14 +807,18 @@ const distributeGrandPoint = async (
     (entry) => entry.sector === "10% personal reward from purchase"
   );
 
+  console.log("grand total price ---- ",grandTotalPrice)
+
   console.log("ten parcent", tenPercent)
   if (alreadyReceivedPersonalReward) {
     buyer.points = (buyer.points || 0) + tenPercent;
+     buyer.totalAmount = (buyer.totalAmount || 0) + grandTotalPrice ;
     buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
     buyer.AllEntry.incoming.push({
       fromUser: buyer._id,
       pointReceived: tenPercent,
       sector: "10% personal reward from purchase",
+      purchaseAmount: grandTotalPrice,
       date: new Date(),
     });
     await buyer.save();

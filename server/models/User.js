@@ -158,6 +158,7 @@ const entrySchema = new mongoose.Schema(
     sector: String,
     product: String,
     pointReceived: Number,
+    purchaseAmount: Number,
     pointGiven: Number,
     type: String,
     date: Date,
@@ -203,6 +204,10 @@ const userSchema = new mongoose.Schema(
     RewardPosition: String,
     rewards: [String],
     withdraw: Number,
+    totalAmount: {
+      type: Number,
+      default: 0,
+    },
 
     referralTree: [String],
     // financial info
