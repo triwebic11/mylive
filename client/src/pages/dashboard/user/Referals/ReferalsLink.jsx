@@ -1,6 +1,7 @@
 import React from "react";
 import { FaCopy, FaShareAlt } from "react-icons/fa";
 import { QRCodeCanvas } from "qrcode.react";
+import swal from "sweetalert2";
 
 const ReferLinkPage = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -12,7 +13,7 @@ const ReferLinkPage = () => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referLink);
-    alert("Link copied to clipboard!"); //add toast alert
+    swal.fire("Copied to Clipboard!"); //add toast alert
   };
 
   const handleShare = () => {

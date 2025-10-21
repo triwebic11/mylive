@@ -139,21 +139,21 @@ router.post("/", async (req, res) => {
     let userPromise = Promise.resolve(); // default no-op
     const buyer = await User.findOne({ phone: dspPhone });
 
-    if (buyer.points * 10 > 500) {
-      if (buyer?.isActivePackage === "In Active") {
-        buyer.isActivePackage = "active";
+    // if (buyer.points * 10 >= 500) {
+    //   if (buyer?.isActivePackage === "In Active") {
+    //     buyer.isActivePackage = "active";
 
-        const expireDate = new Date();
-        expireDate.setDate(expireDate.getDate() + 30);
-        buyer.packageExpireDate = expireDate;
+    //     const expireDate = new Date();
+    //     expireDate.setDate(expireDate.getDate() + 30);
+    //     buyer.packageExpireDate = expireDate;
 
-        userPromise = buyer.save();
+    //     userPromise = buyer.save();
 
-        console.log(
-          `✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate}`
-        );
-      }
-    }
+    //     console.log(
+    //       `✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate}`
+    //     );
+    //   }
+    // }
 
     const newOrder = new AdminOrder({
       userId,
@@ -171,9 +171,8 @@ router.post("/", async (req, res) => {
     const savedOrder = await newOrder.save();
 
     res.status(201).json({
-      message: `${
-        orderedFor === "dsp" ? "Admin → DSP" : "DSP → User"
-      } order created successfully`,
+      message: `${orderedFor === "dsp" ? "Admin → DSP" : "DSP → User"
+        } order created successfully`,
       order: savedOrder,
     });
 
@@ -624,14 +623,17 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
 
     const tenPercentOfGrandPoint = grandPoint * 0.10;
     // console.log("Ten parcent package level:", tenPercentOfGrandPoint);
-
+    const givenpoint = buyer?.totalpurchasePoint + grandPoint;
+    console.log("Given point package level:", givenpoint);
     if (
       (!buyer.Position || buyer.Position.trim() === "" || buyer.Position === "Executive Officer")
-      && tenPercentOfGrandPoint >= 500
+      && givenpoint >= 500
     ) {
       // console.log("Position empty or Executive Officer AND points >= 500: special action");
 
-      const givenpoint = buyer?.points + grandPoint;
+      // const givenpoint = buyer?.points + grandPoint;
+
+      console.log("Buyer current points:", buyer?.totalpurchasePoint + grandPoint);
       const matchedRank = PackageLevels.slice()
         .reverse()
         .find((level) => givenpoint >= level.pointsBV);
@@ -652,18 +654,18 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
       }
     }
     else if (
-      buyer.Position &&
-      buyer.Position.trim() !== "" &&
-      buyer.Position !== "Executive Officer" && // ❌ একেবারেই Executive Officer হবে না
-      positionLevels.some(level => level.position === buyer.Position) && // ✅ অবশ্যই valid rank
-      tenPercentOfGrandPoint >= 1000
+      buyer?.Position &&
+      buyer?.Position.trim() !== "" &&
+      buyer?.Position !== "Executive Officer" && // ❌ একেবারেই Executive Officer হবে না
+      positionLevels?.some(level => level.position === buyer?.Position) && // ✅ অবশ্যই valid rank
+      givenpoint >= 1000
     ) {
       console.log("Upto 1000 points special action");
 
-      console.log("Buyer current points:", buyer?.points);
+      console.log("Buyer current points:", buyer?.totalpurchasePoint);
       console.log("Ten percent of grand point:", tenPercentOfGrandPoint);
 
-      const givenpoint = buyer?.points + grandPoint;
+      // const givenpoint = buyer?.points + grandPoint;
 
       const matchedRank = PackageLevels.slice()
         .reverse()
@@ -679,8 +681,6 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
           expireDate.setDate(expireDate.getDate() + 30);
           buyer.packageExpireDate = expireDate;
         }
-
-
         await buyer.save();
       }
     }
@@ -738,11 +738,11 @@ const distributeGrandPoint = async (
   // console.log("buyer-------", buyer)
   if (!buyer) return;
 
-    console.log("Buyer", buyer?.points);
-    const givenpoint = buyer?.points + grandPoint;
+  console.log("Buyer", buyer?.points);
+  const givenpoint = buyer?.points + grandPoint;
   // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
   // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
-  if (buyer?.points < 17501) {
+  if (buyer?.totalpurchasePoint < 17501) {
 
     // console.log(grandPoint)
 
@@ -791,7 +791,6 @@ const distributeGrandPoint = async (
     // console.log("Phone Referrer:", phoneReferrer);
     if (phoneReferrer) {
       phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
-     
       phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
       phoneReferrer.AllEntry.incoming.push({
         fromUser: buyerId,
@@ -807,12 +806,13 @@ const distributeGrandPoint = async (
     (entry) => entry.sector === "10% personal reward from purchase"
   );
 
-  console.log("grand total price ---- ",grandTotalPrice)
+  console.log("grand total price ---- ", grandTotalPrice)
 
   console.log("ten parcent", tenPercent)
   if (alreadyReceivedPersonalReward) {
     buyer.points = (buyer.points || 0) + tenPercent;
-     buyer.totalAmount = (buyer.totalAmount || 0) + grandTotalPrice ;
+    buyer.totalAmount = (buyer.totalAmount || 0) + grandTotalPrice;
+    buyer.totalpurchasePoint = (buyer.totalpurchasePoint || 0) + grandPoint;
     buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
     buyer.AllEntry.incoming.push({
       fromUser: buyer._id,
@@ -826,11 +826,14 @@ const distributeGrandPoint = async (
     // 10% direct commission
     if (buyer) {
       buyer.points = (buyer.points || 0) + tenPercent;
+      buyer.totalAmount = (buyer.totalAmount || 0) + grandTotalPrice;
+      buyer.totalpurchasePoint = (buyer.totalpurchasePoint || 0) + grandPoint;
       buyer.AllEntry = buyer.AllEntry || { incoming: [] };
       buyer.AllEntry.incoming.push({
         fromUser: buyerId,
         pointReceived: tenPercent,
         sector: "10% personal reward from purchase",
+        purchaseAmount: grandTotalPrice,
         date: new Date(),
       });
       await buyer.save();
@@ -844,7 +847,7 @@ const distributeGrandPoint = async (
   const filteredUpline = uplineFlat.filter(
     (u) => u._id.toString() !== buyer._id.toString()
   );
-  // console.log("Upline Flat Structure:", filteredUpline);
+  console.log("Upline Flat Structure generation lavel:", filteredUpline);
 
   const eligibleUplines = filteredUpline.filter(
     (u) => u.GenerationLevel > 0
@@ -902,7 +905,7 @@ const distributeGrandPoint = async (
   const MegafilteredUpline = MegauplineFlat.filter(
     (u) => u._id.toString() !== buyer._id.toString()
   );
-  // console.log("Upline Flat Structure:", filteredUpline);
+  console.log("Upline Flat Structure mega:", filteredUpline);
 
   const MegaeligibleUplines = MegafilteredUpline.filter(
     (u) => u.MegaGenerationLevel > 0

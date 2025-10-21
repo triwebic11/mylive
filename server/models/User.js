@@ -208,6 +208,10 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    totalpurchasePoint: {
+      type: Number,
+      default: 0,
+    },
 
     referralTree: [String],
     // financial info

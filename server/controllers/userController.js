@@ -427,7 +427,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
   const referCommission = getSumBySector("20% phone referrer commission");
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared mega Generation Commission");
-  const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
+  const repurchaseSponsorBonus = getSumBySector("20% phone referrer commission");
   const repurchaseCommission = getSumBySector(
     "10% personal reward from purchase"
   );
@@ -496,7 +496,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
         (entry) =>
           entry.sector === sectorName && new Date(entry.date) >= dateLimit
       )
-      .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+      .reduce((sum, entry) => sum + (entry.purchaseAmount || 0), 0);
   };
 
   const currentPurchaseAmount = getSumPointBySectorInLastNDays(
@@ -605,7 +605,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
     { title: "Refer Commission ৳", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Generation Commission ৳", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Mega Commission ৳", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Repurchase Sponsor Bonus ৳", value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Refar Sponsar Commission ৳", value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Repurchase Commission ৳", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Withdrawable Balance ৳", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Total Withdraw", value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2) },
@@ -889,6 +889,7 @@ async function buildTree(userId) {
     referralCode: user.referralCode,
     referredBy: user.referredBy,
     placementBy: user.placementBy,
+    status: user.isActivePackage,
     points: user.points || 0,
     left: leftChild,
     right: rightChild,

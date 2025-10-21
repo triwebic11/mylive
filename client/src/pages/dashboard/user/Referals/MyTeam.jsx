@@ -17,7 +17,8 @@ const StyledNode = styled.div`
   padding: 5px;
   border-radius: 8px;
   display: inline-block;
-  border: 2px solid ${(props) => (props.$isDirectReferral ? "green" : "blue")};
+  border: 2px solid ${(props) =>(props?.$isactiveperson && "green") || (props?.$isDirectReferral && "blue") || 
+     (props?.$isDirectReferral && "purple")};
   background: #f9f9f9;
 `;
 
@@ -52,6 +53,9 @@ const Dashboard = () => {
     if (!node) return null;
 
     const isDirectReferral = node.referredBy === referralCode;
+    const isactiveperson = node.status === "active";
+
+    console.log("active person ",node.name, isactiveperson);
 
     return (
       <TreeNode
@@ -59,6 +63,7 @@ const Dashboard = () => {
           <StyledNode
             style={{ width: "130px", color: "gray" }}
             $isDirectReferral={isDirectReferral}
+            $isactiveperson={isactiveperson}
           >
             <div>{node.name}</div>
             <div style={{ fontSize: "12px", color: "gray" }}>
@@ -91,10 +96,14 @@ const Dashboard = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <p className="h-5 w-5 rounded-full bg-green-600"></p>
-              <p>Direct Refer</p>
+              <p>Active User</p>
             </div>
             <div className="flex items-center gap-2 mb-4">
               <p className="h-5 w-5 rounded-full bg-blue-600"></p>
+              <p>Direct Refer</p>
+            </div>
+            <div className="flex items-center gap-2 mb-4">
+              <p className="h-5 w-5 rounded-full bg-purple-600"></p>
               <p>Placement Join</p>
             </div>
           </div>
