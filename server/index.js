@@ -16,6 +16,7 @@ const kycRoutes = require("./routes/kycRoutes");
 const { default: mongoose } = require("mongoose");
 const { AdminSummery } = require("./controllers/AdminSummery");
 const User = require("./models/User");
+const { giveMonthlyExtraBonusToAll } = require("./utils/giveMonthlyExtra20PercentBonus");
 const app = express();
 const server = http.createServer(app);
 const allowedOrigins = [
@@ -133,13 +134,23 @@ const checkExpiredUsers = async () => {
 // checkExpiredUsers();
 
 // Prottekdin raat 12 ta e check hobe
-cron.schedule("* * * * *", async () => {
+cron.schedule("* * * * * *", async () => {
   const now = new Date();
 
   const result = await User.updateMany(
     { packageExpireDate: { $lt: now }, isActivePackage: "active" },
     { $set: { isActivePackage: "expire" } }
   );
+
+
+  // monthly 20 % sponsor bonus cron job
+// ১️⃣ প্রতি মাসে ১ তারিখ সকাল ১টায় অটো বোনাস চেক
+  cron.schedule("0 1 1 * *", async () => {
+  await giveMonthlyExtraBonusToAll();
+});
+//   cron.schedule("* * * * * *", async () => {
+//   await giveMonthlyExtraBonusToAll();
+// });
 
   // console.log(`Updated ${result?.modifiedCount} users to expire.`);
 

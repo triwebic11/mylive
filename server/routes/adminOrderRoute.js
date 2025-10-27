@@ -313,7 +313,7 @@ async function buildTree(userId) {
         entryDate.getMonth() === now.getMonth() &&
         entryDate.getFullYear() === now.getFullYear()
       ) {
-        total += entry.pointReceived;
+        total += entry.grandpoints;
       }
     }
     return total;
@@ -763,6 +763,7 @@ const distributeGrandPoint = async (
     buyer.AllEntry.incoming.push({
       fromUser: buyer._id,
       pointReceived: fifteenPercent,
+      // grandpoint: grandPoint,
       sector: "15% dsp reward from purchase",
       date: new Date(),
     });
@@ -819,6 +820,7 @@ const distributeGrandPoint = async (
       pointReceived: tenPercent,
       sector: "10% personal reward from purchase",
       purchaseAmount: grandTotalPrice,
+      grandpoints: grandPoint,
       date: new Date(),
     });
     await buyer.save();
@@ -834,6 +836,7 @@ const distributeGrandPoint = async (
         pointReceived: tenPercent,
         sector: "10% personal reward from purchase",
         purchaseAmount: grandTotalPrice,
+        grandpoints: grandPoint,
         date: new Date(),
       });
       await buyer.save();

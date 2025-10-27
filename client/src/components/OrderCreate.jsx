@@ -240,7 +240,7 @@ const OrderCreate = ({ title }) => {
       console.error("Order creation failed", err);
       setLoading(false);
       Swal.fire(
-        ` ${err.response?.data?.message || "this product"}`,
+        ` ${err.response?.data?.message || "Error occurred"}`,
         "",
         "error"
       );

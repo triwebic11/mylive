@@ -605,7 +605,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
     { title: "Refer Commission ৳", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Generation Commission ৳", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Mega Commission ৳", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Refar Sponsar Commission ৳", value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Refar Sponsar Commission ৳", value: (user?.referSponsorbonus * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Repurchase Commission ৳", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Withdrawable Balance ৳", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Total Withdraw", value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2) },
@@ -643,7 +643,7 @@ const generateUserSummaryStatements = async (user, referredUsers = []) => {
   const referCommission = getSumBySector("20% phone referrer commission");
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared mega Generation Commission");
-  const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
+  // const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
   const repurchaseCommission = getSumBySector(
     "10% personal reward from purchase"
   );
@@ -799,7 +799,7 @@ async function buildTree(userId) {
   const user = await User.findById(userId);
   if (!user) return null;
 
-  // 1) Children load
+  // 1️⃣ Children load
   const children = await User.find({
     $or: [
       { placementBy: user.referralCode },
@@ -814,19 +814,29 @@ async function buildTree(userId) {
   const leftChild = childrenTrees[0] || null;
   const rightChild = childrenTrees[1] || null;
 
-  // 2) Recursive total point calculation (lifetime points)
-  const calculateTotalPoints = (node) => {
+  // 2️⃣ Helper → calculate total grandpoints recursively
+  const calculateTotalGrandPoints = (node) => {
     if (!node) return 0;
-    const selfPoints = node.points || 0;
-    const leftPoints = calculateTotalPoints(node.left);
-    const rightPoints = calculateTotalPoints(node.right);
-    return selfPoints + leftPoints + rightPoints;
+    let selfGrandPoints = 0;
+
+    // নিজের AllEntry.incoming → grandpoints যোগ করো
+    if (node.AllEntry && node.AllEntry.incoming && node.AllEntry.incoming.length > 0) {
+      for (const entry of node.AllEntry.incoming) {
+        selfGrandPoints += entry.grandpoints || 0;
+      }
+    }
+
+    const leftPoints = calculateTotalGrandPoints(node.left);
+    const rightPoints = calculateTotalGrandPoints(node.right);
+
+    return selfGrandPoints + leftPoints + rightPoints;
   };
 
-  const totalPointsFromLeft = calculateTotalPoints(leftChild);
-  const totalPointsFromRight = calculateTotalPoints(rightChild);
+  // 3️⃣ Grandpoints হিসাব
+  const totalPointsFromLeft = calculateTotalGrandPoints(leftChild);
+  const totalPointsFromRight = calculateTotalGrandPoints(rightChild);
 
-  // 3) Monthly incoming sum (ONLY current month for one user)
+  // 4️⃣ মাসভিত্তিক হিসাব
   const getMonthlyIncoming = async (id) => {
     const u = await User.findById(id);
     if (!u?.AllEntry?.incoming) return 0;
@@ -836,18 +846,16 @@ async function buildTree(userId) {
 
     for (const entry of u.AllEntry.incoming) {
       const entryDate = new Date(entry.date);
-
-      // ✅ শুধু এই মাস ও বছরের income হিসাব হবে
       if (
         entryDate.getMonth() === now.getMonth() &&
         entryDate.getFullYear() === now.getFullYear()
       ) {
-        total += entry.pointReceived;
+        total += entry.grandpoints;
       }
     }
     return total;
   };
-  // 3) Monthly incoming sum (ONLY current month for one user)
+
   const previousgetMonthlyIncoming = async (id) => {
     const u = await User.findById(id);
     if (!u?.AllEntry?.incoming) return 0;
@@ -855,32 +863,27 @@ async function buildTree(userId) {
     let total = 0;
     const now = new Date();
     const previousMonth = new Date(now);
-    previousMonth.setMonth(now.getMonth()-1)
-
-    // console.log("previousMonth", previousMonth);
+    previousMonth.setMonth(now.getMonth() - 1);
 
     for (const entry of u.AllEntry.incoming) {
       const entryDate = new Date(entry.date);
-
-      // ✅ শুধু এই মাস ও বছরের income হিসাব হবে
       if (
         entryDate.getMonth() === previousMonth.getMonth() &&
         entryDate.getFullYear() === previousMonth.getFullYear()
       ) {
-        total += entry.pointReceived;
+        total += entry.grandpoints;
       }
     }
     return total;
   };
 
-  // 4) শুধু সরাসরি leftChild আর rightChild এর monthly income
+  // 5️⃣ শুধুমাত্র এক লেভেল left/right এর monthly BV
   const monthlyleftBV = leftChild ? await getMonthlyIncoming(leftChild._id) : 0;
   const monthlyrightBV = rightChild ? await getMonthlyIncoming(rightChild._id) : 0;
-  // 4) শুধু সরাসরি leftChild আর rightChild এর monthly income
   const previousmonthlyleftBV = leftChild ? await previousgetMonthlyIncoming(leftChild._id) : 0;
   const previousmonthlyrightBV = rightChild ? await previousgetMonthlyIncoming(rightChild._id) : 0;
 
-  // 5) Return structured tree
+  // 6️⃣ Return
   return {
     name: user.name,
     _id: user._id,
@@ -891,16 +894,18 @@ async function buildTree(userId) {
     placementBy: user.placementBy,
     status: user.isActivePackage,
     points: user.points || 0,
+    AllEntry: user.AllEntry || {},
     left: leftChild,
     right: rightChild,
-    monthlyleftBV,      // ✅ শুধু এক লেভেল left
-    monthlyrightBV,     // ✅ শুধু এক লেভেল right
+    monthlyleftBV,
+    monthlyrightBV,
     totalPointsFromLeft,
     totalPointsFromRight,
     previousmonthlyrightBV,
-    previousmonthlyleftBV
+    previousmonthlyleftBV,
   };
 }
+
 
 
 const positionLevels = [
