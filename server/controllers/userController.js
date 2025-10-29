@@ -560,7 +560,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
 
   let totalTdsValue = 0;
   const tdsRate = await TdsRate.findOne();
-  console.log("TDS Rate", tdsRate?.pointToTaka);
+  // console.log("TDS Rate", tdsRate?.pointToTaka);
   try {
     const tdsRateValue = tdsRate ? tdsRate.tdsValue : 0;
     totalTdsValue = (user?.totalwithdraw * tdsRateValue) / 100;
@@ -1102,8 +1102,8 @@ const positionLevelsforRanks = [
     leftBV: 300000,
     rightBV: 300000,
     position: "Crown Director",
-    generationLevel: Infinity,
-    megaGenerationLevel: Infinity,
+    generationLevel: 999999,
+    megaGenerationLevel: 999999,
   },
 ];
 
@@ -1112,8 +1112,8 @@ const UpdateRanksAndRewards = async (buyer) => {
     const tree = await buildTree(buyer._id);
     if (!tree) return;
 
-    const leftBV = tree.left.points;
-    const rightBV = tree.right.points;
+    const leftBV = tree.left.monthlyleftBV;
+    const rightBV = tree.right.monthlyrightBV;
 
     // console.log("Left Tree:", leftBV);
     // console.log("Right Tree:", rightBV);

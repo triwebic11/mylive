@@ -225,7 +225,7 @@ router.post("/", async (req, res) => {
           }
         }
 
-        console.log("✅ Background order processing completed.");
+        // console.log("✅ Background order processing completed.");
       } catch (err) {
         console.error("❌ Error in background task:", err);
       }
@@ -624,7 +624,7 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
     const tenPercentOfGrandPoint = grandPoint * 0.10;
     // console.log("Ten parcent package level:", tenPercentOfGrandPoint);
     const givenpoint = buyer?.totalpurchasePoint + grandPoint;
-    console.log("Given point package level:", givenpoint);
+    // console.log("Given point package level:", givenpoint);
     if (
       (!buyer.Position || buyer.Position.trim() === "" || buyer.Position === "Executive Officer")
       && givenpoint >= 500
@@ -633,7 +633,7 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
 
       // const givenpoint = buyer?.points + grandPoint;
 
-      console.log("Buyer current points:", buyer?.totalpurchasePoint + grandPoint);
+      // console.log("Buyer current points:", buyer?.totalpurchasePoint + grandPoint);
       const matchedRank = PackageLevels.slice()
         .reverse()
         .find((level) => givenpoint >= level.pointsBV);
@@ -662,8 +662,8 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
     ) {
       console.log("Upto 1000 points special action");
 
-      console.log("Buyer current points:", buyer?.totalpurchasePoint);
-      console.log("Ten percent of grand point:", tenPercentOfGrandPoint);
+      // console.log("Buyer current points:", buyer?.totalpurchasePoint);
+      // console.log("Ten percent of grand point:", tenPercentOfGrandPoint);
 
       // const givenpoint = buyer?.points + grandPoint;
 
@@ -694,37 +694,71 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
 
 
 
+async function buildUplineChainMultipleParents(
+  userId,
+  depth = 0,
+  maxDepth = 10,
+  visited = new Set()
+) {
+  try {
+    // Stop recursion if depth exceeds limit
+    if (!userId || depth > maxDepth) return [];
 
-async function buildUplineChainMultipleParents(userId, depth = 0, maxDepth = 10, visited = new Set()) {
-  if (depth > maxDepth) return [];
+    // Prevent infinite recursion
+    if (visited.has(userId.toString())) return [];
+    visited.add(userId.toString());
 
-  const user = await User.findById(userId).lean();
-  if (!user || visited.has(user._id.toString())) return [];
+    // Fetch user
+    const user = await User.findById(userId).lean();
+    if (!user) return [];
 
-  visited.add(user._id.toString());
+    // Get valid parent codes (referral & placement)
+    const parentCodes = [user.referredBy, user.placementBy].filter(Boolean);
+    if (parentCodes.length === 0) {
+      return [user]; // no more parents, return current user
+    }
 
-  const parents = await User.find({
-    $or: [
-      { referralCode: user.referredBy },
-      { referralCode: user.placementBy }
-    ].filter(cond => Object.values(cond)[0])
-  }).lean();
+    // Find all valid parents by referralCode
+    const parents = await User.find({
+      referralCode: { $in: parentCodes },
+    }).lean();
 
-  if (!parents.length) {
-    return [user];
+    // If no parents found, return just current user
+    if (!parents || parents.length === 0) {
+      return [user];
+    }
+
+    let chains = [];
+
+    // Recursively build upline for each parent
+    for (const parent of parents) {
+      const subChain = await buildUplineChainMultipleParents(
+        parent._id,
+        depth + 1,
+        maxDepth,
+        visited
+      );
+      chains.push(parent, ...subChain);
+    }
+
+    // Deduplicate by _id to avoid loops
+    const uniqueChains = [];
+    const seen = new Set();
+
+    for (const u of chains) {
+      if (u && !seen.has(u._id.toString())) {
+        seen.add(u._id.toString());
+        uniqueChains.push(u);
+      }
+    }
+
+    return uniqueChains;
+  } catch (err) {
+    console.error("❌ Error in buildUplineChainMultipleParents:", err.message);
+    return [];
   }
-
-  let chains = [];
-
-  for (const parent of parents) {
-    const chain = await buildUplineChainMultipleParents(parent._id, depth + 1, maxDepth, visited);
-    chains.push(...chain);
-  }
-
-  // Optional: remove duplicates and sort if needed
-  // For simplicity, just return parents + current user as linear array
-  return [...chains, user];
 }
+
 
 
 const distributeGrandPoint = async (
@@ -734,6 +768,8 @@ const distributeGrandPoint = async (
   grandTotalPrice
 ) => {
   const buyer = await User.findOne({ phone: buyerphone });
+
+  console.log("Distributing grand points:", grandPoint, "to buyer ID:", buyerId);
 
   // console.log("buyer-------", buyer)
   if (!buyer) return;
@@ -843,84 +879,67 @@ const distributeGrandPoint = async (
     }
   }
 
-  // 30% shared generation commission
-  // *****************************************************************
-
-  const uplineFlat = await buildUplineChainMultipleParents(buyer._id);
-  const filteredUpline = uplineFlat.filter(
-    (u) => u._id.toString() !== buyer._id.toString()
-  );
-  console.log("Upline Flat Structure generation lavel:", filteredUpline);
-
-  const eligibleUplines = filteredUpline.filter(
-    (u) => u.GenerationLevel > 0
-  );
-
-  function searchUserInTree(node, userId, maxDepth, currentDepth = 1) {
-    if (!node || currentDepth > maxDepth) return false;
-
-    if (node._id && node._id.toString() === userId.toString()) {
-      return true;
-    }
-
-    return (
-      searchUserInTree(node.left, userId, maxDepth, currentDepth + 1) ||
-      searchUserInTree(node.right, userId, maxDepth, currentDepth + 1)
-    );
-  }
-
-  const finalUplines = [];
-
-  for (const upline of eligibleUplines) {
-    const tree = await buildTree(upline._id); // upline's downline tree
-    const foundUser = searchUserInTree(tree, buyer._id, upline.GenerationLevel);
-    if (foundUser) {
-      finalUplines.push(upline);
-    }
-  }
-
-  if (finalUplines.length > 0) {
-    const pointPerUpline = thirtyPercent / finalUplines.length;
-
-    for (const upline of finalUplines) {
-      const uplineUser = await User.findById(upline._id);
-      if (!uplineUser) continue;
-
-      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-
-      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-      uplineUser.AllEntry.incoming.push({
-        fromUser: buyer._id,
-        pointReceived: pointPerUpline,
-        sector: `Shared Generation Commission`,
-        date: new Date()
-      });
-
-      await uplineUser.save();
-    }
-  }
 
   // *****************************************************************
 
-  // 7%  Mega generation logic
 
+// *****************************************************************
+// 30% Shared generation commission
+// *****************************************************************
+
+try {
+  console.log("🚀 Starting shared mega generation commission distribution...");
+
+  if (!buyer || !buyer._id) {
+    console.error("❌ Buyer object or buyer._id missing!");
+    return;
+  }
+
+  if (typeof sevenPercent !== "number" || sevenPercent <= 0) {
+    console.error("❌ Invalid sevenPercent value:", sevenPercent);
+    return;
+  }
+
+  console.log("👤 Buyer ID:", buyer._id);
+
+  console.log("📡 Fetching mega upline chain...");
   const MegauplineFlat = await buildUplineChainMultipleParents(buyer._id);
-  const MegafilteredUpline = MegauplineFlat.filter(
-    (u) => u._id.toString() !== buyer._id.toString()
-  );
-  console.log("Upline Flat Structure mega:", filteredUpline);
 
-  const MegaeligibleUplines = MegafilteredUpline.filter(
-    (u) => u.MegaGenerationLevel > 0
+  console.log("✅ Mega Upline Chain Found:", MegauplineFlat?.length || 0);
+
+  if (!Array.isArray(MegauplineFlat) || MegauplineFlat.length === 0) {
+    console.warn("⚠️ No mega uplines found for this buyer.");
+    return;
+  }
+
+  const MegafilteredUpline = MegauplineFlat.filter(
+    (u) => u?._id?.toString() !== buyer._id.toString()
   );
+
+  console.log(
+    "🧩 Filtered Mega Uplines:",
+    MegafilteredUpline.map((u) => ({
+      id: u._id,
+      MegaLevel: u.MegaGenerationLevel,
+      isActive: u.isActivePackage,
+      position: u.Position,
+    }))
+  );
+
+  // Filter by MegaGenerationLevel > 0 and active package
+  const MegaeligibleUplines = MegafilteredUpline.filter(
+    (u) => u?.MegaGenerationLevel > 0 && u?.isActivePackage === "active"
+  );
+  console.log("🏆 Eligible Mega Uplines:", MegaeligibleUplines.length);
+
+  if (MegaeligibleUplines.length === 0) {
+    console.warn("⚠️ No eligible mega uplines found.");
+    return;
+  }
 
   function searchUserInTree(node, userId, maxDepth, currentDepth = 1) {
     if (!node || currentDepth > maxDepth) return false;
-
-    if (node._id && node._id.toString() === userId.toString()) {
-      return true;
-    }
-
+    if (node._id && node._id.toString() === userId.toString()) return true;
     return (
       searchUserInTree(node.left, userId, maxDepth, currentDepth + 1) ||
       searchUserInTree(node.right, userId, maxDepth, currentDepth + 1)
@@ -929,42 +948,114 @@ const distributeGrandPoint = async (
 
   const MegafinalUplines = [];
 
+  console.log("🌳 Checking each eligible mega upline tree for buyer presence...");
+
   for (const upline of MegaeligibleUplines) {
-    const tree = await buildTree(upline._id); // upline's downline tree
-    const foundUser = searchUserInTree(tree, buyer._id, upline.MegaGenerationLevel);
-    if (foundUser) {
-      MegafinalUplines.push(upline);
+    try {
+      const tree = await buildTree(upline._id);
+       const maxDepth = (upline.MegaGenerationLevel || 0) + 1;
+
+    const foundUser = searchUserInTree(tree, buyer._id, maxDepth);
+      // const foundUser = searchUserInTree(tree, buyer._id, upline.MegaGenerationLevel);
+      console.log(
+        `🔍 Upline ${upline._id} (MegaLevel ${upline.MegaGenerationLevel}) contains buyer?`,
+        foundUser
+      );
+      if (foundUser) MegafinalUplines.push(upline);
+    } catch (err) {
+      console.error(`❌ Error in buildTree for mega upline ${upline._id}:`, err.message);
     }
   }
 
+  console.log("✅ Final Mega Qualified Uplines:", MegafinalUplines.length);
 
+  if (MegafinalUplines?.length > 0) {
+    const pointPerUpline = sevenPercent / MegafinalUplines.length;
+    console.log(
+      `💰 Distributing ${sevenPercent} total → ${pointPerUpline} per mega upline.`
+    );
 
+    for (const upline of MegafinalUplines) {
+      const uplineUser = await User.findById(upline._id);
+      if (!uplineUser) continue;
 
-  // Check if user has a position before distributing commission
-  if (buyer?.Position) {
-    if (MegafinalUplines.length > 0) {
-      const pointPerUpline = sevenPercent / MegafinalUplines.length;
+      if (uplineUser.isActivePackage !== "active") continue;
 
-      for (const upline of MegafinalUplines) {
-        const uplineUser = await User.findById(upline._id);
-        if (!uplineUser) continue;
+      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
 
-        uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+      uplineUser.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        pointReceived: pointPerUpline,
+        sector: "Shared Mega Generation Commission",
+        date: new Date(),
+      });
 
-        uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-        uplineUser.AllEntry.incoming.push({
-          fromUser: buyer._id,
-          pointReceived: pointPerUpline,
-          sector: `Shared mega Generation Commission`,
-          date: new Date()
-        });
-
-        await uplineUser.save();
-      }
+      await uplineUser.save();
+      console.log(`✅ Mega commission given to upline ${uplineUser._id}`);
     }
+  } else {
+    console.warn("⚠️ No final mega uplines or buyer has no position — skipping.");
   }
 
+  console.log("🎯 Mega generation commission distribution completed.");
+} catch (err) {
+  console.error("🔥 Fatal error in mega generation commission distribution:", err);
+}
 
+
+const uplineFlat = await buildUplineChainMultipleParents(buyer._id);
+const filteredUpline = uplineFlat.filter(
+  (u) => u._id.toString() !== buyer._id.toString()
+);
+
+console.log(
+  "Filtered uplines:", filteredUpline.map(u => ({
+    id: u._id,
+    GenerationLevel: u.GenerationLevel,
+    isActivePackage: u.isActivePackage
+  }))
+);
+console.log("Upline Flat Structure generation level:", filteredUpline);
+
+// ✅ only those who have GenerationLevel > 0 and active package
+const eligibleUplines = filteredUpline.filter(
+  (u) => u.GenerationLevel > 0 && u.isActivePackage === "active"
+);
+
+const finalUplines = [];
+
+for (const upline of eligibleUplines) {
+  const tree = await buildTree(upline._id); // upline's downline tree
+  const foundUser = searchUserInTree(tree, buyer._id, upline.GenerationLevel);
+  if (foundUser) {
+    finalUplines.push(upline);
+  }
+}
+
+if (finalUplines.length > 0) {
+  const pointPerUpline = thirtyPercent / finalUplines.length;
+
+  for (const upline of finalUplines) {
+    const uplineUser = await User.findById(upline._id);
+    if (!uplineUser) continue;
+
+    // ✅ again, only give if active
+    if (uplineUser.isActivePackage !== "active") continue;
+
+    uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+    uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+    uplineUser.AllEntry.incoming.push({
+      fromUser: buyer._id,
+      pointReceived: pointPerUpline,
+      sector: `Shared Generation Commission`,
+      date: new Date(),
+    });
+
+    await uplineUser.save();
+  }
+}
 
 
   // *********************************************************************

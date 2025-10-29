@@ -134,7 +134,7 @@ const checkExpiredUsers = async () => {
 // checkExpiredUsers();
 
 // Prottekdin raat 12 ta e check hobe
-cron.schedule("* * * * * *", async () => {
+cron.schedule("* * * * *", async () => {
   const now = new Date();
 
   const result = await User.updateMany(

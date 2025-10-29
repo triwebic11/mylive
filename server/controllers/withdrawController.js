@@ -75,7 +75,7 @@ const updateWithdrawStatus = async (req, res) => {
     }
 
      const tdsRate = await TdsRate.findOne();
-      console.log("TDS Rate",tdsRate?.pointToTaka)
+      // console.log("TDS Rate",tdsRate?.pointToTaka)
 
     // Prevent re-approving or re-rejecting
     if (request.status !== "pending") {
