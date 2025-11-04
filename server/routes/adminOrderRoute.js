@@ -1068,15 +1068,18 @@ if (finalUplines.length > 0) {
     Home_Fund: threePercent,
   });
 
+  console.log("Admin store entry created for buyer:", buyer._id); 
+  console.log("✅ Grand point distribution completed.");
+
 
   // *****************************************************************
 
 
   // User Package Update
 
-  const tree = await buildTree(buyer._id);
-  const leftPoints = tree.left?.points || 0;
-  const rightPoints = tree.right?.points || 0;
+  // const tree = await buildTree(buyer._id);
+  // const leftPoints = tree.left?.points || 0;
+  // const rightPoints = tree.right?.points || 0;
 
 
   // else {

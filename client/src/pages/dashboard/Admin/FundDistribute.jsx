@@ -24,6 +24,8 @@ const FundDistribute = () => {
             return res.data;
         },
     });
+
+    console.log('Admin Store Summary:', adminstore);
     
   const [postStatus, setPostStatus] = useState(null);
 
@@ -57,27 +59,93 @@ const FundDistribute = () => {
 
     return (
         <div>
-            <h1 className='py-10 text-center text-2xl font-semibold bg-blue-400 mb-5 text-white rounded-2xl'>Total Company Funds</h1>
-            <div className='grid md:grid-cols-3 grid-cols-1 lg:grid-cols-5 gap-5'>
+
+            <h1 className='py-10 text-center text-2xl font-semibold bg-green-400  text-white rounded-2xl'>Total Company Funds</h1>
+             <div className='my-5 grid md:grid-cols-1 grid-cols-1 lg:grid-cols-2 gap-5'>
                 <div className='bg-gray-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Executive Officer</p>
-                    {adminstore?.Executive_Officer_sum.toFixed(2)}
+                    <span className='text-2xl'>
+
+                    {adminstore?.Executive_Officer_Undistributed.toFixed(2)}
+                    </span>
                 </div>
-                <div className='bg-purple-100 py-10 text-center text-black text-5xl rounded-2xl'>
+                <div className='bg-gray-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Executive Manager</p>
-                    {adminstore?.Special_Fund_sum.toFixed(2)}
+                    <span className='text-2xl'>
+
+                    {adminstore?.Special_Fund_Undistributed.toFixed(2)}
+                    </span>
                 </div>
-                <div className='bg-green-100 py-10 text-center text-black text-5xl rounded-2xl'>
+                <div className='bg-gray-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Executive Director</p>
-                    {adminstore?.Tour_Fund_sum.toFixed(2)}
+                    <span className='text-2xl'>
+
+                    {adminstore?.Tour_Fund_Undistributed.toFixed(2)}
+                    </span>
+
                 </div>
-                <div className='bg-blue-100 py-10 text-center text-black text-5xl rounded-2xl'>
+                <div className='bg-gray-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Diamond</p>
-                    {adminstore?.Car_Fund_sum.toFixed(2)}
+                    <span className='text-2xl'>
+
+                    {adminstore?.Car_Fund_Undistributed.toFixed(2)}
+                    </span>
                 </div>
-                <div className='bg-red-100 py-10 text-center text-black text-5xl rounded-2xl'>
+                <div className='bg-gray-100 py-10 text-center text-black text-5xl rounded-2xl'>
                     <p className='text-xl'>Crown Director</p>
-                    {adminstore?.Home_Fund_sum.toFixed(2)}
+                    <span className='text-2xl'>
+
+                       {adminstore?.Home_Fund_Undistributed.toFixed(2)}
+                    </span>
+                
+                </div>
+
+            </div>
+
+
+
+
+
+
+        {/* Total distrubuting fund */}
+            <h1 className='py-10 text-center text-2xl font-semibold bg-blue-400 mb-5 text-white rounded-2xl'>Total distrubuting fund</h1>
+            <div className='grid md:grid-cols-1 grid-cols-1 lg:grid-cols-2 gap-5'>
+                <div className='bg-gray-200 py-10 text-center text-black text-5xl rounded-2xl'>
+                    <p className='text-xl'>Executive Officer</p>
+                    <span className='text-2xl'>
+
+                    {adminstore?.Executive_Officer_sum.toFixed(2)}
+                    </span>
+                </div>
+                <div className='bg-purple-200 py-10 text-center text-black text-5xl rounded-2xl'>
+                    <p className='text-xl'>Executive Manager</p>
+                    <span className='text-2xl'>
+
+                    {adminstore?.Special_Fund_sum.toFixed(2)}
+                    </span>
+                </div>
+                <div className='bg-green-200 py-10 text-center text-black text-5xl rounded-2xl'>
+                    <p className='text-xl'>Executive Director</p>
+                    <span className='text-2xl'>
+
+                    {adminstore?.Tour_Fund_sum.toFixed(2)}
+                    </span>
+
+                </div>
+                <div className='bg-blue-200 py-10 text-center text-black text-5xl rounded-2xl'>
+                    <p className='text-xl'>Diamond</p>
+                    <span className='text-2xl'>
+
+                    {adminstore?.Car_Fund_sum.toFixed(2)}
+                    </span>
+                </div>
+                <div className='bg-red-200 py-10 text-center text-black text-5xl rounded-2xl'>
+                    <p className='text-xl'>Crown Director</p>
+                    <span className='text-2xl'>
+
+                       {adminstore?.Home_Fund_sum.toFixed(2)}
+                    </span>
+                
                 </div>
 
             </div>
