@@ -150,19 +150,19 @@ cron.schedule("* * * * *", async () => {
   cron.schedule("0 1 1 * *", async () => {
   await giveMonthlyExtraBonusToAll();
 
-   const { id } = req.params;
-      if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ message: "Invalid or missing user ID" });
-      }
+  //  const { id } = req.params;
+  //     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+  //       return res.status(400).json({ message: "Invalid or missing user ID" });
+  //     }
 
-  const user = await User.findById(id);
+  // const user = await User.findById(id);
 
-   const tree = await buildTree(user._id);
-    const leftPoints = tree?.monthlyleftBV || 0;
-    const rightPoints = tree?.monthlyrightBV || 0;
-    if (leftPoints >= 30000 && rightPoints >= 30000) {
-      await UpdateRanksAndRewards(user);
-    }
+  //  const tree = await buildTree(user._id);
+  //   const leftPoints = tree?.monthlyleftBV || 0;
+  //   const rightPoints = tree?.monthlyrightBV || 0;
+  //   if (leftPoints >= 30000 && rightPoints >= 30000) {
+  //     await UpdateRanksAndRewards(user);
+  //   }
 });
 //   cron.schedule("* * * * * *", async () => {
 //   await giveMonthlyExtraBonusToAll();

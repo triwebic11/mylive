@@ -1220,7 +1220,7 @@ const UpdateRanksAndRewards = async (buyer) => {
     console.log("Matched Rank:", matchedRank);
 
 
-    // if (!matchedRank) return;
+    if (!matchedRank) return;
 
     const user = await User.findById(buyer._id);
     console.log("User Current Position:", user?.Position);
@@ -1408,12 +1408,12 @@ const userAgregateData = async (req, res) => {
 
     const summary = await generateUserSummary(user, referredUsers);
 
-    // const tree = await buildTree(user._id);
-    // const leftPoints = tree?.monthlyleftBV || 0;
-    // const rightPoints = tree?.monthlyrightBV || 0;
-    // if (leftPoints >= 30000 && rightPoints >= 30000) {
-    //   await UpdateRanksAndRewards(user);
-    // }
+    const tree = await buildTree(user._id);
+    const leftPoints = tree?.monthlyleftBV || 0;
+    const rightPoints = tree?.monthlyrightBV || 0;
+    if (leftPoints >= 30000 && rightPoints >= 30000) {
+      await UpdateRanksAndRewards(user);
+    }
 
     // const leftmonthlyBV = tree?.monthlyleftBV || 0;
     // const rightmonthlyBV = tree?.monthlyrightBV || 0;
