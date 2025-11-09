@@ -1408,12 +1408,12 @@ const userAgregateData = async (req, res) => {
 
     const summary = await generateUserSummary(user, referredUsers);
 
-    const tree = await buildTree(user._id);
-    const leftPoints = tree?.monthlyleftBV || 0;
-    const rightPoints = tree?.monthlyrightBV || 0;
-    if (leftPoints >= 30000 && rightPoints >= 30000) {
-      await UpdateRanksAndRewards(user);
-    }
+    // const tree = await buildTree(user._id);
+    // const leftPoints = tree?.monthlyleftBV || 0;
+    // const rightPoints = tree?.monthlyrightBV || 0;
+    // if (leftPoints >= 30000 && rightPoints >= 30000) {
+    //   await UpdateRanksAndRewards(user);
+    // }
 
     // const leftmonthlyBV = tree?.monthlyleftBV || 0;
     // const rightmonthlyBV = tree?.monthlyrightBV || 0;
@@ -1534,4 +1534,5 @@ module.exports = {
   getReferralTreeById,
   userStatements,
   userAllStatements,
+  buildTree,
 };

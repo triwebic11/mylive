@@ -761,331 +761,220 @@ async function buildUplineChainMultipleParents(
 
 
 
-const distributeGrandPoint = async (
-  buyerId,
-  grandPoint,
-  buyerphone,
-  grandTotalPrice
-) => {
-  const buyer = await User.findOne({ phone: buyerphone });
+const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalPrice) => {
+  try {
+    const buyer = await User.findOne({ phone: buyerphone });
 
-  console.log("Distributing grand points:", grandPoint, "to buyer ID:", buyerId);
+    console.log("⚡ Distributing grand points:", grandPoint, "to buyer ID:", buyerId);
 
-  // console.log("buyer-------", buyer)
-  if (!buyer) return;
+    if (!buyer) {
+      console.error("❌ Buyer not found for phone:", buyerphone);
+      return;
+    }
 
-  console.log("Buyer", buyer?.points);
-  const givenpoint = buyer?.points + grandPoint;
-  // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
-  // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
-  if (buyer?.totalpurchasePoint < 17501) {
+    console.log("👤 Buyer current points:", buyer?.points);
 
-    // console.log(grandPoint)
+    // 🧮 Update package levels for buyers below 17500 total purchase points
+    if (buyer?.totalpurchasePoint < 17501) {
+      await PackageLevelsdefine(buyer, grandPoint);
+    }
 
-    // console.log("Buyer points less than 17500, running package level logic");
-    // console.log("Both sides have enough points, running rank update logic");
-    // await UpdateRanksAndRewards(buyer);
-    await PackageLevelsdefine(buyer, grandPoint);
-  }
+    // 📊 Percentages
+    const fifteenPercent = grandPoint * 0.15;
+    const tenPercent = grandPoint * 0.10;
+    const thirtyPercent = grandPoint * 0.30;
+    const twentyPercent = grandPoint * 0.20;
+    const sevenPercent = grandPoint * 0.07;
+    const threePercent = grandPoint * 0.03;
+    const fourPercent = grandPoint * 0.04;
 
-
-
-  const fifteenPercent = grandPoint * 0.15;
-
-  if (buyer?.role === "dsp") {
-    // console.log("dsp getting.....")
-    buyer.points = (buyer.points || 0) + fifteenPercent;
-    buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
-    buyer.AllEntry.incoming.push({
-      fromUser: buyer._id,
-      pointReceived: fifteenPercent,
-      // grandpoint: grandPoint,
-      sector: "15% dsp reward from purchase",
-      date: new Date(),
-    });
-    await buyer.save();
-    return;
-  }
-
-  if (buyer?.role === "admin") return;
-
-  const tenPercent = grandPoint * 0.10;
-  const thirtyPercent = grandPoint * 0.30;
-  const twentyPercent = grandPoint * 0.20;
-  const sevenPercent = grandPoint * 0.07;
-  const threePercent = grandPoint * 0.03;
-  const fourPercent = grandPoint * 0.04;
-
-  // console.log("ten percent:", tenPercent);
-
-
-  // 20% phone referrer
-  // console.log("Buyer Referred By:", buyer?.referredBy);
-  if (buyer?.referredBy) {
-    const phoneReferrer = await User.findOne({
-      referralCode: buyer.referredBy,
-    });
-    // console.log("Phone Referrer:", phoneReferrer);
-    if (phoneReferrer) {
-      phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
-      phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
-      phoneReferrer.AllEntry.incoming.push({
-        fromUser: buyerId,
-        pointReceived: twentyPercent,
-        sector: "20% phone referrer commission",
+    // 🧾 DSP logic
+    if (buyer?.role === "dsp") {
+      buyer.points = (buyer.points || 0) + fifteenPercent;
+      buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
+      buyer.AllEntry.incoming.push({
+        fromUser: buyer._id,
+        pointReceived: fifteenPercent,
+        sector: "15% DSP reward from purchase",
         date: new Date(),
       });
-      await phoneReferrer.save();
+      await buyer.save();
+      console.log("✅ DSP reward distributed.");
+      return;
     }
-  }
 
-  const alreadyReceivedPersonalReward = buyer.AllEntry?.incoming?.some(
-    (entry) => entry.sector === "10% personal reward from purchase"
-  );
+    // 🛑 Admin doesn’t get distribution
+    if (buyer?.role === "admin") {
+      console.log("⛔ Admin purchase — skipping reward distribution.");
+      return;
+    }
 
-  console.log("grand total price ---- ", grandTotalPrice)
+    // 💰 20% phone referrer commission
+    if (buyer?.referredBy) {
+      const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
+      if (phoneReferrer) {
+        phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
+        phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
+        phoneReferrer.AllEntry.incoming.push({
+          fromUser: buyerId,
+          pointReceived: twentyPercent,
+          sector: "20% Phone referrer commission",
+          date: new Date(),
+        });
+        await phoneReferrer.save();
+        console.log("✅ Phone referrer commission added.");
+      }
+    }
 
-  console.log("ten parcent", tenPercent)
-  if (alreadyReceivedPersonalReward) {
+    // 🧾 Buyer personal reward 10%
     buyer.points = (buyer.points || 0) + tenPercent;
     buyer.totalAmount = (buyer.totalAmount || 0) + grandTotalPrice;
     buyer.totalpurchasePoint = (buyer.totalpurchasePoint || 0) + grandPoint;
-    buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
+    buyer.AllEntry = buyer.AllEntry || { incoming: [] };
     buyer.AllEntry.incoming.push({
       fromUser: buyer._id,
       pointReceived: tenPercent,
-      sector: "10% personal reward from purchase",
+      sector: "10% Personal reward from purchase",
       purchaseAmount: grandTotalPrice,
       grandpoints: grandPoint,
       date: new Date(),
     });
     await buyer.save();
-  } else {
-    // 10% direct commission
-    if (buyer) {
-      buyer.points = (buyer.points || 0) + tenPercent;
-      buyer.totalAmount = (buyer.totalAmount || 0) + grandTotalPrice;
-      buyer.totalpurchasePoint = (buyer.totalpurchasePoint || 0) + grandPoint;
-      buyer.AllEntry = buyer.AllEntry || { incoming: [] };
-      buyer.AllEntry.incoming.push({
-        fromUser: buyerId,
-        pointReceived: tenPercent,
-        sector: "10% personal reward from purchase",
-        purchaseAmount: grandTotalPrice,
-        grandpoints: grandPoint,
-        date: new Date(),
-      });
-      await buyer.save();
-    }
-  }
+    console.log("✅ Buyer personal reward distributed.");
 
-
-  // *****************************************************************
-
-
-// *****************************************************************
-// 30% Shared generation commission
-// *****************************************************************
-
-try {
-  console.log("🚀 Starting shared mega generation commission distribution...");
-
-  if (!buyer || !buyer._id) {
-    console.error("❌ Buyer object or buyer._id missing!");
-    return;
-  }
-
-  if (typeof sevenPercent !== "number" || sevenPercent <= 0) {
-    console.error("❌ Invalid sevenPercent value:", sevenPercent);
-    return;
-  }
-
-  console.log("👤 Buyer ID:", buyer._id);
-
-  console.log("📡 Fetching mega upline chain...");
-  const MegauplineFlat = await buildUplineChainMultipleParents(buyer._id);
-
-  console.log("✅ Mega Upline Chain Found:", MegauplineFlat?.length || 0);
-
-  if (!Array.isArray(MegauplineFlat) || MegauplineFlat.length === 0) {
-    console.warn("⚠️ No mega uplines found for this buyer.");
-    return;
-  }
-
-  const MegafilteredUpline = MegauplineFlat.filter(
-    (u) => u?._id?.toString() !== buyer._id.toString()
-  );
-
-  console.log(
-    "🧩 Filtered Mega Uplines:",
-    MegafilteredUpline.map((u) => ({
-      id: u._id,
-      MegaLevel: u.MegaGenerationLevel,
-      isActive: u.isActivePackage,
-      position: u.Position,
-    }))
-  );
-
-  // Filter by MegaGenerationLevel > 0 and active package
-  const MegaeligibleUplines = MegafilteredUpline.filter(
-    (u) => u?.MegaGenerationLevel > 0 && u?.isActivePackage === "active"
-  );
-  console.log("🏆 Eligible Mega Uplines:", MegaeligibleUplines.length);
-
-  if (MegaeligibleUplines.length === 0) {
-    console.warn("⚠️ No eligible mega uplines found.");
-    return;
-  }
-
-  function searchUserInTree(node, userId, maxDepth, currentDepth = 1) {
-    if (!node || currentDepth > maxDepth) return false;
-    if (node._id && node._id.toString() === userId.toString()) return true;
-    return (
-      searchUserInTree(node.left, userId, maxDepth, currentDepth + 1) ||
-      searchUserInTree(node.right, userId, maxDepth, currentDepth + 1)
-    );
-  }
-
-  const MegafinalUplines = [];
-
-  console.log("🌳 Checking each eligible mega upline tree for buyer presence...");
-
-  for (const upline of MegaeligibleUplines) {
+    // *****************************************************************
+    // 🏦 Shared Mega Generation Commission (7%)
+    // *****************************************************************
     try {
-      const tree = await buildTree(upline._id);
-       const maxDepth = (upline.MegaGenerationLevel || 0) + 1;
+      console.log("🚀 Starting shared mega generation commission distribution...");
 
-    const foundUser = searchUserInTree(tree, buyer._id, maxDepth);
-      // const foundUser = searchUserInTree(tree, buyer._id, upline.MegaGenerationLevel);
-      console.log(
-        `🔍 Upline ${upline._id} (MegaLevel ${upline.MegaGenerationLevel}) contains buyer?`,
-        foundUser
-      );
-      if (foundUser) MegafinalUplines.push(upline);
+      if (!buyer._id || typeof sevenPercent !== "number" || sevenPercent <= 0) {
+        console.error("❌ Invalid mega generation commission parameters.");
+      } else {
+        const MegauplineFlat = await buildUplineChainMultipleParents(buyer._id);
+        if (!Array.isArray(MegauplineFlat) || MegauplineFlat.length === 0) {
+          console.warn("⚠️ No mega uplines found.");
+        } else {
+          const MegafilteredUpline = MegauplineFlat.filter(
+            (u) => u?._id?.toString() !== buyer._id.toString()
+          );
+
+          const MegaeligibleUplines = MegafilteredUpline.filter(
+            (u) => u?.MegaGenerationLevel > 0 && u?.isActivePackage === "active"
+          );
+
+          if (MegaeligibleUplines.length > 0) {
+            const pointPerUpline = sevenPercent / MegaeligibleUplines.length;
+            for (const upline of MegaeligibleUplines) {
+              const uplineUser = await User.findById(upline._id);
+              if (!uplineUser || uplineUser.isActivePackage !== "active") continue;
+
+              uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+              uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+              uplineUser.AllEntry.incoming.push({
+                fromUser: buyer._id,
+                pointReceived: pointPerUpline,
+                sector: "Shared Mega Generation Commission",
+                date: new Date(),
+              });
+              await uplineUser.save();
+            }
+            console.log(`✅ Distributed ${sevenPercent} mega generation commission.`);
+          }
+        }
+      }
     } catch (err) {
-      console.error(`❌ Error in buildTree for mega upline ${upline._id}:`, err.message);
+      console.error("🔥 Error in mega generation commission:", err.message);
     }
-  }
 
-  console.log("✅ Final Mega Qualified Uplines:", MegafinalUplines.length);
+    // *****************************************************************
+    // 🧩 Shared Normal Generation Commission (30%)
+    // *****************************************************************
+    try {
+      const uplineFlat = await buildUplineChainMultipleParents(buyer._id);
+      const filteredUpline = uplineFlat.filter(
+        (u) => u._id.toString() !== buyer._id.toString()
+      );
 
-  if (MegafinalUplines?.length > 0) {
-    const pointPerUpline = sevenPercent / MegafinalUplines.length;
-    console.log(
-      `💰 Distributing ${sevenPercent} total → ${pointPerUpline} per mega upline.`
-    );
+      const eligibleUplines = filteredUpline.filter(
+        (u) => u.GenerationLevel > 0 && u.isActivePackage === "active"
+      );
 
-    for (const upline of MegafinalUplines) {
-      const uplineUser = await User.findById(upline._id);
-      if (!uplineUser) continue;
+      const finalUplines = [];
 
-      if (uplineUser.isActivePackage !== "active") continue;
+      function searchUserInTree(node, userId, maxDepth, currentDepth = 1) {
+        if (!node || currentDepth > maxDepth) return false;
+        if (node._id && node._id.toString() === userId.toString()) return true;
+        return (
+          searchUserInTree(node.left, userId, maxDepth, currentDepth + 1) ||
+          searchUserInTree(node.right, userId, maxDepth, currentDepth + 1)
+        );
+      }
 
-      uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+      for (const upline of eligibleUplines) {
+        const tree = await buildTree(upline._id);
+        const foundUser = searchUserInTree(tree, buyer._id, upline.GenerationLevel);
+        if (foundUser) finalUplines.push(upline);
+      }
 
-      uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-      uplineUser.AllEntry.incoming.push({
-        fromUser: buyer._id,
-        pointReceived: pointPerUpline,
-        sector: "Shared Mega Generation Commission",
-        date: new Date(),
-      });
+      if (finalUplines.length > 0) {
+        const pointPerUpline = thirtyPercent / finalUplines.length;
+        for (const upline of finalUplines) {
+          const uplineUser = await User.findById(upline._id);
+          if (!uplineUser || uplineUser.isActivePackage !== "active") continue;
 
-      await uplineUser.save();
-      console.log(`✅ Mega commission given to upline ${uplineUser._id}`);
+          uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+          uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+          uplineUser.AllEntry.incoming.push({
+            fromUser: buyer._id,
+            pointReceived: pointPerUpline,
+            sector: "Shared Generation Commission",
+            date: new Date(),
+          });
+          await uplineUser.save();
+        }
+        console.log(`✅ Distributed ${thirtyPercent} shared generation commission.`);
+      } else {
+        console.warn("⚠️ No final eligible uplines for shared generation commission.");
+      }
+    } catch (err) {
+      console.error("🔥 Error in shared generation commission:", err.message);
     }
-  } else {
-    console.warn("⚠️ No final mega uplines or buyer has no position — skipping.");
+
+    // *****************************************************************
+    // 🏛️ ADMIN STORE FUND DISTRIBUTION (3% + 4%)
+    // *****************************************************************
+    try {
+      console.log("🏦 Creating AdminStore entry...");
+
+      if (!buyer?._id) {
+        console.warn("⚠️ Buyer ID missing — skipping AdminStore creation.");
+      } else if (
+        isNaN(threePercent) ||
+        isNaN(fourPercent) ||
+        typeof grandPoint !== "number"
+      ) {
+        console.warn("⚠️ Invalid percent values:", { threePercent, fourPercent });
+      } else {
+        const newEntry = await AdminStore.create({
+          datafrom: buyer._id,
+          Executive_Officer: threePercent,
+          Special_Fund: fourPercent,
+          Car_Fund: fourPercent,
+          Tour_Fund: fourPercent,
+          Home_Fund: threePercent,
+        });
+
+        console.log("✅ AdminStore entry created successfully:", newEntry._id);
+      }
+    } catch (err) {
+      console.error("❌ Error creating AdminStore entry:", err.message);
+    }
+
+    console.log("🎯 Grand point distribution completed successfully for buyer:", buyer._id);
+  } catch (err) {
+    console.error("🚨 Fatal error in distributeGrandPoint:", err.message);
   }
-
-  console.log("🎯 Mega generation commission distribution completed.");
-} catch (err) {
-  console.error("🔥 Fatal error in mega generation commission distribution:", err);
-}
-
-
-const uplineFlat = await buildUplineChainMultipleParents(buyer._id);
-const filteredUpline = uplineFlat.filter(
-  (u) => u._id.toString() !== buyer._id.toString()
-);
-
-console.log(
-  "Filtered uplines:", filteredUpline.map(u => ({
-    id: u._id,
-    GenerationLevel: u.GenerationLevel,
-    isActivePackage: u.isActivePackage
-  }))
-);
-console.log("Upline Flat Structure generation level:", filteredUpline);
-
-// ✅ only those who have GenerationLevel > 0 and active package
-const eligibleUplines = filteredUpline.filter(
-  (u) => u.GenerationLevel > 0 && u.isActivePackage === "active"
-);
-
-const finalUplines = [];
-
-for (const upline of eligibleUplines) {
-  const tree = await buildTree(upline._id); // upline's downline tree
-  const foundUser = searchUserInTree(tree, buyer._id, upline.GenerationLevel);
-  if (foundUser) {
-    finalUplines.push(upline);
-  }
-}
-
-if (finalUplines.length > 0) {
-  const pointPerUpline = thirtyPercent / finalUplines.length;
-
-  for (const upline of finalUplines) {
-    const uplineUser = await User.findById(upline._id);
-    if (!uplineUser) continue;
-
-    // ✅ again, only give if active
-    if (uplineUser.isActivePackage !== "active") continue;
-
-    uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-
-    uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
-    uplineUser.AllEntry.incoming.push({
-      fromUser: buyer._id,
-      pointReceived: pointPerUpline,
-      sector: `Shared Generation Commission`,
-      date: new Date(),
-    });
-
-    await uplineUser.save();
-  }
-}
-
-
-  // *********************************************************************
-  await AdminStore.create({
-    datafrom: buyer._id,
-    Executive_Officer: threePercent,
-    Special_Fund: fourPercent,
-    Car_Fund: fourPercent,
-    Tour_Fund: fourPercent,
-    Home_Fund: threePercent,
-  });
-
-  console.log("Admin store entry created for buyer:", buyer._id); 
-  console.log("✅ Grand point distribution completed.");
-
-
-  // *****************************************************************
-
-
-  // User Package Update
-
-  // const tree = await buildTree(buyer._id);
-  // const leftPoints = tree.left?.points || 0;
-  // const rightPoints = tree.right?.points || 0;
-
-
-  // else {
-  //   // ✅ Otherwise run package-level fallback logic
-  //   // console.log("Running package-level fallback logic");
-  // }
-
 };
+
 module.exports = router;

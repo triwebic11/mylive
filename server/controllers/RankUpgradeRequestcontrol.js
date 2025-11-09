@@ -1,4 +1,5 @@
 const RankUpgradeRequest = require("../models/RankUpgradeRequest");
+const User = require("../models/User");
 
 exports.getRanksRequest = async (req, res) => {
   try {

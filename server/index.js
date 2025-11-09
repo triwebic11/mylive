@@ -17,6 +17,8 @@ const { default: mongoose } = require("mongoose");
 const { AdminSummery } = require("./controllers/AdminSummery");
 const User = require("./models/User");
 const { giveMonthlyExtraBonusToAll } = require("./utils/giveMonthlyExtra20PercentBonus");
+const { buildTree } = require("./controllers/userController");
+const { UpdateRanksAndRewards } = require("./controllers/RankUpgradeRequestcontrol");
 const app = express();
 const server = http.createServer(app);
 const allowedOrigins = [
@@ -147,6 +149,20 @@ cron.schedule("* * * * *", async () => {
 // ১️⃣ প্রতি মাসে ১ তারিখ সকাল ১টায় অটো বোনাস চেক
   cron.schedule("0 1 1 * *", async () => {
   await giveMonthlyExtraBonusToAll();
+
+   const { id } = req.params;
+      if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid or missing user ID" });
+      }
+
+  const user = await User.findById(id);
+
+   const tree = await buildTree(user._id);
+    const leftPoints = tree?.monthlyleftBV || 0;
+    const rightPoints = tree?.monthlyrightBV || 0;
+    if (leftPoints >= 30000 && rightPoints >= 30000) {
+      await UpdateRanksAndRewards(user);
+    }
 });
 //   cron.schedule("* * * * * *", async () => {
 //   await giveMonthlyExtraBonusToAll();
