@@ -5,15 +5,16 @@ import ProductForm from "./ProductForm";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 
-const AllProducts = () => {
+const StoreProducts = () => {
   const [products, isLoading, isError, error, refetch] = useProducts();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const axiosSecure = useAxiosSecure();
+  const [searchText, setSearchText] = useState("");
+
   const [formData, setFormData] = useState({
     name: "",
     price: "",
     mrpPrice: "",
-    quantity: "",
     pointValue: "",
     productId: "",
     details: "",
@@ -25,7 +26,6 @@ const AllProducts = () => {
       name: product.name,
       price: product.price,
       mrpPrice: product.mrpPrice,
-      quantity: product.quantity,
       pointValue: product.pointValue,
       productId: product.productId,
       details: product.details,
@@ -40,7 +40,6 @@ const AllProducts = () => {
       name: "",
       price: "",
       mrpPrice: "",
-      quantity: "",
       pointValue: "",
       productId: "",
       details: "",
@@ -69,70 +68,101 @@ const AllProducts = () => {
     }
   };
 
-  const handleDelete = async (product) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        const res = await axiosSecure.delete(`/products/${product._id}`);
-        // console.log(res.data);
-        refetch();
-      } catch (err) {
-        console.error("Delete failed", err);
-      }
-    }
-  };
+  const search = (searchText || "").trim().toLowerCase();
+
+  const filteredProducts = products?.filter((p) => {
+    // name safe check
+    const name = String(p?.name || "").toLowerCase();
+    // productId safe convert to string (handles number, null, undefined)
+    const productId = String(p?.productId ?? "").toLowerCase();
+    // অন্য ফিল্ডগুলোও যোগ করতে পারো একইভাবে, উদাহরণ: pointValue
+    // const pointValue = String(p?.pointValue ?? "").toLowerCase();
+
+    return (
+      name.includes(search) || productId.includes(search)
+      // || pointValue.includes(search)
+    );
+  });
+
+  const totalQuantity = filteredProducts?.reduce(
+    (sum, item) => sum + (item.quantity || 0),
+    0
+  );
+
+  const totalPrice = filteredProducts?.reduce(
+    (sum, item) => sum + (item.price * item.quantity || 0),
+    0
+  );
 
   return (
     <div>
-      <h1 className="text-2xl pt-20 pb-5  font-bold mb-2">All Products </h1>
+      <h1 className="text-2xl pt-20 pb-5  font-bold mb-2">Store Products </h1>
+      <div className="flex flex-col justify-center items-center gap-2 bg-purple-800 py-4 text-xl text-white">
+        <h1>
+          Total Product:{" "}
+          <span className="font-bold text-2xl">{filteredProducts?.length}</span>
+        </h1>
+        <h1>
+          Total Quantity:{" "}
+          <span className="font-bold text-2xl">{totalQuantity}</span>
+        </h1>
+        <h1>
+          Total Price:<span className="font-bold text-2xl">{totalPrice}</span> TK
+        </h1>
+      </div>
+      <div className="w-full flex justify-center my-4">
+        <input
+          type="text"
+          placeholder="Search by product name or product ID"
+          className="border px-4 py-2 rounded w-1/2"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      </div>
+
       <div className="overflow-x-auto p-4">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
               <th className="px-4 py-2 border">Name</th>
               <th className="px-4 py-2 border">Image</th>
-              <th className="px-4 py-2 border">Details</th>
+              {/* <th className="px-4 py-2 border">Details</th> */}
               <th className="px-4 py-2 border">DP</th>
-              <th className="px-4 py-2 border">MRP</th>
-              <th className="px-4 py-2 border">Quantity</th>
+              <th className="px-4 py-2 border"> Quantity </th>
+              {/* <th className="px-4 py-2 border">MRP Price</th> */}
               <th className="px-4 py-2 border">BV</th>
               <th className="px-4 py-2 border">Product Id</th>
-              <th className="text-center px-4 py-2 border">
-                Repurchase <br /> Free{" "}
-              </th>
-              <th className="px-4 py-2 border">
-                Advance <br />
-                Consistecy
-              </th>
               <th className="px-4 py-2 border">Created At</th>
-              <th className="px-4 py-2 border">Action</th>
+              {/* <th className="px-4 py-2 border">Action</th> */}
             </tr>
           </thead>
           <tbody>
-            {products?.map((product) => (
-              <tr key={product._id} className="text-sm text-gray-700">
-                <td className="px-4 py-2 border">{product.name}</td>
-                <td className="px-4 py-2 border">
+            {filteredProducts?.reverse().map((product) => (
+              <tr
+                key={product._id}
+                className="text-sm text-gray-700 hover:shadow-xl duration-300"
+              >
+                <td className="px-4 py-2 border-b">{product.name}</td>
+                <td className="px-4 py-2 border-b">
                   <img src={product.image} className="w-20" alt="" />
                 </td>
-                <td
+                {/* <td
                   className="px-4 py-2 border"
                   dangerouslySetInnerHTML={{ __html: product.details }}
-                />
-                <td className="px-4 py-2 border">{product.price} TK</td>
-                <td className="px-4 py-2 border">{product.mrpPrice} TK</td>
-                <td className="px-4 py-2 border">{product.quantity}</td>
-                <td className="px-4 py-2 border">{product.pointValue}</td>
-                <td className="px-4 py-2 border">{product.productId}</td>
-                <td className="px-4 py-2 border text-center">
-                  {product.rfp || 0}%
+                /> */}
+                <td className="px-4 py-2 border-b">{product.price} TK</td>
+                <td className="px-4 py-2 border-b text-center">
+                  {product.quantity}
                 </td>
-                <td className="px-4 py-2 border text-center">
-                  {product.acfp || 0}%
+                {/* <td className="px-4 py-2 border-b">{product.mrpPrice} TK</td> */}
+                <td className="px-4 py-2 border-b text-center">
+                  {product.pointValue}
                 </td>
-                <td className="px-4 py-2 border">
+                <td className="px-4 py-2 border-b">{product.productId}</td>
+                <td className="px-4 py-2 border-b">
                   {new Date(product.createdAt).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-2 border space-x-2 flex flex-col gap-2">
+                {/* <td className="px-4 py-2 border space-x-2">
                   <button
                     onClick={() => onUpdate(product)}
                     className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
@@ -145,7 +175,7 @@ const AllProducts = () => {
                   >
                     delete
                   </button>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
@@ -176,4 +206,4 @@ const AllProducts = () => {
   );
 };
 
-export default AllProducts;
+export default StoreProducts;

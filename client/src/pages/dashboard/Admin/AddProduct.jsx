@@ -140,6 +140,7 @@ const AddProduct = () => {
       details: details,
       price: data.price,
       mrpPrice: data.mrpPrice ? Number(data.mrpPrice) : 0,
+      quantity: data.quantity ? Number(data.quantity) : 0,
       pointValue: data.pointValue ? Number(data.pointValue) : 0,
       productId: data.productId || " ",
       rfp: data.rfp || "",
@@ -324,6 +325,14 @@ const AddProduct = () => {
               <input
                 type="number"
                 {...register("mrpPrice", { required: true })}
+                className="w-full border p-2 rounded"
+              />
+            </div>
+               <div>
+              <label className="block mb-1 font-semibold">Quantity</label>
+              <input
+                type="number"
+                {...register("quantity", { required: true })}
                 className="w-full border p-2 rounded"
               />
             </div>

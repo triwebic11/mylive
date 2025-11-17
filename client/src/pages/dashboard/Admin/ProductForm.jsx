@@ -53,6 +53,7 @@ const ProductForm = ({
       name: defaultValues.name || "",
       price: defaultValues.price || "",
       mrpPrice: defaultValues.mrpPrice || "",
+      quantity: defaultValues.quantity || "",
       pointValue: defaultValues.pointValue || "",
       productId: defaultValues.productId || "",
       productRole: defaultValues.productRole || "",
@@ -93,6 +94,7 @@ const ProductForm = ({
       name: defaultValues.name || "",
       price: defaultValues.price || "",
       mrpPrice: defaultValues.mrpPrice || "",
+      quantity: defaultValues.quantity || "",
       pointValue: defaultValues.pointValue || "",
       productId: defaultValues.productId || "",
       productRole: defaultValues.productRole || "",
@@ -235,6 +237,14 @@ const ProductForm = ({
         <input
           type="number"
           {...register("mrpPrice")}
+          className="w-full border p-2 rounded"
+        />
+      </div>
+      <div>
+        <label className="block mb-1 font-semibold">Quantity</label>
+        <input
+          type="number"
+          {...register("quantity")}
           className="w-full border p-2 rounded"
         />
       </div>

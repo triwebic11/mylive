@@ -31,6 +31,8 @@ import { RiMoneyDollarBoxLine } from "react-icons/ri";
 import { MdManageHistory } from "react-icons/md";
 import { MdDoneAll } from "react-icons/md";
 import { GiLifeSupport, GiWantedReward } from "react-icons/gi";
+import { FaBasketShopping } from "react-icons/fa6";
+import { IoMdReturnLeft } from "react-icons/io";
 
 const dashboardArry = [
   {
@@ -95,7 +97,6 @@ const dashboardArry = [
 ];
 
 const DspDashboard = [
-
   { title: "Dashboard", icon: <CgProfile />, link: "/dashboard/DspDashborad" },
   { title: "Profile", icon: <CgProfile />, link: "/dashboard/dspprofile" },
   {
@@ -114,6 +115,11 @@ const DspDashboard = [
     title: "My Orders",
     icon: <MdDoneAll />,
     link: "/dashboard/myAprovedOrders",
+  },
+  {
+    title: "Return Order",
+    icon: <IoMdReturnLeft />,
+    link: "/dashboard/returnOrder",
   },
   // { title: "My Order", icon: <TiShoppingCart />, link: "/dashboard/myOrders" },
   {
@@ -137,6 +143,11 @@ const adminDashboardArry = [
     link: "/dashboard/storage",
   },
   {
+    title: "Store Products",
+    icon: <FaBasketShopping />,
+    link: "/dashboard/storeProducts",
+  },
+  {
     title: "Create DSP ID",
     icon: <MdAccountCircle />,
     link: "/dashboard/createDspId",
@@ -156,6 +167,11 @@ const adminDashboardArry = [
     title: "Order for DSP",
     icon: <TiShoppingCart />,
     link: "/dashboard/createOrder",
+  },
+  {
+    title: "Return Orders",
+    icon: <IoMdReturnLeft />,
+    link: "/dashboard/returnOrders",
   },
   {
     title: "All Users",
@@ -178,6 +194,7 @@ const adminDashboardArry = [
     icon: <RiMoneyDollarBoxLine />,
     link: "/dashboard/balanceConversion",
   },
+
   // { title: "Cash On Delivery", icon: <TiShoppingCart />, link: "/dashboard/CashonDelivery" },
   {
     title: "Manage Products",
@@ -245,8 +262,8 @@ const Dashboard = () => {
     role === "admin"
       ? adminDashboardArry
       : role === "dsp"
-        ? DspDashboard
-        : dashboardArry;
+      ? DspDashboard
+      : dashboardArry;
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
@@ -292,8 +309,9 @@ const Dashboard = () => {
 
       {/* Mobile Sidebar Menu (scrollable) */}
       <div
-        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } w-[60%] px-4 py-6 overflow-y-auto`}
+        className={`md:hidden fixed top-16 left-0 h-[calc(100vh-64px)] bg-white shadow-lg z-40 transform transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } w-[60%] px-4 py-6 overflow-y-auto`}
       >
         <h1 className="text-center py-2 border border-amber-600 rounded-lg mb-2 shadow-xl">
           {role?.toUpperCase()} Dashboard
@@ -388,9 +406,10 @@ const Dashboard = () => {
                 <NavLink
                   to={item.link}
                   className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer ${isActive
-                      ? "border-b-2 border-blue-500 bg-gray-100"
-                      : "hover:bg-gray-200"
+                    `flex items-center justify-between px-3 py-2 font-semibold text-lg duration-300 rounded-lg cursor-pointer ${
+                      isActive
+                        ? "border-b-2 border-blue-500 bg-gray-100"
+                        : "hover:bg-gray-200"
                     }`
                   }
                 >

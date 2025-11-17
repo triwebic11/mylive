@@ -1,9 +1,12 @@
 import React from "react";
 import useUserById from "../../../../Hooks/useUserById";
-import moment from 'moment';
+import moment from "moment";
+import useAuth from "../../../../Hooks/useAuth";
 
 const Transactions = () => {
-  const [data] = useUserById()
+  const [data] = useUserById();
+  const { user } = useAuth();
+  const role = user?.user?.role || user?.role;
 
   //   const totalOutgoingPoints = data?.AllEntry?.incoming?.reduce(
   //   (sum, entry) => sum + (entry?.pointGiven || 0),
@@ -17,7 +20,6 @@ const Transactions = () => {
   //     { name: "Purchase Wallet", amount: "0.00" },
   //   ];
 
-
   // // console.log('dataaaaaaaa',data?.AllEntry?.outgoing)
 
   return (
@@ -27,46 +29,52 @@ const Transactions = () => {
       </h2>
 
       <div className="wallet-summary">
-
-        <div className="wallet-box">
-          <h4>Total Points</h4>
-          <p>{data?.points}</p>
-        </div>
-
+        {role === "user" ? (
+          <div className="wallet-box">
+            <h4>Total Points</h4>
+            <p>{Math.round(data?.points)}</p>
+          </div>
+        ) : (
+          <div className="wallet-box">
+            <h4>Total Points (100%)</h4>
+            <p>{Math.round((data?.points / 15) * 100)}</p>
+            <h2 className="text-xl">Yourself Points(15%)</h2>
+            <p>{Math.round(data?.points)}</p>
+          </div>
+        )}
       </div>
 
       <div className="transaction-list">
-        <h1 className="bg-blue-500 text-white p-2 rounded-md">Your All Points</h1>
-        {
-          data?.AllEntry?.incoming?.length == 0 && <>
-
+        <h1 className="bg-blue-500 text-white p-2 rounded-md">
+          Your All Points
+        </h1>
+        {data?.AllEntry?.incoming?.length == 0 && (
+          <>
             <p> Not Entrys</p>
           </>
-        }
-        {[...(data?.AllEntry?.incoming || [])]
-          .reverse()
-          .map((item, idx) => (
-            <div key={idx} className="transaction">
+        )}
+        {[...(data?.AllEntry?.incoming || [])].reverse().map((item, idx) => (
+          <div key={idx} className="transaction">
+            <div className="left">
+              <img
+                src="https://img.icons8.com/color/48/000000/download.png"
+                alt="icon"
+                className=""
+              />
 
-              <div className="left">
-              
-                <img
-                  src="https://img.icons8.com/color/48/000000/download.png"
-                  alt="icon"
-                  className=""
-                />
-        
-
-                <div className="details">
-                  <p>Sector : {item?.sector || 'Not Define'}</p>
-                  <p>Point : {item?.pointReceived || 0} </p>
-                  <p>Name : {item?.name || 0} </p>
-                  <p>Date : {moment(item?.date).local().format('MMMM Do YYYY, h:mm A')} </p>
-                </div>
+              <div className="details">
+                <p>Sector : {item?.sector || "Not Define"}</p>
+                <p>Point : {item?.pointReceived || 0} </p>
+                <p>Name : {item?.name || 0} </p>
+                <p>
+                  Date :{" "}
+                  {moment(item?.date).local().format("MMMM Do YYYY, h:mm A")}{" "}
+                </p>
               </div>
-              {/* <div className="amount">{item?.amount}</div> */}
             </div>
-          ))}
+            {/* <div className="amount">{item?.amount}</div> */}
+          </div>
+        ))}
       </div>
 
       <style jsx>{`
