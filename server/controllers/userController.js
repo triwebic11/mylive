@@ -419,6 +419,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
     const total = incoming
       .filter((entry) => entry.sector === sectorName)
       .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+      // console.log("Total for sector", sectorName, "is", total);
 
     return parseFloat(total.toFixed(2));
   };
@@ -431,6 +432,8 @@ const generateUserSummary = async (user, referredUsers = []) => {
   const repurchaseCommission = getSumBySector(
     "10% personal reward from purchase"
   );
+
+  console.log("Repurchase Commission:", repurchaseCommission);
   const specialFund = getSumBySector("Special Fund Commission");
   const totalTDS = getSumBySector("TDS");
   const carFund = getSumBySector("Car Fund Commission");
@@ -526,7 +529,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
     return currentPoints + leftPoints + rightPoints;
   }
 
-  const userTree = await buildTree(user._id);
+  const userTree = await buildTree(user?._id);
   // Total points in left and right downlines, excluding self
   const totalDownlinePoints =
     sumPointsInTree(userTree.left) + sumPointsInTree(userTree.right);
@@ -550,7 +553,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
   // console.log("Total Active Teams:", totalActiveTeams);
   // console.log("Total Expired Teams:", totalexpireTeams);
 
-  const tree = await buildTree(user._id);
+  const tree = await buildTree(user?._id);
 
   const totalPointsFromLeft = tree?.totalPointsFromLeft || 0;
   const totalPointsFromRight = tree?.totalPointsFromRight || 0;
