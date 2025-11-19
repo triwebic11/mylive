@@ -3,7 +3,7 @@ import axios from "axios";
 const axiosSecure = axios.create({
   baseURL: "http://localhost:5000/api",
    withCredentials: true,
-  // baseURL: "https://apidata.shslira.com/api",
+  // baseURL: "https://apilira.shslira.com/api",
 });
 
 // ✅ Request interceptor: attach JWT token
