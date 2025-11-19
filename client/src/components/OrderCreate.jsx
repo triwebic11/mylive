@@ -9,11 +9,15 @@ import useRole from "../Hooks/useRole";
 
 import { LuLoader } from "react-icons/lu";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
+import useDspInventory from "../Hooks/useDspInventory";
 
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const { role } = useRole();
+    
+  const phone = user?.user?.phone || user?.user?.email;
+  const { data: inventory = [], isLoading } = useDspInventory(phone);
 
   const [users, setUsers] = useState([]);
   const [matchedUser, setMatchedUser] = useState(null);
@@ -199,7 +203,7 @@ const OrderCreate = ({ title }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     const scndProductsWithSubtotal = scndProducts.map((p) => {
       const mrp = +p.mrpRate || 0;
@@ -287,6 +291,12 @@ const OrderCreate = ({ title }) => {
             );
           });
   let grandPoint = calculateGrandPoint();
+
+  const totalPrice = filteredOrders.reduce(
+    (sum, order) => sum + (order.grandTotal || 0),
+    0
+  );
+
   let userPackage;
   if (grandPoint >= 17500) {
     userPackage = (
@@ -424,6 +434,11 @@ const OrderCreate = ({ title }) => {
                                   "isConsistencyFreeValue",
                                   selected.acfp
                                 );
+                                handleProductChange(
+                                  index,
+                                  "quantity",
+                                  selected.quantity
+                                );
                                 const subtotal = selected.price || 0;
 
                                 if (selected.isRepurchaseFree && selected.rfp) {
@@ -506,7 +521,7 @@ const OrderCreate = ({ title }) => {
                         <td className="px-4 py-2">
                           <input
                             type="number"
-                            value={product.quantity}
+                            value={product?.quantity}
                             onChange={(e) =>
                               handleProductChange(
                                 index,
@@ -818,8 +833,9 @@ const OrderCreate = ({ title }) => {
       </form>
 
       {/* ✅ Filter inputs */}
-      <div className="mt-2">
+      <div className="mt-2 flex justify-around items-center py-3 bg-purple-800 text-white px-3">
         <h1 className="text-xl">Total Orders: {filteredOrders?.length}</h1>
+        <h1 className="text-xl">Total Price: {totalPrice}</h1>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 my-6">
         <input
