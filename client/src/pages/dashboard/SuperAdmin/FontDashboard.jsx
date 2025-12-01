@@ -100,7 +100,7 @@ const FontDashboard = () => {
       return res.data;
     },
   });
-  console.log("agretateee", agregate);
+  // console.log("agretateee", agregate);
 
   useEffect(() => {
     const updateDuration = () => {
@@ -128,7 +128,7 @@ const FontDashboard = () => {
     },
   });
 
-  console.log("orders", orders);
+  // console.log("orders", orders);
 
   // const userProductsArry = orders?.filter(
   //   (order) => order?.userId === data?._id

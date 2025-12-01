@@ -31,7 +31,7 @@ export default function TodayStatement() {
       return res.data;
     },
   });
-  console.log("agretateee", agregate?.summary);
+//   console.log("agretateee", agregate?.summary);
     return (
         <section className="w-full flex justify-center pt-10 pb-16 px-4 md:px-0">
             <div className="w-full max-w-md">

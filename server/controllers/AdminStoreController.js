@@ -106,7 +106,7 @@ exports.AddAdminStoreData = async (req, res) => {
     for (const position of Object.keys(fundFieldMap)) {
       const fundField = fundFieldMap[position];
 
-      console.log(`Processing position: ${position}`);
+      // console.log(`Processing position: ${position}`);
       const undistributedField = undistributedFieldMap[position];
       const users = await User.find({ Position: position });
 
@@ -114,7 +114,7 @@ exports.AddAdminStoreData = async (req, res) => {
 
       // 🚫 no users = move to UndistributedStore field
       if (!users.length) {
-        console.log(`No users found for ${position} — moving fund to ${undistributedField}`);
+        // console.log(`No users found for ${position} — moving fund to ${undistributedField}`);
 
         await AdminStore.updateMany(
           {},
@@ -143,7 +143,7 @@ exports.AddAdminStoreData = async (req, res) => {
           { $push: { "AllEntry.incoming": newEntry } }
         );
 
-        console.log(`✅ ${perUserFund} added to ${user.name} (${position})`);
+        // console.log(`✅ ${perUserFund} added to ${user.name} (${position})`);
       }
 
       distributedPositions.push(position);

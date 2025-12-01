@@ -301,20 +301,20 @@ exports.UpdateRanksAndRewards = async (buyer) => {
     const rightBV = Number(tree?.totalPointsFromRight || 0);
 
 
-    console.log("Left Tree:", tree);
-    console.log("Right Tree:", rightBV);
+    // console.log("Left Tree:", tree);
+    // console.log("Right Tree:", rightBV);
     const matchedRank = positionLevels
       .slice()
       .reverse()
       .find((level) => leftBV >= level.leftBV && rightBV >= level.rightBV);
 
-    console.log("Matched Rank:", matchedRank);
+    // console.log("Matched Rank:", matchedRank);
 
 
     // if (!matchedRank) return;
 
     const user = await User.findById(buyer._id);
-    console.log("User Current Position:", user?.Position);
+    // console.log("User Current Position:", user?.Position);
 
     // // Update if new position is higher than existing
     const currentRankIndex = positionLevels.findIndex(
@@ -324,11 +324,11 @@ exports.UpdateRanksAndRewards = async (buyer) => {
       (r) => r.position === matchedRank.position
     );
 
-    console.log("Current Rank Index:", currentRankIndex);
-    console.log("New Rank Index:", newRankIndex);
+    // console.log("Current Rank Index:", currentRankIndex);
+    // console.log("New Rank Index:", newRankIndex);
 
     if (newRankIndex > currentRankIndex) {
-      console.log(`🔄 Upgrading user ${user._id} from ${user.Position} to ${matchedRank.position}`);
+      // console.log(`🔄 Upgrading user ${user._id} from ${user.Position} to ${matchedRank.position}`);
       // user.Position = matchedRank.position;
       user.RewardPosition = matchedRank.position;
       user.rewards = matchedRank.reward;

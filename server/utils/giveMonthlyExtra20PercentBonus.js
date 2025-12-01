@@ -15,7 +15,7 @@ const giveMonthlyExtra20PercentBonus = async (userId) => {
   const monthlyCommissionEntries = incoming.filter((entry) => {
     const date = new Date(entry.date);
     return (
-      entry.sector === "20% phone referrer commission" &&
+      entry.sector === "20% Phone referrer commission" &&
       date.getMonth() === currentMonth &&
       date.getFullYear() === currentYear
     );
@@ -27,7 +27,7 @@ const giveMonthlyExtra20PercentBonus = async (userId) => {
   );
 
   if (totalCommissionPoints <= 0) {
-    console.log(`❌ ${user.name} এই মাসে 20% commission পায়নি`);
+    // console.log(`❌ ${user.name} এই মাসে 20% commission পায়নি`);
     return;
   }
 
@@ -42,7 +42,7 @@ const giveMonthlyExtra20PercentBonus = async (userId) => {
   });
 
   if (alreadyGiven) {
-    console.log(`ℹ️ ${user.name} already got this month’s 20% bonus.`);
+    // console.log(`ℹ️ ${user.name} already got this month’s 20% bonus.`);
     return;
   }
 
@@ -74,6 +74,6 @@ export const giveMonthlyExtraBonusToAll = async () => {
   for (const user of users) {
     await giveMonthlyExtra20PercentBonus(user._id);
   }
-  console.log("🎉 Monthly 20% bonus check complete for all users!");
+  // console.log("🎉 Monthly 20% bonus check complete for all users!");
 };
 

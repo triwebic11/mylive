@@ -660,7 +660,7 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
       positionLevels?.some(level => level.position === buyer?.Position) && // ✅ অবশ্যই valid rank
       givenpoint >= 1000
     ) {
-      console.log("Upto 1000 points special action");
+      // console.log("Upto 1000 points special action");
 
       // console.log("Buyer current points:", buyer?.totalpurchasePoint);
       // console.log("Ten percent of grand point:", tenPercentOfGrandPoint);
@@ -765,14 +765,14 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
   try {
     const buyer = await User.findOne({ phone: buyerphone });
 
-    console.log("⚡ Distributing grand points:", grandPoint, "to buyer ID:", buyerId);
+    // console.log("⚡ Distributing grand points:", grandPoint, "to buyer ID:", buyerId);
 
     if (!buyer) {
       console.error("❌ Buyer not found for phone:", buyerphone);
       return;
     }
 
-    console.log("👤 Buyer current points:", buyer?.points);
+    // console.log("👤 Buyer current points:", buyer?.points);
 
     // 🧮 Update package levels for buyers below 17500 total purchase points
     if (buyer?.totalpurchasePoint < 17501) {
@@ -805,14 +805,14 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
 
     // 🛑 Admin doesn’t get distribution
     if (buyer?.role === "admin") {
-      console.log("⛔ Admin purchase — skipping reward distribution.");
+      // console.log("⛔ Admin purchase — skipping reward distribution.");
       return;
     }
 
     // 💰 20% phone referrer commission
     if (buyer?.referredBy) {
       const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
-      console.log("🔍 Phone referrer found:", phoneReferrer ? phoneReferrer.phone : "None");
+      // console.log("🔍 Phone referrer found:", phoneReferrer ? phoneReferrer.phone : "None");
       if (phoneReferrer) {
         phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
         phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
@@ -823,7 +823,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
           date: new Date(),
         });
         await phoneReferrer.save();
-        console.log("✅ Phone referrer commission added.");
+        // console.log("✅ Phone referrer commission added.");
       }
     }
 
@@ -841,13 +841,13 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       date: new Date(),
     });
     await buyer.save();
-    console.log("✅ Buyer personal reward distributed.");
+    // console.log("✅ Buyer personal reward distributed.");
 
     // *****************************************************************
     // 🏦 Shared Mega Generation Commission (7%)
     // *****************************************************************
     try {
-      console.log("🚀 Starting shared mega generation commission distribution...");
+      // console.log("🚀 Starting shared mega generation commission distribution...");
 
       if (!buyer._id || typeof sevenPercent !== "number" || sevenPercent <= 0) {
         console.error("❌ Invalid mega generation commission parameters.");
@@ -880,7 +880,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
               });
               await uplineUser.save();
             }
-            console.log(`✅ Distributed ${sevenPercent} mega generation commission.`);
+            // console.log(`✅ Distributed ${sevenPercent} mega generation commission.`);
           }
         }
       }
@@ -934,7 +934,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
           });
           await uplineUser.save();
         }
-        console.log(`✅ Distributed ${thirtyPercent} shared generation commission.`);
+        // console.log(`✅ Distributed ${thirtyPercent} shared generation commission.`);
       } else {
         console.warn("⚠️ No final eligible uplines for shared generation commission.");
       }
@@ -946,7 +946,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
     // 🏛️ ADMIN STORE FUND DISTRIBUTION (3% + 4%)
     // *****************************************************************
     try {
-      console.log("🏦 Creating AdminStore entry...");
+      // console.log("🏦 Creating AdminStore entry...");
 
       if (!buyer?._id) {
         console.warn("⚠️ Buyer ID missing — skipping AdminStore creation.");
@@ -966,13 +966,13 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
           Home_Fund: threePercent,
         });
 
-        console.log("✅ AdminStore entry created successfully:", newEntry._id);
+        // console.log("✅ AdminStore entry created successfully:", newEntry._id);
       }
     } catch (err) {
       console.error("❌ Error creating AdminStore entry:", err.message);
     }
 
-    console.log("🎯 Grand point distribution completed successfully for buyer:", buyer._id);
+    // console.log("🎯 Grand point distribution completed successfully for buyer:", buyer._id);
   } catch (err) {
     console.error("🚨 Fatal error in distributeGrandPoint:", err.message);
   }
