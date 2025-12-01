@@ -24,6 +24,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    quantity: {
+      type: Number,
+      default: 0,
+    },
     pointValue: {
       type: Number,
       default: 0,

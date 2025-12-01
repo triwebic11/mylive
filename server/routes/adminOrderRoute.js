@@ -4,6 +4,8 @@ const User = require("../models/User");
 const AdminOrder = require("../models/AdminOrder");
 const DspInventory = require("../models/DspInventory");
 const AdminStore = require("../models/AdminStore");
+const AdminInventory = require("../models/AddProduct");
+const DspReturnRequest = require("../models/DspReturnRequest");
 const RankUpgradeRequest = require("../models/RankUpgradeRequest");
 
 // 👉 Order Create (Admin → DSP / DSP → User)
@@ -21,7 +23,6 @@ const RankUpgradeRequest = require("../models/RankUpgradeRequest");
 //       grandPoint,
 //       grandDiscount,
 //     } = req.body;
-
 
 //     // 4. Distribute points
 //     await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
@@ -107,7 +108,6 @@ const RankUpgradeRequest = require("../models/RankUpgradeRequest");
 
 //       const savedOrder = await newOrder.save();
 
-
 //       return res.status(201).json({
 //         message: "DSP → User order created",
 //         order: savedOrder,
@@ -136,25 +136,29 @@ router.post("/", async (req, res) => {
       grandDiscount,
     } = req.body;
 
-    let userPromise = Promise.resolve(); // default no-op
+    let userPromise = Promise.resolve();
     const buyer = await User.findOne({ phone: dspPhone });
 
-    // if (buyer.points * 10 >= 500) {
-    //   if (buyer?.isActivePackage === "In Active") {
-    //     buyer.isActivePackage = "active";
+    /** -------------------------
+     *  ADMIN → DSP Order: First check stock
+     * -------------------------- */
+    if (orderedFor === "dsp") {
+      for (const p of products) {
+        const adminStock = await AdminInventory.findOne({
+          productId: p.productId,
+        });
 
-    //     const expireDate = new Date();
-    //     expireDate.setDate(expireDate.getDate() + 30);
-    //     buyer.packageExpireDate = expireDate;
+        if (!adminStock || adminStock.quantity < p.quantity) {
+          return res.status(400).json({
+            message: `❌ Admin stock insufficient for ${p.name} (${
+              p.productId
+            }). Needed: ${p.quantity}, Available: ${adminStock?.quantity || 0}`,
+          });
+        }
+      }
+    }
 
-    //     userPromise = buyer.save();
-
-    //     console.log(
-    //       `✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate}`
-    //     );
-    //   }
-    // }
-
+    // ---------------- Create Order ----------------
     const newOrder = new AdminOrder({
       userId,
       dspPhone,
@@ -171,20 +175,31 @@ router.post("/", async (req, res) => {
     const savedOrder = await newOrder.save();
 
     res.status(201).json({
-      message: `${orderedFor === "dsp" ? "Admin → DSP" : "DSP → User"
-        } order created successfully`,
+      message: `${
+        orderedFor === "dsp" ? "Admin → DSP" : "DSP → User"
+      } order created successfully`,
       order: savedOrder,
     });
 
+    // =========== Background Async Operations ============
     process.nextTick(async () => {
       try {
         await userPromise;
 
         await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
 
+        /** -------------------------
+         *  ADMIN → DSP (AdminInventory -> DspInventory)
+         * -------------------------- */
         if (orderedFor === "dsp") {
-          // Admin → DSP
           for (const p of products) {
+            // 1️⃣ Admin Inventory reduce
+            await AdminInventory.updateOne(
+              { productId: p.productId },
+              { $inc: { quantity: -p.quantity } }
+            );
+
+            // 2️⃣ DSP Inventory increase
             const existing = await DspInventory.findOne({
               dspPhone,
               productId: p.productId,
@@ -204,13 +219,16 @@ router.post("/", async (req, res) => {
           }
         }
 
+        /** -------------------------
+         *  DSP → User (Check DSP Stock)
+         * -------------------------- */
         if (orderedFor === "user") {
-          // DSP → User
           for (const p of products) {
             const stock = await DspInventory.findOne({
               dspPhone: createdBy,
               productId: p.productId,
             });
+
             if (!stock || stock.quantity < p.quantity) {
               console.warn(
                 `⚠️ Stock unavailable for ${p.productId}, ${p.name}`
@@ -224,8 +242,6 @@ router.post("/", async (req, res) => {
             );
           }
         }
-
-        // console.log("✅ Background order processing completed.");
       } catch (err) {
         console.error("❌ Error in background task:", err);
       }
@@ -233,6 +249,105 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.error("❌ Error creating order:", error);
     res.status(500).json({ message: "Failed to create order", error });
+  }
+});
+
+router.post("/dsp-return", async (req, res) => {
+  try {
+    const { dspPhone, productId, productName, quantity, note } = req.body;
+
+    // DSP er stock check
+    const stock = await DspInventory.findOne({ dspPhone, productId });
+
+    if (!stock || stock.quantity < quantity) {
+      return res.status(400).json({
+        message: `❌ DSP stock not enough! Available: ${stock?.quantity || 0}`,
+      });
+    }
+
+    const newReq = await DspReturnRequest.create({
+      dspPhone,
+      productId,
+      productName,
+      quantity,
+      note,
+    });
+
+    res.status(201).json({
+      message: "Return request sent to admin",
+      request: newReq,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error creating request", err });
+  }
+});
+
+router.patch("/dsp-return/handle/:id", async (req, res) => {
+  try {
+    const { action } = req.body; // approve / reject
+    const requestId = req.params.id;
+
+    const reqData = await DspReturnRequest.findById(requestId);
+
+    if (!reqData) return res.status(404).json({ message: "Request not found" });
+
+    if (reqData.status !== "pending") {
+      return res.status(400).json({
+        message: `Already ${reqData.status}`,
+      });
+    }
+
+    // Reject
+    if (action === "reject") {
+      reqData.status = "rejected";
+      await reqData.save();
+      return res.json({ message: "Request rejected", request: reqData });
+    }
+
+    // Approve logic
+    if (action === "approve") {
+      const { dspPhone, productId, quantity, productName } = reqData;
+
+      // 1️⃣ DSP inventory কমাও
+      const dspStock = await DspInventory.findOne({
+        dspPhone,
+        productId,
+      });
+
+      if (!dspStock || dspStock.quantity < quantity) {
+        return res.status(400).json({
+          message: "DSP stock insufficient for return.",
+        });
+      }
+
+      dspStock.quantity -= quantity;
+      await dspStock.save();
+
+      // 2️⃣ Admin inventory বাড়াও
+      const adminStock = await AdminInventory.findOne({ productId });
+
+      if (adminStock) {
+        adminStock.quantity += quantity;
+        await adminStock.save();
+      } else {
+        await AdminInventory.create({
+          productId,
+          productName,
+          quantity,
+        });
+      }
+
+      // 3️⃣ Status update
+      reqData.status = "approved";
+      await reqData.save();
+
+      return res.json({
+        message: "Return approved & stock updated",
+        request: reqData,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Error handling return request", err });
   }
 });
 
@@ -264,6 +379,11 @@ router.get("/", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch orders", error: err });
   }
+});
+
+router.get("/dsp-return", async (req, res) => {
+  const list = await DspReturnRequest.find().sort({ date: -1 });
+  res.json(list);
 });
 
 async function buildTree(userId) {
@@ -321,7 +441,9 @@ async function buildTree(userId) {
 
   // 4) শুধু সরাসরি leftChild আর rightChild এর monthly income
   const monthlyleftBV = leftChild ? await getMonthlyIncoming(leftChild._id) : 0;
-  const monthlyrightBV = rightChild ? await getMonthlyIncoming(rightChild._id) : 0;
+  const monthlyrightBV = rightChild
+    ? await getMonthlyIncoming(rightChild._id)
+    : 0;
 
   // 5) Return structured tree
   return {
@@ -335,8 +457,8 @@ async function buildTree(userId) {
     points: user.points || 0,
     left: leftChild,
     right: rightChild,
-    monthlyleftBV,      // ✅ শুধু এক লেভেল left
-    monthlyrightBV,     // ✅ শুধু এক লেভেল right
+    monthlyleftBV, // ✅ শুধু এক লেভেল left
+    monthlyrightBV, // ✅ শুধু এক লেভেল right
     totalPointsFromLeft,
     totalPointsFromRight,
   };
@@ -533,7 +655,10 @@ const UpdateRanksAndRewards = async (buyer) => {
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-      if (buyer.isActivePackage === "expire" || buyer.isActivePackage === "In Active") {
+      if (
+        buyer.isActivePackage === "expire" ||
+        buyer.isActivePackage === "In Active"
+      ) {
         buyer.isActivePackage = "active";
         // 30 din er expire date
         const expireDate = new Date();
@@ -608,7 +733,6 @@ const PackageLevels = [
 
 const PackageLevelsdefine = async (buyerId, grandPoint) => {
   try {
-
     // console.log("Running PackageLevelsdefine for user:", buyerId);
     // always DB theke fresh document niben
     const buyer = await User.findById(buyerId);
@@ -621,13 +745,15 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
       return;
     }
 
-    const tenPercentOfGrandPoint = grandPoint * 0.10;
+    const tenPercentOfGrandPoint = grandPoint * 0.1;
     // console.log("Ten parcent package level:", tenPercentOfGrandPoint);
     const givenpoint = buyer?.totalpurchasePoint + grandPoint;
     // console.log("Given point package level:", givenpoint);
     if (
-      (!buyer.Position || buyer.Position.trim() === "" || buyer.Position === "Executive Officer")
-      && givenpoint >= 500
+      (!buyer.Position ||
+        buyer.Position.trim() === "" ||
+        buyer.Position === "Executive Officer") &&
+      givenpoint >= 500
     ) {
       // console.log("Position empty or Executive Officer AND points >= 500: special action");
 
@@ -642,22 +768,23 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
         buyer.package = matchedRank.Package;
         buyer.GenerationLevel = matchedRank.generationLevel;
         buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-        if (buyer.isActivePackage === "expire" || buyer.isActivePackage === "In Active") {
+        if (
+          buyer.isActivePackage === "expire" ||
+          buyer.isActivePackage === "In Active"
+        ) {
           buyer.isActivePackage = "active";
           const expireDate = new Date();
           expireDate.setDate(expireDate.getDate() + 30);
           buyer.packageExpireDate = expireDate;
         }
 
-
         await buyer.save();
       }
-    }
-    else if (
+    } else if (
       buyer?.Position &&
       buyer?.Position.trim() !== "" &&
       buyer?.Position !== "Executive Officer" && // ❌ একেবারেই Executive Officer হবে না
-      positionLevels?.some(level => level.position === buyer?.Position) && // ✅ অবশ্যই valid rank
+      positionLevels?.some((level) => level.position === buyer?.Position) && // ✅ অবশ্যই valid rank
       givenpoint >= 1000
     ) {
       // console.log("Upto 1000 points special action");
@@ -675,7 +802,10 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
         buyer.package = matchedRank.Package;
         buyer.GenerationLevel = matchedRank.generationLevel;
         buyer.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-        if (buyer.isActivePackage === "expire" || buyer.isActivePackage === "In Active") {
+        if (
+          buyer.isActivePackage === "expire" ||
+          buyer.isActivePackage === "In Active"
+        ) {
           buyer.isActivePackage = "active";
           const expireDate = new Date();
           expireDate.setDate(expireDate.getDate() + 30);
@@ -684,15 +814,10 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
         await buyer.save();
       }
     }
-
-
-
   } catch (error) {
     console.error("❌ Error in PackageLevelsdefine:", error);
   }
 };
-
-
 
 async function buildUplineChainMultipleParents(
   userId,
@@ -759,9 +884,12 @@ async function buildUplineChainMultipleParents(
   }
 }
 
-
-
-const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalPrice) => {
+const distributeGrandPoint = async (
+  buyerId,
+  grandPoint,
+  buyerphone,
+  grandTotalPrice
+) => {
   try {
     const buyer = await User.findOne({ phone: buyerphone });
 
@@ -781,9 +909,9 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
 
     // 📊 Percentages
     const fifteenPercent = grandPoint * 0.15;
-    const tenPercent = grandPoint * 0.10;
-    const thirtyPercent = grandPoint * 0.30;
-    const twentyPercent = grandPoint * 0.20;
+    const tenPercent = grandPoint * 0.1;
+    const thirtyPercent = grandPoint * 0.3;
+    const twentyPercent = grandPoint * 0.2;
     const sevenPercent = grandPoint * 0.07;
     const threePercent = grandPoint * 0.03;
     const fourPercent = grandPoint * 0.04;
@@ -868,10 +996,14 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
             const pointPerUpline = sevenPercent / MegaeligibleUplines.length;
             for (const upline of MegaeligibleUplines) {
               const uplineUser = await User.findById(upline._id);
-              if (!uplineUser || uplineUser.isActivePackage !== "active") continue;
+              if (!uplineUser || uplineUser.isActivePackage !== "active")
+                continue;
 
               uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-              uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+              uplineUser.AllEntry = uplineUser.AllEntry || {
+                incoming: [],
+                outgoing: [],
+              };
               uplineUser.AllEntry.incoming.push({
                 fromUser: buyer._id,
                 pointReceived: pointPerUpline,
@@ -914,7 +1046,11 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
 
       for (const upline of eligibleUplines) {
         const tree = await buildTree(upline._id);
-        const foundUser = searchUserInTree(tree, buyer._id, upline.GenerationLevel);
+        const foundUser = searchUserInTree(
+          tree,
+          buyer._id,
+          upline.GenerationLevel
+        );
         if (foundUser) finalUplines.push(upline);
       }
 
@@ -925,7 +1061,10 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
           if (!uplineUser || uplineUser.isActivePackage !== "active") continue;
 
           uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-          uplineUser.AllEntry = uplineUser.AllEntry || { incoming: [], outgoing: [] };
+          uplineUser.AllEntry = uplineUser.AllEntry || {
+            incoming: [],
+            outgoing: [],
+          };
           uplineUser.AllEntry.incoming.push({
             fromUser: buyer._id,
             pointReceived: pointPerUpline,
@@ -936,7 +1075,9 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
         }
         // console.log(`✅ Distributed ${thirtyPercent} shared generation commission.`);
       } else {
-        console.warn("⚠️ No final eligible uplines for shared generation commission.");
+        console.warn(
+          "⚠️ No final eligible uplines for shared generation commission."
+        );
       }
     } catch (err) {
       console.error("🔥 Error in shared generation commission:", err.message);
@@ -955,7 +1096,10 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
         isNaN(fourPercent) ||
         typeof grandPoint !== "number"
       ) {
-        console.warn("⚠️ Invalid percent values:", { threePercent, fourPercent });
+        console.warn("⚠️ Invalid percent values:", {
+          threePercent,
+          fourPercent,
+        });
       } else {
         const newEntry = await AdminStore.create({
           datafrom: buyer._id,
