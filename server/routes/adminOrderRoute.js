@@ -937,7 +937,7 @@ const distributeGrandPoint = async (
       return;
     }
 
-    // 💰 20% phone referrer commission
+    // 💰 20% referrer commission
     if (buyer?.referredBy) {
       const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
       // console.log("🔍 Phone referrer found:", phoneReferrer ? phoneReferrer.phone : "None");
@@ -947,7 +947,7 @@ const distributeGrandPoint = async (
         phoneReferrer.AllEntry.incoming.push({
           fromUser: buyerId,
           pointReceived: twentyPercent,
-          sector: "20% Phone referrer commission",
+          sector: "20% referrer commission",
           date: new Date(),
         });
         await phoneReferrer.save();

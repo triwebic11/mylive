@@ -15,7 +15,7 @@ const giveMonthlyExtra20PercentBonus = async (userId) => {
   const monthlyCommissionEntries = incoming.filter((entry) => {
     const date = new Date(entry.date);
     return (
-      entry.sector === "20% Phone referrer commission" &&
+      entry.sector === "20% referrer commission" &&
       date.getMonth() === currentMonth &&
       date.getFullYear() === currentYear
     );

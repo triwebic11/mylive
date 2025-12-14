@@ -425,17 +425,17 @@ const generateUserSummary = async (user, referredUsers = []) => {
   };
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
-  const referCommission = getSumBySector("20% Phone referrer commission");
+  const referCommission = getSumBySector("20% referrer commission");
   
 
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared Mega Generation Commission");
-  const repurchaseSponsorBonus = getSumBySector("20% Phone referrer commission");
+  const repurchaseSponsorBonus = getSumBySector("20% referrer commission");
   const repurchaseCommission = getSumBySector(
     "10% Personal reward from purchase"
   );
 
-  // console.log("Repurchase Commission:", repurchaseCommission);
+  console.log("Repurchase Commission:", repurchaseCommission);
   const specialFund = getSumBySector("Special Fund Commission");
   const totalTDS = getSumBySector("TDS");
   const carFund = getSumBySector("Car Fund Commission");
@@ -690,7 +690,7 @@ const generateUserSummaryStatements = async (user, referredUsers = []) => {
   };
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
-  const referCommission = getSumBySector("20% Phone referrer commission");
+  const referCommission = getSumBySector("20% referrer commission");
   // console.log("Refer Commission Today:", referCommission);
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared mega Generation Commission");
@@ -776,7 +776,7 @@ const generateUserSummaryCommissionStatements = async (
   };
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
-  const referCommission = getSumBySector("20% Phone referrer commission");
+  const referCommission = getSumBySector("20% referrer commission");
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared mega Generation Commission");
   const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
