@@ -665,7 +665,7 @@ const UpdateRanksAndRewards = async (buyer) => {
         expireDate.setDate(expireDate.getDate() + 30);
         buyer.packageExpireDate = expireDate;
 
-        // console.log(`✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate}`);
+        // console.log(✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate});
       }
 
       if (!user.rewards?.includes(matchedRank.reward)) {
@@ -689,10 +689,10 @@ const UpdateRanksAndRewards = async (buyer) => {
 
       // console.log("Rank upgrade request created:", postrank);
       // console.log(
-      //   `✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}`
+      //   ✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}
       // );
       // console.log(
-      //   `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
+      //   ✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}
       // );
     }
   } catch (error) {
@@ -793,6 +793,11 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
       // console.log("Ten percent of grand point:", tenPercentOfGrandPoint);
 
       // const givenpoint = buyer?.points + grandPoint;
+
+      console.log("Buyer current points:", buyer?.points);
+      console.log("Ten percent of grand point:", tenPercentOfGrandPoint);
+
+      const givenpoint = buyer?.points + grandPoint;
 
       const matchedRank = PackageLevels.slice()
         .reverse()
