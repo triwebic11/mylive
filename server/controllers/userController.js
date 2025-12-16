@@ -426,11 +426,8 @@ const generateUserSummary = async (user, referredUsers = []) => {
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
   const referCommission = getSumBySector("20% referrer commission");
-<<<<<<< HEAD
-=======
   
 
->>>>>>> 1d5b9bb95204f22f380471571377a335ceb2a17c
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared Mega Generation Commission");
   const repurchaseSponsorBonus = getSumBySector("20% referrer commission");
