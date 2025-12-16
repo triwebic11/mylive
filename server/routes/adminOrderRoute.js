@@ -8,6 +8,120 @@ const RankUpgradeRequest = require("../models/RankUpgradeRequest");
 
 // 👉 Order Create (Admin → DSP / DSP → User)
 // Order create
+// router.post("/", async (req, res) => {
+//   try {
+//     const {
+//       userId,
+//       dspPhone,
+//       orderedFor,
+//       createdBy,
+//       products,
+//       grandTotal,
+//       freeGrandTotal,
+//       grandPoint,
+//       grandDiscount,
+//     } = req.body;
+
+
+//     // 4. Distribute points
+//     await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
+
+//     // Step 1: Admin ordering for DSP
+//     if (orderedFor === "dsp") {
+//       for (const p of products) {
+//         const existing = await DspInventory.findOne({
+//           dspPhone,
+//           productId: p.productId,
+//         });
+
+//         if (existing) {
+//           existing.quantity += p.quantity;
+//           await existing.save();
+//         } else {
+//           await DspInventory.create({
+//             dspPhone,
+//             productId: p.productId,
+//             productName: p.name,
+//             quantity: p.quantity,
+//           });
+//         }
+//       }
+
+//       const newOrder = new AdminOrder({
+//         userId,
+//         dspPhone,
+//         orderedFor,
+//         createdBy,
+//         products,
+//         grandTotal,
+//         freeGrandTotal,
+//         grandPoint,
+//         grandDiscount,
+//         date: new Date().toISOString(),
+//       });
+
+//       const savedOrder = await newOrder.save();
+//       return res.status(201).json({
+//         message: "Admin → DSP order created",
+//         order: savedOrder,
+//       });
+//     }
+
+//     // Step 2: DSP ordering for user
+//     if (orderedFor === "user") {
+//       // 1. Quantity check
+//       for (const p of products) {
+//         const stock = await DspInventory.findOne({
+//           dspPhone: createdBy,
+//           productId: p.productId,
+//         });
+
+//         if (!stock || stock.quantity < p.quantity) {
+//           return res.status(400).json({
+//             message: Stock unavailable for ${p.productId}, ${p.name},
+//           });
+//         }
+//       }
+
+//       // 2. Deduct quantity
+//       for (const p of products) {
+//         await DspInventory.updateOne(
+//           { dspPhone: createdBy, productId: p.productId },
+//           { $inc: { quantity: -p.quantity } }
+//         );
+//       }
+
+//       // 3. Save order
+//       const newOrder = new AdminOrder({
+//         userId,
+//         dspPhone,
+//         orderedFor,
+//         createdBy,
+//         products,
+//         grandTotal,
+//         freeGrandTotal,
+//         grandPoint,
+//         grandDiscount,
+//         date: new Date().toISOString(),
+//       });
+
+//       const savedOrder = await newOrder.save();
+
+
+//       return res.status(201).json({
+//         message: "DSP → User order created",
+//         order: savedOrder,
+//       });
+//     }
+
+//     res.status(400).json({ message: "Invalid order type" });
+//     // console.log("🔶 Incoming Order:", req.body);
+//   } catch (error) {
+//     console.error("❌ Error creating order:", error);
+//     res.status(500).json({ message: "Failed to create order", error });
+//   }
+// });
+
 router.post("/", async (req, res) => {
   try {
     const {
@@ -22,100 +136,101 @@ router.post("/", async (req, res) => {
       grandDiscount,
     } = req.body;
 
+    let userPromise = Promise.resolve(); // default no-op
+    const buyer = await User.findOne({ phone: dspPhone });
 
-    // 4. Distribute points
-    await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
+    if (grandPoint || buyer.points * 10 > 500) {
+      if (buyer?.isActivePackage === "In Active") {
+        buyer.isActivePackage = "active";
 
-    // Step 1: Admin ordering for DSP
-    if (orderedFor === "dsp") {
-      for (const p of products) {
-        const existing = await DspInventory.findOne({
-          dspPhone,
-          productId: p.productId,
-        });
+        const expireDate = new Date();
+        expireDate.setDate(expireDate.getDate() + 30);
+        buyer.packageExpireDate = expireDate;
 
-        if (existing) {
-          existing.quantity += p.quantity;
-          await existing.save();
-        } else {
-          await DspInventory.create({
-            dspPhone,
-            productId: p.productId,
-            productName: p.name,
-            quantity: p.quantity,
-          });
-        }
-      }
+        userPromise = buyer.save();
 
-      const newOrder = new AdminOrder({
-        userId,
-        dspPhone,
-        orderedFor,
-        createdBy,
-        products,
-        grandTotal,
-        freeGrandTotal,
-        grandPoint,
-        grandDiscount,
-        date: new Date().toISOString(),
-      });
-
-      const savedOrder = await newOrder.save();
-      return res.status(201).json({
-        message: "Admin → DSP order created",
-        order: savedOrder,
-      });
-    }
-
-    // Step 2: DSP ordering for user
-    if (orderedFor === "user") {
-      // 1. Quantity check
-      for (const p of products) {
-        const stock = await DspInventory.findOne({
-          dspPhone: createdBy,
-          productId: p.productId,
-        });
-
-        if (!stock || stock.quantity < p.quantity) {
-          return res.status(400).json({
-            message: `Stock unavailable for ${p.productId}, ${p.name}`,
-          });
-        }
-      }
-
-      // 2. Deduct quantity
-      for (const p of products) {
-        await DspInventory.updateOne(
-          { dspPhone: createdBy, productId: p.productId },
-          { $inc: { quantity: -p.quantity } }
+        console.log(
+          `✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate}`
         );
       }
-
-      // 3. Save order
-      const newOrder = new AdminOrder({
-        userId,
-        dspPhone,
-        orderedFor,
-        createdBy,
-        products,
-        grandTotal,
-        freeGrandTotal,
-        grandPoint,
-        grandDiscount,
-        date: new Date().toISOString(),
-      });
-
-      const savedOrder = await newOrder.save();
-
-
-      return res.status(201).json({
-        message: "DSP → User order created",
-        order: savedOrder,
-      });
     }
 
-    res.status(400).json({ message: "Invalid order type" });
-    // console.log("🔶 Incoming Order:", req.body);
+    const newOrder = new AdminOrder({
+      userId,
+      dspPhone,
+      orderedFor,
+      createdBy,
+      products,
+      grandTotal,
+      freeGrandTotal,
+      grandPoint,
+      grandDiscount,
+      date: new Date().toISOString(),
+    });
+
+    const savedOrder = await newOrder.save();
+
+    res.status(201).json({
+      message: `${
+        orderedFor === "dsp" ? "Admin → DSP" : "DSP → User"
+      } order created successfully`,
+      order: savedOrder,
+    });
+
+    process.nextTick(async () => {
+      try {
+        await userPromise;
+
+        await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
+
+        if (orderedFor === "dsp") {
+          // Admin → DSP
+          for (const p of products) {
+            const existing = await DspInventory.findOne({
+              dspPhone,
+              productId: p.productId,
+            });
+
+            if (existing) {
+              existing.quantity += p.quantity;
+              await existing.save();
+            } else {
+              await DspInventory.create({
+                dspPhone,
+                productId: p.productId,
+                productName: p.name,
+                quantity: p.quantity,
+              });
+            }
+          }
+        }
+
+        if (orderedFor === "user") {
+          // DSP → User
+          for (const p of products) {
+            const stock = await DspInventory.findOne({
+              dspPhone: createdBy,
+              productId: p.productId,
+            });
+            if (!stock || stock.quantity < p.quantity) {
+              console.warn(
+                `⚠ Stock unavailable for ${p.productId}, ${p.name}`
+              );
+              continue;
+            }
+
+            await DspInventory.updateOne(
+              { dspPhone: createdBy, productId: p.productId },
+              { $inc: { quantity: -p.quantity } }
+            );
+          }
+        }
+
+        console.log("✅ Background order processing completed.");
+      } catch (err) {
+        console.error("❌ Error in background task:", err);
+      }
+    });
   } catch (error) {
     console.error("❌ Error creating order:", error);
     res.status(500).json({ message: "Failed to create order", error });
@@ -426,7 +541,7 @@ const UpdateRanksAndRewards = async (buyer) => {
         expireDate.setDate(expireDate.getDate() + 30);
         buyer.packageExpireDate = expireDate;
 
-        // console.log(`✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate}`);
+        // console.log(✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate});
       }
 
       if (!user.rewards?.includes(matchedRank.reward)) {
@@ -450,10 +565,10 @@ const UpdateRanksAndRewards = async (buyer) => {
 
       // console.log("Rank upgrade request created:", postrank);
       // console.log(
-      //   `✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}`
+      //   ✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}
       // );
       // console.log(
-      //   `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
+      //   ✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}
       // );
     }
   } catch (error) {
@@ -516,9 +631,10 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
     ) {
       console.log("Position empty or Executive Officer AND points >= 500: special action");
 
+      const givenpoint = buyer?.points + grandPoint;
       const matchedRank = PackageLevels.slice()
         .reverse()
-        .find((level) => buyer.points >= level.pointsBV);
+        .find((level) => givenpoint >= level.pointsBV);
 
       if (matchedRank) {
         buyer.package = matchedRank.Package;
@@ -544,9 +660,14 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
     ) {
       console.log("Upto 1000 points special action");
 
+      console.log("Buyer current points:", buyer?.points);
+      console.log("Ten percent of grand point:", tenPercentOfGrandPoint);
+
+      const givenpoint = buyer?.points + grandPoint;
+
       const matchedRank = PackageLevels.slice()
         .reverse()
-        .find((level) => buyer.points >= level.pointsBV);
+        .find((level) => givenpoint >= level.pointsBV);
 
       if (matchedRank) {
         buyer.package = matchedRank.Package;
@@ -618,6 +739,7 @@ const distributeGrandPoint = async (
   if (!buyer) return;
 
     console.log("Buyer", buyer?.points);
+    const givenpoint = buyer?.points + grandPoint;
   // console.log("Referral Tree:", tree.left?.points, tree.right?.points);
   // ✅ Condition: If both sides have ≥ 30000 => Rank upgrade logic
   if (buyer?.points < 17501) {
@@ -684,6 +806,7 @@ const distributeGrandPoint = async (
     (entry) => entry.sector === "10% personal reward from purchase"
   );
 
+  console.log("ten parcent", tenPercent)
   if (alreadyReceivedPersonalReward) {
     buyer.points = (buyer.points || 0) + tenPercent;
     buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
@@ -758,7 +881,7 @@ const distributeGrandPoint = async (
       uplineUser.AllEntry.incoming.push({
         fromUser: buyer._id,
         pointReceived: pointPerUpline,
-        sector: `Shared Generation Commission`,
+        sector: "Shared Generation Commission",
         date: new Date()
       });
 
@@ -821,7 +944,7 @@ const distributeGrandPoint = async (
         uplineUser.AllEntry.incoming.push({
           fromUser: buyer._id,
           pointReceived: pointPerUpline,
-          sector: `Shared mega Generation Commission`,
+          sector: 'Shared mega Generation Commission',
           date: new Date()
         });
 

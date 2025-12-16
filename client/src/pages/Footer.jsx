@@ -23,7 +23,7 @@ function Footer() {
                         className="w-28 mb-2 "
                     /></Link>
                     <p className="font-bold text-gray-800 text-sm text-center md:text-left">
-                        SHS Lira Enterprise LTD.
+                        HEAVEN LIRA MARKETING LTD 
                     </p>
                 </div>
 
@@ -41,12 +41,11 @@ function Footer() {
                 {/* Contact */}
                 <div className="flex flex-col items-center text-sm md:items-start text-gray-800 font-semibold">
                     <p className="font-semibold text-blue-700 mb-4">CONTACT</p>
-                    <p>Website: <Link to="https://www.shslira.com" target="blank" className="text-blue-600 hover:text-blue-800">www.shslira.com</Link> </p>
-                    <p>Email: <Link to="mailto:shslira@gmail.com" className="text-blue-600 hover:text-blue-800">shslira@gmail.com</Link></p>
-                    <p>Customer Service: <Link to="tel:01750873763" target="blank" className="text-blue-600 hover:text-blue-800">01750873763</Link></p>
+                    <p>Website: <Link to="https://www.heavenlira.com" target="blank" className="text-blue-600 hover:text-blue-800">www.heavenlira.com</Link> </p>
+                    <p>Email: <Link to="mailto:heavenlira @gmail.com" className="text-blue-600 hover:text-blue-800">heavenlira@gmail.com</Link></p>
+                    <p>Customer Service: <Link to="tel:01747998102" target="blank" className="text-blue-600 hover:text-blue-800">01747998102</Link></p>
                     <p>
-                        Madrashas Road, Shubidhat, Hazipara<br />
-                        Showroom/Sub Office: Vororamor, Setabganj, Dinajpur<br />
+                        Vorra Bottola Bazar, Setabganj, Dinajpur.
 
                     </p>
                 </div>
