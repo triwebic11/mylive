@@ -68,6 +68,7 @@ const WithdrawForm = ({ userId }) => {
 
     try {
       await axiosSecure.post("/withdraw-requests", requestData);
+      // console.log("Withdraw request data:", requestData);
       Swal.fire(
         "Success",
         "Your withdraw request has been submitted!",

@@ -59,7 +59,7 @@ const AdminWithdrawRequests = () => {
     );
   });
 
-  console.log(filteredRequests);
+  // console.log(filteredRequests)
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-xl mt-8">

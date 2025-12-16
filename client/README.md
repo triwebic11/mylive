@@ -128,7 +128,7 @@ const distributeGrandPoint = async (buyerId, grandPoint, buyerphone, grandTotalP
       phoneReferrer.AllEntry.incoming.push({
         fromUser: buyerId,
         pointReceived: twentyPercent,
-        sector: '20% phone referrer commission',
+        sector: '20% referrer commission',
         date: new Date()
       });
       await phoneReferrer.save();
