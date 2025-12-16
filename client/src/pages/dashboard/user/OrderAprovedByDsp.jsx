@@ -15,7 +15,7 @@ const OrderAprovedByDsp = () => {
   // const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const dspPhone = user?.user?.phone || user?.user?.email || "";
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
   const pdfRefs = useRef({});
 
   // console.log("Allllll orderssssssss", orders);
@@ -304,52 +304,80 @@ const OrderAprovedByDsp = () => {
                       className="bg-white p-8 rounded-md shadow-md border border-gray-300 max-w-[800px] mx-auto"
                     >
                       {/* ---------- Header Section ---------- */}
-                      <div className="text-center mb-6 border-b pb-4 ">
-                        <div className="text-2xl font-bold text-gray-900 flex items-center justify-center gap-2">
-                          <img src={logo} alt="logo" className="w-24 h-24" />
-                          SHS LIRA ENTERPRISE LTD.
-                        </div>
-                        <p className=" text-sm">
-                          Madrashas Road, Shubidhat, Hazipara Showroom/Sub
-                          Office: Vororamor, Setabganj, Dinajpur
-                        </p>
-                        <p className=" text-sm">
-                          Phone: 01713784136, 01750873763
-                        </p>
-                      </div>
+                      <h1 className="text-center text-lg font-bold">
+                        Sale Invoice
+                      </h1>
 
-                      {/* ---------- Date & Customer Info ---------- */}
-                      <div className="grid grid-cols-2 gap-4 mb-6 text-sm border p-4 rounded-md bg-gray-50">
-                        <p className="text-gray-800">
-                          <span className="font-semibold">📅 Date:</span>{" "}
-                          {order.date?.slice(0, 10)}
-                        </p>
-                        <p className="text-gray-800">
-                          <span className="font-semibold">👤 Customer:</span>{" "}
-                          {user?.name || user?.user?.name}
-                        </p>
-                        <p className="text-gray-800">
-                          <span className="font-semibold">📞 Phone:</span>{" "}
-                          {order?.dspPhone}
-                        </p>
-                        <p className="text-gray-800">
-                          <span className="font-semibold">Invoice ID:</span>{" "}
-                          {order._id.slice(-8).toUpperCase()}
-                        </p>
-                      </div>
+                      <table className=" border-collapse w-full">
+                        <tbody>
+                          <tr>
+                            <td rowSpan={3} className="border ">
+                              <img
+                                src={logo}
+                                alt="logo"
+                                className="w-24 h-24 object-contain"
+                              />
+                            </td>
+                            <td className="border px-2 py-1 font-bold">
+                              Invoice Number:{" "}
+                              {order._id.slice(-8).toUpperCase()}
+                            </td>
+                            <td className="border px-2 py-1 font-bold">
+                              Date: {order.date?.slice(0, 10)}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="border px-2 py-1 mb-3">
+                              Delivery Note
+                            </td>
+                            <td className="border px-2 py-1">
+                              Mode/Term of payment
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="border px-2 py-1 mb-3">
+                              Supplier's Ref
+                            </td>
+                            <td className="border px-2 py-1">
+                              Other Reference
+                            </td>
+                          </tr>
+                          <tr>
+                            <td rowSpan={3} className="border px-2 py-1">
+                              <p className="text-center">
+                                {" "}
+                                {user?.name || user?.user?.name}
+                              </p>
+                              <p> {order?.dspPhone} </p>
+                            </td>
+                            <td rowSpan={3} className="border px-2 py-1">
+                              <p className="text-center">
+                                {" "}
+                                {user?.name || user?.user?.name}
+                              </p>
+                              <p className="text-center"> {order?.dspPhone} </p>
+                            </td>
+                            <td className="border px-2 py-1">
+                              Date: {order.date?.slice(0, 10)}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="border px-2 pb-4">
+                              Dispatch Document No:
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="border px-2 pb-6">
+                              Dispatch Through:
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
 
-                      {/* ---------- Product Table ---------- */}
-                      <h3 className="text-lg font-semibold mb-2 text-gray-800">
-                        🛒 Product Details
-                      </h3>
-
-                      <div className="overflow-x-auto mb-6">
+                      <div className="overflow-x-auto ">
                         <table className="w-full border-collapse text-sm">
                           <thead>
-                            <tr
-                              style={{ paddingBottom: "3px" }}
-                              className="bg-gray-400"
-                            >
+                            <tr style={{ paddingBottom: "3px" }}>
                               <th className="border px-2 py-2">Product</th>
                               <th className="border px-2 py-2">Qty</th>
                               <th className="border px-2 py-2">BV</th>
@@ -359,7 +387,7 @@ const OrderAprovedByDsp = () => {
                               <th className="border px-2 py-2">SubPoint</th>
                               <th className="border px-2 py-2">SubDiscount</th>
                               <th className="border px-2 py-2">RFP</th>
-                              <th className="border px-2 py-2">CFP</th>
+                              <th className="border px-2 py-2">ACFP</th>
                             </tr>
                           </thead>
 
@@ -408,80 +436,106 @@ const OrderAprovedByDsp = () => {
                                 </td>
                               </tr>
                             ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* ---------- Free Product Section ---------- */}
-                      <h3 className="text-lg font-semibold mb-2 text-gray-800">
-                        🎁 Free Product Details
-                      </h3>
-
-                      <div className="overflow-x-auto mb-6">
-                        <table className="w-full border-collapse text-sm">
-                          <thead>
-                            <tr
-                              style={{ paddingBottom: "3px" }}
-                              className="bg-gray-200"
-                            >
-                              <th className="border px-2 py-2">Free Product</th>
-                              <th className="border px-2 py-2">Free Qty</th>
-                              <th className="border px-2 py-2">Price</th>
-                              <th className="border px-2 py-2">
-                                Free Subtotal
-                              </th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
                             {order.products.map((p, i) => (
-                              <tr
-                                key={i}
-                                style={{ paddingBottom: "3px" }}
-                                className="text-center"
-                              >
-                                <td className="border px-2 py-2">
-                                  {p.freeProductId} - {p.freeProductName}
-                                </td>
-                                <td className="border px-2 py-2">
-                                  {p.freeQuantity}
-                                </td>
-                                <td className="border px-2 py-2">
-                                  {p.freeProductRate}
-                                </td>
-                                <td className="border px-2 py-2">
-                                  ৳{p.freeSubtotal || 0}
-                                </td>
-                              </tr>
+                              <React.Fragment key={i}>
+                                <tr>
+                                  <td
+                                    colSpan="8"
+                                    className="border text-right px-2 font-bold mb-3"
+                                  >
+                                    Free Product Value
+                                  </td>
+                                  <td
+                                    colSpan={2}
+                                    className="border px-2  font-bold"
+                                  >
+                                    {p.freeProductRate || "0"}
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td
+                                    colSpan="8"
+                                    className="border text-right px-2 font-bold mb-3"
+                                  >
+                                    Invoice Discount
+                                  </td>
+                                  <td
+                                    colSpan={2}
+                                    className="border px-2 py-1 font-bold"
+                                  >
+                                    {order.grandDiscount || "0"}
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td
+                                    colSpan="8"
+                                    className="border text-right px-2  font-bold mb-3"
+                                  >
+                                    Net Payable
+                                  </td>
+                                  <td
+                                    colSpan={2}
+                                    className="border px-2 font-bold"
+                                  >
+                                    0
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td
+                                    colSpan="8"
+                                    className="border text-right px-2  font-bold mb-3"
+                                  >
+                                    Paid
+                                  </td>
+                                  <td
+                                    colSpan={2}
+                                    className="border px-2 font-bold mb-3"
+                                  >
+                                    {order.grandTotal || "0"}
+                                  </td>
+                                </tr>
+                              </React.Fragment>
                             ))}
+                            <tr>
+                              <td
+                                colSpan="10"
+                                className="border px-2 py-2 font-bold mb-3"
+                              >
+                                <p>Paid Amount in Word: </p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td colSpan={6} className="border px-1 py-1 mb-3">
+                                Declartion{" "}
+                                <p>
+                                  {" "}
+                                  We declare that this invoice shows the actual
+                                  price of the goods descriibe and that all
+                                  particular are true and correct
+                                </p>
+                              </td>
+                              <td colSpan={4} className="border px-1 mb-3">
+                                {" "}
+                                <p>Company Bank Details </p> <p>Bank Name:</p>{" "}
+                                <p>A/C No:</p> <p>Branch Code:</p>{" "}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td
+                                colSpan={5}
+                                className="border px-2 pt-10 mb-3"
+                              >
+                                Customer's Signature
+                              </td>
+                              <td
+                                colSpan={5}
+                                className="border px-2 pt-10 text-right mb-3"
+                              >
+                                Authorised Signature
+                              </td>
+                            </tr>
                           </tbody>
                         </table>
-                      </div>
-
-                      {/* ---------- Totals Section ---------- */}
-                      <div className="border p-4 rounded-md bg-gray-50 text-gray-900">
-                        <h3 className="text-lg font-semibold mb-2">
-                          Totals Summary
-                        </h3>
-
-                        <div className="grid grid-cols-2 text-sm gap-2">
-                          <p>
-                            💰 <strong>Grand Total:</strong> ৳
-                            {order.grandTotal || "0"}
-                          </p>
-                          <p>
-                            🎯 <strong>Grand Point:</strong>{" "}
-                            {order.grandPoint || "0"}
-                          </p>
-                          <p>
-                            🏷️ <strong>Grand Discount:</strong>{" "}
-                            {order.grandDiscount || "0"}
-                          </p>
-                          <p>
-                            🎁 <strong>Grand Free Total:</strong> ৳
-                            {order.freeGrandTotal || "0"}
-                          </p>
-                        </div>
                       </div>
                     </div>
                   )}

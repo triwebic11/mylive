@@ -10,10 +10,10 @@ const withdrawRequestSchema = new mongoose.Schema(
     },
     name: String,
     phone: String,
-   totalTaka: {
+    totalTaka: {
       type: Number,
       default: 0,
-    }, 
+    },
     totalwithdraw: {
       type: Number,
       default: 0,
@@ -27,6 +27,7 @@ const withdrawRequestSchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    paymentMethod: "",
   },
   {
     timestamps: true,

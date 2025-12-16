@@ -20,18 +20,14 @@ const DashboardCard = ({ title, value }) => (
       {/* </div> */}
     </div>
     <div className="flex justify-between">
+      <div></div>
+
       <div>
-
+        <span className="text-xl font-bold text-purple-700">{value}</span>
       </div>
-
-    <div>
-      <span className="text-xl font-bold text-purple-700">{value}</span>
-    </div>
     </div>
 
     {/* Right: Value */}
-
-   
   </div>
 );
 
@@ -70,16 +66,14 @@ const TopSlider = () => {
 const FontDashboard = () => {
   const [data] = useUserById();
   const { user } = useAuth();
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   const [duration, setDuration] = useState("15s");
 
   const axiosPublic = useAxiosPublic();
   const dspPhone = user?.user?.phone || user?.user?.email || "";
 
-  const {
-    data: referaltree,
-  } = useQuery({
+  const { data: referaltree } = useQuery({
     queryKey: ["referaltree", data?._id],
     queryFn: async () => {
       const res = await axiosPublic.get(`/users/referral-tree/${data?._id}`);
@@ -100,7 +94,7 @@ const FontDashboard = () => {
       return res.data;
     },
   });
-  console.log("agretateee", agregate);
+  console.log("agretateee--------------", agregate);
 
   useEffect(() => {
     const updateDuration = () => {
@@ -112,8 +106,6 @@ const FontDashboard = () => {
     window.addEventListener("resize", updateDuration);
     return () => window.removeEventListener("resize", updateDuration);
   }, []);
-
-
 
   const { data: orders } = useQuery({
     queryKey: ["orders"],
@@ -142,9 +134,6 @@ const FontDashboard = () => {
 
   // console.log(userProductsArry);
 
-
-
-
   return (
     <div className=" w-[100%] bg-sky-100 mx-auto  min-h-screen">
       <h2 className="text-xl font-semibold">Dashboard</h2>
@@ -169,8 +158,8 @@ const FontDashboard = () => {
         {/* Scrolling Text */}
         {/* <marquee> </marquee> */}
         <marquee className="flex-1 overflow-hidden font-semibold text-purple-700">
-          SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে শনিবার
-          ও রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন |
+          SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে শনিবার ও
+          রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন |
         </marquee>
       </div>
       <TopSlider />
@@ -189,34 +178,26 @@ const FontDashboard = () => {
         </p> */}
       </header>
       <div className="flex justify-between">
-
-      <ReferralLevelBadge data={data} />
-      {/* Left right BV */}
+        <ReferralLevelBadge data={data} />
+        {/* Left right BV */}
 
         <div
-      className={`px-5 py-4 rounded-xl inline-block shadow-md border-r-4 border-black `}
-    >
-      <h1 className="text-xl font-bold text-purple-700 mb-1 flex items-center gap-2">
-        <span className="text-2xl "></span>
-        Left / Right BV
-      </h1>
-      <div className="flex">
-
-      <h2 className="text-base sm:text-lg font-medium">
-        
-           {referaltree?.monthlyleftBV?.toFixed(2)}
-
-      </h2>
-      <h2 className="text-base sm:text-lg font-medium">
-        
-           /
-
-      </h2>
-      <h2 className="text-base sm:text-lg font-medium">
-        {referaltree?.monthlyrightBV?.toFixed(2)}
-      </h2>
-      </div>
-    </div>
+          className={`px-5 py-4 rounded-xl inline-block shadow-md border-r-4 border-black `}
+        >
+          <h1 className="text-xl font-bold text-purple-700 mb-1 flex items-center gap-2">
+            <span className="text-2xl "></span>
+            Left / Right BV
+          </h1>
+          <div className="flex">
+            <h2 className="text-base sm:text-lg font-medium">
+              {referaltree?.monthlyleftBV?.toFixed(2)}
+            </h2>
+            <h2 className="text-base sm:text-lg font-medium">/</h2>
+            <h2 className="text-base sm:text-lg font-medium">
+              {referaltree?.monthlyrightBV?.toFixed(2)}
+            </h2>
+          </div>
+        </div>
       </div>
 
       <div className="w-full mx-auto p-2 space-y-4">
@@ -226,8 +207,10 @@ const FontDashboard = () => {
 
           {data?.isActivePackage === "active" ? (
             <CountdownTimer targetDate={data.packageExpireDate} />
-          ) : <span className="text-sm font-bold uppercase">EXPIRED</span>
-          }</div>
+          ) : (
+            <span className="text-sm font-bold uppercase">EXPIRED</span>
+          )}
+        </div>
 
         {/* Cards Row */}
         <div className="md:flex md:gap-4 space-y-4 md:space-y-0">
@@ -235,7 +218,13 @@ const FontDashboard = () => {
           <div className="md:w-1/2">
             <div className="bg-white h-28 shadow-black/80 shadow-sm rounded-md p-4 flex justify-between items-center text-center text-sm">
               <div className="flex-1">
-                <div className={`inline-block ${data?.isActivePackage === "active" ? "bg-green-300 text-green-900" : 'bg-red-300 text-red-900'} font-semibold px-3 py-1 rounded-full uppercase text-xs`}>
+                <div
+                  className={`inline-block ${
+                    data?.isActivePackage === "active"
+                      ? "bg-green-300 text-green-900"
+                      : "bg-red-300 text-red-900"
+                  } font-semibold px-3 py-1 rounded-full uppercase text-xs`}
+                >
                   {data?.isActivePackage}
                 </div>
                 <p className="mt-1 text-gray-700">Status</p>
@@ -254,26 +243,18 @@ const FontDashboard = () => {
           {/* Order Card */}
           <div className="md:w-1/2">
             <div className="bg-white shadow-black/80 shadow-sm rounded-md p-2 text-center text-sm h-28  ">
-              <h3 className="text-blue-700 font-bold text-base mb-2">
-                Order
-              </h3>
+              <h3 className="text-blue-700 font-bold text-base mb-2">Order</h3>
               <div className="flex justify-between items-center">
                 <div className="flex-1">
-                  <p className="font-bold text-gray-900">
-                    {orders?.length}
-                  </p>
+                  <p className="font-bold text-gray-900">{orders?.length}</p>
                   <p className="text-gray-700">Total</p>
                 </div>
                 <div className="flex-1 border-l">
-                  <p className="font-bold text-gray-900">
-                    {orders?.length}
-                  </p>
+                  <p className="font-bold text-gray-900">{orders?.length}</p>
                   <p className="text-gray-700">Approved</p>
                 </div>
                 <div className="flex-1 border-l">
-                  <p className="font-bold text-gray-900">
-                    0
-                  </p>
+                  <p className="font-bold text-gray-900">0</p>
                   <p className="text-gray-700">Pending</p>
                 </div>
               </div>

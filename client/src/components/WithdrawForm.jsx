@@ -5,12 +5,14 @@ import useAxiosSecure from "../Hooks/useAxiosSecure";
 const WithdrawForm = ({ userId }) => {
   const [user, setUser] = useState(null);
   const [withdrawtaka, setWithdrawtaka] = useState("");
-    const [rate, setRate] = useState(1);
+  const [rate, setRate] = useState(1);
   let currentPoints = user?.points;
-    const axiosSecure = useAxiosSecure();
+  const axiosSecure = useAxiosSecure();
+  const [paymentMethod, setPaymentMethod] = useState("bkash");
+
   // console.log("Current Points:", currentPoints);
 
-    // ✅ Fetch conversion rate
+  // ✅ Fetch conversion rate
   useEffect(() => {
     axiosSecure
       .get("/conversion-rate")
@@ -21,15 +23,14 @@ const WithdrawForm = ({ userId }) => {
       .catch((err) => console.error("Failed to fetch conversion rate:", err));
   }, [axiosSecure]);
 
-
-  const totaltaka = currentPoints * rate
+  const totaltaka = currentPoints * rate;
 
   // console.log(withdrawtaka)
 
   // console.log("totaltakaaaaaaa",totaltaka)
-      const withdrawpointsconvert = withdrawtaka / rate
+  const withdrawpointsconvert = withdrawtaka / rate;
 
-    // console.log("withdrow poibts", withdrawpointsconvert)
+  // console.log("withdrow poibts", withdrawpointsconvert)
 
   // Fetch user data by ID
   useEffect(() => {
@@ -52,13 +53,9 @@ const WithdrawForm = ({ userId }) => {
       );
     }
 
-    if (withdrawtaka > totaltaka) {
+    if (totaltaka <= 0 || withdrawtaka > totaltaka) {
       return Swal.fire("Insufficient", "You don't have enough amount", "error");
     }
-
-
-
-    // console.log(user?.totalwithdraw);
 
     const requestData = {
       name: user.name,
@@ -66,11 +63,11 @@ const WithdrawForm = ({ userId }) => {
       userId: user._id,
       totalTaka: parseInt(withdrawtaka),
       totalwithdraw: parseInt(withdrawpointsconvert),
+      paymentMethod: paymentMethod, // <-- Added here
     };
 
     try {
       await axiosSecure.post("/withdraw-requests", requestData);
-      console.log("Withdraw request data:", requestData);
       Swal.fire(
         "Success",
         "Your withdraw request has been submitted!",
@@ -78,7 +75,6 @@ const WithdrawForm = ({ userId }) => {
       );
       setWithdrawtaka("");
     } catch (error) {
-      console.error("Withdraw request failed:", error);
       Swal.fire("Error", "Something went wrong. Try again later.", "error");
     }
   };
@@ -92,11 +88,11 @@ const WithdrawForm = ({ userId }) => {
           💰 Withdraw Points
         </h2>
 
-        <p className="text-center text-gray-600 mb-4">
+        {/* <p className="text-center text-gray-600 mb-4">
           You have{" "}
           <span className="font-semibold text-green-600">{Number(currentPoints).toFixed(2)}</span>{" "}
           points available.
-        </p>
+        </p> */}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -149,6 +145,20 @@ const WithdrawForm = ({ userId }) => {
             className="w-full mt-1 border rounded px-3 py-2"
             required
           />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Payment By
+          </label>
+          <select
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+            className="w-full mt-1 border rounded px-3 py-2 bg-white"
+          >
+            <option value="bkash">Bkash</option>
+            <option value="nagad">Nagad</option>
+            <option value="rocket">Rocket</option>
+          </select>
         </div>
 
         <button

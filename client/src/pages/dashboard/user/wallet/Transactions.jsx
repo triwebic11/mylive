@@ -1,12 +1,13 @@
 import React from "react";
 import useUserById from "../../../../Hooks/useUserById";
 import moment from "moment";
-import useAuth from "../../../../Hooks/useAuth";
+
+import useRole from "../../../../Hooks/useRole";
 
 const Transactions = () => {
   const [data] = useUserById();
-  const { user } = useAuth();
-  const role = user?.user?.role || user?.role;
+
+  const { role } = useRole();
 
   //   const totalOutgoingPoints = data?.AllEntry?.incoming?.reduce(
   //   (sum, entry) => sum + (entry?.pointGiven || 0),
