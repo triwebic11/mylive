@@ -77,6 +77,9 @@ import DspDashborad from "./pages/dashboard/DSP/DspDashborad.jsx";
 import AdminDashboard from "./pages/dashboard/Admin/AdminDashboard.jsx";
 import FundDistribute from "./pages/dashboard/Admin/FundDistribute.jsx";
 import UserRanksRewards from "./pages/dashboard/user/UserRanksRewards.jsx";
+import StoreProduct from "./pages/dashboard/Admin/StoreProduct.jsx";
+import ReturnRequests from "./pages/dashboard/Admin/ReturnRequests.jsx";
+import ReturnOrder from "./pages/dashboard/DSP/ReturnOrder.jsx";
 
 const queryClients = new QueryClient();
 
@@ -200,6 +203,26 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <AdminRoute>
               <PackageUpdate />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/storeProducts",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <StoreProduct />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/returnOrders",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <ReturnRequests />
             </AdminRoute>
           </PrivetRouter>
         ),
@@ -380,6 +403,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <DspRoute>
               <DspStoreProduct />
+            </DspRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/returnOrder",
+        element: (
+          <PrivetRouter>
+            <DspRoute>
+              <ReturnOrder />
             </DspRoute>
           </PrivetRouter>
         ),

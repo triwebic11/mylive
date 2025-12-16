@@ -156,9 +156,14 @@ const entrySchema = new mongoose.Schema(
     name: String,
     email: String,
     sector: String,
-    product: String,
+    // product: String,
     pointReceived: Number,
-    pointGiven: Number,
+    grandpoints: {
+      type: Number,
+      default: 0,
+    },
+    purchaseAmount: Number,
+    // pointGiven: Number,
     type: String,
     date: Date,
   },
@@ -203,6 +208,14 @@ const userSchema = new mongoose.Schema(
     RewardPosition: String,
     rewards: [String],
     withdraw: Number,
+    totalAmount: {
+      type: Number,
+      default: 0,
+    },
+    totalpurchasePoint: {
+      type: Number,
+      default: 0,
+    },
 
     referralTree: [String],
     // financial info
@@ -222,7 +235,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Normal",
     },
-
+    referSponsorbonus: { type: Number, default: 0 },
     PackagePV: String,
     points: { type: Number, default: 0 },
     AllEntry: {

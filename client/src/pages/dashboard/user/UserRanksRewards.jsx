@@ -76,8 +76,8 @@ const UserRanksRewards = () => {
                             <td className="border border-gray-200 px-2 py-1">{item?.previousPosition || "-"}</td>
                             <td className="border border-gray-200 px-2 py-1">{item?.newPosition}</td>
                             <td className="border border-gray-200 px-2 py-1">{item?.reward}</td>
-                            <td className="border border-gray-200 px-2 py-1">{item?.leftBV}</td>
-                            <td className="border border-gray-200 px-2 py-1">{item?.rightBV}</td>
+                            <td className="border border-gray-200 px-2 py-1">{(item?.leftBV / 6000).toFixed(2)}</td>
+                            <td className="border border-gray-200 px-2 py-1">{(item?.rightBV / 6000).toFixed(2)}</td>
                             <td
                                 className={`border border-gray-200 px-2 py-1 text-center ${item?.status === "approved"
                                         ? "text-green-600 font-semibold"

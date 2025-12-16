@@ -13,6 +13,7 @@ const AllProducts = () => {
     name: "",
     price: "",
     mrpPrice: "",
+    quantity: "",
     pointValue: "",
     productId: "",
     details: "",
@@ -24,6 +25,7 @@ const AllProducts = () => {
       name: product.name,
       price: product.price,
       mrpPrice: product.mrpPrice,
+      quantity: product.quantity,
       pointValue: product.pointValue,
       productId: product.productId,
       details: product.details,
@@ -38,6 +40,7 @@ const AllProducts = () => {
       name: "",
       price: "",
       mrpPrice: "",
+      quantity: "",
       pointValue: "",
       productId: "",
       details: "",
@@ -88,10 +91,18 @@ const AllProducts = () => {
               <th className="px-4 py-2 border">Name</th>
               <th className="px-4 py-2 border">Image</th>
               <th className="px-4 py-2 border">Details</th>
-              <th className="px-4 py-2 border">Price</th>
-              <th className="px-4 py-2 border">MRP Price</th>
-              <th className="px-4 py-2 border">Point Value</th>
+              <th className="px-4 py-2 border">DP</th>
+              <th className="px-4 py-2 border">MRP</th>
+              <th className="px-4 py-2 border">Quantity</th>
+              <th className="px-4 py-2 border">BV</th>
               <th className="px-4 py-2 border">Product Id</th>
+              <th className="text-center px-4 py-2 border">
+                Repurchase <br /> Free{" "}
+              </th>
+              <th className="px-4 py-2 border">
+                Advance <br />
+                Consistecy
+              </th>
               <th className="px-4 py-2 border">Created At</th>
               <th className="px-4 py-2 border">Action</th>
             </tr>
@@ -109,12 +120,19 @@ const AllProducts = () => {
                 />
                 <td className="px-4 py-2 border">{product.price} TK</td>
                 <td className="px-4 py-2 border">{product.mrpPrice} TK</td>
+                <td className="px-4 py-2 border">{product.quantity}</td>
                 <td className="px-4 py-2 border">{product.pointValue}</td>
                 <td className="px-4 py-2 border">{product.productId}</td>
+                <td className="px-4 py-2 border text-center">
+                  {product.rfp || 0}%
+                </td>
+                <td className="px-4 py-2 border text-center">
+                  {product.acfp || 0}%
+                </td>
                 <td className="px-4 py-2 border">
                   {new Date(product.createdAt).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-2 border space-x-2">
+                <td className="px-4 py-2 border space-x-2 flex flex-col gap-2">
                   <button
                     onClick={() => onUpdate(product)}
                     className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"

@@ -30,6 +30,12 @@ exports.getStoresummery = async (req, res) => {
     let Car_Fund_sum = 0;
     let Tour_Fund_sum = 0;
     let Home_Fund_sum = 0;
+    let Executive_Officer_Undistributed = 0;
+    let Special_Fund_Undistributed = 0;
+    let Tour_Fund_Undistributed = 0;
+    let Car_Fund_Undistributed = 0;
+    let Home_Fund_Undistributed = 0;
+
 
     // Loop over all records and sum up the fund fields safely
     for (const record of allRecords) {
@@ -38,6 +44,11 @@ exports.getStoresummery = async (req, res) => {
       Car_Fund_sum += record.Car_Fund || 0;
       Tour_Fund_sum += record.Tour_Fund || 0;
       Home_Fund_sum += record.Home_Fund || 0;
+      Executive_Officer_Undistributed += record.Executive_Officer_Undistributed || 0;
+      Special_Fund_Undistributed  += record.Special_Fund_Undistributed || 0;
+      Tour_Fund_Undistributed += record.Tour_Fund_Undistributed || 0;
+      Car_Fund_Undistributed += record.Car_Fund_Undistributed || 0;
+      Home_Fund_Undistributed += record.Home_Fund_Undistributed || 0;
     }
 
     res.status(200).json({
@@ -46,6 +57,11 @@ exports.getStoresummery = async (req, res) => {
       Car_Fund_sum,
       Tour_Fund_sum,
       Home_Fund_sum,
+      Executive_Officer_Undistributed,
+      Special_Fund_Undistributed,
+      Tour_Fund_Undistributed,
+      Car_Fund_Undistributed,
+      Home_Fund_Undistributed,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -58,7 +74,7 @@ exports.AddAdminStoreData = async (req, res) => {
   try {
     const allRecords = await AdminStore.find();
 
-    // Map for easier looping
+    // map fields
     const fundFieldMap = {
       "Executive Officer": "Executive_Officer",
       "Executive Manager": "Special_Fund",
@@ -75,25 +91,48 @@ exports.AddAdminStoreData = async (req, res) => {
       "Crown Director": "House Fund Commission",
     };
 
-    let distributedPositions = [];
+    // 🆕 new field map for undistributed fund store
+    const undistributedFieldMap = {
+      "Executive Officer": "Executive_Officer_Undistributed",
+      "Executive Manager": "Special_Fund_Undistributed",
+      "Executive Director": "Tour_Fund_Undistributed",
+      "Diamond": "Car_Fund_Undistributed",
+      "Crown Director": "Home_Fund_Undistributed",
+    };
 
-    // 1️⃣ Distribute funds to users
-    for (const { position } of positionLevels) {
+    let distributedPositions = [];
+    let undistributedPositions = [];
+
+    for (const position of Object.keys(fundFieldMap)) {
       const fundField = fundFieldMap[position];
+
+      // console.log(`Processing position: ${position}`);
+      const undistributedField = undistributedFieldMap[position];
       const users = await User.find({ Position: position });
 
+      const totalFund = allRecords.reduce((sum, rec) => sum + (rec[fundField] || 0), 0);
+
+      // 🚫 no users = move to UndistributedStore field
       if (!users.length) {
-        console.log(`No users found for position ${position} — skipping`);
+        // console.log(`No users found for ${position} — moving fund to ${undistributedField}`);
+
+        await AdminStore.updateMany(
+          {},
+          {
+            $inc: { [undistributedField]: totalFund },
+            $set: { [fundField]: 0 },
+          }
+        );
+
+        undistributedPositions.push(position);
         continue;
       }
 
-      // Calculate total fund for this position
-      const totalFund = allRecords.reduce((sum, rec) => sum + (rec[fundField] || 0), 0);
+      // ✅ distribute fund if users exist
       const perUserFund = totalFund / users.length;
 
       for (const user of users) {
         const newEntry = {
-        //   fromUser: "SYSTEM",
           sector: sectorNameMap[position] || "General Fund",
           pointReceived: perUserFund,
           date: new Date(),
@@ -104,29 +143,28 @@ exports.AddAdminStoreData = async (req, res) => {
           { $push: { "AllEntry.incoming": newEntry } }
         );
 
-        console.log(`Added ${perUserFund} to ${user.name} (${position})`);
+        // console.log(`✅ ${perUserFund} added to ${user.name} (${position})`);
       }
 
-      distributedPositions.push(position); // mark position for zeroing
-    }
+      distributedPositions.push(position);
 
-    // 2️⃣ Zero out only the funds for distributed positions
-    for (const position of distributedPositions) {
-      const fundField = fundFieldMap[position];
+      // zero out fund after distribution
       await AdminStore.updateMany(
         { [fundField]: { $gt: 0 } },
         { $set: { [fundField]: 0 } }
       );
-      console.log(`Zeroed out ${fundField} in AdminStore after distribution`);
     }
 
     res.json({
-      message: `Funds distribution completed for positions: ${distributedPositions.join(", ")}`,
+      message: "✅ Fund distribution completed",
+      distributed: distributedPositions,
+      undistributed: undistributedPositions,
     });
 
   } catch (error) {
-    console.error("Error in AddAdminStoreData:", error);
+    console.error("❌ Error in AddAdminStoreData:", error);
     res.status(500).json({ message: "Server error during fund distribution" });
   }
 };
+
 

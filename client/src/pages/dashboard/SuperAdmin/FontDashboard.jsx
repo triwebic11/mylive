@@ -128,7 +128,7 @@ const FontDashboard = () => {
     },
   });
 
-  console.log("orders", orders);
+  // console.log("orders", orders);
 
   // const userProductsArry = orders?.filter(
   //   (order) => order?.userId === data?._id
@@ -204,7 +204,7 @@ const FontDashboard = () => {
 
       <h2 className="text-base sm:text-lg font-medium">
         
-           {referaltree?.monthlyleftBV.toFixed(2)}
+           {referaltree?.monthlyleftBV?.toFixed(2)}
 
       </h2>
       <h2 className="text-base sm:text-lg font-medium">
@@ -213,7 +213,7 @@ const FontDashboard = () => {
 
       </h2>
       <h2 className="text-base sm:text-lg font-medium">
-        {referaltree?.monthlyrightBV.toFixed(2)}
+        {referaltree?.monthlyrightBV?.toFixed(2)}
       </h2>
       </div>
     </div>

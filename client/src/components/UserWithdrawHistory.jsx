@@ -9,7 +9,7 @@ const UserWithdrawHistory = ({ userId }) => {
     const availablepoints = data?.points - data?.totalwithdraw
       const [rate, setRate] = useState(1);
 
-      console.log(history)
+      // console.log(history)
 
   useEffect(() => {
     if (userId) {

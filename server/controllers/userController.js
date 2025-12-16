@@ -419,18 +419,23 @@ const generateUserSummary = async (user, referredUsers = []) => {
     const total = incoming
       .filter((entry) => entry.sector === sectorName)
       .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+    // console.log("Total for sector", sectorName, "is", total);
 
     return parseFloat(total.toFixed(2));
   };
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
-  const referCommission = getSumBySector("20% phone referrer commission");
+  const referCommission = getSumBySector("20% referrer commission");
+  
+
   const generationCommission = getSumBySector("Shared Generation Commission");
-  const megaCommission = getSumBySector("Shared mega Generation Commission");
-  const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
+  const megaCommission = getSumBySector("Shared Mega Generation Commission");
+  const repurchaseSponsorBonus = getSumBySector("20% referrer commission");
   const repurchaseCommission = getSumBySector(
-    "10% personal reward from purchase"
+    "10% Personal reward from purchase"
   );
+
+  console.log("Repurchase Commission:", repurchaseCommission);
   const specialFund = getSumBySector("Special Fund Commission");
   const totalTDS = getSumBySector("TDS");
   const carFund = getSumBySector("Car Fund Commission");
@@ -491,18 +496,39 @@ const generateUserSummary = async (user, referredUsers = []) => {
     const dateLimit = new Date();
     dateLimit.setDate(dateLimit.getDate() - days);
 
-    return incoming
-      .filter(
-        (entry) =>
-          entry.sector === sectorName && new Date(entry.date) >= dateLimit
-      )
-      .reduce((sum, entry) => sum + (entry.pointReceived || 0), 0);
+    // console.log("incomingsnnnnnnnnnnnnnnnnn", incoming);
+
+
+
+    // Filter entries
+  const filtered = incoming.filter((entry) => {
+    const entryDate = new Date(entry.date);
+        // console.log("DATE LIMIT:", dateLimit);
+// console.log("filtered data", filtered);
+    return (
+      entry.sector === sectorName &&
+      entryDate >= dateLimit
+    );
+  });
+
+  // console.log("👉 Filtered Entries:****", filtered);
+
+  // Reduce purchaseAmount
+  const total = filtered.reduce((sum, entry) => {
+    const amount = Number(entry.purchaseAmount || 0);
+    return sum + amount;
+  }, 0);
+
+  // console.log("👉 TOTAL purchaseAmount:", total);
+
+  return total;
   };
 
   const currentPurchaseAmount = getSumPointBySectorInLastNDays(
-    "10% personal reward from purchase",
+    "10% Personal reward from purchase",
     10
   );
+  // console.log("Current Purchase Amount:", currentPurchaseAmount);
 
   const points = parseFloat(user?.points) || 0;
   const totalWithdraws = parseFloat(user?.totalwithdraw) || 0; // note: your field is totalwithdraw, not totalWithdraw
@@ -526,7 +552,28 @@ const generateUserSummary = async (user, referredUsers = []) => {
     return currentPoints + leftPoints + rightPoints;
   }
 
-  const userTree = await buildTree(user._id);
+  const userTree = await buildTree(user?._id);
+function collectChildIds(node) {
+  if (!node) return [];
+
+  let ids = [];
+
+  if (node.left) ids = ids.concat(collectChildIds(node.left));
+  if (node.right) ids = ids.concat(collectChildIds(node.right));
+
+  // current node push করব, কিন্তু root বাদ দেবো পরে
+  ids.push(node._id);
+
+  return ids;
+}
+
+
+let allIds = collectChildIds(userTree);
+
+// নিজের root ID বাদ দেওয়া
+allIds = allIds.filter(id => String(id) !== String(user._id));
+const fullUsers = await User.find({ _id: { $in: allIds } });
+
   // Total points in left and right downlines, excluding self
   const totalDownlinePoints =
     sumPointsInTree(userTree.left) + sumPointsInTree(userTree.right);
@@ -538,19 +585,19 @@ const generateUserSummary = async (user, referredUsers = []) => {
   const users = await User.find().select("-password");
   const totalreferral = users.filter((u) => u.referredBy === user.referralCode);
 
-  // console.log("Total Referral Count:", totalreferral);
+  // console.log("Tuser", user);
 
-  const totalActiveTeams = totalreferral.filter(
+  const totalActiveTeams = fullUsers.filter(
     (u) => u.isActivePackage === "active"
   ).length;
-  const totalexpireTeams = totalreferral.filter(
+  const totalexpireTeams = fullUsers.filter(
     (u) => u.isActivePackage === "expired"
   ).length;
 
   // console.log("Total Active Teams:", totalActiveTeams);
   // console.log("Total Expired Teams:", totalexpireTeams);
 
-  const tree = await buildTree(user._id);
+  const tree = await buildTree(user?._id);
 
   const totalPointsFromLeft = tree?.totalPointsFromLeft || 0;
   const totalPointsFromRight = tree?.totalPointsFromRight || 0;
@@ -560,7 +607,9 @@ const generateUserSummary = async (user, referredUsers = []) => {
 
   let totalTdsValue = 0;
   const tdsRate = await TdsRate.findOne();
-  console.log("TDS Rate", tdsRate?.pointToTaka);
+
+  // console.log("Refer Commission ---- :", referCommission, tdsRate?.pointToTaka);
+  // console.log("TDS Rate", tdsRate?.pointToTaka);
   try {
     const tdsRateValue = tdsRate ? tdsRate.tdsValue : 0;
     totalTdsValue = (user?.totalwithdraw * tdsRateValue) / 100;
@@ -571,6 +620,7 @@ const generateUserSummary = async (user, referredUsers = []) => {
     user.totalTDS = 0; // Default to 0 if error occurs
     await user.save();
   }
+
   return [
     { title: "Total Refer", value: totalreferral.length || 0 },
     { title: "Total Free Team", value: totalUsersInTree - 1 },
@@ -582,16 +632,16 @@ const generateUserSummary = async (user, referredUsers = []) => {
     { title: "Total Voucher", value: orders?.length || 0 },
     // { title: "Previous Month BV", value: previousMonthPv || 0 },
     {
-      title: "Current Month BV",
-      value: `${tree?.monthlyleftBV} (Left) + ${tree?.monthlyrightBV} (Right)`,
-    },
-    {
-      title: "Team Current Month BV",
+      title: "Team Total BV",
       value: `${tree?.totalPointsFromLeft} (Left) + ${tree?.totalPointsFromRight} (Right)`,
     },
     {
+      title: "Team Current Month BV",
+      value: `${tree?.monthlyleftBV} (Left) + ${tree?.monthlyrightBV} (Right)`,
+    },
+    {
       title: "Team previous Month PV",
-      value: `${tree?.previousmonthlyleftBV / 6000} (Left) + ${tree?.previousmonthlyrightBV / 6000} (Right)`,
+      value: `${tree?.previousMonthlyLeftSubtreeBV} (Left) + ${tree?.previousMonthlyRightSubtreeBV} (Right)`,
     },
     {
       title: "Monthly down sale BV",
@@ -599,14 +649,14 @@ const generateUserSummary = async (user, referredUsers = []) => {
     },
     { title: "Total Team Sale BV", value: totalBinaryPoints.toFixed(2) || 0 },
     { title: "Total Team Member", value: totalUsersInTree - 1 || 0 },
-    { title: "Current Purchase Amount ৳", value: currentPurchaseAmount * tdsRate?.pointToTaka },
-    { title: "Total Purchase Amount ৳", value: user?.points.toFixed(2) * tdsRate?.pointToTaka },
+    { title: "Current Purchase Amount ৳", value: currentPurchaseAmount},
+    { title: "Total Purchase Amount ৳", value: user?.totalAmount },
     { title: "Total Purchase BV", value: repurchaseCommission },
     { title: "Refer Commission ৳", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Generation Commission ৳", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Mega Commission ৳", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Repurchase Sponsor Bonus ৳", value: (repurchaseSponsorBonus * tdsRate?.pointToTaka).toFixed(2) },
-    { title: "Repurchase Commission", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Refar Sponsar Commission ৳", value: (user?.referSponsorbonus * tdsRate?.pointToTaka).toFixed(2) },
+    { title: "Repurchase Commission ৳", value: (repurchaseCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Withdrawable Balance ৳", value: (withdrawableBalance * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Total Withdraw", value: (user?.totalwithdraw * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Executive Officer ৳", value: executiveOfficer * tdsRate?.pointToTaka },
@@ -640,12 +690,13 @@ const generateUserSummaryStatements = async (user, referredUsers = []) => {
   };
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
-  const referCommission = getSumBySector("20% phone referrer commission");
+  const referCommission = getSumBySector("20% referrer commission");
+  // console.log("Refer Commission Today:", referCommission);
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared mega Generation Commission");
-  const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
+  // const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
   const repurchaseCommission = getSumBySector(
-    "10% personal reward from purchase"
+    "10% Personal reward from purchase"
   );
   const specialFund = getSumBySector("Special Fund Commission");
   const carFund = getSumBySector("Car Fund Commission");
@@ -725,12 +776,12 @@ const generateUserSummaryCommissionStatements = async (
   };
 
   const productPurchasePoints = getSumBySector("ProductPurchase");
-  const referCommission = getSumBySector("20% phone referrer commission");
+  const referCommission = getSumBySector("20% referrer commission");
   const generationCommission = getSumBySector("Shared Generation Commission");
   const megaCommission = getSumBySector("Shared mega Generation Commission");
   const repurchaseSponsorBonus = getSumBySector("RepurchaseSponsorBonus");
   const repurchaseCommission = getSumBySector(
-    "10% personal reward from purchase"
+    "10% Personal reward from purchase"
   );
   const specialFund = getSumBySector("Special Fund Commission");
   const carFund = getSumBySector("Car Fund Commission");
@@ -795,6 +846,117 @@ const generateUserSummaryCommissionStatements = async (
   ];
 };
 
+// async function buildTree(userId) {
+//   const user = await User.findById(userId);
+//   if (!user) return null;
+
+//   // 1️⃣ Children load
+//   const children = await User.find({
+//     $or: [
+//       { placementBy: user.referralCode },
+//       { referredBy: user.referralCode },
+//     ],
+//   });
+
+//   const childrenTrees = await Promise.all(
+//     children.map((child) => buildTree(child._id))
+//   );
+
+//   const leftChild = childrenTrees[0] || null;
+//   const rightChild = childrenTrees[1] || null;
+
+//   // 2️⃣ Helper → calculate total grandpoints recursively
+//   const calculateTotalGrandPoints = (node) => {
+//     if (!node) return 0;
+//     let selfGrandPoints = 0;
+
+//     // নিজের AllEntry.incoming → grandpoints যোগ করো
+//     if (node.AllEntry && node.AllEntry.incoming && node.AllEntry.incoming.length > 0) {
+//       for (const entry of node.AllEntry.incoming) {
+//         selfGrandPoints += entry.grandpoints || 0;
+//       }
+//     }
+
+//     const leftPoints = calculateTotalGrandPoints(node.left);
+//     const rightPoints = calculateTotalGrandPoints(node.right);
+
+//     return selfGrandPoints + leftPoints + rightPoints;
+//   };
+
+//   // 3️⃣ Grandpoints হিসাব
+//   const totalPointsFromLeft = calculateTotalGrandPoints(leftChild);
+//   const totalPointsFromRight = calculateTotalGrandPoints(rightChild);
+
+//   // 4️⃣ মাসভিত্তিক হিসাব
+//   const getMonthlyIncoming = async (id) => {
+//     const u = await User.findById(id);
+//     if (!u?.AllEntry?.incoming) return 0;
+
+//     let total = 0;
+//     const now = new Date();
+
+//     for (const entry of u.AllEntry.incoming) {
+//       const entryDate = new Date(entry.date);
+//       if (
+//         entryDate.getMonth() === now.getMonth() &&
+//         entryDate.getFullYear() === now.getFullYear()
+//       ) {
+//         total += entry.grandpoints;
+//       }
+//     }
+//     return total;
+//   };
+
+//   const previousgetMonthlyIncoming = async (id) => {
+//     const u = await User.findById(id);
+//     if (!u?.AllEntry?.incoming) return 0;
+
+//     let total = 0;
+//     const now = new Date();
+//     const previousMonth = new Date(now);
+//     previousMonth.setMonth(now.getMonth() - 1);
+
+//     for (const entry of u.AllEntry.incoming) {
+//       const entryDate = new Date(entry.date);
+//       if (
+//         entryDate.getMonth() === previousMonth.getMonth() &&
+//         entryDate.getFullYear() === previousMonth.getFullYear()
+//       ) {
+//         total += entry.grandpoints;
+//       }
+//     }
+//     return total;
+//   };
+
+//   // 5️⃣ শুধুমাত্র এক লেভেল left/right এর monthly BV
+//   const monthlyleftBV = leftChild ? await getMonthlyIncoming(leftChild._id) : 0;
+//   const monthlyrightBV = rightChild ? await getMonthlyIncoming(rightChild._id) : 0;
+//   const previousmonthlyleftBV = leftChild ? await previousgetMonthlyIncoming(leftChild._id) : 0;
+//   const previousmonthlyrightBV = rightChild ? await previousgetMonthlyIncoming(rightChild._id) : 0;
+
+//   // 6️⃣ Return
+//   return {
+//     name: user.name,
+//     _id: user._id,
+//     Position: user.Position,
+//     phone: user.phone,
+//     referralCode: user.referralCode,
+//     referredBy: user.referredBy,
+//     placementBy: user.placementBy,
+//     status: user.isActivePackage,
+//     points: user.points || 0,
+//     AllEntry: user.AllEntry || {},
+//     left: leftChild,
+//     right: rightChild,
+//     monthlyleftBV,
+//     monthlyrightBV,
+//     totalPointsFromLeft,
+//     totalPointsFromRight,
+//     previousmonthlyrightBV,
+//     previousmonthlyleftBV,
+//   };
+// }
+
 async function buildTree(userId) {
   const user = await User.findById(userId);
   if (!user) return null;
@@ -814,19 +976,44 @@ async function buildTree(userId) {
   const leftChild = childrenTrees[0] || null;
   const rightChild = childrenTrees[1] || null;
 
-  // 2) Recursive total point calculation (lifetime points)
-  const calculateTotalPoints = (node) => {
-    if (!node) return 0;
-    const selfPoints = node.points || 0;
-    const leftPoints = calculateTotalPoints(node.left);
-    const rightPoints = calculateTotalPoints(node.right);
-    return selfPoints + leftPoints + rightPoints;
+  //-------------------------------
+  // HELPER 1: Collect ALL IDs from subtree
+  //-------------------------------
+  const collectIds = (node, list = []) => {
+    if (!node) return list;
+    list.push(node._id.toString());
+    collectIds(node.left, list);
+    collectIds(node.right, list);
+    return list;
   };
 
-  const totalPointsFromLeft = calculateTotalPoints(leftChild);
-  const totalPointsFromRight = calculateTotalPoints(rightChild);
+  const leftIds = collectIds(leftChild);   // ALL left subtree users
+  const rightIds = collectIds(rightChild); // ALL right subtree users
 
-  // 3) Monthly incoming sum (ONLY current month for one user)
+
+  //-------------------------------
+  // HELPER 2: Get all incoming points for a list of IDs
+  //-------------------------------
+  const sumIncomingForUsers = async (ids) => {
+    if (ids.length === 0) return 0;
+
+    const users = await User.find({ _id: { $in: ids } });
+    // console.log(`Calculating sum for ${ids.length} users`);
+
+    let total = 0;
+    for (const u of users) {
+      if (!u?.AllEntry?.incoming) continue;
+      for (const entry of u.AllEntry.incoming) {
+        total += Number(entry.grandpoints || 0);
+        // console.log(`Adding ${entry.grandpoints} from user ${u.name}`);
+      }
+    }
+    return total;
+  };
+
+  //-------------------------------
+  // MONTHLY incoming for only first level child
+  //-------------------------------
   const getMonthlyIncoming = async (id) => {
     const u = await User.findById(id);
     if (!u?.AllEntry?.incoming) return 0;
@@ -836,51 +1023,103 @@ async function buildTree(userId) {
 
     for (const entry of u.AllEntry.incoming) {
       const entryDate = new Date(entry.date);
-
-      // ✅ শুধু এই মাস ও বছরের income হিসাব হবে
       if (
         entryDate.getMonth() === now.getMonth() &&
         entryDate.getFullYear() === now.getFullYear()
       ) {
-        total += entry.pointReceived;
+        total += entry.grandpoints;
       }
     }
     return total;
   };
-  // 3) Monthly incoming sum (ONLY current month for one user)
-  const previousgetMonthlyIncoming = async (id) => {
-    const u = await User.findById(id);
-    if (!u?.AllEntry?.incoming) return 0;
 
-    let total = 0;
-    const now = new Date();
-    const previousMonth = new Date(now);
-    previousMonth.setMonth(now.getMonth()-1)
+  //--------------------------------------
+// HELPER: Monthly incoming for a list of IDs (FULL SUBTREE)
+//--------------------------------------
+const sumMonthlyIncomingForUsers = async (ids) => {
+  if (ids.length === 0) return 0;
 
-    console.log("previousMonth", previousMonth);
+  const now = new Date();
+  const users = await User.find({ _id: { $in: ids } });
+
+  let total = 0;
+
+  for (const u of users) {
+    if (!u?.AllEntry?.incoming) continue;
 
     for (const entry of u.AllEntry.incoming) {
-      const entryDate = new Date(entry.date);
+      const date = new Date(entry.date);
 
-      // ✅ শুধু এই মাস ও বছরের income হিসাব হবে
       if (
-        entryDate.getMonth() === previousMonth.getMonth() &&
-        entryDate.getFullYear() === previousMonth.getFullYear()
+        date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear()
       ) {
-        total += entry.pointReceived;
+        total += Number(entry.grandpoints || 0);
       }
     }
-    return total;
-  };
+  }
 
-  // 4) শুধু সরাসরি leftChild আর rightChild এর monthly income
-  const monthlyleftBV = leftChild ? await getMonthlyIncoming(leftChild._id) : 0;
-  const monthlyrightBV = rightChild ? await getMonthlyIncoming(rightChild._id) : 0;
-  // 4) শুধু সরাসরি leftChild আর rightChild এর monthly income
-  const previousmonthlyleftBV = leftChild ? await previousgetMonthlyIncoming(leftChild._id) : 0;
-  const previousmonthlyrightBV = rightChild ? await previousgetMonthlyIncoming(rightChild._id) : 0;
+  return total;
+};
+//--------------------------------------
+// HELPER: Previous month incoming for FULL subtree
+//--------------------------------------
+const sumPreviousMonthIncomingForUsers = async (ids) => {
+  if (ids.length === 0) return 0;
 
-  // 5) Return structured tree
+  const now = new Date();
+  const currentMonth = now.getMonth();      // 0-11
+  const currentYear = now.getFullYear();
+
+  // previous month calculation
+  const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+  const previousMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+  const users = await User.find({ _id: { $in: ids } });
+
+  let total = 0;
+
+  for (const u of users) {
+    if (!u?.AllEntry?.incoming) continue;
+
+    for (const entry of u.AllEntry.incoming) {
+      const date = new Date(entry.date);
+
+      if (
+        date.getMonth() === previousMonth &&
+        date.getFullYear() === previousMonthYear
+      ) {
+        total += Number(entry.grandpoints || 0);
+      }
+    }
+  }
+
+  return total;
+};
+const previousMonthlyLeftSubtreeBV =
+  await sumPreviousMonthIncomingForUsers(leftIds);
+
+const previousMonthlyRightSubtreeBV =
+  await sumPreviousMonthIncomingForUsers(rightIds);
+
+
+
+  // const monthlyleftBV = leftChild ? await getMonthlyIncoming(leftChild._id) : 0;
+  // const monthlyrightBV = rightChild ? await getMonthlyIncoming(rightChild._id) : 0;
+  const monthlyleftBV = leftChild ? await sumMonthlyIncomingForUsers(leftIds) : 0;
+  const monthlyrightBV = rightChild ? await sumMonthlyIncomingForUsers(rightIds) : 0;
+
+
+  //-------------------------------
+  // ⭐ NEW LOGIC: FULL SUBTREE POINTS
+  //-------------------------------
+  const totalPointsFromLeft = await sumIncomingForUsers(leftIds);
+  const totalPointsFromRight = await sumIncomingForUsers(rightIds);
+
+  // console.log("LEFT IDS:", leftIds);
+  // console.log("RIGHT IDS:", rightIds);
+  // console.log(`User ${user.name} → LEFT Total Points = ${totalPointsFromLeft}, RIGHT Total Points = ${totalPointsFromRight}`);
+
   return {
     name: user.name,
     _id: user._id,
@@ -892,15 +1131,64 @@ async function buildTree(userId) {
     points: user.points || 0,
     left: leftChild,
     right: rightChild,
-    monthlyleftBV,      // ✅ শুধু এক লেভেল left
-    monthlyrightBV,     // ✅ শুধু এক লেভেল right
+    monthlyleftBV,
+    monthlyrightBV,
     totalPointsFromLeft,
     totalPointsFromRight,
-    previousmonthlyrightBV,
-    previousmonthlyleftBV
+     // ⭐ FULL subtree previous month total (NEW)
+  previousMonthlyLeftSubtreeBV,
+  previousMonthlyRightSubtreeBV,
+    leftIds,   // optional: useful for debugging
+    rightIds,
   };
 }
 
+
+
+
+
+// const positionLevelsforRanks = [
+//   {
+//     rank: 1,
+//     leftBV: 15000,
+//     rightBV: 15000,
+//     position: "Executive Officer",
+//     generationLevel: 10,
+//     megaGenerationLevel: 3,
+//   },
+//   {
+//     rank: 2,
+//     leftBV: 30000,
+//     rightBV: 30000,
+//     position: "Executive Manager",
+//     generationLevel: 15,
+//     megaGenerationLevel: 3,
+//   },
+//   {
+//     rank: 3,
+//     leftBV: 60000,
+//     rightBV: 60000,
+//     position: "Executive Director",
+//     generationLevel: 20,
+//     megaGenerationLevel: 4,
+//   },
+//   {
+//     rank: 4,
+//     leftBV: 150000,
+//     rightBV: 150000,
+//     position: "Diamond Director",
+//     generationLevel: 20,
+//     megaGenerationLevel: 4,
+//   },
+//   {
+//     rank: 5,
+//     leftBV: 300000,
+//     rightBV: 300000,
+//     position: "Crown Director",
+//     generationLevel: 999999,
+//     megaGenerationLevel: 999999,
+//   },
+// ];
 
 const positionLevels = [
   {
@@ -1058,69 +1346,30 @@ const positionLevels = [
     megaGenerationLevel: Infinity,
   },
 ];
-const positionLevelsforRanks = [
-  {
-    rank: 1,
-    leftBV: 15000,
-    rightBV: 15000,
-    position: "Executive Officer",
-    generationLevel: 10,
-    megaGenerationLevel: 3,
-  },
-  {
-    rank: 2,
-    leftBV: 30000,
-    rightBV: 30000,
-    position: "Executive Manager",
-    generationLevel: 15,
-    megaGenerationLevel: 3,
-  },
-  {
-    rank: 3,
-    leftBV: 60000,
-    rightBV: 60000,
-    position: "Executive Director",
-    generationLevel: 20,
-    megaGenerationLevel: 4,
-  },
-  {
-    rank: 4,
-    leftBV: 150000,
-    rightBV: 150000,
-    position: "Diamond Director",
-    generationLevel: 20,
-    megaGenerationLevel: 4,
-  },
-  {
-    rank: 5,
-    leftBV: 300000,
-    rightBV: 300000,
-    position: "Crown Director",
-    generationLevel: Infinity,
-    megaGenerationLevel: Infinity,
-  },
-];
 
 const UpdateRanksAndRewards = async (buyer) => {
   try {
     const tree = await buildTree(buyer._id);
     if (!tree) return;
 
-    const leftBV = tree.left.points;
-    const rightBV = tree.right.points;
+    const leftBV = Number(tree?.totalPointsFromLeft || 0);
+    const rightBV = Number(tree?.totalPointsFromRight || 0);
 
-    // console.log("Left Tree:", leftBV);
+
+    // console.log("Left Tree:", tree);
     // console.log("Right Tree:", rightBV);
-
     const matchedRank = positionLevels
       .slice()
       .reverse()
       .find((level) => leftBV >= level.leftBV && rightBV >= level.rightBV);
+
     // console.log("Matched Rank:", matchedRank);
+
 
     if (!matchedRank) return;
 
     const user = await User.findById(buyer._id);
+    // console.log("User Current Position:", user?.Position);
 
     // // Update if new position is higher than existing
     const currentRankIndex = positionLevels.findIndex(
@@ -1130,26 +1379,37 @@ const UpdateRanksAndRewards = async (buyer) => {
       (r) => r.position === matchedRank.position
     );
 
+    // console.log("Current Rank Index:", currentRankIndex);
+    // console.log("New Rank Index:", newRankIndex);
+
     if (newRankIndex > currentRankIndex) {
+      // console.log(`🔄 Upgrading user ${user._id} from ${user.Position} to ${matchedRank.position}`);
+      // user.Position = matchedRank.position;
       user.RewardPosition = matchedRank.position;
       user.rewards = matchedRank.reward;
       user.GenerationLevel = matchedRank.generationLevel;
       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
       // if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
-        // user.isActivePackage = "active";
-        // 30 din er expire date
-        // const expireDate = new Date();
-        // expireDate.setDate(expireDate.getDate() + 30);
-        // user.packageExpireDate = expireDate;
+      // user.isActivePackage = "active";
+      // 30 din er expire date
+      // const expireDate = new Date();
+      // expireDate.setDate(expireDate.getDate() + 30);
+      // user.packageExpireDate = expireDate;
 
-        // console.log(`✅ User ${user._id} re-activated. New expire date: ${user.packageExpireDate}`);
+      // console.log(`✅ User ${user._id} re-activated. New expire date: ${user.packageExpireDate}`);
       // }
 
-      if (!user.rewards?.includes(matchedRank.reward)) {
-        user.rewards = [...(user.rewards || []), matchedRank.reward];
+      if (!user.rewards?.includes(matchedRank?.reward)) {
+        user.rewards = Array.isArray(user.rewards)
+          ? [...user.rewards, matchedRank.reward]
+          : [matchedRank.reward];
+
       }
 
       await user.save();
+
+      // console.log("✅ Ready to post rank upgrade...");
+
 
       // Save to RankUpgradeRequest
       const postrank = await RankUpgradeRequest.create({
@@ -1176,54 +1436,54 @@ const UpdateRanksAndRewards = async (buyer) => {
     console.error("❌ Error updating ranks and rewards:", error);
   }
 };
-const UpdateRanks = async (buyer) => {
-  try {
-    const tree = await buildTree(buyer._id);
-    if (!tree) return;
+// const UpdateRanks = async (buyer) => {
+//   try {
+//     const tree = await buildTree(buyer._id);
+//     if (!tree) return;
 
-    const leftBV = tree.monthlyleftBV;
-    const rightBV = tree.monthlyrightBV;
+//     const leftBV = tree.monthlyleftBV;
+//     const rightBV = tree.monthlyrightBV;
 
-    // console.log("Left Tree:", leftBV);
-    // console.log("Right Tree:", rightBV);
+//     console.log("Left Tree:", leftBV);
+//     console.log("Right Tree:", rightBV);
 
-    const matchedRank = positionLevelsforRanks
-      .slice()
-      .reverse()
-      .find((level) => leftBV >= level.leftBV && rightBV >= level.rightBV);
-    // console.log("Matched Rank:", matchedRank);
+//     const matchedRank = positionLevelsforRanks
+//       .slice()
+//       .reverse()
+//       .find((level) => leftBV >= level.leftBV && rightBV >= level.rightBV);
+//     // console.log("Matched Rank:", matchedRank);
 
-    if (!matchedRank) return;
+//     if (!matchedRank) return;
 
-    const user = await User.findById(buyer._id);
+//     const user = await User.findById(buyer._id);
 
-    // // Update if new position is higher than existing
-    const currentRankIndex = positionLevelsforRanks.findIndex(
-      (r) => r.position === user.Position
-    );
-    const newRankIndex = positionLevelsforRanks.findIndex(
-      (r) => r.position === matchedRank.position
-    );
+//     // // Update if new position is higher than existing
+//     const currentRankIndex = positionLevelsforRanks.findIndex(
+//       (r) => r.position === user.Position
+//     );
+//     const newRankIndex = positionLevelsforRanks.findIndex(
+//       (r) => r.position === matchedRank.position
+//     );
 
-    if (newRankIndex > currentRankIndex) {
-      user.Position = matchedRank.position;
-      user.GenerationLevel = matchedRank.generationLevel;
-      user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
-      // if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
-        // user.isActivePackage = "active";
-        // 30 din er expire date
-        // const expireDate = new Date();
-        // expireDate.setDate(expireDate.getDate() + 30);
-        // user.packageExpireDate = expireDate;
+//     if (newRankIndex > currentRankIndex) {
+//       user.Position = matchedRank.position;
+//       user.GenerationLevel = matchedRank.generationLevel;
+//       user.MegaGenerationLevel = matchedRank.megaGenerationLevel;
+//       // if (user.isActivePackage === "expire" || user.isActivePackage === "In Active") {
+//         // user.isActivePackage = "active";
+//         // 30 din er expire date
+//         // const expireDate = new Date();
+//         // expireDate.setDate(expireDate.getDate() + 30);
+//         // user.packageExpireDate = expireDate;
 
-        // console.log(`✅ User ${user._id} re-activated. New expire date: ${user.packageExpireDate}`);
-      // }
-      await user.save();
-    }
-  } catch (error) {
-    console.error("❌ Error updating ranks and rewards:", error);
-  }
-};
+//         // console.log(`✅ User ${user._id} re-activated. New expire date: ${user.packageExpireDate}`);
+//       // }
+//       await user.save();
+//     }
+//   } catch (error) {
+//     console.error("❌ Error updating ranks and rewards:", error);
+//   }
+// };
 
 const PackageLevels = [
   {
@@ -1295,17 +1555,17 @@ const userAgregateData = async (req, res) => {
     const summary = await generateUserSummary(user, referredUsers);
 
     const tree = await buildTree(user._id);
-    const leftPoints = tree.left?.points || 0;
-    const rightPoints = tree.right?.points || 0;
+    const leftPoints = tree?.monthlyleftBV || 0;
+    const rightPoints = tree?.monthlyrightBV || 0;
     if (leftPoints >= 30000 && rightPoints >= 30000) {
       await UpdateRanksAndRewards(user);
     }
 
-    const leftmonthlyBV = tree?.monthlyleftBV || 0;
-    const rightmonthlyBV = tree?.monthlyrightBV || 0;
-    if (leftmonthlyBV >= 15000 && rightmonthlyBV >= 15000) {
-      await UpdateRanks(user);
-    }
+    // const leftmonthlyBV = tree?.monthlyleftBV || 0;
+    // const rightmonthlyBV = tree?.monthlyrightBV || 0;
+    // if (leftmonthlyBV >= 15000 && rightmonthlyBV >= 15000) {
+    //   await UpdateRanks(user);
+    // }
     // else {
     //   // ✅ Otherwise run package-level fallback logic
     //   await PackageLevelsdefine(user);
@@ -1420,4 +1680,5 @@ module.exports = {
   getReferralTreeById,
   userStatements,
   userAllStatements,
+  buildTree,
 };

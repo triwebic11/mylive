@@ -15,6 +15,13 @@ const adminStoreSchema = new mongoose.Schema({
     type: String,
     default: () => new Date().toISOString(),
   },
+
+   // 🆕 undistributed fields
+  Executive_Officer_Undistributed: { type: Number, default: 0 },
+  Special_Fund_Undistributed: { type: Number, default: 0 },
+  Tour_Fund_Undistributed: { type: Number, default: 0 },
+  Car_Fund_Undistributed: { type: Number, default: 0 },
+  Home_Fund_Undistributed: { type: Number, default: 0 },
 });
 
 const AdminStore = mongoose.model("AdminStore", adminStoreSchema);
