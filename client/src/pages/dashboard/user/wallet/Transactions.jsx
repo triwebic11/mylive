@@ -32,14 +32,14 @@ const Transactions = () => {
       <div className="wallet-summary">
         {role === "user" ? (
           <div className="wallet-box">
-            <h4>Total Points</h4>
+            <h4>Total BV</h4>
             <p>{Math.round(data?.points)}</p>
           </div>
         ) : (
           <div className="wallet-box">
-            <h4>Total Points (100%)</h4>
+            <h4>Total BV (100%)</h4>
             <p>{Math.round((data?.points / 15) * 100)}</p>
-            <h2 className="text-xl">Yourself Points(15%)</h2>
+            <h2 className="text-xl">Yourself BV(15%)</h2>
             <p>{Math.round(data?.points)}</p>
           </div>
         )}

@@ -112,7 +112,7 @@ const DspDashboard = [
   },
   // { title: "Order Now", icon: <TiShoppingCart />, link: "/dashboard/dspOrder" },
   {
-    title: "My Orders",
+    title: "My Invoices",
     icon: <MdDoneAll />,
     link: "/dashboard/myAprovedOrders",
   },

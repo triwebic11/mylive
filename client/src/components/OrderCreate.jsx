@@ -15,7 +15,7 @@ const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const { role } = useRole();
-    
+
   const phone = user?.user?.phone || user?.user?.email;
   const { data: inventory = [], isLoading } = useDspInventory(phone);
 
@@ -530,6 +530,9 @@ const OrderCreate = ({ title }) => {
                               )
                             }
                             className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            defaultValue={
+                              role === "admin" ? product?.quantity : "1"
+                            }
                             placeholder="Qty"
                             required
                           />
@@ -584,9 +587,13 @@ const OrderCreate = ({ title }) => {
                       <table>
                         <thead>
                           <tr>
-                            <th className="px-4 py-2 my-2 md:my-0">
-                              Repurchase Free Product
-                            </th>
+                            {matchedProduct?.acfp ? (
+                              ""
+                            ) : (
+                              <th className="px-4 py-2 my-2 md:my-0">
+                                Repurchase Free Product
+                              </th>
+                            )}
                             <th className="px-4 py-2 my-2 md:my-0">
                               {subtotal >= 5000 &&
                                 "Advance Consistency Free Product"}
@@ -595,13 +602,17 @@ const OrderCreate = ({ title }) => {
                         </thead>
                         <tbody>
                           <tr>
-                            <td className="px-4 py-2 text-center">
-                              {product.isRepurchaseFree
-                                ? `${matchedProduct?.rfp}% = ${
-                                    (matchedProduct?.rfp * subtotal) / 100
-                                  } ৳`
-                                : "No"}
-                            </td>
+                            {matchedProduct?.acfp ? (
+                              ""
+                            ) : (
+                              <td className="px-4 py-2 text-center">
+                                {product.isRepurchaseFree
+                                  ? `${matchedProduct?.rfp}% = ${
+                                      (matchedProduct?.rfp * subtotal) / 100
+                                    } ৳`
+                                  : "No"}
+                              </td>
+                            )}
                             <td className="px-4 py-2 text-center">
                               {subtotal >= 5000 &&
                                 (product.isConsistencyFree

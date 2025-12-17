@@ -3,9 +3,9 @@ const WithdrawRequest = require("../models/WithdrawRequest");
 const User = require("../models/User"); // Assuming you have a User model
 const TdsRate = require("../models/ConversionRate");
 const createWithdrawRequest = async (req, res) => {
-  const { name, phone, userId, totalwithdraw, totalTaka } = req.body;
+  const { name, phone, userId, totalwithdraw, totalTaka, paymentMethod } = req.body;
 
-  if (!name || !phone || !userId || !totalwithdraw || !totalTaka) {
+  if (!name || !phone || !userId || !totalwithdraw || !paymentMethod || !totalTaka) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -24,6 +24,7 @@ const createWithdrawRequest = async (req, res) => {
       userId,
       totalTaka,
       totalwithdraw: totalwithdraw,
+      paymentMethod,
       status: "pending",
     });
 

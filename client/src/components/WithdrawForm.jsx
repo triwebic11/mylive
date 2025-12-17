@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
-
+import useUserById from "../Hooks/useUserById";
+import socket from "./socket";
 const WithdrawForm = ({ userId }) => {
   const [user, setUser] = useState(null);
   const [withdrawtaka, setWithdrawtaka] = useState("");
@@ -10,8 +11,67 @@ const WithdrawForm = ({ userId }) => {
   const axiosSecure = useAxiosSecure();
   const [paymentMethod, setPaymentMethod] = useState("bkash");
 
-  // console.log("Current Points:", currentPoints);
+  const [point, setPoint] = useState(0);
 
+  const [taka, setTaka] = useState(0);
+
+  const [data] = useUserById();
+  const availablepoints = data?.points - data?.totalwithdraw;
+
+  // console.log("Current Points:", currentPoints);
+  // ✅ Fetch user points
+  useEffect(() => {
+    if (userId) {
+      axiosSecure
+        .get(`/users/${userId}`)
+        .then((res) => {
+          const userPoints = res.data?.points || 0;
+          setPoint(userPoints);
+        })
+        .catch((err) => console.error("Failed to fetch user:", err));
+    }
+  }, [axiosSecure, userId]);
+
+  // ✅ Fetch conversion rate
+  useEffect(() => {
+    axiosSecure
+      .get("/conversion-rate")
+      .then((res) => {
+        const currentRate = res.data?.pointToTaka || 1;
+        setRate(parseFloat(currentRate).toFixed(2));
+      })
+      .catch((err) => console.error("Failed to fetch conversion rate:", err));
+  }, [axiosSecure]);
+
+  // ✅ Calculate taka
+  useEffect(() => {
+    setTaka(availablepoints * rate);
+  }, [availablepoints, rate]);
+
+  // ✅ Listen to real-time updates
+  useEffect(() => {
+    socket.on("connect", () => {
+      // console.log("🟢 Socket connected:", socket.id);
+    });
+
+    socket.on("balance-updated", ({ userId: targetId, newPoints }) => {
+      if (targetId === userId) {
+        setPoint(newPoints);
+        // console.log("🎯 Points updated via socket:", newPoints);
+      }
+    });
+
+    socket.on("conversionRateChanged", ({ pointToTaka }) => {
+      setRate(pointToTaka);
+      // console.log("💸 Conversion rate updated:", pointToTaka);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("balance-updated");
+      socket.off("conversionRateChanged");
+    };
+  }, [userId]);
   // ✅ Fetch conversion rate
   useEffect(() => {
     axiosSecure
@@ -42,41 +102,71 @@ const WithdrawForm = ({ userId }) => {
     }
   }, [axiosSecure, userId]);
 
+  const MIN_WITHDRAW = 200;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!withdrawtaka || withdrawtaka <= 0) {
+    const withdrawAmount = Number(withdrawtaka);
+    const availableBalance = Number(totaltaka);
+    console.log("Available Balance:", availableBalance);
+
+    // 1️⃣ Invalid amount
+    if (!withdrawAmount || withdrawAmount <= 0) {
       return Swal.fire(
-        "Invalid",
-        "Please enter a valid point amount",
+        "Invalid Amount",
+        "Please enter a valid withdraw amount",
         "warning"
       );
     }
 
-    if (totaltaka <= 0 || withdrawtaka > totaltaka) {
-      return Swal.fire("Insufficient", "You don't have enough amount", "error");
+    // 2️⃣ Minimum withdraw check
+    if (withdrawAmount < MIN_WITHDRAW) {
+      return Swal.fire(
+        "Minimum Withdraw Limit",
+        `You must withdraw at least ৳${MIN_WITHDRAW}`,
+        "warning"
+      );
     }
+
+    // 3️⃣ Balance check
+    if (withdrawAmount > taka) {
+      return Swal.fire(
+        "Insufficient Balance",
+        `You only have ৳${taka.toFixed(2)} available`,
+        "error"
+      );
+    }
+
+    // 4️⃣ Convert taka → points
+    const withdrawPoints = withdrawAmount / rate;
 
     const requestData = {
       name: user.name,
       phone: user.phone,
       userId: user._id,
-      totalTaka: parseInt(withdrawtaka),
-      totalwithdraw: parseInt(withdrawpointsconvert),
-      paymentMethod: paymentMethod, // <-- Added here
+      totalTaka: Math.floor(withdrawAmount),
+      totalwithdraw: Math.floor(withdrawPoints),
+      paymentMethod,
     };
 
     try {
       await axiosSecure.post("/withdraw-requests", requestData);
-      // console.log("Withdraw request data:", requestData);
+
       Swal.fire(
-        "Success",
-        "Your withdraw request has been submitted!",
+        "Success 🎉",
+        "Your withdraw request has been submitted successfully",
         "success"
       );
+
       setWithdrawtaka("");
     } catch (error) {
-      Swal.fire("Error", "Something went wrong. Try again later.", "error");
+      Swal.fire(
+        "Error",
+        error?.response?.data?.message ||
+          "Something went wrong. Try again later.",
+        "error"
+      );
     }
   };
 
@@ -146,6 +236,12 @@ const WithdrawForm = ({ userId }) => {
             className="w-full mt-1 border rounded px-3 py-2"
             required
           />
+          <p className="text-sm text-gray-500 mt-1">
+            Minimum withdraw amount: ৳200
+          </p>
+          <p className="text-sm text-green-600">
+            Available balance: ৳{Number(taka).toFixed(2)}
+          </p>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
