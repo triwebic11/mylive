@@ -66,7 +66,7 @@ function NavBar() {
       <div className="max-w-[1450px] mx-auto my-0 px-4 flex items-center justify-between h-16">
         {/* Logo */}
         <Link to={"/"} className="flex items-center gap-2">
-          <img src={logo} alt="SHS Lira" className="h-28" />
+          <img src={logo} alt="SHS Lira" className="h-20" />
         </Link>
 
         {/* Desktop Menu */}

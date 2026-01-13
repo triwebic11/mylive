@@ -563,3 +563,207 @@ const Invoice = ({ transaction }) => {
 };
 
 export default Invoice;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//update Invoice 
+
+  {show && (
+                    <div
+                      ref={pdfRefs.current[order._id]}
+                      className="bg-white p-8 rounded-md shadow-md border border-gray-300 max-w-[800px] mx-auto"
+                    >
+                      {/* ---------- Header Section ---------- */}
+                      <div className="text-center mb-6 border-b pb-4 ">
+                        <div className="text-2xl font-bold text-gray-900 flex items-center justify-center gap-2">
+                          <img src={logo} alt="logo" className="w-24 h-24" />
+                          SHS LIRA ENTERPRISE LTD.
+                        </div>
+                        <p className=" text-sm">
+                          Madrashas Road, Shubidhat, Hazipara Showroom/Sub
+                          Office: Vororamor, Setabganj, Dinajpur
+                        </p>
+                        <p className=" text-sm">
+                          Phone: 01713784136, 01750873763
+                        </p>
+                      </div>
+
+                      {/* ---------- Date & Customer Info ---------- */}
+                      <div className="grid grid-cols-2 gap-4 mb-6 text-sm border p-4 rounded-md bg-gray-50">
+                        <p className="text-gray-800">
+                          <span className="font-semibold">📅 Date:</span>{" "}
+                          {order.date?.slice(0, 10)}
+                        </p>
+                        <p className="text-gray-800">
+                          <span className="font-semibold">👤 Customer:</span>{" "}
+                          {user?.name || user?.user?.name}
+                        </p>
+                        <p className="text-gray-800">
+                          <span className="font-semibold">📞 Phone:</span>{" "}
+                          {order?.dspPhone}
+                        </p>
+                        <p className="text-gray-800">
+                          <span className="font-semibold">Invoice ID:</span>{" "}
+                          {order._id.slice(-8).toUpperCase()}
+                        </p>
+                      </div>
+
+                      {/* ---------- Product Table ---------- */}
+                      <h3 className="text-lg font-semibold mb-2 text-gray-800">
+                        🛒 Product Details
+                      </h3>
+
+                      <div className="overflow-x-auto mb-6">
+                        <table className="w-full border-collapse text-sm">
+                          <thead>
+                            <tr
+                              style={{ paddingBottom: "3px" }}
+                              className="bg-gray-400"
+                            >
+                              <th className="border px-2 py-2">Product</th>
+                              <th className="border px-2 py-2">Qty</th>
+                              <th className="border px-2 py-2">BV</th>
+                              <th className="border px-2 py-2">DP</th>
+                              <th className="border px-2 py-2">MRP</th>
+                              <th className="border px-2 py-2">Subtotal</th>
+                              <th className="border px-2 py-2">SubPoint</th>
+                              <th className="border px-2 py-2">SubDiscount</th>
+                              <th className="border px-2 py-2">RFP</th>
+                              <th className="border px-2 py-2">CFP</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {order.products.map((p, i) => (
+                              <tr
+                                key={i}
+                                style={{ paddingBottom: "3px" }}
+                                className="text-center"
+                              >
+                                <td className="border px-2 py-1 font-medium">
+                                  {p.productId} - {p.name}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  {p.quantity}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  {p.pointValue}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  ৳{p.productRate}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  ৳{p.mrpRate}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  ৳{p.subtotal || 0}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  {p.subPoint || 0}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  {p.subDiscount || 0}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  {p.isRepurchaseFree
+                                    ? p.isRepurchaseFreeAmount
+                                    : "No"}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  {p.subtotal >= 5000
+                                    ? p.isConsistencyFree
+                                      ? p.isConsistencyFreeAmount
+                                      : "No"
+                                    : "No"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* ---------- Free Product Section ---------- */}
+                      <h3 className="text-lg font-semibold mb-2 text-gray-800">
+                        🎁 Free Product Details
+                      </h3>
+
+                      <div className="overflow-x-auto mb-6">
+                        <table className="w-full border-collapse text-sm">
+                          <thead>
+                            <tr
+                              style={{ paddingBottom: "3px" }}
+                              className="bg-gray-200"
+                            >
+                              <th className="border px-2 py-2">Free Product</th>
+                              <th className="border px-2 py-2">Free Qty</th>
+                              <th className="border px-2 py-2">Price</th>
+                              <th className="border px-2 py-2">
+                                Free Subtotal
+                              </th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {order.products.map((p, i) => (
+                              <tr
+                                key={i}
+                                style={{ paddingBottom: "3px" }}
+                                className="text-center"
+                              >
+                                <td className="border px-2 py-2">
+                                  {p.freeProductId} - {p.freeProductName}
+                                </td>
+                                <td className="border px-2 py-2">
+                                  {p.freeQuantity}
+                                </td>
+                                <td className="border px-2 py-2">
+                                  {p.freeProductRate}
+                                </td>
+                                <td className="border px-2 py-2">
+                                  ৳{p.freeSubtotal || 0}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* ---------- Totals Section ---------- */}
+                      <div className="border p-4 rounded-md bg-gray-50 text-gray-900">
+                        <h3 className="text-lg font-semibold mb-2">
+                          Totals Summary
+                        </h3>
+
+                        <div className="grid grid-cols-2 text-sm gap-2">
+                          <p>
+                            💰 <strong>Grand Total:</strong> ৳
+                            {order.grandTotal || "0"}
+                          </p>
+                          <p>
+                            🎯 <strong>Grand Point:</strong>{" "}
+                            {order.grandPoint || "0"}
+                          </p>
+                          <p>
+                            🏷️ <strong>Grand Discount:</strong>{" "}
+                            {order.grandDiscount || "0"}
+                          </p>
+                          <p>
+                            🎁 <strong>Grand Free Total:</strong> ৳
+                            {order.freeGrandTotal || "0"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}

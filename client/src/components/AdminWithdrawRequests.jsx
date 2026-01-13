@@ -7,9 +7,9 @@ const AdminWithdrawRequests = () => {
   const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const axiosSecure = useAxiosSecure();
-    const [rate, setRate] = useState(1);
+  const [rate, setRate] = useState(1);
 
-    // ✅ Fetch conversion rate
+  // ✅ Fetch conversion rate
   useEffect(() => {
     axiosSecure
       .get("/conversion-rate")
@@ -19,8 +19,6 @@ const AdminWithdrawRequests = () => {
       })
       .catch((err) => console.error("Failed to fetch conversion rate:", err));
   }, [axiosSecure]);
-
-
 
   // Load withdraw requests
   useEffect(() => {
@@ -93,6 +91,7 @@ const AdminWithdrawRequests = () => {
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Phone</th>
               <th className="px-4 py-2 text-left">Amount</th>
+              <th className="px-4 py-2 text-left">Payment By</th>
               <th className="px-4 py-2 text-left">Requested At</th>
               <th className="px-4 py-2 text-left">Status</th>
               <th className="px-4 py-2 text-left">Action</th>
@@ -110,6 +109,7 @@ const AdminWithdrawRequests = () => {
                   <td className="px-4 py-2">{req.name}</td>
                   <td className="px-4 py-2">{req.phone}</td>
                   <td className="px-4 py-2">{req.totalTaka}</td>
+                  <td className="px-4 py-2">{req.paymentMethod || "N/A"}</td>
                   <td className="px-4 py-2">{date}</td>
                   <td className="px-4 py-2">
                     <span

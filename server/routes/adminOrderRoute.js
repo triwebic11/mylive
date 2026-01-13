@@ -122,6 +122,9 @@ const RankUpgradeRequest = require("../models/RankUpgradeRequest");
 //   }
 // });
 
+// =================================================
+// CREATE ORDER (Admin → DSP / DSP → User)
+// =================================================
 router.post("/", async (req, res) => {
   try {
     const {
@@ -136,12 +139,9 @@ router.post("/", async (req, res) => {
       grandDiscount,
     } = req.body;
 
-    let userPromise = Promise.resolve();
-    const buyer = await User.findOne({ phone: dspPhone });
-
-    /** -------------------------
-     *  ADMIN → DSP Order: First check stock
-     * -------------------------- */
+    // =================================================
+    // 1️⃣ ADMIN → DSP : Check Admin Stock FIRST
+    // =================================================
     if (orderedFor === "dsp") {
       for (const p of products) {
         const adminStock = await AdminInventory.findOne({
@@ -150,15 +150,35 @@ router.post("/", async (req, res) => {
 
         if (!adminStock || adminStock.quantity < p.quantity) {
           return res.status(400).json({
-            message: `❌ Admin stock insufficient for ${p.name} (${
-              p.productId
-            }). Needed: ${p.quantity}, Available: ${adminStock?.quantity || 0}`,
+            message: `❌ Admin stock insufficient for ${p.name} (${p.productId})
+Needed: ${p.quantity}, Available: ${adminStock?.quantity || 0}`,
           });
         }
       }
     }
 
-    // ---------------- Create Order ----------------
+    // =================================================
+    // 2️⃣ DSP → USER : Check DSP Stock FIRST
+    // =================================================
+    if (orderedFor === "user") {
+      for (const p of products) {
+        const dspStock = await DspInventory.findOne({
+          dspPhone: createdBy, // DSP phone
+          productId: p.productId,
+        });
+
+        if (!dspStock || dspStock.quantity < p.quantity) {
+          return res.status(400).json({
+            message: `❌ DSP stock insufficient for ${p.name} (${p.productId})
+Needed: ${p.quantity}, Available: ${dspStock?.quantity || 0}`,
+          });
+        }
+      }
+    }
+
+    // =================================================
+    // 3️⃣ CREATE ORDER (Safe now)
+    // =================================================
     const newOrder = new AdminOrder({
       userId,
       dspPhone,
@@ -175,31 +195,31 @@ router.post("/", async (req, res) => {
     const savedOrder = await newOrder.save();
 
     res.status(201).json({
-      message: `${
-        orderedFor === "dsp" ? "Admin → DSP" : "DSP → User"
-      } order created successfully`,
+      message:
+        orderedFor === "dsp"
+          ? "✅ Admin → DSP order created successfully"
+          : "✅ DSP → User order created successfully",
       order: savedOrder,
     });
 
-    // =========== Background Async Operations ============
+    // =================================================
+    // 4️⃣ BACKGROUND INVENTORY UPDATE
+    // =================================================
     process.nextTick(async () => {
       try {
-        await userPromise;
-
-        await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
-
         /** -------------------------
-         *  ADMIN → DSP (AdminInventory -> DspInventory)
+         * ADMIN → DSP
+         * AdminInventory ↓ , DSPInventory ↑
          * -------------------------- */
         if (orderedFor === "dsp") {
           for (const p of products) {
-            // 1️⃣ Admin Inventory reduce
+            // Admin stock reduce
             await AdminInventory.updateOne(
               { productId: p.productId },
               { $inc: { quantity: -p.quantity } }
             );
 
-            // 2️⃣ DSP Inventory increase
+            // DSP stock add
             const existing = await DspInventory.findOne({
               dspPhone,
               productId: p.productId,
@@ -220,22 +240,11 @@ router.post("/", async (req, res) => {
         }
 
         /** -------------------------
-         *  DSP → User (Check DSP Stock)
+         * DSP → USER
+         * DSPInventory ↓
          * -------------------------- */
         if (orderedFor === "user") {
           for (const p of products) {
-            const stock = await DspInventory.findOne({
-              dspPhone: createdBy,
-              productId: p.productId,
-            });
-
-            if (!stock || stock.quantity < p.quantity) {
-              console.warn(
-                `⚠️ Stock unavailable for ${p.productId}, ${p.name}`
-              );
-              continue;
-            }
-
             await DspInventory.updateOne(
               { dspPhone: createdBy, productId: p.productId },
               { $inc: { quantity: -p.quantity } }
@@ -243,12 +252,15 @@ router.post("/", async (req, res) => {
           }
         }
       } catch (err) {
-        console.error("❌ Error in background task:", err);
+        console.error("❌ Inventory update error:", err);
       }
     });
   } catch (error) {
-    console.error("❌ Error creating order:", error);
-    res.status(500).json({ message: "Failed to create order", error });
+    console.error("❌ Order creation failed:", error);
+    res.status(500).json({
+      message: "❌ Failed to create order",
+      error: error.message,
+    });
   }
 });
 
@@ -665,7 +677,7 @@ const UpdateRanksAndRewards = async (buyer) => {
         expireDate.setDate(expireDate.getDate() + 30);
         buyer.packageExpireDate = expireDate;
 
-        // console.log(`✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate}`);
+        // console.log(✅ User ${buyer._id} re-activated. New expire date: ${buyer.packageExpireDate});
       }
 
       if (!user.rewards?.includes(matchedRank.reward)) {
@@ -689,10 +701,10 @@ const UpdateRanksAndRewards = async (buyer) => {
 
       // console.log("Rank upgrade request created:", postrank);
       // console.log(
-      //   `✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}`
+      //   ✅ Rank upgrade request saved for ${user.name} to ${matchedRank.position}
       // );
       // console.log(
-      //   `✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}`
+      //   ✅ User ${user._id} upgraded to ${matchedRank.position} with reward: ${matchedRank.reward}
       // );
     }
   } catch (error) {
@@ -793,6 +805,11 @@ const PackageLevelsdefine = async (buyerId, grandPoint) => {
       // console.log("Ten percent of grand point:", tenPercentOfGrandPoint);
 
       // const givenpoint = buyer?.points + grandPoint;
+
+      console.log("Buyer current points:", buyer?.points);
+      console.log("Ten percent of grand point:", tenPercentOfGrandPoint);
+
+      const givenpoint = buyer?.points + grandPoint;
 
       const matchedRank = PackageLevels.slice()
         .reverse()

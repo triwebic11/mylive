@@ -72,7 +72,7 @@ const BalanceConversion = ({ userId }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
         <div className="bg-blue-50 p-4 rounded-lg shadow-sm">
-          <p className="text-sm text-gray-500">Available Points</p>
+          <p className="text-sm text-gray-500">Available BV</p>
           <p className="text-2xl font-bold text-blue-700">
             {Number(availablepoints).toFixed(2)}
           </p>
