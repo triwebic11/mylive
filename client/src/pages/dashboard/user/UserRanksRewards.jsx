@@ -54,8 +54,8 @@ const UserRanksRewards = () => {
                         <th className="border border-gray-200 px-2 py-1">Previous</th>
                         <th className="border border-gray-200 px-2 py-1">New</th>
                         <th className="border border-gray-200 px-2 py-1">Reward</th>
-                        <th className="border border-gray-200 px-2 py-1">Left BV</th>
-                        <th className="border border-gray-200 px-2 py-1">Right BV</th>
+                        <th className="border border-gray-200 px-2 py-1">Left PV</th>
+                        <th className="border border-gray-200 px-2 py-1">Right PV</th>
                         <th className="border border-gray-200 px-2 py-1">Status</th>
                     </tr>
                 </thead>

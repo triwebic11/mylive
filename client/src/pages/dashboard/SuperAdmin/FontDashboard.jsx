@@ -204,7 +204,7 @@ const FontDashboard = () => {
 
       <h2 className="text-base sm:text-lg font-medium">
         
-           {referaltree?.monthlyleftBV?.toFixed(2)}
+           {(referaltree?.monthlyleftBV?.toFixed(2))}
 
       </h2>
       <h2 className="text-base sm:text-lg font-medium">

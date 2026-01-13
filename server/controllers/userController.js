@@ -604,6 +604,14 @@ const fullUsers = await User.find({ _id: { $in: allIds } });
   const totalBinaryPoints = totalPointsFromLeft + totalPointsFromRight;
 
   const orders = await AdminOrder.find({ dspPhone: user?.phone });
+  const totalGrandPoint = orders.reduce(
+  (sum, order) => sum + (order.grandPoint || 0),
+  0
+);
+
+
+  console.log("user er orders", totalGrandPoint)
+
 
   let totalTdsValue = 0;
   const tdsRate = await TdsRate.findOne();
@@ -640,18 +648,18 @@ const fullUsers = await User.find({ _id: { $in: allIds } });
       value: `${tree?.monthlyleftBV} (Left) + ${tree?.monthlyrightBV} (Right)`,
     },
     {
-      title: "Team previous Month PV",
+      title: "Team previous Month BV",
       value: `${tree?.previousMonthlyLeftSubtreeBV} (Left) + ${tree?.previousMonthlyRightSubtreeBV} (Right)`,
     },
-    {
-      title: "Monthly down sale BV",
-      value: totalDownlinePoints.toFixed(2) || 0,
-    },
-    { title: "Total Team Sale BV", value: totalBinaryPoints.toFixed(2) || 0 },
+    // {
+    //   title: "Monthly down sale BV",
+    //   value: totalDownlinePoints.toFixed(2) || 0,
+    // },
+    // { title: "Total Team Sale BV", value: totalBinaryPoints.toFixed(2) || 0 },
     { title: "Total Team Member", value: totalUsersInTree - 1 || 0 },
     { title: "Current Purchase Amount ৳", value: currentPurchaseAmount},
     { title: "Total Purchase Amount ৳", value: user?.totalAmount },
-    { title: "Total Purchase BV", value: repurchaseCommission },
+    { title: "Total Purchase BV", value: totalGrandPoint },
     { title: "Refer Commission ৳", value: (referCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Generation Commission ৳", value: (generationCommission * tdsRate?.pointToTaka).toFixed(2) },
     { title: "Mega Commission ৳", value: (megaCommission * tdsRate?.pointToTaka).toFixed(2) },

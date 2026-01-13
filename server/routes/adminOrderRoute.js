@@ -918,6 +918,8 @@ const distributeGrandPoint = async (
 
     // 🧾 DSP logic
     if (buyer?.role === "dsp") {
+
+      console.log("this is dsp--------", buyer?.role)
       buyer.points = (buyer.points || 0) + fifteenPercent;
       buyer.AllEntry = buyer.AllEntry || { incoming: [], outgoing: [] };
       buyer.AllEntry.incoming.push({
@@ -940,7 +942,7 @@ const distributeGrandPoint = async (
     // 💰 20% referrer commission
     if (buyer?.referredBy) {
       const phoneReferrer = await User.findOne({ referralCode: buyer.referredBy });
-      // console.log("🔍 Phone referrer found:", phoneReferrer ? phoneReferrer.phone : "None");
+      console.log("🔍 Phone referrer found:", phoneReferrer ? phoneReferrer.phone : "None");
       if (phoneReferrer) {
         phoneReferrer.points = (phoneReferrer.points || 0) + twentyPercent;
         phoneReferrer.AllEntry = phoneReferrer.AllEntry || { incoming: [] };
