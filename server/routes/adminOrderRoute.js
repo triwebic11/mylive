@@ -139,6 +139,8 @@ router.post("/", async (req, res) => {
       grandDiscount,
     } = req.body;
 
+    await distributeGrandPoint(userId, grandPoint, dspPhone, grandTotal);
+
     // =================================================
     // 1️⃣ ADMIN → DSP : Check Admin Stock FIRST
     // =================================================
@@ -975,6 +977,7 @@ const distributeGrandPoint = async (
     }
 
     // 🧾 Buyer personal reward 10%
+    console.log("🏆 Distributing buyer personal reward:", tenPercent);
     buyer.points = (buyer.points || 0) + tenPercent;
     buyer.totalAmount = (buyer.totalAmount || 0) + grandTotalPrice;
     buyer.totalpurchasePoint = (buyer.totalpurchasePoint || 0) + grandPoint;
