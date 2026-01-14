@@ -4,21 +4,22 @@ import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useUserById from "../Hooks/useUserById";
 import socket from "./socket";
 const WithdrawForm = ({ userId }) => {
+  const [reloadKey, setReloadKey] = useState(0);
   const [user, setUser] = useState(null);
   const [withdrawtaka, setWithdrawtaka] = useState("");
   const [rate, setRate] = useState(1);
   let currentPoints = user?.points;
   const axiosSecure = useAxiosSecure();
   const [paymentMethod, setPaymentMethod] = useState("bkash");
-
+  const [phone, setPhone] = useState("");
   const [point, setPoint] = useState(0);
-
+  const [history, setHistory] = useState([]);
   const [taka, setTaka] = useState(0);
 
   const [data] = useUserById();
   const availablepoints = data?.points - data?.totalwithdraw;
 
-  // console.log("Current Points:", currentPoints);
+  console.log("history------:", history);
   // ✅ Fetch user points
   useEffect(() => {
     if (userId) {
@@ -30,6 +31,26 @@ const WithdrawForm = ({ userId }) => {
         })
         .catch((err) => console.error("Failed to fetch user:", err));
     }
+  }, [axiosSecure, userId]);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchHistory = () => {
+      axiosSecure
+        .get(`/withdraw-requests/user/${userId}`)
+        .then((res) => setHistory(res.data))
+        .catch((err) => console.error("Failed to fetch history", err));
+    };
+
+    // 🔹 initial fetch
+    fetchHistory();
+
+    // 🔹 2s interval fetch
+    const interval = setInterval(fetchHistory, 2000);
+
+    // 🔴 cleanup (important)
+    return () => clearInterval(interval);
   }, [axiosSecure, userId]);
 
   // ✅ Fetch conversion rate
@@ -143,7 +164,7 @@ const WithdrawForm = ({ userId }) => {
 
     const requestData = {
       name: user.name,
-      phone: user.phone,
+      phone,
       userId: user._id,
       totalTaka: Math.floor(withdrawAmount),
       totalwithdraw: Math.floor(withdrawPoints),
@@ -168,6 +189,7 @@ const WithdrawForm = ({ userId }) => {
         "error"
       );
     }
+    setReloadKey((prev) => prev + 1);
   };
 
   if (!user) return <p className="text-center mt-4">Loading user data...</p>;
@@ -186,7 +208,7 @@ const WithdrawForm = ({ userId }) => {
         </p> */}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form key={reloadKey} onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Name
@@ -194,18 +216,6 @@ const WithdrawForm = ({ userId }) => {
           <input
             type="text"
             value={user.name}
-            disabled
-            className="w-full mt-1 border rounded px-3 py-2 bg-gray-100"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Phone
-          </label>
-          <input
-            type="text"
-            value={user.phone}
             disabled
             className="w-full mt-1 border rounded px-3 py-2 bg-gray-100"
           />
@@ -245,6 +255,18 @@ const WithdrawForm = ({ userId }) => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
+            Phone / AC Number
+          </label>
+          <input
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Enter your phone/AC number"
+            className="w-full mt-1 border rounded px-3 py-2 bg-gray-100"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
             Payment By
           </label>
           <select
@@ -255,15 +277,24 @@ const WithdrawForm = ({ userId }) => {
             <option value="bkash">Bkash</option>
             <option value="nagad">Nagad</option>
             <option value="rocket">Rocket</option>
+            <option value="bank">Bank Transfer</option>
           </select>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
-          Submit Request
-        </button>
+        {history[0]?.status === "approved" ||
+        history[0]?.status === "rejected" ||
+        history.length === 0 ? (
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          >
+            Submit Request
+          </button>
+        ) : (
+          <p className="text-sm text-red-500">
+            At a time, only one withdraw request can be pending.
+          </p>
+        )}
       </form>
     </div>
   );
