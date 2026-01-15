@@ -3,9 +3,17 @@ const WithdrawRequest = require("../models/WithdrawRequest");
 const User = require("../models/User"); // Assuming you have a User model
 const TdsRate = require("../models/ConversionRate");
 const createWithdrawRequest = async (req, res) => {
-  const { name, phone, userId, totalwithdraw, totalTaka, paymentMethod } = req.body;
+  const { name, phone, userId, totalwithdraw, totalTaka, paymentMethod } =
+    req.body;
 
-  if (!name || !phone || !userId || !totalwithdraw || !paymentMethod || !totalTaka) {
+  if (
+    !name ||
+    !phone ||
+    !userId ||
+    !totalwithdraw ||
+    !paymentMethod ||
+    !totalTaka
+  ) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -39,7 +47,6 @@ const createWithdrawRequest = async (req, res) => {
   }
 };
 
-
 const getAllWithdrawRequests = async (req, res) => {
   try {
     const requests = await WithdrawRequest.find().sort({ createdAt: -1 });
@@ -56,7 +63,6 @@ const getWithdrawRequestsByUser = async (req, res) => {
   try {
     const requests = await WithdrawRequest.find({
       userId,
-      status: "approved",
     }).sort({ createdAt: -1 });
     res.status(200).json(requests);
   } catch (error) {
@@ -75,8 +81,8 @@ const updateWithdrawStatus = async (req, res) => {
       return res.status(404).json({ message: "Withdraw request not found" });
     }
 
-     const tdsRate = await TdsRate.findOne();
-      // console.log("TDS Rate",tdsRate?.pointToTaka)
+    const tdsRate = await TdsRate.findOne();
+    // console.log("TDS Rate",tdsRate?.pointToTaka)
 
     // Prevent re-approving or re-rejecting
     if (request.status !== "pending") {
@@ -96,16 +102,18 @@ const updateWithdrawStatus = async (req, res) => {
 
         // console.log("currentWithdraw amount:", currentWithdraw);
 
-
         if (isNaN(withdrawAmount)) {
           return res.status(400).json({ message: "Invalid withdraw amount" });
         }
 
         if (currentPoints < withdrawAmount) {
-          return res.status(400).json({ message: "Insufficient points for withdrawal" });
-        } 
+          return res
+            .status(400)
+            .json({ message: "Insufficient points for withdrawal" });
+        }
 
-        const newTotalWithdraw = (user.totalwithdraw || 0) + parseFloat(withdrawAmount);
+        const newTotalWithdraw =
+          (user.totalwithdraw || 0) + parseFloat(withdrawAmount);
         user.totalwithdraw = newTotalWithdraw;
 
         await user.save();
@@ -113,7 +121,6 @@ const updateWithdrawStatus = async (req, res) => {
         // Optional: mark when processed
         request.processedAt = new Date();
         await request.save();
-
 
         // Emit socket event
         const io = req.app.get("io");
@@ -134,7 +141,6 @@ const updateWithdrawStatus = async (req, res) => {
     res.status(500).json({ message: "Failed to update request status" });
   }
 };
-
 
 module.exports = {
   createWithdrawRequest,
