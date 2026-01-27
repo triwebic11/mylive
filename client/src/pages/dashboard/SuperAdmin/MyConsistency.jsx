@@ -8,7 +8,7 @@ const MyConsistency = () => {
     const now = new Date();
 
     for (let i = 0; i < 4; i++) {
-      const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const month = new Date(now.getFullYear(), now.getMonth() + i, 1);
       const monthKey = month.toLocaleString("default", {
         month: "long",
         year: "numeric",
@@ -53,6 +53,15 @@ const MyConsistency = () => {
           </div>
         ))}
       </div>
+      <h1 className="mt-6 text-lg font-medium text-gray-700">
+        Send to admin your consistency report
+      </h1>
+      <button
+        onClick={() => alert("Sorry Four Month is not fulfill.")}
+        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer"
+      >
+        Send Report
+      </button>
     </div>
   );
 };

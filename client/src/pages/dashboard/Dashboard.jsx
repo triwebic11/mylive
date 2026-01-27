@@ -190,6 +190,11 @@ const adminDashboardArry = [
     link: "/dashboard/allWithdrawals",
   },
   {
+    title: "Consistency Request",
+    icon: <HiMiniArrowsUpDown />,
+    link: "/dashboard/consistencyRequests",
+  },
+  {
     title: "Balance Conversion",
     icon: <RiMoneyDollarBoxLine />,
     link: "/dashboard/balanceConversion",
@@ -262,8 +267,8 @@ const Dashboard = () => {
     role === "admin"
       ? adminDashboardArry
       : role === "dsp"
-      ? DspDashboard
-      : dashboardArry;
+        ? DspDashboard
+        : dashboardArry;
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">

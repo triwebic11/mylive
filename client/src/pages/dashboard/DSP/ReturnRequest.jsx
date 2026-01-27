@@ -4,17 +4,31 @@ import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useProducts from "../../../Hooks/useProducts";
 import TodayStatement from "../SuperAdmin/TodayStatement";
 import Swal from "sweetalert2";
+import useAuth from "../../../Hooks/useAuth";
+import useUserById from "../../../Hooks/useUserById";
 
 const ReturnRequest = ({ dspPhone }) => {
   const axiosSecure = useAxiosSecure();
-  const [products, isLoading, isError, error, refetch] = useProducts();
-
+  const [products = [], isLoading, isError, error, refetch] = useProducts();
+  const [data] = useUserById();
+  const totalPoints = data?.points || 0;
+  const totalWithdraw = data?.totalwithdraw || 0;
+  const availablePoints = totalPoints - totalWithdraw;
   const [dspInventory, setDspInventory] = useState([]);
   const [productId, setProductId] = useState("");
+
   const [quantity, setQuantity] = useState(1);
   const [note, setNote] = useState("");
 
-  const selectedInv = dspInventory.find((i) => i.productId === productId);
+  const selectedInv = dspInventory?.find((i) => i.productId === productId);
+
+  const selectedProduct = products.find(
+    (p) => p.productId === Number(productId),
+  );
+
+  const pointValue = selectedProduct?.pointValue || 0;
+  const totalReturnPoints = pointValue * quantity;
+  const isRequestValid = totalReturnPoints <= availablePoints;
 
   // Load DSP Inventory
   useEffect(() => {
@@ -33,10 +47,12 @@ const ReturnRequest = ({ dspPhone }) => {
 
     const selectedProduct = products.find((p) => p.productId === productId);
 
+    console.log("selectedProduct:", selectedProduct);
+
     const payload = {
       dspPhone,
       productId,
-      productName: selectedProduct?.name,
+
       quantity,
       note,
     };
@@ -100,17 +116,24 @@ const ReturnRequest = ({ dspPhone }) => {
           ></textarea>
         </div>
 
-        <button
-          className={`px-4 py-2 w-full text-white rounded ${
-            !selectedInv || selectedInv.quantity < quantity
-              ? "bg-gray-400"
-              : "bg-blue-600"
-          }`}
-          type="submit"
-          disabled={!selectedInv || selectedInv.quantity < quantity}
-        >
-          Send Request
-        </button>
+        {isRequestValid ? (
+          <button
+            className={`px-4 py-2 w-full text-white rounded ${
+              !selectedInv || selectedInv.quantity < quantity
+                ? "bg-gray-400"
+                : "bg-blue-600"
+            }`}
+            type="submit"
+            disabled={!selectedInv || selectedInv.quantity < quantity}
+          >
+            Send Request
+          </button>
+        ) : (
+          <p className="text-red-600">
+            ❌ You don't have enough points to return this quantity of the
+            selected product.
+          </p>
+        )}
       </form>
     </div>
   );

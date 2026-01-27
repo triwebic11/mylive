@@ -2,13 +2,15 @@
 
 import useAuth from "../../../Hooks/useAuth";
 import useDspInventory from "../../../Hooks/useDspInventory";
+import useProducts from "../../../Hooks/useProducts";
 
 const DspStoreProduct = () => {
   const { user } = useAuth(); // user.phone
+  const [products, isError, error, refetch] = useProducts();
   // console.log("Current User phone:", user?.user?.email || user?.user?.email );
   const phone = user?.user?.phone || user?.user?.email;
   const { data: inventory = [], isLoading } = useDspInventory(phone);
-  // console.log("Dsp Inventory Data:", inventory);
+  console.log("Dsp Inventory Data:", inventory);
 
   if (isLoading) return <p className="text-center py-10">Loading...</p>;
 
@@ -22,20 +24,36 @@ const DspStoreProduct = () => {
             <tr>
               <th className="text-left px-4 py-2">Si No</th>
               <th className="text-left px-4 py-2">Product Name</th>
-
+              <th className="text-left px-4 py-2">MRP</th>
+              <th className="text-left px-4 py-2">DP</th>
+              <th className="text-left px-4 py-2">BV</th>
               <th className="text-left px-4 py-2">Quantity</th>
             </tr>
           </thead>
           <tbody>
-            {inventory.map((item, index) => (
-              <tr key={item.productId} className="border-t">
-                <td className="px-4 py-2">{index + 1}</td>
-                <td className="px-4 py-2">
-                  {item.productId}.{item.productName}
-                </td>
-                <td className="px-4 py-2">{item.quantity}</td>
-              </tr>
-            ))}
+            {inventory.map((item, index) => {
+              const matchedProduct = products?.find(
+                (p) => item.productId == p.productId
+              );
+              return (
+                <tr key={item.productId} className="border-t">
+                  <td className="px-4 py-2">{index + 1}</td>
+                  <td className="px-4 py-2">
+                    {item.productId}.{item.productName}
+                  </td>
+                  <td className="px-4 py-2">
+                    {matchedProduct?.mrpPrice ?? "N/A"}
+                  </td>
+
+                  <td className="px-4 py-2">
+                    {matchedProduct?.price ?? "N/A"}
+                  </td>
+
+                  <td className="px-4 py-2">{matchedProduct?.pointValue ?? "N/A"}</td>
+                  <td className="px-4 py-2">{item.quantity}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

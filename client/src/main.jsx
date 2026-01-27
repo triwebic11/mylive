@@ -80,6 +80,7 @@ import UserRanksRewards from "./pages/dashboard/user/UserRanksRewards.jsx";
 import StoreProduct from "./pages/dashboard/Admin/StoreProduct.jsx";
 import ReturnRequests from "./pages/dashboard/Admin/ReturnRequests.jsx";
 import ReturnOrder from "./pages/dashboard/DSP/ReturnOrder.jsx";
+import ConsistencyRequests from "./pages/dashboard/Admin/ConsistencyRequests.jsx";
 
 const queryClients = new QueryClient();
 
@@ -321,6 +322,16 @@ const router = createBrowserRouter([
           <PrivetRouter>
             <AdminRoute>
               <AdminWithdrawRequests />
+            </AdminRoute>
+          </PrivetRouter>
+        ),
+      },
+      {
+        path: "/dashboard/consistencyRequests",
+        element: (
+          <PrivetRouter>
+            <AdminRoute>
+              <ConsistencyRequests />
             </AdminRoute>
           </PrivetRouter>
         ),
@@ -645,5 +656,5 @@ createRoot(document.getElementById("root")).render(
         <RouterProvider router={router} />
       </QueryClientProvider>
     </AuthProvider>
-  </StrictMode>
+  </StrictMode>,
 );

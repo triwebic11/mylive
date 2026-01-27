@@ -137,7 +137,7 @@ const WithdrawForm = ({ userId }) => {
       return Swal.fire(
         "Invalid Amount",
         "Please enter a valid withdraw amount",
-        "warning"
+        "warning",
       );
     }
 
@@ -146,7 +146,7 @@ const WithdrawForm = ({ userId }) => {
       return Swal.fire(
         "Minimum Withdraw Limit",
         `You must withdraw at least ৳${MIN_WITHDRAW}`,
-        "warning"
+        "warning",
       );
     }
 
@@ -155,7 +155,7 @@ const WithdrawForm = ({ userId }) => {
       return Swal.fire(
         "Insufficient Balance",
         `You only have ৳${taka.toFixed(2)} available`,
-        "error"
+        "error",
       );
     }
 
@@ -177,7 +177,7 @@ const WithdrawForm = ({ userId }) => {
       Swal.fire(
         "Success 🎉",
         "Your withdraw request has been submitted successfully",
-        "success"
+        "success",
       );
 
       setWithdrawtaka("");
@@ -186,7 +186,7 @@ const WithdrawForm = ({ userId }) => {
         "Error",
         error?.response?.data?.message ||
           "Something went wrong. Try again later.",
-        "error"
+        "error",
       );
     }
     setReloadKey((prev) => prev + 1);
