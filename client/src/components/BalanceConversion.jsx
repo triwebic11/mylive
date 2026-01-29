@@ -80,7 +80,7 @@ const BalanceConversion = ({ userId }) => {
         <div className="bg-yellow-50 p-4 rounded-lg shadow-sm">
           <p className="text-sm text-gray-500">Conversion Rate</p>
           <p className="text-2xl font-bold text-yellow-600">
-            1 Point = {rate} ৳
+            1 BV = {rate} ৳
           </p>
         </div>
         <div className="bg-green-50 p-4 rounded-lg shadow-sm">

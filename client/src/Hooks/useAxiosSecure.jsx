@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:5000/api",
+  // baseURL: "http://localhost:5000/api",
   withCredentials: true,
-  // baseURL: "https://apidata.shslira.com/api",
+  baseURL: "https://apidata.shslira.com/api",
 });
 
 // ✅ Request interceptor: attach JWT token
@@ -17,7 +17,7 @@ axiosSecure.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // console.log("Token from localStorage:", JSON.parse(localStorage.getItem("user")));
@@ -34,7 +34,7 @@ axiosSecure.interceptors.response.use(
       // Optional: localStorage.clear() অথবা navigate to login
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 const useAxiosSecure = () => {

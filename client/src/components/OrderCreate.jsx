@@ -83,7 +83,7 @@ const OrderCreate = ({ title }) => {
       try {
         const res = await axiosSecure.get("/admin-orders");
         const onlyAdminOrders = res.data.filter(
-          (order) => order.createdBy === "admin"
+          (order) => order.createdBy === "admin",
         );
         setAdminOrders(onlyAdminOrders);
       } catch (err) {
@@ -158,19 +158,19 @@ const OrderCreate = ({ title }) => {
   const calculateGrandTotal = () =>
     scndProducts.reduce(
       (acc, p) => acc + (+p.productRate || 0) * (+p.quantity || 0),
-      0
+      0,
     );
 
   const calculateFreeGrandTotal = () =>
     scndProducts.reduce(
       (acc, p) => acc + (+p.freeProductRate || 0) * (+p.freeQuantity || 0),
-      0
+      0,
     );
 
   const calculateGrandPoint = () =>
     scndProducts.reduce(
       (acc, p) => acc + (+p.pointValue || 0) * (+p.quantity || 0),
-      0
+      0,
     );
 
   const calculateGrandDiscount = () =>
@@ -246,7 +246,7 @@ const OrderCreate = ({ title }) => {
       Swal.fire(
         ` ${err.response?.data?.message || "Error occurred"}`,
         "",
-        "error"
+        "error",
       );
     } finally {
       setLoading(false); // ✅ Success or error jekono khetre loading off
@@ -274,7 +274,7 @@ const OrderCreate = ({ title }) => {
               ? order.products?.some((p) =>
                   p.productId
                     ?.toLowerCase()
-                    .includes(productFilter.toLowerCase())
+                    .includes(productFilter.toLowerCase()),
                 )
               : true;
 
@@ -294,7 +294,7 @@ const OrderCreate = ({ title }) => {
 
   const totalPrice = filteredOrders.reduce(
     (sum, order) => sum + (order.grandTotal || 0),
-    0
+    0,
   );
 
   let userPackage;
@@ -350,7 +350,7 @@ const OrderCreate = ({ title }) => {
         )}
         {scndProducts.map((product, index) => {
           const matchedProduct = products?.find(
-            (p) => p.productId?.toString() === product.productId?.toString()
+            (p) => p.productId?.toString() === product.productId?.toString(),
           );
 
           const subtotal =
@@ -386,58 +386,58 @@ const OrderCreate = ({ title }) => {
                               handleProductChange(
                                 index,
                                 "productId",
-                                selectedId
+                                selectedId,
                               );
 
                               const selected = products.find(
-                                (p) => p.productId?.toString() === selectedId
+                                (p) => p.productId?.toString() === selectedId,
                               );
 
                               if (selected) {
                                 handleProductChange(
                                   index,
                                   "productRate",
-                                  selected.price
+                                  selected.price,
                                 );
                                 handleProductChange(
                                   index,
                                   "mrpRate",
-                                  selected.mrpPrice
+                                  selected.mrpPrice,
                                 );
                                 handleProductChange(
                                   index,
                                   "pointValue",
-                                  selected.pointValue
+                                  selected.pointValue,
                                 );
                                 handleProductChange(
                                   index,
                                   "name",
-                                  selected.name
+                                  selected.name,
                                 );
                                 handleProductChange(
                                   index,
                                   "isConsistencyFree",
-                                  selected.isConsistencyFree
+                                  selected.isConsistencyFree,
                                 );
                                 handleProductChange(
                                   index,
                                   "isRepurchaseFreeValue",
-                                  selected.rfp
+                                  selected.rfp,
                                 );
                                 handleProductChange(
                                   index,
                                   "isRepurchaseFree",
-                                  selected.isRepurchaseFree
+                                  selected.isRepurchaseFree,
                                 );
                                 handleProductChange(
                                   index,
                                   "isConsistencyFreeValue",
-                                  selected.acfp
+                                  selected.acfp,
                                 );
                                 handleProductChange(
                                   index,
                                   "quantity",
-                                  selected.quantity
+                                  selected.quantity,
                                 );
                                 const subtotal = selected.price || 0;
 
@@ -447,7 +447,7 @@ const OrderCreate = ({ title }) => {
                                   handleProductChange(
                                     index,
                                     "isRepurchaseFreeAmount",
-                                    repurchaseAmount
+                                    repurchaseAmount,
                                   );
                                 }
 
@@ -460,7 +460,7 @@ const OrderCreate = ({ title }) => {
                                   handleProductChange(
                                     index,
                                     "isConsistencyFreeAmount",
-                                    consistencyAmount
+                                    consistencyAmount,
                                   );
                                 }
                               }
@@ -487,7 +487,7 @@ const OrderCreate = ({ title }) => {
                               handleProductChange(
                                 index,
                                 "productRate",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                             className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -507,7 +507,7 @@ const OrderCreate = ({ title }) => {
                               handleProductChange(
                                 index,
                                 "mrpRate",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                             className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -526,7 +526,7 @@ const OrderCreate = ({ title }) => {
                               handleProductChange(
                                 index,
                                 "quantity",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                             className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -606,7 +606,7 @@ const OrderCreate = ({ title }) => {
                               ""
                             ) : (
                               <td className="px-4 py-2 text-center">
-                                {product.isRepurchaseFree
+                                {subtotal < 5000 && product.isRepurchaseFree
                                   ? `${matchedProduct?.rfp}% = ${
                                       (matchedProduct?.rfp * subtotal) / 100
                                     } ৳`
@@ -616,8 +616,11 @@ const OrderCreate = ({ title }) => {
                             <td className="px-4 py-2 text-center">
                               {subtotal >= 5000 &&
                                 (product.isConsistencyFree
-                                  ? `${matchedProduct?.acfp}% = ${
-                                      (matchedProduct?.acfp * subtotal) / 100
+                                  ? `${matchedProduct?.acfp + matchedProduct?.rfp}% = ${
+                                      ((matchedProduct?.acfp +
+                                        matchedProduct?.rfp) *
+                                        subtotal) /
+                                      100
                                     } ৳`
                                   : "No")}
                             </td>
@@ -647,7 +650,7 @@ const OrderCreate = ({ title }) => {
             const matchedFreeProduct = freeProducts?.find(
               (p) =>
                 p.freeProductId?.toString() ===
-                freeProduct.productId?.toString()
+                freeProduct.productId?.toString(),
             );
 
             const freeSubtotal =
@@ -691,25 +694,25 @@ const OrderCreate = ({ title }) => {
                                     handleProductChange(
                                       freeindex,
                                       "freeProductId",
-                                      selectedId
+                                      selectedId,
                                     );
 
                                     const selected = freeProducts.find(
                                       (p) =>
-                                        p.productId?.toString() === selectedId
+                                        p.productId?.toString() === selectedId,
                                     );
 
                                     if (selected) {
                                       handleProductChange(
                                         freeindex,
                                         "freeProductRate",
-                                        selected.price
+                                        selected.price,
                                       );
 
                                       handleProductChange(
                                         freeindex,
                                         "freeProductName",
-                                        selected.name
+                                        selected.name,
                                       );
                                     }
                                   }}
@@ -734,7 +737,7 @@ const OrderCreate = ({ title }) => {
                                     handleProductChange(
                                       freeindex,
                                       "freeProductRate",
-                                      e.target.value
+                                      e.target.value,
                                     )
                                   }
                                   className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -755,7 +758,7 @@ const OrderCreate = ({ title }) => {
                                     handleProductChange(
                                       freeindex,
                                       "freeQuantity",
-                                      e.target.value
+                                      e.target.value,
                                     )
                                   }
                                   className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -51,7 +51,7 @@ const AllProducts = () => {
     try {
       const res = await axiosSecure.patch(
         `/products/${selectedProduct._id}`,
-        updatedData
+        updatedData,
       );
 
       // console.log(res.data);
@@ -99,10 +99,7 @@ const AllProducts = () => {
               <th className="text-center px-4 py-2 border">
                 Repurchase <br /> Free{" "}
               </th>
-              <th className="px-4 py-2 border">
-                Advance <br />
-                Consistecy
-              </th>
+              <th className="px-4 py-2 border">Consistecy</th>
               <th className="px-4 py-2 border">Created At</th>
               <th className="px-4 py-2 border">Action</th>
             </tr>

@@ -130,7 +130,7 @@ const ReturnRequest = ({ dspPhone }) => {
           </button>
         ) : (
           <p className="text-red-600">
-            ❌ You don't have enough points to return this quantity of the
+            ❌ You don't have enough BV to return this quantity of the
             selected product.
           </p>
         )}

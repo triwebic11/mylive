@@ -328,7 +328,7 @@ const AddProduct = () => {
                 className="w-full border p-2 rounded"
               />
             </div>
-               <div>
+            <div>
               <label className="block mb-1 font-semibold">Quantity</label>
               <input
                 type="number"
@@ -398,14 +398,14 @@ const AddProduct = () => {
                     className="toggle toggle-success mr-1"
                   />
                   <span className="label-text font-semibold">
-                    Advance Consistency Free Product
+                    Consistency Free Product
                   </span>
                 </label>
                 {consistencyFree && (
                   <div>
                     <div className=" p-2 m-4 rounded-lg shadow-xl">
                       <label className="block mb-1 font-semibold">
-                        Set % for Advance Consistency Free{" "}
+                        Set % for Consistency Free{" "}
                       </label>
                       <input
                         {...register("acfp")}
