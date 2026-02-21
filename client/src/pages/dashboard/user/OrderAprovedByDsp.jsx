@@ -32,7 +32,7 @@ const OrderAprovedByDsp = () => {
   const filteredOrders = orders.filter((order) => {
     return (
       order.products.some((p) =>
-        p.productId.toLowerCase().includes(search.productId.toLowerCase())
+        p.productId.toLowerCase().includes(search.productId.toLowerCase()),
       ) &&
       (!search.date || order.date.includes(search.date))
     );
@@ -191,12 +191,13 @@ const OrderAprovedByDsp = () => {
                               <th className="py-1 px-1 border">DP</th>
                               <th className="py-1 px-1 border">MRP</th>
                               <th className="py-1 px-1 border">Subtotal (৳)</th>
-                              <th className="py-1 px-1 border">SubPoint</th>
+                              <th className="py-1 px-1 border">Total BV</th>
                               <th className="py-1 px-1 border">
                                 SubDiscount ৳
                               </th>
                               <th className="py-1 border">RFP ৳</th>
                               <th className="py-1 border">CFP ৳</th>
+                              <th className="py-1 border">Free ৳</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -238,6 +239,9 @@ const OrderAprovedByDsp = () => {
                                       : "No"
                                     : "No"}
                                 </td>
+                                <td className="py-1 px-1 border">
+                                  ৳{p.freeSubtotal || 0}
+                                </td>
                               </tr>
                             ))}
                           </tbody>
@@ -246,10 +250,10 @@ const OrderAprovedByDsp = () => {
                           RFP = Repurchase Free Products <br />
                           CFP = Consistency Free Products
                         </div>
-                        <h1 className="font-semibold text-green-800 text-lg">
+                        {/* <h1 className="font-semibold text-green-800 text-lg">
                           Free Product Details
-                        </h1>
-                        <table>
+                        </h1> */}
+                        {/* <table>
                           <thead className="bg-gray-200 text-gray-700">
                             <tr>
                               <th className="py-1 px-2 border">ID and Name</th>
@@ -278,7 +282,7 @@ const OrderAprovedByDsp = () => {
                               </tr>
                             ))}
                           </tbody>
-                        </table>
+                        </table> */}
                       </div>
                     </div>
 
@@ -288,7 +292,7 @@ const OrderAprovedByDsp = () => {
                         💰 Grand Total: ৳{order.grandTotal || "0"}
                       </p>
                       <p className="text-blue-700">
-                        🎯 Grand Point: {order.grandPoint || "0"}
+                        🎯 Grand BV: {order.grandPoint || "0"}
                       </p>
                       <p className="text-blue-700">
                         🏷️ Grand Discount: {order.grandDiscount || "0"}
@@ -304,7 +308,7 @@ const OrderAprovedByDsp = () => {
                       className="bg-white p-8 rounded-md shadow-md border border-gray-300 max-w-[800px] mx-auto"
                     >
                       {/* ---------- Header Section ---------- */}
-                      <h1 className="text-center text-lg font-bold">
+                      <h1 className="text-center text-lg font-bold mb-3 pb-3">
                         Sale Invoice
                       </h1>
 
@@ -318,46 +322,46 @@ const OrderAprovedByDsp = () => {
                                 className="w-24 h-24 object-contain"
                               />
                             </td>
-                            <td className="border px-2 py-1 font-bold">
+                            <td className="border px-2 py-2 font-bold">
                               Invoice Number:{" "}
                               {order._id.slice(-8).toUpperCase()}
                             </td>
-                            <td className="border px-2 py-1 font-bold">
+                            <td className="border px-2 py-2 font-bold">
                               Date: {order.date?.slice(0, 10)}
                             </td>
                           </tr>
                           <tr>
-                            <td className="border px-2 py-1 mb-3">
+                            <td className="border px-2 py-2 mb-3">
                               Delivery Note
                             </td>
-                            <td className="border px-2 py-1">
+                            <td className="border px-2 py-2">
                               Mode/Term of payment
                             </td>
                           </tr>
                           <tr>
-                            <td className="border px-2 py-1 mb-3">
+                            <td className="border px-2 py-2 mb-3">
                               Supplier's Ref
                             </td>
-                            <td className="border px-2 py-1">
+                            <td className="border px-2 py-2">
                               Other Reference
                             </td>
                           </tr>
                           <tr>
-                            <td rowSpan={3} className="border px-2 py-1">
+                            <td rowSpan={3} className="border px-2 py-2">
                               <p className="text-center">
                                 {" "}
                                 {user?.name || user?.user?.name}
                               </p>
                               <p> {order?.dspPhone} </p>
                             </td>
-                            <td rowSpan={3} className="border px-2 py-1">
+                            <td rowSpan={3} className="border px-2 py-2">
                               <p className="text-center">
                                 {" "}
                                 {user?.name || user?.user?.name}
                               </p>
                               <p className="text-center"> {order?.dspPhone} </p>
                             </td>
-                            <td className="border px-2 py-1">
+                            <td className="border px-2 py-2">
                               Date: {order.date?.slice(0, 10)}
                             </td>
                           </tr>
@@ -384,7 +388,7 @@ const OrderAprovedByDsp = () => {
                               <th className="border px-2 py-2">DP</th>
                               <th className="border px-2 py-2">MRP</th>
                               <th className="border px-2 py-2">Subtotal</th>
-                              <th className="border px-2 py-2">SubPoint</th>
+                              <th className="border px-2 py-2">Total BV</th>
                               <th className="border px-2 py-2">SubDiscount</th>
                               <th className="border px-2 py-2">RFP</th>
                               <th className="border px-2 py-2">ACFP</th>
@@ -436,66 +440,68 @@ const OrderAprovedByDsp = () => {
                                 </td>
                               </tr>
                             ))}
-                            {order.products.map((p, i) => (
-                              <React.Fragment key={i}>
-                                <tr>
-                                  <td
-                                    colSpan="8"
-                                    className="border text-right px-2 font-bold mb-3"
-                                  >
-                                    Free Product Value
-                                  </td>
-                                  <td
-                                    colSpan={2}
-                                    className="border px-2  font-bold"
-                                  >
-                                    {p.freeProductRate || "0"}
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td
-                                    colSpan="8"
-                                    className="border text-right px-2 font-bold mb-3"
-                                  >
-                                    Invoice Discount
-                                  </td>
-                                  <td
-                                    colSpan={2}
-                                    className="border px-2 py-1 font-bold"
-                                  >
-                                    {order.grandDiscount || "0"}
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td
-                                    colSpan="8"
-                                    className="border text-right px-2  font-bold mb-3"
-                                  >
-                                    Net Payable
-                                  </td>
-                                  <td
-                                    colSpan={2}
-                                    className="border px-2 font-bold"
-                                  >
-                                    0
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td
-                                    colSpan="8"
-                                    className="border text-right px-2  font-bold mb-3"
-                                  >
-                                    Paid
-                                  </td>
-                                  <td
-                                    colSpan={2}
-                                    className="border px-2 font-bold mb-3"
-                                  >
-                                    {order.grandTotal || "0"}
-                                  </td>
-                                </tr>
-                              </React.Fragment>
-                            ))}
+                            <>
+                              <tr>
+                                <td
+                                  colSpan="8"
+                                  className="border text-right px-2 font-bold pb-3"
+                                >
+                                  Free Product Value
+                                </td>
+                                <td
+                                  colSpan={2}
+                                  className="border px-2 font-bold pb-3"
+                                >
+                                  {order.freeGrandTotal || "0"}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td
+                                  colSpan="8"
+                                  className="border text-right px-2 font-bold pb-3"
+                                >
+                                  Invoice Discount
+                                </td>
+                                <td
+                                  colSpan={2}
+                                  className="border px-2 font-bold pb-3"
+                                >
+                                  {order.grandDiscount || "0"}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td
+                                  colSpan="8"
+                                  className="border text-right px-2 font-bold pb-3"
+                                >
+                                  Net Payable
+                                </td>
+                                <td
+                                  colSpan={2}
+                                  className="border px-2 font-bold pb-3"
+                                >
+                                  {order.grandTotal || "0"}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td
+                                  colSpan="8"
+                                  className="border text-right px-2 font-bold pb-3"
+                                >
+                                  Paid
+                                </td>
+                                <td
+                                  colSpan={2}
+                                  className="border px-2 font-bold pb-3"
+                                >
+                                  {order.grandTotal || "0"}
+                                </td>
+                              </tr>
+                            </>
+
                             <tr>
                               <td
                                 colSpan="10"
@@ -505,7 +511,10 @@ const OrderAprovedByDsp = () => {
                               </td>
                             </tr>
                             <tr>
-                              <td colSpan={6} className="border px-1 py-1 mb-3">
+                              <td
+                                colSpan={6}
+                                className="border px-1 py-1 mb-3 pb-3"
+                              >
                                 Declartion{" "}
                                 <p>
                                   {" "}
@@ -514,7 +523,7 @@ const OrderAprovedByDsp = () => {
                                   particular are true and correct
                                 </p>
                               </td>
-                              <td colSpan={4} className="border px-1 mb-3">
+                              <td colSpan={4} className="border px-1 mb-3 pb-3">
                                 {" "}
                                 <p>Company Bank Details </p> <p>Bank Name:</p>{" "}
                                 <p>A/C No:</p> <p>Branch Code:</p>{" "}
@@ -523,13 +532,13 @@ const OrderAprovedByDsp = () => {
                             <tr>
                               <td
                                 colSpan={5}
-                                className="border px-2 pt-10 mb-3"
+                                className="border px-2 pt-10 mb-3 pb-3"
                               >
                                 Customer's Signature
                               </td>
                               <td
                                 colSpan={5}
-                                className="border px-2 pt-10 text-right mb-3"
+                                className="border px-2 pt-10 text-right mb-3 pb-3"
                               >
                                 Authorised Signature
                               </td>

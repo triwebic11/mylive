@@ -16,28 +16,28 @@ const kycRoutes = require("./routes/kycRoutes");
 const { default: mongoose } = require("mongoose");
 const { AdminSummery } = require("./controllers/AdminSummery");
 const User = require("./models/User");
-const { giveMonthlyExtraBonusToAll } = require("./utils/giveMonthlyExtra20PercentBonus");
+const {
+  giveMonthlyExtraBonusToAll,
+} = require("./utils/giveMonthlyExtra20PercentBonus");
 const { buildTree } = require("./controllers/userController");
-const { UpdateRanksAndRewards } = require("./controllers/RankUpgradeRequestcontrol");
+const {
+  UpdateRanksAndRewards,
+} = require("./controllers/RankUpgradeRequestcontrol");
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://shslira.com"
-];
+const allowedOrigins = ["http://localhost:5173", "https://shslira.com"];
 
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
 
 mongoose.set("strictQuery", true);
 // Connect MongoDB
 connectDB();
-
 
 app.use(
   cors({
@@ -52,9 +52,8 @@ app.use(
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
-  })
+  }),
 );
-
 
 app.use(express.json());
 
@@ -141,32 +140,31 @@ cron.schedule("* * * * *", async () => {
 
   const result = await User.updateMany(
     { packageExpireDate: { $lt: now }, isActivePackage: "active" },
-    { $set: { isActivePackage: "expire" } }
+    { $set: { isActivePackage: "expire" } },
   );
 
-
   // monthly 20 % sponsor bonus cron job
-// ১️⃣ প্রতি মাসে ১ তারিখ সকাল ১টায় অটো বোনাস চেক
+  // ১️⃣ প্রতি মাসে ১ তারিখ সকাল ১টায় অটো বোনাস চেক
   cron.schedule("0 1 1 * *", async () => {
-  await giveMonthlyExtraBonusToAll();
+    await giveMonthlyExtraBonusToAll();
 
-  //  const { id } = req.params;
-  //     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-  //       return res.status(400).json({ message: "Invalid or missing user ID" });
-  //     }
+    //  const { id } = req.params;
+    //     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    //       return res.status(400).json({ message: "Invalid or missing user ID" });
+    //     }
 
-  // const user = await User.findById(id);
+    // const user = await User.findById(id);
 
-  //  const tree = await buildTree(user._id);
-  //   const leftPoints = tree?.monthlyleftBV || 0;
-  //   const rightPoints = tree?.monthlyrightBV || 0;
-  //   if (leftPoints >= 30000 && rightPoints >= 30000) {
-  //     await UpdateRanksAndRewards(user);
-  //   }
-});
-//   cron.schedule("* * * * * *", async () => {
-//   await giveMonthlyExtraBonusToAll();
-// });
+    //  const tree = await buildTree(user._id);
+    //   const leftPoints = tree?.monthlyleftBV || 0;
+    //   const rightPoints = tree?.monthlyrightBV || 0;
+    //   if (leftPoints >= 30000 && rightPoints >= 30000) {
+    //     await UpdateRanksAndRewards(user);
+    //   }
+  });
+  //   cron.schedule("* * * * * *", async () => {
+  //   await giveMonthlyExtraBonusToAll();
+  // });
 
   // console.log(`Updated ${result?.modifiedCount} users to expire.`);
 
@@ -202,5 +200,5 @@ io.on("connection", (socket) => {
 app.set("io", io);
 
 // Start Server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 30005;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

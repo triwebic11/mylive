@@ -24,14 +24,14 @@ const Home = () => {
           />
           <Box
             icon={<IoIosHome />}
-            title="About SHS Lira"
-            pragraph="A brief history of SHS Lira"
+            title="About Heaven Lira"
+            pragraph="A brief history of Heaven Lira"
             bg="bg-blue-700"
           />
           <Box
             icon={<BiDonateHeart />} 
             title="CSR"
-            pragraph="SHS Lira's contribution to the society"
+            pragraph="Heaven Lira's contribution to the society"
             bg="bg-green-700"
           />
         </div>

@@ -11,6 +11,8 @@ import { LuLoader } from "react-icons/lu";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 import useDspInventory from "../Hooks/useDspInventory";
 
+
+
 const OrderCreate = ({ title }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
@@ -28,7 +30,7 @@ const OrderCreate = ({ title }) => {
   // console.log("Current Location:", location);
 
   const [products] = useProducts();
-  const [freeProducts, setFreeProducts] = useFreeOrPaidProducts("free");
+  // const [freeProducts, setFreeProducts] = useFreeOrPaidProducts("free");
 
   const [paidProducts, setPaidProducts] = useFreeOrPaidProducts("paid");
   const [allProducts, setAllProducts] = useState([]);
@@ -38,15 +40,16 @@ const OrderCreate = ({ title }) => {
       productId: "",
 
       productRate: "",
-      freeProductRate: "",
+      // freeProductRate: "",
       mrpRate: "",
       discount: "",
       name: "",
-      freeProductName: "",
+      // freeProductName: "",
       pointValue: "",
       quantity: 1,
-      freeQuantity: 1,
-      freeProductId: "",
+      // freeQuantity: 1,
+      // freeProductId: "",
+     
       isConsistencyFree: false,
       isConsistencyFreeValue: "",
       isConsistencyFreeAmount: "",
@@ -132,15 +135,16 @@ const OrderCreate = ({ title }) => {
       {
         productId: "",
         productRate: "",
-        freeProductRate: "",
-        freeProductName: "",
+        // freeProductRate: "",
+        // freeProductName: "",
         mrpRate: "",
         discount: "",
         name: "",
         pointValue: "",
         quantity: 1,
-        freeQuantity: 1,
-        freeProductId: "",
+        // freeQuantity: 1,
+        // freeProductId: "",
+        freeSubtotal: "",
         isConsistencyFree: false,
         isConsistencyFreeValue: "",
         isConsistencyFreeAmount: "",
@@ -158,12 +162,6 @@ const OrderCreate = ({ title }) => {
   const calculateGrandTotal = () =>
     scndProducts.reduce(
       (acc, p) => acc + (+p.productRate || 0) * (+p.quantity || 0),
-      0,
-    );
-
-  const calculateFreeGrandTotal = () =>
-    scndProducts.reduce(
-      (acc, p) => acc + (+p.freeProductRate || 0) * (+p.freeQuantity || 0),
       0,
     );
 
@@ -197,6 +195,25 @@ const OrderCreate = ({ title }) => {
     setScndProducts([]); // or [{}] if default one empty row needed
     // set other form fields here if needed
   };
+  const calculateFreeGrandTotal = () =>
+    scndProducts.reduce((sum, product) => {
+      const matchedProduct = products?.find(
+        (p) => p.productId?.toString() === product.productId?.toString(),
+      );
+
+      const subtotal = (+product.productRate || 0) * (+product.quantity || 0);
+
+      let free = 0;
+
+      if (matchedProduct?.rfp && subtotal < 5000) {
+        free = (matchedProduct.rfp * subtotal) / 100;
+      } else if (subtotal >= 5000 && matchedProduct?.acfp) {
+        free =
+          ((matchedProduct.acfp + (matchedProduct.rfp || 0)) * subtotal) / 100;
+      }
+
+      return sum + free;
+    }, 0);
 
   const [loading, setLoading] = useState(false);
   const axiosPublic = useAxiosPublic();
@@ -210,26 +227,47 @@ const OrderCreate = ({ title }) => {
       const price = +p.productRate || 0;
       const quantity = +p.quantity || 0;
 
+      const subtotal = price * quantity;
+      let freeSubtotal = 0;
+
+      // Repurchase Free (subtotal < 5000)
+      if (p.isRepurchaseFree && subtotal < 5000) {
+        freeSubtotal = ((+p.isRepurchaseFreeValue || 0) * subtotal) / 100;
+      }
+
+      // Advance Consistency Free (subtotal >= 5000)
+      if (p.isConsistencyFree && subtotal >= 5000) {
+        freeSubtotal =
+          (((+p.isConsistencyFreeValue || 0) +
+            (+p.isRepurchaseFreeValue || 0)) *
+            subtotal) /
+          100;
+      }
+
       return {
         ...p,
-        subtotal: price * quantity,
-        freeSubtotal: p.freeProductRate * p.freeQuantity,
+        subtotal,
+        freeSubtotal, // ✅ now correct
         subPoint: (+p.pointValue || 0) * quantity,
         subDiscount: (mrp - price) * quantity,
       };
     });
 
+    const freeGrandTotal = scndProductsWithSubtotal.reduce(
+      (sum, p) => sum + (p.freeSubtotal || 0),
+      0,
+    );
+
     const orderData = {
-      userId: userId,
+      userId,
       dspPhone,
       orderedFor,
       createdBy,
       products: scndProductsWithSubtotal,
       grandTotal: calculateGrandTotal(),
-      freeGrandTotal: calculateFreeGrandTotal(), // ✅ new field
+      freeGrandTotal, // ✅ correct now
       grandPoint: calculateGrandPoint(),
-      grandDiscount: calculateGrandDiscount(), // ✅ new field
-
+      grandDiscount: calculateGrandDiscount(),
       date: new Date().toISOString(),
     };
 
@@ -355,6 +393,14 @@ const OrderCreate = ({ title }) => {
 
           const subtotal =
             (+product.productRate || 0) * (+product.quantity || 0);
+
+          const freeSubtotal =
+            matchedProduct?.rfp && subtotal < 5000
+              ? (matchedProduct?.rfp * subtotal) / 100
+              : subtotal >= 5000
+                ? ((matchedProduct?.acfp + matchedProduct?.rfp) * subtotal) /
+                  100
+                : null;
 
           return (
             //For paid product
@@ -553,6 +599,7 @@ const OrderCreate = ({ title }) => {
                           <th className="px-4 py-2">Name</th>
                           <th className="px-4 py-2">BV</th>
                           <th className="px-4 py-2">Discount</th>
+                          <th className="px-4 py-2">Free Subtotal</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -580,6 +627,11 @@ const OrderCreate = ({ title }) => {
                               <span className="text-gray-400">N/A</span>
                             )}
                           </td>
+                          <td className="px-4 py-2 text-red-700 font-semibold">
+                            {freeSubtotal !== null
+                              ? `৳${freeSubtotal.toFixed(2)}`
+                              : "N/A"}
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -587,24 +639,21 @@ const OrderCreate = ({ title }) => {
                       <table>
                         <thead>
                           <tr>
-                            {matchedProduct?.acfp ? (
-                              ""
-                            ) : (
+                            {matchedProduct?.rfp && subtotal < 5000 ? (
                               <th className="px-4 py-2 my-2 md:my-0">
                                 Repurchase Free Product
                               </th>
+                            ) : (
+                              <th className="px-4 py-2 my-2 md:my-0">
+                                {subtotal >= 5000 &&
+                                  "Advance Consistency Free Product"}
+                              </th>
                             )}
-                            <th className="px-4 py-2 my-2 md:my-0">
-                              {subtotal >= 5000 &&
-                                "Advance Consistency Free Product"}
-                            </th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            {matchedProduct?.acfp ? (
-                              ""
-                            ) : (
+                            {matchedProduct?.rfp && subtotal < 5000 ? (
                               <td className="px-4 py-2 text-center">
                                 {subtotal < 5000 && product.isRepurchaseFree
                                   ? `${matchedProduct?.rfp}% = ${
@@ -612,18 +661,19 @@ const OrderCreate = ({ title }) => {
                                     } ৳`
                                   : "No"}
                               </td>
+                            ) : (
+                              <td className="px-4 py-2 text-center">
+                                {subtotal >= 5000 &&
+                                  (product.isConsistencyFree
+                                    ? `${matchedProduct?.acfp + matchedProduct?.rfp}% = ${
+                                        ((matchedProduct?.acfp +
+                                          matchedProduct?.rfp) *
+                                          subtotal) /
+                                        100
+                                      } ৳`
+                                    : "No")}
+                              </td>
                             )}
-                            <td className="px-4 py-2 text-center">
-                              {subtotal >= 5000 &&
-                                (product.isConsistencyFree
-                                  ? `${matchedProduct?.acfp + matchedProduct?.rfp}% = ${
-                                      ((matchedProduct?.acfp +
-                                        matchedProduct?.rfp) *
-                                        subtotal) /
-                                      100
-                                    } ৳`
-                                  : "No")}
-                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -645,173 +695,6 @@ const OrderCreate = ({ title }) => {
         })}
         {/* For free product */}
 
-        <div>
-          {scndProducts.map((freeProduct, freeindex) => {
-            const matchedFreeProduct = freeProducts?.find(
-              (p) =>
-                p.freeProductId?.toString() ===
-                freeProduct.productId?.toString(),
-            );
-
-            const freeSubtotal =
-              (+freeProduct.freeProductRate || 0) *
-              (+freeProduct.freeQuantity || 0);
-
-            return (
-              <div>
-                {(freeProduct.isRepurchaseFree ||
-                  freeProduct.isConsistencyFree) && (
-                  <div>
-                    <div
-                      key={freeindex}
-                      className="bg-white p-5 rounded-2xl shadow-md border border-gray-200 space-y-4"
-                    >
-                      <h1>Free Product</h1>
-                      <div className="overflow-x-auto rounded-lg border border-gray-200">
-                        <table className="min-w-full text-sm text-left text-gray-800 grid grid-cols-2 md:grid-cols-1">
-                          <thead className="bg-gray-100 text-gray-900 font-semibold">
-                            <tr className="flex flex-col md:flex-row justify-around ">
-                              <th className="px-4 py-2 my-2 md:my-0">
-                                Product
-                              </th>
-                              <th className="px-4 py-2 my-2 md:my-0">
-                                Price(৳)
-                              </th>
-                              <th className="px-4 py-2 my-2 md:my-0">
-                                Quantity (৳)
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr className="bg-white md:border-t flex flex-col md:flex-row">
-                              {/* Product Selector */}
-                              <td className="px-4 py-2 min-w-[200px]">
-                                <input
-                                  list="freeproduct-options"
-                                  value={freeProducts?.productId}
-                                  onChange={(e) => {
-                                    const selectedId = e.target.value;
-                                    handleProductChange(
-                                      freeindex,
-                                      "freeProductId",
-                                      selectedId,
-                                    );
-
-                                    const selected = freeProducts.find(
-                                      (p) =>
-                                        p.productId?.toString() === selectedId,
-                                    );
-
-                                    if (selected) {
-                                      handleProductChange(
-                                        freeindex,
-                                        "freeProductRate",
-                                        selected.price,
-                                      );
-
-                                      handleProductChange(
-                                        freeindex,
-                                        "freeProductName",
-                                        selected.name,
-                                      );
-                                    }
-                                  }}
-                                  placeholder="Enter Product ID"
-                                  className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                <datalist id="freeproduct-options">
-                                  {freeProducts?.map((p) => (
-                                    <option key={p._id} value={p.productId}>
-                                      {p.productId} - {p.name}
-                                    </option>
-                                  ))}
-                                </datalist>
-                              </td>
-
-                              {/* Price */}
-                              <td className="px-4 py-2">
-                                <input
-                                  type="number"
-                                  value={freeProduct.freeProductRate || ""}
-                                  onChange={(e) =>
-                                    handleProductChange(
-                                      freeindex,
-                                      "freeProductRate",
-                                      e.target.value,
-                                    )
-                                  }
-                                  className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                  placeholder="Discount Price"
-                                  required
-                                  readOnly
-                                />
-                              </td>
-
-                              {/* Regular Price */}
-
-                              {/* Quantity */}
-                              <td className="px-4 py-2">
-                                <input
-                                  type="number"
-                                  value={freeProduct.freeQuantity}
-                                  onChange={(e) =>
-                                    handleProductChange(
-                                      freeindex,
-                                      "freeQuantity",
-                                      e.target.value,
-                                    )
-                                  }
-                                  className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                  placeholder="Qty"
-                                  required
-                                />
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* Summary Info */}
-                      <div className="bg-gray-100 p-4 rounded-lg text-sm text-gray-800 space-y-1">
-                        <div className="overflow-x-auto rounded-lg border border-gray-200">
-                          <table className="min-w-full text-sm text-left text-gray-700">
-                            <thead className="bg-gray-100 text-gray-900 font-semibold">
-                              <tr>
-                                <th className="px-4 py-2">Name</th>
-                                <th className="px-4 py-2">Subtotal</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr className="bg-white border-t">
-                                <td className="px-4 py-2">
-                                  {freeProduct.freeProductName || (
-                                    <span className="text-gray-400">N/A</span>
-                                  )}
-                                </td>
-                                <td className="px-4 py-2 font-bold text-blue-700">
-                                  ৳{freeSubtotal}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => removeProductField(index)}
-                          className="mt-3 inline-block bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition duration-200 text-sm"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
         <button
           type="button"
           onClick={addProductField}
@@ -824,10 +707,13 @@ const OrderCreate = ({ title }) => {
           Grand Total: ৳{calculateGrandTotal()}
         </div>
         <div className="text-right text-md font-semibold text-blue-700">
-          Grand Point: {calculateGrandPoint()}
+          Grand BV: {calculateGrandPoint()}
         </div>
         <div className="text-right text-md font-semibold text-green-700">
           Grand Discount: ৳{calculateGrandDiscount()}
+        </div>
+        <div className="text-right text-md font-semibold text-green-700">
+          Grand Free Amount: ৳{calculateFreeGrandTotal().toFixed(2)}
         </div>
 
         <button
@@ -894,7 +780,7 @@ const OrderCreate = ({ title }) => {
               : "bg-white text-black"
           }`}
           >
-            All Ordered By SHSLira
+            All Ordered By Heaven Lira
           </button>
           <button
             onClick={() => setActiveBtn("you")}
@@ -934,7 +820,7 @@ const OrderCreate = ({ title }) => {
                   Grand Total: ৳{order.grandTotal || "0"}
                 </p>
                 <p className="text-purple-700 font-semibold">
-                  Grand Point: {order.grandPoint || "0"}
+                  Grand BV: {order.grandPoint || "0"}
                 </p>
                 <p className="text-green-700 font-semibold">
                   Grand Discount: ৳{order.grandDiscount || "0"}
@@ -955,8 +841,9 @@ const OrderCreate = ({ title }) => {
                     <th className="px-4 py-2">DP</th>
                     <th className="px-4 py-2">MRP</th>
                     <th className="px-4 py-2">Subtotal (৳)</th>
-                    <th className="px-4 py-2">SubPoint</th>
+                    <th className="px-4 py-2">Total BV</th>
                     <th className="px-4 py-2">SubDiscount (৳)</th>
+                    <th className="px-4 py-2">Free(৳) </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -982,37 +869,11 @@ const OrderCreate = ({ title }) => {
                       <td className="px-4 py-2 text-green-700 font-semibold">
                         ৳{p.subDiscount || 0}
                       </td>
+                      <td className="px-4 py-2 text-red-700 font-semibold">
+                        ৳{p.freeSubtotal || 0}
+                      </td>
                     </tr>
                   ))}
-                </tbody>
-              </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2">Free Product</th>
-                    <th className="px-4 py-2">Free Qty</th>
-                    <th className="px-4 py-2">Free Subtotal (৳)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {order.products
-                    .filter((p) => p.freeProductId)
-                    .map((p, i) => (
-                      <tr
-                        key={i}
-                        className={`border-t ${
-                          i % 2 === 0 ? "bg-white" : "bg-gray-50"
-                        }`}
-                      >
-                        <td className="px-4 py-2">
-                          {p.freeProductId} - {p.freeProductName}
-                        </td>
-                        <td className="px-4 py-2">{p.freeQuantity}</td>
-                        <td className="px-4 py-2 text-blue-700 font-semibold">
-                          ৳{p.freeSubtotal || 0}
-                        </td>
-                      </tr>
-                    ))}
                 </tbody>
               </table>
             </div>

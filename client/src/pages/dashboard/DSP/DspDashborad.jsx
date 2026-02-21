@@ -145,7 +145,7 @@ const DspDashborad = () => {
           Notice:
         </div>
         <marquee className="flex-1 overflow-hidden font-semibold text-pink-600">
-          SHS Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে শনিবার ও
+          Heaven Lira Enterprise Ltd-এ আপনাকে স্বাগতম। আপনি প্রতি সপ্তাহে শনিবার ও
           রবিবার Withdraw দিতে পারবেন এবং আপনি মঙ্গলবার এ পেমেন্ট পাবেন |
         </marquee>
       </div>

@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
   productId: String,
-  freeProductId: { type: String, default: "" }, // ✅ Add this
+  // freeProductId: { type: String, default: "" }, // ✅ Add this
   productRate: Number,
-  freeProductRate: { type: Number, default: 0 }, // ✅ Add this
+  // freeProductRate: { type: Number, default: 0 }, // ✅ Add this
   mrpRate: Number,
   name: String, // ✅ Add this
-  freeProductName: { type: String, default: "" }, // ✅ Add this
+  // freeProductName: { type: String, default: "" }, // ✅ Add this
   pointValue: Number,
   quantity: Number,
-  freeQuantity: Number, // ✅ Add this
+  // freeQuantity: Number, // ✅ Add this
   subtotal: Number, // ✅ Add this
   freeSubtotal: { type: Number, default: 0 }, // ✅ Add this
   subPoint: Number, // ✅ Add this

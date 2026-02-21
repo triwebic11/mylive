@@ -170,7 +170,7 @@ const AddProduct = () => {
       <h1 className="text-2xl pt-20 pb-5 md:ml-20 font-bold mb-2">
         Add Products{" "}
       </h1>
-      <div className="md:max-w-[80%] w-full mx-auto p-4 space-y-4 bg-white shadow rounded">
+      {/* <div className="md:max-w-[80%] w-full mx-auto p-4 space-y-4 bg-white shadow rounded">
         <label
           htmlFor="type"
           className="block text-sm font-medium text-gray-700 mb-1"
@@ -196,11 +196,11 @@ const AddProduct = () => {
           <option value="Paid" />
           <option value="Free" />
         </datalist>
-      </div>
+      </div> */}
       {freeOrPaid ? (
         <div>
           <h1 className="md:max-w-[80%] w-full text-green-900 font-bold mx-auto text-xl text-center bg-white shadow rounded">
-            Upload Paid Product
+            Upload Product
           </h1>
           <form
             onSubmit={handleSubmit(onSubmit)}

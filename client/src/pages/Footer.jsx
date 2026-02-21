@@ -19,7 +19,7 @@ function Footer() {
                     <p className="font-semibold text-blue-700 mb-4">ABOUT US</p>
                     <Link to={"/"}><img
                         src={logo}
-                        alt="SHS Lira Logo"
+                        alt="Heaven Lira Logo"
                         className="w-28 mb-2 "
                     /></Link>
                     <p className="font-bold text-gray-800 text-sm text-center md:text-left">
@@ -79,7 +79,7 @@ function Footer() {
                 </div>
             </div>
             <h4 className="bg-blue-800 text-white text-center py-3 text-sm">
-                Copyright © 2025, SHS Lira Enterprise LTD.
+                Copyright © 2025, Heaven Lira Enterprise LTD.
             </h4>
         </footer>
     );
