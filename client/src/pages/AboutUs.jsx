@@ -39,7 +39,7 @@ const AboutUs = () => {
         </div>
 
         <div className="mb-10 bg-white rounded-2xl shadow-xl p-10">
-          <h2 className="text-3xl font-bold mb-8 text-indigo-600">
+          <h2 className="text-3xl font-bold mb-8 text-indigo-600 text-center justify-center">
             Investment Information
           </h2>
           <p className="text-gray-700 leading-relaxed mb-4">
@@ -52,13 +52,13 @@ const AboutUs = () => {
             marketing LTD.. could emphasize its commitment to quality,
             innovation, and customer satisfaction. Here's a sample:
           </p>
-          <p>
+          <p className="text-gray-700 leading-relaxed mb-4">
             Welcome to heaven lira marketing LTD... a pioneering force in the direct selling industry. Our mission is to empower individuals by providing high-quality products that enhance their lives while offering an opportunity for financial growth and independence.
           </p>
-          <p>
+          <p className="text-gray-700 leading-relaxed mb-4">
             Founded on the principles of trust, transparency, and integrity, heaven lira marketing LTD...has rapidly grown to become a leading name in direct selling. We offer a diverse portfolio of products ranging from health and wellness to personal care, catering to the varied needs of our customers. Our commitment to excellence drives us to continually innovate and bring the best products to the market.
           </p>
-          <p>
+          <p className="text-gray-700 leading-relaxed mb-4">
             At heaven lira marketing LTD..., we believe in the power of people. Our network of independent distributors is the backbone of our company, and we are dedicated to their success. We provide comprehensive training, support, and the tools they need to achieve their goals, whether they are looking to supplement their income or build a full-time business. We are more than just a company; we are a community. Together, we are making a positive impact on lives around the world, one product at a time. Join us in our journey and live on with heaven lira marketing LTD...
           </p>
         </div>
