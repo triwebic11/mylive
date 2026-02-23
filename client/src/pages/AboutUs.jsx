@@ -67,7 +67,7 @@ const AboutUs = () => {
         <div className="text-center bg-white rounded-2xl shadow-2xl p-6 my-10">
           <div className="max-w-6xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-8 text-indigo-600">
-              About Our Company{" "}
+              About Our Company Certificates{" "}
             </h2>
             <p className="text-gray-800 font-medium mb-10 max-w-3xl text-md mx-auto">
               Our company is officially registered and certified by the
