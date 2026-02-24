@@ -74,7 +74,7 @@ const AboutUs = () => {
               government authorities. We proudly hold all necessary licenses and
               certifications to operate legally and professionally.
               Transparency, compliance, and trust are the foundation of our
-              services.
+              services. 
             </p>
 
             {/* Image Grid */}
