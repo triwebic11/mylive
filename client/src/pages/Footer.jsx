@@ -34,7 +34,7 @@ function Footer() {
                         <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Home</Link> <br />
                         <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Products</Link><br />
                         <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Services</Link><br />
-                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/about-us">Contact Us</Link>
+                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/about-us" target="blank">Contact Us</Link>
                     </ul>
                 </div>
 
