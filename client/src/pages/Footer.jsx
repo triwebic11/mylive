@@ -34,14 +34,14 @@ function Footer() {
                         <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Home</Link> <br />
                         <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Products</Link><br />
                         <Link className=" duration-200 font-semibold hover:text-blue-800" to="/">Services</Link><br />
-                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/about-us" target="blank">Contact Us</Link>
+                        <Link className=" duration-200 font-semibold hover:text-blue-800" to="/about-us" target="_blank">Contact Us</Link>
                     </ul>
                 </div>
 
                 {/* Contact */}
                 <div className="flex flex-col items-center text-sm md:items-start text-gray-800 font-semibold">
                     <p className="font-semibold text-blue-700 mb-4">CONTACT</p>
-                    <p>Website: <Link to="https://www.heavenlira.com" target="blank" className="text-blue-600 hover:text-blue-800">www.heavenlira.com</Link> </p>
+                    <p>Website: <Link to="https://www.heavenlira.com" target="_blank" className="text-blue-600 hover:text-blue-800">www.heavenlira.com</Link> </p>
                     <p>Email: <Link to="mailto:heavenlira @gmail.com" className="text-blue-600 hover:text-blue-800">heavenlira@gmail.com</Link></p>
                     <p>Customer Service: <Link to="tel:01747998102" target="blank" className="text-blue-600 hover:text-blue-800">01747998102</Link></p>
                     <p>
