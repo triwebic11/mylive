@@ -269,7 +269,7 @@ const FontDashboard = () => {
             <DashboardCard key={idx} title={stat?.title} value={stat.value} />
           ))
         ) : (
-          <p className="text-red-600 font-bold">No summary data found.</p>
+          <p className="text-red-600 font-bold">Please wait... </p>
         )}
       </div>
 

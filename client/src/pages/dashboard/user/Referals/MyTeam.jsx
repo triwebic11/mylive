@@ -48,6 +48,8 @@ const Dashboard = () => {
     enabled: !!userId,
   });
 
+  console.log("Referral Tree Data:", referralTree);
+
   const renderTree = (node) => {
     if (!node) return null;
 

@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const axiosSecure = axios.create({
-  // baseURL: "http://localhost:5000/api",
+  baseURL: "http://localhost:30005/api",
   withCredentials: true,
-  baseURL: "https://apidata.shslira.com/api",
+  // baseURL: "https://apidata.shslira.com/api",
 });
 
 // ✅ Request interceptor: attach JWT token
