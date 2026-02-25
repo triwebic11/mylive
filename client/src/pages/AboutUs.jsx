@@ -74,14 +74,14 @@ const AboutUs = () => {
               government authorities. We proudly hold all necessary licenses and
               certifications to operate legally and professionally.
               Transparency, compliance, and trust are the foundation of our
-              services.
+              services. 
             </p>
 
             {/* Image Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <a href={company1} target="_blank" rel="noopener noreferrer">
                 <img
-                  to="blank"
+                  to="_blank"
                   src={company1}
                   alt="Company Office 1"
                   className="w-full h-84 object-cover hover:scale-110 duration-500 cursor-pointer rounded-xl shadow-md"
