@@ -1077,6 +1077,8 @@ const distributeGrandPoint = async (
               if (!uplineUser || uplineUser.isActivePackage !== "active")
                 continue;
 
+              
+
               uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
 
               uplineUser.AllEntry = uplineUser.AllEntry || {
