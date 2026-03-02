@@ -493,7 +493,7 @@ const positionLevels = [
     position: "Double Diamond",
     reward: "Private Car or ৳25,00,000 cash",
     generationLevel: Infinity, // From PDF: Unlimited
-    megaGenerationLevel: Infinity,
+    megaGenerationLevel: 5,
   },
   {
     rank: 12,
@@ -504,7 +504,7 @@ const positionLevels = [
     position: "Crown Director",
     reward: "৳50,00,000 cash",
     generationLevel: Infinity,
-    megaGenerationLevel: Infinity,
+    megaGenerationLevel: 5,
   },
   {
     rank: 13,
@@ -515,7 +515,7 @@ const positionLevels = [
     position: "Star Crown",
     reward: "Mansion or ৳1 crore cash",
     generationLevel: Infinity,
-    megaGenerationLevel: Infinity,
+    megaGenerationLevel: 5,
   },
   {
     rank: 14,
@@ -526,7 +526,7 @@ const positionLevels = [
     position: "Universal Crown",
     reward: "৳5 crore cash or Villa",
     generationLevel: Infinity,
-    megaGenerationLevel: Infinity,
+    megaGenerationLevel: 5,
   },
 ];
 
@@ -895,46 +895,131 @@ const distributeGrandPoint = async (
     // *****************************************************************
     // 🏦 Shared Mega Generation Commission (7%)
     // *****************************************************************
+    // try {
+    //   // console.log("🚀 Starting shared mega generation commission distribution...");
+
+    //   if (!buyer._id || typeof sevenPercent !== "number" || sevenPercent <= 0) {
+    //     console.error("❌ Invalid mega generation commission parameters.");
+    //   } else {
+
+    //     const MegauplineFlat = await buildUplineChainMultipleParents(buyer._id);
+    //     console.log("mega generation upline:", MegauplineFlat);
+    //     if (!Array.isArray(MegauplineFlat) || MegauplineFlat.length === 0) {
+    //       console.warn("⚠️ No mega uplines found.");
+    //     } else {
+    //       const MegafilteredUpline = MegauplineFlat.filter(
+    //         (u) => u?._id?.toString() !== buyer._id.toString(),
+    //       );
+
+    //       const MegaeligibleUplines = MegafilteredUpline.filter(
+    //         (u) =>
+    //           u?.MegaGenerationLevel > 0 && u?.isActivePackage === "active",
+    //       );
+
+    //       // console.log("Filtered eligible mega uplines:", MegaeligibleUplines);
+
+    //       if (MegaeligibleUplines.length > 0) {
+    //         const pointPerUpline = sevenPercent / MegaeligibleUplines.length;
+    //         for (const upline of MegaeligibleUplines) {
+    //           const uplineUser = await User.findById(upline._id);
+    //           if (!uplineUser || uplineUser.isActivePackage !== "active")
+    //             continue;
+
+    //           uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+    //           uplineUser.AllEntry = uplineUser.AllEntry || {
+    //             incoming: [],
+    //             outgoing: [],
+    //           };
+    //           uplineUser.AllEntry.incoming.push({
+    //             fromUser: buyer._id,
+    //             pointReceived: pointPerUpline,
+    //             sector: "Shared Mega Generation Commission",
+    //             date: new Date(),
+    //           });
+    //           await uplineUser.save();
+    //         }
+    //         console.log(`✅ Distributed ${sevenPercent} mega generation commission.`);
+    //       }
+    //     }
+    //   }
+    // } catch (err) {
+    //   console.error("🔥 Error in mega generation commission:", err.message);
+    // }
+
+    // *****************************************************************
+    // 🏦 Shared Mega Generation Commission (7%) - FIXED VERSION
+    // *****************************************************************
     try {
-      // console.log("🚀 Starting shared mega generation commission distribution...");
-
-      if (!buyer._id || typeof sevenPercent !== "number" || sevenPercent <= 0) {
-        console.error("❌ Invalid mega generation commission parameters.");
+      if (!buyer?._id || sevenPercent <= 0) {
+        console.warn("⚠️ Invalid mega commission parameters.");
       } else {
-        const MegauplineFlat = await buildUplineChainMultipleParents(buyer._id);
-        if (!Array.isArray(MegauplineFlat) || MegauplineFlat.length === 0) {
-          console.warn("⚠️ No mega uplines found.");
+        // 1️⃣ Buyer এর সব upline বের করো (closest parent first)
+        const uplineFlat = await buildUplineChainMultipleParents(buyer._id);
+
+        if (!Array.isArray(uplineFlat) || uplineFlat.length === 0) {
+          console.warn("⚠️ No uplines found for mega commission.");
         } else {
-          const MegafilteredUpline = MegauplineFlat.filter(
-            (u) => u?._id?.toString() !== buyer._id.toString(),
+          // buyer নিজেকে বাদ দাও
+          const filteredUpline = uplineFlat.filter(
+            (u) => u._id.toString() !== buyer._id.toString(),
           );
 
-          const MegaeligibleUplines = MegafilteredUpline.filter(
-            (u) =>
-              u?.MegaGenerationLevel > 0 && u?.isActivePackage === "active",
+          const finalUplines = [];
+
+          // 2️⃣ Distance ভিত্তিক Mega Logic
+          for (let i = 0; i < filteredUpline.length; i++) {
+            const upline = filteredUpline[i];
+
+            const distanceFromBuyer = i + 1; // buyer থেকে কয় level উপরে
+
+            if (
+              upline?.isActivePackage === "active" &&
+              Number(upline?.MegaGenerationLevel || 0) >= distanceFromBuyer
+            ) {
+              finalUplines.push(upline);
+            }
+          }
+
+          console.log(
+            "✅ Eligible Mega Uplines:",
+            finalUplines.map((u) => ({
+              name: u.name,
+              megaLevel: u.MegaGenerationLevel,
+            })),
           );
 
-          if (MegaeligibleUplines.length > 0) {
-            const pointPerUpline = sevenPercent / MegaeligibleUplines.length;
-            for (const upline of MegaeligibleUplines) {
+          // 3️⃣ Commission distribute
+          if (finalUplines.length > 0) {
+            const pointPerUpline = sevenPercent / finalUplines.length;
+
+            for (const upline of finalUplines) {
               const uplineUser = await User.findById(upline._id);
+
               if (!uplineUser || uplineUser.isActivePackage !== "active")
                 continue;
 
               uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
               uplineUser.AllEntry = uplineUser.AllEntry || {
                 incoming: [],
                 outgoing: [],
               };
+
               uplineUser.AllEntry.incoming.push({
                 fromUser: buyer._id,
                 pointReceived: pointPerUpline,
                 sector: "Shared Mega Generation Commission",
                 date: new Date(),
               });
+
               await uplineUser.save();
             }
-            // console.log(`✅ Distributed ${sevenPercent} mega generation commission.`);
+
+            console.log(
+              `✅ Distributed ${sevenPercent} Mega Generation commission.`,
+            );
+          } else {
+            console.warn("⚠️ No eligible mega uplines found.");
           }
         }
       }
@@ -943,63 +1028,79 @@ const distributeGrandPoint = async (
     }
 
     // *****************************************************************
-    // 🧩 Shared Normal Generation Commission (30%)
+    // 🧩 Shared Generation Commission (30%) - FIXED VERSION
     // *****************************************************************
     try {
-      const uplineFlat = await buildUplineChainMultipleParents(buyer._id);
-      const filteredUpline = uplineFlat.filter(
-        (u) => u._id.toString() !== buyer._id.toString(),
-      );
-
-      const eligibleUplines = filteredUpline.filter(
-        (u) => u.GenerationLevel > 0 && u.isActivePackage === "active",
-      );
-
-      const finalUplines = [];
-
-      function searchUserInTree(node, userId, maxDepth, currentDepth = 1) {
-        if (!node || currentDepth > maxDepth) return false;
-        if (node._id && node._id.toString() === userId.toString()) return true;
-        return (
-          searchUserInTree(node.left, userId, maxDepth, currentDepth + 1) ||
-          searchUserInTree(node.right, userId, maxDepth, currentDepth + 1)
-        );
-      }
-
-      for (const upline of eligibleUplines) {
-        const tree = await buildTree(upline._id);
-        const foundUser = searchUserInTree(
-          tree,
-          buyer._id,
-          upline.GenerationLevel,
-        );
-        if (foundUser) finalUplines.push(upline);
-      }
-
-      if (finalUplines.length > 0) {
-        const pointPerUpline = thirtyPercent / finalUplines.length;
-        for (const upline of finalUplines) {
-          const uplineUser = await User.findById(upline._id);
-          if (!uplineUser || uplineUser.isActivePackage !== "active") continue;
-
-          uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
-          uplineUser.AllEntry = uplineUser.AllEntry || {
-            incoming: [],
-            outgoing: [],
-          };
-          uplineUser.AllEntry.incoming.push({
-            fromUser: buyer._id,
-            pointReceived: pointPerUpline,
-            sector: "Shared Generation Commission",
-            date: new Date(),
-          });
-          await uplineUser.save();
-        }
-        // console.log(`✅ Distributed ${thirtyPercent} shared generation commission.`);
+      if (!buyer?._id || thirtyPercent <= 0) {
+        console.warn("⚠️ Invalid generation commission parameters.");
       } else {
-        console.warn(
-          "⚠️ No final eligible uplines for shared generation commission.",
-        );
+        // 1️⃣ Buyer এর সব upline বের করো (closest first)
+        const uplineFlat = await buildUplineChainMultipleParents(buyer._id);
+
+        if (!Array.isArray(uplineFlat) || uplineFlat.length === 0) {
+          console.warn("⚠️ No uplines found for generation commission.");
+        } else {
+          const filteredUpline = uplineFlat.filter(
+            (u) => u._id.toString() !== buyer._id.toString(),
+          );
+
+          const finalUplines = [];
+
+          // 2️⃣ Distance ভিত্তিক Generation Logic
+          for (let i = 0; i < filteredUpline.length; i++) {
+            const upline = filteredUpline[i];
+            const distanceFromBuyer = i + 1;
+
+            if (
+              upline?.isActivePackage === "active" &&
+              Number(upline?.GenerationLevel || 0) >= distanceFromBuyer
+            ) {
+              finalUplines.push(upline);
+            }
+          }
+
+          console.log(
+            "✅ Eligible Generation Uplines:",
+            finalUplines.map((u) => ({
+              name: u.name,
+              generationLevel: u.GenerationLevel,
+            })),
+          );
+
+          // 3️⃣ Commission distribute
+          if (finalUplines.length > 0) {
+            const pointPerUpline = thirtyPercent / finalUplines.length;
+
+            for (const upline of finalUplines) {
+              const uplineUser = await User.findById(upline._id);
+
+              if (!uplineUser || uplineUser.isActivePackage !== "active")
+                continue;
+
+              uplineUser.points = (uplineUser.points || 0) + pointPerUpline;
+
+              uplineUser.AllEntry = uplineUser.AllEntry || {
+                incoming: [],
+                outgoing: [],
+              };
+
+              uplineUser.AllEntry.incoming.push({
+                fromUser: buyer._id,
+                pointReceived: pointPerUpline,
+                sector: "Shared Generation Commission",
+                date: new Date(),
+              });
+
+              await uplineUser.save();
+            }
+
+            console.log(
+              `✅ Distributed ${thirtyPercent} Generation commission.`,
+            );
+          } else {
+            console.warn("⚠️ No eligible generation uplines found.");
+          }
+        }
       }
     } catch (err) {
       console.error("🔥 Error in shared generation commission:", err.message);

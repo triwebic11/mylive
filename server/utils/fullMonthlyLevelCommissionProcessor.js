@@ -6,9 +6,9 @@ const POSITIONS = [
   { name: "Executive Officer", PV: 15000, generationLevel: 10, megaGenerationLevel: 3, benefit: { type: "product", fund: "free Product", value: 5000 }},
   { name: "Executive Manager", PV: 30000, generationLevel: 15, megaGenerationLevel: 3, benefit: { type: "fund", fund: "Special Fund", percent: 0.03 }},
   { name: "Executive Director", PV: 60000, generationLevel: 20, megaGenerationLevel: 4, benefit: { type: "fund", fund: "Travel Fund", percent: 0.04 }},
-  { name: "Diamond Director", PV: 150000, generationLevel: 20, megaGenerationLevel: 4, benefit: { type: "fund", fund: "Car Fund", percent: 0.04 }},
-  { name: "Crown Director", PV: 300000, generationLevel: Infinity, megaGenerationLevel: Infinity, benefit: { type: "House fund", fund: "houseFund", percent: 0.03 }},
-  { name: "Crown Ambassador", PV: 1200000, generationLevel: Infinity, megaGenerationLevel: Infinity, benefit: { type: "All life fund", fund: "lifetimeBonus", percent: 0.01 }},
+  { name: "Diamond Director", PV: 150000, generationLevel: 20, megaGenerationLevel: 5, benefit: { type: "fund", fund: "Car Fund", percent: 0.04 }},
+  { name: "Crown Director", PV: 300000, generationLevel: Infinity, megaGenerationLevel: 5, benefit: { type: "House fund", fund: "houseFund", percent: 0.03 }},
+  { name: "Crown Ambassador", PV: 1200000, generationLevel: Infinity, megaGenerationLevel: 5, benefit: { type: "All life fund", fund: "lifetimeBonus", percent: 0.01 }},
 ];
 
 const isPackageActive = (user) => {

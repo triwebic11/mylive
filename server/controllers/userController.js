@@ -1318,7 +1318,7 @@ const positionLevels = [
     position: "Double Diamond",
     reward: "Private Car or ৳25,00,000 cash",
     generationLevel: Infinity, // From PDF: Unlimited
-    megaGenerationLevel: Infinity,
+    megaGenerationLevel: 5,
   },
   {
     rank: 12,
@@ -1329,7 +1329,7 @@ const positionLevels = [
     position: "Crown Director",
     reward: "৳50,00,000 cash",
     generationLevel: Infinity,
-    megaGenerationLevel: Infinity,
+    megaGenerationLevel: 5,
   },
   {
     rank: 13,
@@ -1340,7 +1340,7 @@ const positionLevels = [
     position: "Star Crown",
     reward: "Mansion or ৳1 crore cash",
     generationLevel: Infinity,
-    megaGenerationLevel: Infinity,
+    megaGenerationLevel: 5,
   },
   {
     rank: 14,
@@ -1351,7 +1351,7 @@ const positionLevels = [
     position: "Universal Crown",
     reward: "৳5 crore cash or Villa",
     generationLevel: Infinity,
-    megaGenerationLevel: Infinity,
+    megaGenerationLevel: 5,
   },
 ];
 
